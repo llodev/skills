@@ -1,1 +1,20 @@
 .env
+
+# pnpm
+node_modules/
+.pnpm-store/
+
+# Changesets temp output
+.changeset/pre.json
+
+# OS
+.DS_Store
+*.log
+
+# Local env overrides
+.env.local
+.env.*.local
+
+# Per-tool local config overrides (must never be committed)
+.trello.local.json
+.asana.local.json
