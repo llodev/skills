@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "trello": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "atlassian-trello-mcp"
+      ],
+      "env": {}
+    }
+  }
+}

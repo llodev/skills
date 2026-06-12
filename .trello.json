@@ -1,0 +1,90 @@
+{
+    "$schema": "https://llodev.github.io/skills/schemas/pm-tasks-trello.json",
+    "version": "1",
+    "workspace": "llodev",
+    "boards": [
+        {
+            "id": "6a2b574aefe6fe9621a3d5a7",
+            "name": "Skills",
+            "alias": "skills",
+            "url": "https://trello.com/b/bR5bbtoH"
+        }
+    ],
+    "lists": [
+        {
+            "boardAlias": "skills",
+            "id": "6a2b57600f0f20cbea2277f0",
+            "name": "Backlog",
+            "alias": "backlog"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b576292aee4b8eeb82ed1",
+            "name": "WIP",
+            "alias": "wip"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b5767058f005c9c063a8b",
+            "name": "Published",
+            "alias": "done"
+        }
+    ],
+    "labels": [
+        {
+            "boardAlias": "skills",
+            "id": "6a2b574aefe6fe9621a3d5d2",
+            "name": "core",
+            "color": "green",
+            "alias": "core"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b574aefe6fe9621a3d5d7",
+            "name": "adapter",
+            "color": "blue",
+            "alias": "adapter"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b574aefe6fe9621a3d5d6",
+            "name": "infra",
+            "color": "purple",
+            "alias": "infra"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b574aefe6fe9621a3d5d3",
+            "name": "docs",
+            "color": "yellow",
+            "alias": "docs"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b574aefe6fe9621a3d5d4",
+            "name": "scaffold",
+            "color": "orange",
+            "alias": "scaffold"
+        },
+        {
+            "boardAlias": "skills",
+            "id": "6a2b574aefe6fe9621a3d5d5",
+            "name": "blocker",
+            "color": "red",
+            "alias": "blocker"
+        }
+    ],
+    "members": [
+        {
+            "id": "67d978bb765291e9f4a44e80",
+            "username": "leonardolopesdeoliveira8",
+            "fullName": "Leonardo Lopes de Oliveira",
+            "alias": "me"
+        }
+    ],
+    "defaults": {
+        "boardAlias": "skills",
+        "listAlias": "backlog",
+        "closeListAlias": "done"
+    }
+}
