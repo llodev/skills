@@ -1,0 +1,23 @@
+{
+  "name": "@llodev/skills-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "llodev agent skills monorepo — pm-tasks-* family",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.0",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "validate": "node scripts/validate-frontmatter.mjs && node scripts/validate-schemas.mjs && node scripts/validate-links.mjs",
+    "contract:check": "node scripts/contract-check.mjs",
+    "version:sync": "node scripts/sync-version.mjs",
+    "changeset": "changeset",
+    "changeset:version": "changeset version && pnpm run version:sync",
+    "changeset:publish": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "gray-matter": "^4.0.3"
+  }
+}
