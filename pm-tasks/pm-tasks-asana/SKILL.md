@@ -1,0 +1,98 @@
+---
+name: pm-tasks-asana
+description: 'Asana adapter for the @llodev/pm-tasks-* family. Use when the user mentions Asana, asks to "criar task no Asana", "publicar no Asana", "post to Asana", "publish", "add comment in Asana", or uses --publish-asana; OR for CRUD on existing tasks (marcar subtask, fechar task, mudar due-date, atribuir assignee, comentar); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Asana hierarchy: workspace > project > section > parent task > subtasks (one level), with custom fields and multi-assignee support. Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous (write-through with allowlist). Implements 6 CRUD verbs (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add) from pm-tasks/pm-tasks-core/references/contract.md. Requires @llodev/pm-tasks-core installed.'
+license: MIT
+metadata:
+  version: 0.1.0
+  tags: [agent-skill, asana, plan-to-tasks, pm-tools]
+  family: pm-tasks
+  role: adapter
+  tool: asana
+compatibility:
+  agents: [claude-code, cursor, codex, windsurf, cline, roo-code]
+---
+
+# pm-tasks-asana
+
+Adapter for Asana within the `@llodev/pm-tasks-*` family. Use the core skill's extraction phases, then apply Asana formatting and optionally publish/operate via the `claude.ai Asana` MCP server.
+
+## Routing
+
+| Mode | Trigger | Path |
+|---|---|---|
+| Paste-only | "format as Asana task" without MCP intent | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
+| MCP publish | "publicar no Asana", "criar no Asana", "--publish-asana" | Phase 3 → Phase 4 → Phase 5 (publish via MCP) |
+| Autonomous | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1` | Phase 3 → Phase 4 → Phase 5b (write-through, no preview) |
+| CRUD ops | "marca subtask N na task X", "fecha task Y", "atribui João à task Z", "comenta na task X" | Phase 6 (operations, direct verb dispatch) |
+
+## Asana model
+
+Asana tasks have:
+
+- **Name** (title, ≤80 chars for board view).
+- **Description** (rich text; prefer `**Section**` bold labels — `##` headings render inconsistently).
+- **Subtasks** — one level deep. Custom fields and assignee do NOT auto-propagate from parent; the adapter sets them explicitly per `subtaskDefaults.inheritParentFields` in `.asana.json`.
+- **Sections** — group tasks within a project.
+- **Custom fields** — per-project; API always uses option GIDs, never display names.
+- **Multi-assignee** — Asana allows multiple followers; primary assignee is a single field. Use `task.assignee.add` to add followers.
+
+## Phase 4 — Asana formatting
+
+Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md`](../pm-tasks-core/references/generic-card.md). Then map to Asana:
+
+- Title → task `name`.
+- Sections of the generic card → bold `**Section**` labels inside `description` (not `##`).
+- "Implementation Checklist" + "Verification Checklist" → subtasks (flatten any nested bullets; Asana supports one level only).
+- Labels → custom field options (resolved via `.asana.json` `customFields[]`).
+- Due date → `due_on` (YYYY-MM-DD).
+- Assignee → `assignee` GID resolved from `.asana.json` `members[]` or `me` at publish time.
+
+## Phase 5 — MCP publish
+
+**Prerequisites:** Asana MCP connected via Cursor / Claude Code settings (`claude.ai Asana`). The MCP handles OAuth; the adapter never sees tokens.
+
+Strict order: 5.1 read `.asana.json` (full file) → 5.2.5 resolve assignee + custom fields + per-subtask field map → 5.2 preview & approval → 5.3 publish via MCP → 5.4 error handling.
+
+MCP publish sequence:
+
+1. **Parent task** — `create_tasks` with `name`, `notes` (description), `projects: [projectGid]`, `memberships: [{ project, section }]`, `assignee` (resolved GID), `due_on`, `custom_fields` (JSON string of `{fieldGid: optionGid}`).
+2. **Subtasks** — `create_tasks` per subtask with `parent: parentGid`, `name`, `assignee` (inherited or per-subtask), `custom_fields` matching `subtaskDefaults.inheritParentFields`.
+3. **Tags** (optional) — `addTag` per tag GID.
+4. **Confirm** — list parent + subtasks with permalinks.
+
+## Phase 5b — Autonomous
+
+Skip 5.2 preview & approval. Apply autonomous-mode contract from [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Audit log entries per [`../pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
+
+Asana-specific autonomous scope: `autonomous.scope.projects[]` + `autonomous.scope.sections[]` must include the target GIDs. Any custom-field write must be in `autonomous.allow` (`task.create` covers create-time field set; ongoing field changes are out of scope for v0.1).
+
+## Phase 6 — CRUD operations (existing tasks)
+
+For verbs other than `task.create`, jump directly to the operation. Verb → MCP tool mapping:
+
+| Core verb | Asana MCP tool | Notes |
+|---|---|---|
+| `task.create` | `create_tasks` | parent + subtasks per Phase 5 |
+| `checklist.check` | `update_tasks` | for subtasks: `completed: true`; emulates checklist via subtask model |
+| `task.close` | `update_tasks` | `completed: true` on parent |
+| `task.due-date.set` | `update_tasks` | `due_on: "YYYY-MM-DD"` |
+| `task.assignee.add` | `update_tasks` + `addFollower` | primary assignee replaces; additional are followers |
+| `task.comment.add` | `add_comment` (story) | adds a comment story to the task |
+
+`<task-ref>` resolution: accept Asana permalinks (`https://app.asana.com/0/<project>/<task>`), bare GIDs, or aliases from `.asana.json` `taskAliases[]`.
+
+## Standalone fallback
+
+If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (title + subtask names) and produce a paste-ready Asana task body from this content alone. Quality is degraded — no scope/audience/fidelity inference. Print: *"Install `@llodev/pm-tasks-core` for the full flow."*
+
+## Config
+
+Lookup order: `<git-root>/.asana.json` → `~/.config/llodev/pm-tasks/asana.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — Asana MCP holds OAuth; `init` uses `LLODEV_PM_TASKS_ASANA_PAT` env var only.
+
+## Init
+
+```
+npx @llodev/pm-tasks-asana init
+```
+
+See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-ux.md) for the shared flow. Asana init reads workspaces / projects / sections / custom fields via the Asana REST API using a Personal Access Token (env `LLODEV_PM_TASKS_ASANA_PAT`).
