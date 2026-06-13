@@ -1,0 +1,7 @@
+{
+  "name": "@llodev/pm-tasks-bitrix24",
+  "version": "0.0.0",
+  "private": true,
+  "description": "[SCAFFOLD — NOT IMPLEMENTED] Future Bitrix24 adapter for @llodev/pm-tasks-*.",
+  "license": "MIT"
+}
