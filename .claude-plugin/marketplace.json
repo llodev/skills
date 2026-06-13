@@ -1,0 +1,42 @@
+{
+  "name": "llodev",
+  "owner": {
+    "name": "llodev",
+    "email": "lloliveira.dev@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "pm-tasks-core",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "pm-tasks/pm-tasks-core"
+      },
+      "description": "Core extraction + CRUD vocabulary for the pm-tasks-* family.",
+      "version": "0.1.0",
+      "author": { "name": "llodev" }
+    },
+    {
+      "name": "pm-tasks-trello",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "pm-tasks/pm-tasks-trello"
+      },
+      "description": "Trello adapter — paste, publish via MCP, autonomous mode.",
+      "version": "0.1.0",
+      "author": { "name": "llodev" }
+    },
+    {
+      "name": "pm-tasks-asana",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "pm-tasks/pm-tasks-asana"
+      },
+      "description": "Asana adapter — paste, publish via MCP, autonomous mode.",
+      "version": "0.1.0",
+      "author": { "name": "llodev" }
+    }
+  ]
+}
