@@ -1,6 +1,6 @@
 ---
 name: pm-tasks-core
-description: Core extraction + vocabulary for the @llodev/pm-tasks-* family. Use when working with any pm-tasks-<tool> adapter (Trello, Asana, etc.) — provides Phases 1–3 (identify input, extract structure, build the generic card) plus the canonical CRUD vocabulary (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add) consumed by adapters. Also defines autonomous-mode contract (sentinels, allowlist, scope, audit log) and the shared init UX. Triggered indirectly by any prompt that an adapter handles (e.g. "criar card no Trello", "publish plan to Asana", "[autonomous] create task"). Do NOT activate alone — it has no tool-specific formatting.
+description: 'Core extraction + vocabulary for the @llodev/pm-tasks-* family. Use when working with any pm-tasks-<tool> adapter (Trello, Asana, etc.) — provides Phases 1–3 (identify input, extract structure, build the generic card) plus the canonical CRUD vocabulary (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add) consumed by adapters. Also defines autonomous-mode contract (sentinels, allowlist, scope, audit log) and the shared init UX. Triggered indirectly by any prompt that an adapter handles (e.g. "criar card no Trello", "publish plan to Asana", "[autonomous] create task"). Do NOT activate alone — it has no tool-specific formatting.'
 license: MIT
 metadata:
   version: 0.1.0
