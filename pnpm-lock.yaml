@@ -24,6 +24,24 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
 
+  pm-tasks/pm-tasks:
+    devDependencies:
+      '@llodev/pm-tasks-asana':
+        specifier: workspace:*
+        version: link:../pm-tasks-asana
+      '@llodev/pm-tasks-core':
+        specifier: workspace:*
+        version: link:../pm-tasks-core
+      '@llodev/pm-tasks-trello':
+        specifier: workspace:*
+        version: link:../pm-tasks-trello
+
+  pm-tasks/pm-tasks-asana:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
+
   pm-tasks/pm-tasks-core:
     dependencies:
       ajv:
