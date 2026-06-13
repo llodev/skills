@@ -1,0 +1,7 @@
+{
+  "name": "@llodev/pm-tasks-notion",
+  "version": "0.0.0",
+  "private": true,
+  "description": "[SCAFFOLD — NOT IMPLEMENTED] Future Notion adapter for @llodev/pm-tasks-*.",
+  "license": "MIT"
+}
