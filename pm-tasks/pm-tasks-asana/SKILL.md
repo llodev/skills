@@ -1,15 +1,38 @@
 ---
 name: pm-tasks-asana
-description: 'Asana adapter for the @llodev/pm-tasks-* family. Use when the user mentions Asana, asks to "criar task no Asana", "publicar no Asana", "post to Asana", "publish", "add comment in Asana", or uses --publish-asana; OR for CRUD on existing tasks (marcar subtask, fechar task, mudar due-date, atribuir assignee, comentar); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Asana hierarchy: workspace > project > section > parent task > subtasks (one level), with custom fields and multi-assignee support. Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous (write-through with allowlist). Implements 6 CRUD verbs (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add) from pm-tasks/pm-tasks-core/references/contract.md. Requires @llodev/pm-tasks-core installed.'
+description: >-
+  Asana adapter for the @llodev/pm-tasks-* family. Use when the user mentions
+  Asana, asks to "create Asana task", "publish to Asana", "post to Asana",
+  "publish", "add comment in Asana", or uses --publish-asana; OR for CRUD on
+  existing tasks (check subtask, close task, change due-date, assign person,
+  comment); OR when invoked autonomously by another agent with [autonomous] /
+  --auto sentinel. Asana hierarchy: workspace > project > section > parent task
+  > subtasks (one level), with custom fields and multi-assignee support.
+  Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP),
+  autonomous (write-through with allowlist). Implements 6 CRUD verbs
+  (task.create, checklist.check, task.close, task.due-date.set,
+  task.assignee.add, task.comment.add) from
+  pm-tasks/pm-tasks-core/references/contract.md. Requires @llodev/pm-tasks-core
+  installed.
 license: MIT
 metadata:
-  version: 0.1.0
-  tags: [agent-skill, asana, plan-to-tasks, pm-tools]
+  version: 1.0.0
+  tags:
+    - agent-skill
+    - asana
+    - plan-to-tasks
+    - pm-tools
   family: pm-tasks
   role: adapter
   tool: asana
 compatibility:
-  agents: [claude-code, cursor, codex, windsurf, cline, roo-code]
+  agents:
+    - claude-code
+    - cursor
+    - codex
+    - windsurf
+    - cline
+    - roo-code
 ---
 
 # pm-tasks-asana
@@ -18,12 +41,12 @@ Adapter for Asana within the `@llodev/pm-tasks-*` family. Use the core skill's e
 
 ## Routing
 
-| Mode | Trigger | Path |
-|---|---|---|
-| Paste-only | "format as Asana task" without MCP intent | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
-| MCP publish | "publicar no Asana", "criar no Asana", "--publish-asana" | Phase 3 → Phase 4 → Phase 5 (publish via MCP) |
-| Autonomous | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1` | Phase 3 → Phase 4 → Phase 5b (write-through, no preview) |
-| CRUD ops | "marca subtask N na task X", "fecha task Y", "atribui João à task Z", "comenta na task X" | Phase 6 (operations, direct verb dispatch) |
+| Mode        | Trigger                                                                                   | Path                                                                     |
+| ----------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Paste-only  | "format as Asana task" without MCP intent                                                 | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
+| MCP publish | "publish to Asana", "create on Asana", "--publish-asana"                                  | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                            |
+| Autonomous  | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`                    | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                 |
+| CRUD ops    | "check subtask N on task X", "close task Y", "assign Alice to task Z", "comment on task X" | Phase 6 (operations, direct verb dispatch)                               |
 
 ## Asana model
 
@@ -70,14 +93,14 @@ Asana-specific autonomous scope: `autonomous.scope.projects[]` + `autonomous.sco
 
 For verbs other than `task.create`, jump directly to the operation. Verb → MCP tool mapping:
 
-| Core verb | Asana MCP tool | Notes |
-|---|---|---|
-| `task.create` | `create_tasks` | parent + subtasks per Phase 5 |
-| `checklist.check` | `update_tasks` | for subtasks: `completed: true`; emulates checklist via subtask model |
-| `task.close` | `update_tasks` | `completed: true` on parent |
-| `task.due-date.set` | `update_tasks` | `due_on: "YYYY-MM-DD"` |
-| `task.assignee.add` | `update_tasks` + `addFollower` | primary assignee replaces; additional are followers |
-| `task.comment.add` | `add_comment` (story) | adds a comment story to the task |
+| Core verb           | Asana MCP tool                 | Notes                                                                 |
+| ------------------- | ------------------------------ | --------------------------------------------------------------------- |
+| `task.create`       | `create_tasks`                 | parent + subtasks per Phase 5                                         |
+| `checklist.check`   | `update_tasks`                 | for subtasks: `completed: true`; emulates checklist via subtask model |
+| `task.close`        | `update_tasks`                 | `completed: true` on parent                                           |
+| `task.due-date.set` | `update_tasks`                 | `due_on: "YYYY-MM-DD"`                                                |
+| `task.assignee.add` | `update_tasks` + `addFollower` | primary assignee replaces; additional are followers                   |
+| `task.comment.add`  | `add_comment` (story)          | adds a comment story to the task                                      |
 
 `<task-ref>` resolution: accept Asana permalinks (`https://app.asana.com/0/<project>/<task>`), bare GIDs, or aliases from `.asana.json` `taskAliases[]`.
 
@@ -97,14 +120,14 @@ Every verb returns the core contract shape (see [`../pm-tasks-core/references/co
 
 Asana-specific `details` per verb:
 
-| Verb | `details` fields |
-|---|---|
-| `task.create` | `{ parentGid, subtaskGids[], projectGid, sectionGid?, customFields[]? }` |
-| `checklist.check` | `{ subtaskGid, completed: true }` |
-| `task.close` | `{ parentGid, completed: true }` |
-| `task.due-date.set` | `{ taskGid, due_on }` |
-| `task.assignee.add` | `{ taskGid, assignee, followers[]? }` (primary vs follower split) |
-| `task.comment.add` | `{ taskGid, storyGid }` |
+| Verb                | `details` fields                                                         |
+| ------------------- | ------------------------------------------------------------------------ |
+| `task.create`       | `{ parentGid, subtaskGids[], projectGid, sectionGid?, customFields[]? }` |
+| `checklist.check`   | `{ subtaskGid, completed: true }`                                        |
+| `task.close`        | `{ parentGid, completed: true }`                                         |
+| `task.due-date.set` | `{ taskGid, due_on }`                                                    |
+| `task.assignee.add` | `{ taskGid, assignee, followers[]? }` (primary vs follower split)        |
+| `task.comment.add`  | `{ taskGid, storyGid }`                                                  |
 
 On failure: `{ ok: false, verb, tool, error: { code, message, retriable } }`. Common codes: `FORBIDDEN_VERB`, `OUT_OF_SCOPE`, `NOT_FOUND`, `RATE_LIMITED`, `PARTIAL_CREATE` (subtask failed mid-create — see [`../pm-tasks-core/references/contract.md`](../pm-tasks-core/references/contract.md) §Partial-create recovery).
 
