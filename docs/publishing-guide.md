@@ -1,223 +1,228 @@
 # Agent Skills Publishing Guide
 
+> **Language**: this guide is maintained in English (canonical). Translations
+> follow the convention `<basename>.<lang-code>.md` — e.g., `publishing-guide.pt-BR.md`,
+> `publishing-guide.es.md`. The same applies to other docs and to `SKILL.md` files
+> within published skills (`SKILL.pt-BR.md`, `README.es.md`, etc.).
+
 > Generic, tool-agnostic reference. The patterns here apply to any Agent Skill repo — not specific to this monorepo's layout.
 
 Reference guide for authoring and publishing **Agent Skills** — portable packages of instructions/context that extend the behavior of AI agents (Claude Code, Cursor, Copilot, Codex, Gemini CLI, Windsurf, Cline, Roo Code, etc.).
 
 ---
 
-## 1. O que é uma Skill (em 30 segundos)
+## 1. What is a Skill (in 30 seconds)
 
-Uma skill é, no mínimo, **uma pasta com um arquivo `SKILL.md`**. O `SKILL.md` é um markdown com **frontmatter YAML** que o agente lê para decidir *quando* ativar a skill e *como* executar a tarefa.
+A skill is, at minimum, **a folder with a `SKILL.md` file**. `SKILL.md` is a markdown file with **YAML frontmatter** that the agent reads to decide *when* to activate the skill and *how* to execute the task.
 
-O formato é um **padrão aberto** publicado pela Anthropic em `agentskills.io` (dez/2025), e é suportado por 40+ agentes. Vercel mantém `skills.sh` como o diretório/leaderboard público; SkillsMP indexa via GitHub (~350k skills em 2026); skillpm e skills-npm trazem o modelo para a npm registry.
+The format is an **open standard** published by Anthropic at `agentskills.io` (Dec/2025), supported by 40+ agents. Vercel maintains `skills.sh` as the public directory/leaderboard; SkillsMP indexes via GitHub (~350k skills in 2026); skillpm and skills-npm bring the model to the npm registry.
 
-Existem **três trilhos de distribuição** funcionando hoje — você pode usar um, dois ou os três pra mesma skill:
+There are **three distribution channels** working today — you can use one, two, or all three for the same skill:
 
-| Trilho                             | Como instala                                             | Quando usar                                                                     |
+| Channel                            | How to install                                           | When to use                                                                     |
 | ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| **Git + skills.sh** (Vercel)       | `npx skills add owner/repo`                              | Default. Sem flow de submissão; aparece no skills.sh via telemetria de install. |
-| **npm + skillpm/skills-npm**       | `npx skillpm install <pkg>` ou bundle via `node_modules` | Quando a skill acompanha um SDK/lib; dá semver, lockfile, audit, npm registry.  |
-| **Claude Code plugin marketplace** | `/plugin marketplace add <repo>`                         | Quando você quer empacotar skills + hooks + MCP + agents juntos.                |
+| **Git + skills.sh** (Vercel)       | `npx skills add owner/repo`                              | Default. No submission flow; appears on skills.sh via install telemetry.        |
+| **npm + skillpm/skills-npm**       | `npx skillpm install <pkg>` or bundle via `node_modules` | When the skill ships with an SDK/lib; gets semver, lockfile, audit, npm registry. |
+| **Claude Code plugin marketplace** | `/plugin marketplace add <repo>`                         | When you want to bundle skills + hooks + MCP + agents together.                 |
 
 ---
 
-## 2. Anatomia de uma Skill
+## 2. Anatomy of a Skill
 
-### 2.1 Layout mínimo
+### 2.1 Minimal layout
 
 ```
-minha-skill/
+my-skill/
 └── SKILL.md
 ```
 
-### 2.2 Layout recomendado (skill "de verdade")
+### 2.2 Recommended layout (a "real" skill)
 
 ```
-minha-skill/
-├── SKILL.md           # obrigatório — frontmatter + instruções principais
-├── README.md          # documentação humana (não é lida pelo agente)
-├── LICENSE            # MIT ou Apache-2.0 (ver seção 5)
-├── package.json       # opcional — só se publicar via npm/skillpm
-├── scripts/           # opcional — helpers executáveis (bash, node, python)
-├── references/        # opcional — docs longas, checklists, templates carregados sob demanda
-├── assets/            # opcional — templates estáticos, configs de exemplo, diagramas
-└── examples/          # opcional — pares input/output
+my-skill/
+├── SKILL.md           # required — frontmatter + main instructions
+├── README.md          # human documentation (not read by the agent)
+├── LICENSE            # MIT or Apache-2.0 (see section 5)
+├── package.json       # optional — only if publishing via npm/skillpm
+├── scripts/           # optional — executable helpers (bash, node, python)
+├── references/        # optional — long docs, checklists, templates loaded on demand
+├── assets/            # optional — static templates, sample configs, diagrams
+└── examples/          # optional — input/output pairs
 ```
 
-**Por que separar?** O `SKILL.md` entra no contexto do agente toda vez que a skill é considerada. Coisas longas/condicionais ficam em `references/` e só são carregadas quando a instrução do `SKILL.md` mandar — economia direta de tokens.
+**Why separate?** `SKILL.md` enters the agent's context every time the skill is considered. Long/conditional content lives in `references/` and is only loaded when an instruction in `SKILL.md` says so — direct token savings.
 
-### 2.3 Frontmatter do `SKILL.md`
+### 2.3 `SKILL.md` frontmatter
 
-**Obrigatório:**
+**Required:**
 
 ```yaml
 ---
-name: minha-skill                       # kebab-case, único no seu escopo
-description: Faz X para projetos Y. Use quando o usuário pedir X ou mencionar Y.
+name: my-skill                          # kebab-case, unique within your scope
+description: Does X for Y projects. Use when the user asks for X or mentions Y.
 ---
 ```
 
-- `name` — identificador kebab-case (minúsculas + hífens).
-- `description` — **explica o que faz E quando usar**. É essa string que o agente lê pra decidir se ativa a skill. Comece com o verbo, mencione gatilhos.
+- `name` — kebab-case identifier (lowercase + hyphens).
+- `description` — **explains what it does AND when to use it**. This is the string the agent reads to decide whether to activate the skill. Start with the verb, mention triggers.
 
-**Opcional (parte do spec portátil):**
+**Optional (part of the portable spec):**
 
 ```yaml
 license: MIT
 compatibility:
   agents: ["claude-code", "cursor", "codex"]
 metadata:
-  version: 1.2.0                        # semver — o spec não exige, mas convenção forte
+  version: 1.2.0                        # semver — not required by the spec, but a strong convention
   tags: ["typescript", "ddd"]
-allowed-tools: ["Read", "Edit", "Bash"] # experimental, suporte varia por agente
+allowed-tools: ["Read", "Edit", "Bash"] # experimental, support varies per agent
 ```
 
-### 2.4 Corpo do `SKILL.md`
+### 2.4 `SKILL.md` body
 
-Estrutura que funciona bem:
+A structure that works well:
 
 ```markdown
-# Nome da Skill
+# Skill Name
 
-Uma linha sobre o objetivo.
+One line about the goal.
 
-## Quando usar
-- Gatilho 1
-- Gatilho 2
-- NÃO usar quando...
+## When to use
+- Trigger 1
+- Trigger 2
+- Do NOT use when...
 
-## Passo a passo
+## Step by step
 1. ...
 2. ...
 
-## Exemplos
+## Examples
 - Input: ... → Output: ...
 
-## Referências
-- Ver references/<arquivo>.md para o caso X
+## References
+- See references/<file>.md for case X
 ```
 
 ---
 
-## 3. Convenções
+## 3. Conventions
 
-| Item                       | Padrão                                                                      |
+| Item                       | Standard                                                                    |
 | -------------------------- | --------------------------------------------------------------------------- |
-| Nome da skill (e da pasta) | `kebab-case`, sem prefixo (`auth-flow` ✅ não `agent-skill-auth-flow` ❌)     |
-| Versionamento              | **semver** (`1.0.0`) em git tags e/ou `package.json`/`metadata.version`     |
-| Branch principal           | `main`                                                                      |
-| Repositório git            | 1 repo por skill, público no GitHub (necessário pra `skills.sh` indexar)    |
-| README humano              | sim, separado do `SKILL.md` (esse é pra agente, não pra humano)             |
-| Changelog                  | `CHANGELOG.md` em "Keep a Changelog" — opcional mas recomendado             |
-| CI                         | GitHub Actions com lint do `SKILL.md` (frontmatter válido, links quebrados) |
+| Skill name (and folder)    | `kebab-case`, no prefix (`auth-flow` OK, not `agent-skill-auth-flow`)       |
+| Versioning                 | **semver** (`1.0.0`) in git tags and/or `package.json`/`metadata.version`   |
+| Main branch                | `main`                                                                      |
+| Git repository             | 1 repo per skill, public on GitHub (required for `skills.sh` to index)      |
+| Human README               | yes, separate from `SKILL.md` (that one is for the agent, not for humans)   |
+| Changelog                  | `CHANGELOG.md` in "Keep a Changelog" — optional but recommended             |
+| CI                         | GitHub Actions linting `SKILL.md` (valid frontmatter, broken links)         |
 
 ---
 
-## 5. Licença
+## 5. License
 
-Ecosistema convergiu em duas opções:
+The ecosystem has converged on two options:
 
-- **MIT** — usado por `skillpm`, maioria das skills da comunidade. Mais permissivo. **Recomendado** se você só quer máxima adoção.
-- **Apache-2.0** — usado pelas skills oficiais open-source da Anthropic. Tem cláusula explícita de patentes — recomendado se a skill tem qualquer coisa potencialmente patenteável.
+- **MIT** — used by `skillpm` and most community skills. More permissive. **Recommended** if you want maximum adoption.
+- **Apache-2.0** — used by Anthropic's official open-source skills. Has an explicit patent clause — recommended if the skill contains anything potentially patentable.
 
-**Evite:** GPL/AGPL — fricção em uso comercial, baixa adoção em skill ecosystem.
+**Avoid:** GPL/AGPL — friction for commercial use, low adoption in the skill ecosystem.
 
-Coloque um `LICENSE` na raiz da skill **e** o campo `license: MIT` (ou `Apache-2.0`) no frontmatter do `SKILL.md`.
+Place a `LICENSE` at the root of the skill **and** the `license: MIT` (or `Apache-2.0`) field in the `SKILL.md` frontmatter.
 
 ---
 
-## 6. Passo a passo: do zero ao publicado
+## 6. Step by step: from zero to published
 
-### 6.1 Pré-requisitos
+### 6.1 Prerequisites
 
 ```bash
-# nada precisa estar instalado globalmente — tudo via npx
+# nothing needs to be installed globally — everything runs via npx
 node --version    # >= 18
 git --version
-gh --version      # GitHub CLI, opcional mas ajuda
+gh --version      # GitHub CLI, optional but helpful
 ```
 
-### 6.2 Scaffold da skill
+### 6.2 Scaffold the skill
 
-Dentro deste workspace:
+Inside this workspace:
 
 ```bash
 cd ~/Workspace/skills
-npx skills init minha-skill
-cd minha-skill
+npx skills init my-skill
+cd my-skill
 ```
 
-Isso cria `minha-skill/SKILL.md` com o template do Vercel.
+This creates `my-skill/SKILL.md` from the Vercel template.
 
-### 6.3 Edita o `SKILL.md`
+### 6.3 Edit `SKILL.md`
 
-Preencha frontmatter (`name`, `description`) e o corpo. Mantenha o `SKILL.md` enxuto — mova detalhes pra `references/`.
+Fill in the frontmatter (`name`, `description`) and the body. Keep `SKILL.md` lean — move details to `references/`.
 
-### 6.4 Adiciona arquivos extras conforme necessário
+### 6.4 Add extra files as needed
 
 ```bash
 mkdir scripts references assets examples
 touch README.md LICENSE CHANGELOG.md
 ```
 
-### 6.5 Inicializa o repositório git
+### 6.5 Initialize the git repository
 
 ```bash
 git init -b main
 git add .
 git commit -m "feat: initial commit"
 
-# Cria o repo no GitHub (precisa do gh CLI logado)
-gh repo create llodev/minha-skill --public --source=. --remote=origin --push
+# Create the repo on GitHub (requires gh CLI logged in)
+gh repo create llodev/my-skill --public --source=. --remote=origin --push
 ```
 
-### 6.6 Publica (escolha um ou mais trilhos)
+### 6.6 Publish (pick one or more channels)
 
-#### Trilho A — Git + skills.sh (default, mais simples)
+#### Channel A — Git + skills.sh (default, simplest)
 
-Não tem comando de "publish". Basta o repo público existir. A partir desse momento qualquer um instala via:
+There is no "publish" command. The public repo just needs to exist. From that moment on, anyone can install via:
 
 ```bash
-npx skills add llodev/minha-skill
+npx skills add llodev/my-skill
 ```
 
-O `skills.sh` pega o repo via telemetria de instalação. Para forçar aparecer mais rápido, faça você mesmo o primeiro install em um projeto qualquer.
+`skills.sh` picks up the repo via install telemetry. To make it appear sooner, run the first install yourself in any project.
 
-#### Trilho B — npm via skillpm (semver, lockfile)
+#### Channel B — npm via skillpm (semver, lockfile)
 
-Adicione `package.json` na raiz da skill:
+Add a `package.json` at the root of the skill:
 
 ```json
 {
-  "name": "@llodev/minha-skill",
+  "name": "@llodev/my-skill",
   "version": "0.1.0",
-  "description": "Faz X para projetos Y.",
+  "description": "Does X for Y projects.",
   "license": "MIT",
   "files": ["SKILL.md", "scripts", "references", "assets"],
-  "repository": "github:llodev/minha-skill",
+  "repository": "github:llodev/my-skill",
   "keywords": ["agent-skill", "claude-code", "cursor"]
 }
 ```
 
-Publique:
+Publish:
 
 ```bash
 npm login
 npm publish --access public
 ```
 
-Usuários instalam com:
+Users install with:
 
 ```bash
-npx skillpm install @llodev/minha-skill
-# ou, com skills-npm (antfu): adiciona no package.json e roda
+npx skillpm install @llodev/my-skill
+# or, with skills-npm (antfu): add it to package.json and run
 npx skills-npm
 ```
 
-#### Trilho C — Claude Code plugin marketplace
+#### Channel C — Claude Code plugin marketplace
 
-Para empacotar a skill como plugin (junto com hooks/MCP/agents, se quiser), crie `.claude-plugin/marketplace.json` em um repo "marketplace" agregador:
+To bundle the skill as a plugin (alongside hooks/MCP/agents if you want), create `.claude-plugin/marketplace.json` in an aggregator "marketplace" repo:
 
 ```json
 {
@@ -225,36 +230,36 @@ Para empacotar a skill como plugin (junto com hooks/MCP/agents, se quiser), crie
   "owner": { "name": "llodev", "email": "lloliveira.dev@gmail.com" },
   "plugins": [
     {
-      "name": "minha-skill",
-      "source": "github:llodev/minha-skill",
-      "description": "Faz X para projetos Y.",
+      "name": "my-skill",
+      "source": "github:llodev/my-skill",
+      "description": "Does X for Y projects.",
       "version": "0.1.0"
     }
   ]
 }
 ```
 
-Usuários adicionam com:
+Users add it with:
 
 ```
 /plugin marketplace add llodev/skills
-/plugin install minha-skill
+/plugin install my-skill
 ```
 
-### 6.7 Releases subsequentes
+### 6.7 Subsequent releases
 
 ```bash
-# bump da versão (atualiza package.json E metadata.version do SKILL.md)
-npm version patch     # ou minor/major
+# bump version (updates package.json AND metadata.version in SKILL.md)
+npm version patch     # or minor/major
 
 git push --follow-tags
-npm publish           # se usando trilho B
+npm publish           # if using channel B
 
-# cria GitHub Release com notas
+# create GitHub Release with notes
 gh release create v0.1.1 --generate-notes
 ```
 
-Para automatizar o ciclo (changelog AI-generated + npm publish + GitHub release), use a skill `autoship` do próprio Vercel:
+To automate the cycle (AI-generated changelog + npm publish + GitHub release), use Vercel's own `autoship` skill:
 
 ```bash
 npx skills add vercel-labs/autoship
@@ -262,58 +267,58 @@ npx skills add vercel-labs/autoship
 
 ---
 
-## 7. Comandos úteis do `skills` CLI
+## 7. Useful `skills` CLI commands
 
 ```bash
-npx skills init [nome]              # scaffold de uma skill nova
-npx skills add <owner/repo>         # instala uma skill no agente atual
-npx skills use <source>             # usa sem instalar
-npx skills list                     # lista skills instaladas (alias: ls)
-npx skills find [termo]             # busca interativa ou por keyword
-npx skills remove [nome]            # remove
-npx skills check                    # verifica updates disponíveis
-npx skills update [nome]            # atualiza pra última versão
+npx skills init [name]              # scaffold a new skill
+npx skills add <owner/repo>         # install a skill into the current agent
+npx skills use <source>             # use without installing
+npx skills list                     # list installed skills (alias: ls)
+npx skills find [term]              # interactive search or by keyword
+npx skills remove [name]            # remove
+npx skills check                    # check for available updates
+npx skills update [name]            # update to the latest version
 ```
 
 ---
 
-## 8. Qualidade & validação
+## 8. Quality & validation
 
-Antes de tornar uma skill pública, rode:
+Before making a skill public, run:
 
-1. **Lint do frontmatter** — `name` único, `description` clara com gatilhos.
-2. **Teste em pelo menos 2 agentes** diferentes (Claude Code + Cursor, por exemplo).
-3. **Descrição passa no teste do "1%"** — agente decide ativar com uma chance ≥1% em prompts relevantes? Se não, reescreva.
-4. **Tamanho do `SKILL.md`** — se passar de ~200 linhas, mova detalhe pra `references/`.
-5. **Sem PII, sem segredos** — `git secrets` ou `trufflehog` no CI.
+1. **Frontmatter lint** — `name` unique, `description` clear with triggers.
+2. **Test in at least 2 different agents** (Claude Code + Cursor, for example).
+3. **Description passes the "1%" test** — does the agent decide to activate with a probability ≥1% on relevant prompts? If not, rewrite.
+4. **`SKILL.md` size** — if it exceeds ~200 lines, move detail to `references/`.
+5. **No PII, no secrets** — `git secrets` or `trufflehog` in CI.
 
-Use a skill `skill-judge` (já instalada neste agente) pra auditar:
+Use the `skill-judge` skill (already installed in this agent) to audit:
 
 ```
-/skill-judge minha-skill/SKILL.md
+/skill-judge my-skill/SKILL.md
 ```
 
 ---
 
-## 9. Discovery e marketing
+## 9. Discovery and marketing
 
-- **skills.sh** — leaderboard oficial Vercel. Telemetria de install rankeia.
-- **agentskills.io** — registro do spec aberto Anthropic.
-- **SkillsMP** — crawler de GitHub. Indexa qualquer `SKILL.md` público.
-- **Claude Plugins directory** (`claude-plugins.dev`, `claudemarketplaces.com`) — se publicar via marketplace.
-- **Tags no `package.json`/topics no GitHub** — `agent-skill`, `claude-code`, `cursor`, `mcp` ajudam descoberta.
+- **skills.sh** — official Vercel leaderboard. Install telemetry drives ranking.
+- **agentskills.io** — registry for the open Anthropic spec.
+- **SkillsMP** — GitHub crawler. Indexes any public `SKILL.md`.
+- **Claude Plugins directory** (`claude-plugins.dev`, `claudemarketplaces.com`) — if publishing via marketplace.
+- **`package.json` keywords / GitHub topics** — `agent-skill`, `claude-code`, `cursor`, `mcp` help discovery.
 
 ---
 
-## 10. Referências
+## 10. References
 
 - [Vercel — Agent Skills docs](https://vercel.com/docs/agent-resources/skills)
 - [Vercel — Creating, Installing, Sharing skills (KB)](https://vercel.com/kb/guide/agent-skills-creating-installing-and-sharing-reusable-agent-context)
-- [vercel-labs/skills (CLI fonte)](https://github.com/vercel-labs/skills)
+- [vercel-labs/skills (CLI source)](https://github.com/vercel-labs/skills)
 - [Anthropic — Agent Skills (engineering)](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
-- [anthropics/skills (referência oficial + spec)](https://github.com/anthropics/skills)
-- [agentskills.io (spec aberto)](https://agentskills.io/home)
+- [anthropics/skills (official reference + spec)](https://github.com/anthropics/skills)
+- [agentskills.io (open spec)](https://agentskills.io/home)
 - [Claude Code — Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
-- [skillpm — package manager npm-nativo](https://github.com/sbroenne/skillpm)
+- [skillpm — npm-native package manager](https://github.com/sbroenne/skillpm)
 - [antfu/skills-npm — install via npm](https://github.com/antfu/skills-npm)
-- [skills (CLI no npm)](https://www.npmjs.com/package/skills)
+- [skills (CLI on npm)](https://www.npmjs.com/package/skills)
