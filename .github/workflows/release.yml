@@ -19,28 +19,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm, registry-url: "https://registry.npmjs.org" }
       - run: pnpm install --frozen-lockfile
-      - name: Debug npm token identity (temporary)
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          echo "--- npmrc that setup-node wrote (sanitized) ---"
-          sed 's/=.\{8\}.*$/=<REDACTED>/' ~/.npmrc || echo "no ~/.npmrc"
-          echo "--- direct registry auth probe via curl ---"
-          code=$(curl -sS -o /tmp/whoami.json -w "%{http_code}" \
-            -H "Authorization: Bearer ${NPM_TOKEN}" \
-            https://registry.npmjs.org/-/whoami)
-          echo "HTTP ${code}"
-          cat /tmp/whoami.json || true
-          echo ""
-          echo "--- rewrite .npmrc with real token (interpolated by bash) ---"
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          echo "--- npm whoami (after rewrite) ---"
-          npm whoami || echo "[FAILED] npm whoami"
-          echo "--- npm org ls llodev ---"
-          npm org ls llodev || echo "[FAILED] npm org ls"
-          echo "--- npm access list packages llodev ---"
-          npm access list packages llodev || echo "[FAILED] npm access list"
-          echo "--- end debug ---"
       - uses: changesets/action@v1
         with:
           version: pnpm run changeset:version
