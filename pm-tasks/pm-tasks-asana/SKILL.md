@@ -72,7 +72,12 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 
 ## Phase 5 — MCP publish
 
-**Prerequisites:** Asana MCP connected via Cursor / Claude Code settings (`claude.ai Asana`). The MCP handles OAuth; the adapter never sees tokens.
+**Prerequisites:** Asana MCP server (`claude.ai Asana`) connected in your agent. The MCP handles OAuth; the adapter never sees tokens. Configuration steps differ per agent — register the same Asana MCP endpoint your agent supports:
+
+- **Claude Code**: `claude mcp add asana -s project -- npx -y claude-ai-asana-mcp` (or follow Anthropic's setup for the hosted `claude.ai Asana` connector).
+- **Cursor / Windsurf / Cline / Roo Code**: add an entry to that agent's MCP settings JSON pointing at the same `claude-ai-asana-mcp` command (envelope identical to the Trello example in `pm-tasks-trello/references/mcp-config.md`).
+- **Codex**: TOML entry under `[mcp_servers.asana]` in `~/.codex/config.toml`.
+- **Other MCP-capable agents**: consult that agent's MCP docs; the server command and OAuth flow are constant.
 
 Strict order: 5.1 read `.asana.json` (full file) → 5.2.5 resolve assignee + custom fields + per-subtask field map → 5.2 preview & approval → 5.3 publish via MCP → 5.4 error handling.
 
