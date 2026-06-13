@@ -24,7 +24,14 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
 
-  pm-tasks/pm-tasks-core: {}
+  pm-tasks/pm-tasks-core:
+    dependencies:
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
 
   pm-tasks/pm-tasks-trello:
     dependencies:
