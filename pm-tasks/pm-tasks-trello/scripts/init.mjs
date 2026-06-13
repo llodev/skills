@@ -64,8 +64,8 @@ async function run() {
 
   if (probe.unauthenticated) {
     printInstructions([
-      "MCP do Trello detectado, mas credenciais ausentes.",
-      "Defina no shell e rode novamente:",
+      "Trello MCP detected, but credentials missing.",
+      "Set them in your shell and re-run:",
       "  export TRELLO_API_KEY=...",
       "  export TRELLO_TOKEN=...",
     ]);
@@ -74,9 +74,9 @@ async function run() {
 
   if (!probe.mcpAvailable) {
     printInstructions([
-      "MCP do Trello não disponível. Configure primeiro:",
+      "Trello MCP not available. Configure it first:",
       "  claude mcp add trello -s project -- npx -y atlassian-trello-mcp",
-      "Detalhes em references/mcp-config.md. Re-rode este init depois.",
+      "See references/mcp-config.md for details. Re-run this init afterward.",
     ]);
     return;
   }
@@ -86,11 +86,11 @@ async function run() {
   const boards = await api.getBoards();
 
   const pickedBoards = await multiSelect(
-    "Boards disponíveis (selecione 1+):",
+    "Available boards (select 1+):",
     boards.map((b) => ({ label: `${b.name} (${b.id})`, value: b })),
   );
   if (!pickedBoards.length) {
-    console.error("nenhum board selecionado, abortando");
+    console.error("no board selected, aborting");
     process.exit(1);
   }
 
@@ -109,7 +109,7 @@ async function run() {
     out.boards.push({ id: b.id, name: b.name, alias, url: b.url });
     const lists = await api.getLists(b.id);
     const pickedLists = await multiSelect(
-      `Listas de "${b.name}":`,
+      `Lists in "${b.name}":`,
       lists.map((l) => ({ label: l.name, value: l })),
     );
     for (const l of pickedLists) {
@@ -136,7 +136,7 @@ async function run() {
   }
 
   const wantAuto = await promptYesNo(
-    "Habilitar modo autônomo? (cria bloco autonomous com defaults conservadores)",
+    "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
   );
   if (wantAuto) {
     out.autonomous = {
@@ -147,23 +147,23 @@ async function run() {
       auditLog: "~/.local/share/llodev/pm-tasks/trello/audit.log",
     };
     printInstructions([
-      "Bloco autonomous adicionado com enabled:false.",
-      "Revise scope.boards e scope.lists no JSON antes de ativar.",
+      "autonomous block added with enabled:false.",
+      "Review scope.boards and scope.lists in the JSON before enabling.",
     ]);
   }
 
   const schema = await loadSchema();
   const valid = await validateConfig(out, schema);
   if (!valid.ok) {
-    console.error("config inválido:", JSON.stringify(valid.errors, null, 2));
+    console.error("invalid config:", JSON.stringify(valid.errors, null, 2));
     process.exit(1);
   }
 
   await writeConfig(outPath, out);
   printInstructions([
-    `Config criado em ${outPath}.`,
-    "Teste rodando no Claude Code: 'crie um card no Trello a partir desse plano'.",
-    "Lembre: segredos vão em env vars ou OS keychain — nunca neste JSON.",
+    `Config written to ${outPath}.`,
+    "Try it in Claude Code: 'create a Trello card from this plan'.",
+    "Reminder: secrets belong in env vars or OS keychain — never in this JSON.",
   ]);
 }
 
