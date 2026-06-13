@@ -1,0 +1,7 @@
+{
+  "name": "@llodev/pm-tasks-clickup",
+  "version": "0.0.0",
+  "private": true,
+  "description": "[SCAFFOLD — NOT IMPLEMENTED] Future ClickUp adapter for @llodev/pm-tasks-*.",
+  "license": "MIT"
+}
