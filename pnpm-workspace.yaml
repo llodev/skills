@@ -1,2 +1,2 @@
 packages:
-  - "pm-tasks-*"
+  - "pm-tasks/*"

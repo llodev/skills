@@ -3,7 +3,7 @@ name: contract-check
 on:
   pull_request:
     paths:
-      - "pm-tasks-core/references/contract.md"
+      - "pm-tasks/pm-tasks-core/references/contract.md"
       - ".changeset/**"
 
 jobs:

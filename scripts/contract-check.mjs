@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Fails the PR if pm-tasks-core/references/contract.md changed without a matching major changeset.
+// Fails the PR if pm-tasks/pm-tasks-core/references/contract.md changed without a matching major changeset.
 import { execSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
 const BASE = process.env.GITHUB_BASE_REF || "main";
-const CONTRACT = "pm-tasks-core/references/contract.md";
+const CONTRACT = "pm-tasks/pm-tasks-core/references/contract.md";
 
 const changed = execSync(`git diff --name-only origin/${BASE}...HEAD`, { encoding: "utf8" }).trim().split("\n");
 if (!changed.includes(CONTRACT)) {

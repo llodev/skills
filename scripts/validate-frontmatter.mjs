@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-import { readFile } from "node:fs/promises";
-import { globSync } from "node:fs";
+import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import matter from "gray-matter";
@@ -8,8 +7,29 @@ import matter from "gray-matter";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REQUIRED = ["name", "description"];
 const RECOMMENDED = ["license", "metadata"];
+const SKIP = new Set(["node_modules", ".git", ".changeset", ".github", "docs", "scripts"]);
+const MAX_DEPTH = 4;
 
-const files = globSync("pm-tasks-*/SKILL.md", { cwd: ROOT });
+async function walk(dir, depth = 0, acc = []) {
+  if (depth > MAX_DEPTH) return acc;
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return acc;
+  }
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      if (SKIP.has(entry.name) || entry.name.startsWith(".")) continue;
+      await walk(path.join(dir, entry.name), depth + 1, acc);
+    } else if (entry.isFile() && entry.name === "SKILL.md") {
+      acc.push(path.relative(ROOT, path.join(dir, entry.name)));
+    }
+  }
+  return acc;
+}
+
+const files = await walk(ROOT);
 
 let failed = false;
 for (const rel of files) {
