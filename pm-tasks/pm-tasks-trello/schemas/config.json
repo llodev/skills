@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llodev.github.io/skills/schemas/pm-tasks-trello.json",
+  "title": "pm-tasks-trello config",
+  "type": "object",
+  "required": ["version", "boards", "lists"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": "1" },
+    "workspace": { "type": "string" },
+    "boards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "alias"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 8 },
+          "name": { "type": "string" },
+          "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "lists": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["boardAlias", "id", "alias"],
+        "additionalProperties": false,
+        "properties": {
+          "boardAlias": { "type": "string" },
+          "id": { "type": "string", "minLength": 8 },
+          "name": { "type": "string" },
+          "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+        }
+      }
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["boardAlias", "id", "alias"],
+        "additionalProperties": false,
+        "properties": {
+          "boardAlias": { "type": "string" },
+          "id": { "type": "string", "minLength": 8 },
+          "name": { "type": "string" },
+          "color": { "type": "string" },
+          "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+        }
+      }
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "alias"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 8 },
+          "username": { "type": "string" },
+          "fullName": { "type": "string" },
+          "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "boardAlias": { "type": "string" },
+        "listAlias": { "type": "string" },
+        "closeListAlias": { "type": "string" }
+      }
+    },
+    "taskAliases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["alias", "id"],
+        "additionalProperties": false,
+        "properties": {
+          "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "id": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "autonomous": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "allow": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "task.create",
+              "checklist.check",
+              "task.close",
+              "task.due-date.set",
+              "task.assignee.add",
+              "task.comment.add"
+            ]
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "boards": { "type": "array", "items": { "type": "string" } },
+            "lists": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "rateLimit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "writesPerMinute": { "type": "integer", "minimum": 1, "maximum": 600 },
+            "commentsPerMinute": { "type": "integer", "minimum": 1, "maximum": 600 }
+          }
+        },
+        "auditLog": { "type": "string" }
+      }
+    }
+  }
+}
