@@ -1,0 +1,42 @@
+{
+  "name": "@llodev/pm-tasks-trello",
+  "version": "0.1.0",
+  "description": "Trello adapter for the @llodev/pm-tasks-* family. Use when the user mentions Trello (criar card, publicar no Trello, post to Trello, --publish, marcar checklist no card, fechar card, comentar no card) or wants to publish a plan as Trello cards. Modes: paste-ready (no MCP needed), MCP publish (via atlassian-trello-mcp), autonomous (sentinel [autonomous] / --auto). Implements 6 CRUD verbs from @llodev/pm-tasks-core/references/contract.md. REQUIRES: @llodev/pm-tasks-core installed (skillpm / Claude Code marketplace cascade auto; Vercel CLI users install manually).",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/pm-tasks/pm-tasks-trello",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "pm-tasks/pm-tasks-trello"
+  },
+  "files": [
+    "SKILL.md",
+    "schemas",
+    "references",
+    "anti-patterns",
+    "scripts",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "agent-skill",
+    "trello",
+    "plan-to-tasks",
+    "pm-tools",
+    "atlassian-trello-mcp"
+  ],
+  "type": "module",
+  "bin": {
+    "pm-tasks-trello-init": "./scripts/init.mjs"
+  },
+  "dependencies": {
+    "@llodev/pm-tasks-core": "^0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
