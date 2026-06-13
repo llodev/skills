@@ -18,9 +18,14 @@ node_modules/
 # Per-tool local config overrides (must never be committed)
 .trello.json
 .asana.json
-.claude/
-.mcp.json
 
 # skills
 .agents/
 skills-lock.json
+
+# dev
+.claude/
+docs/plans/
+docs/specs/
+docs/tracking/
+.mcp.json
