@@ -31,7 +31,7 @@
     "pm-tasks-trello-init": "./scripts/init.mjs"
   },
   "dependencies": {
-    "@llodev/pm-tasks-core": "^0.1.0"
+    "@llodev/pm-tasks-core": "workspace:^"
   },
   "publishConfig": {
     "access": "public"
