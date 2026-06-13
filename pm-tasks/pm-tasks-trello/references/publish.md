@@ -5,26 +5,26 @@
 Before any write MCP call, show:
 
 ```
-Pronto para criar no Trello:
+Ready to create on Trello:
 
   Board : [boardName]
-  Lista : [listName]
-  Título: [card title]
+  List  : [listName]
+  Title : [card title]
   Checklists:
-    Pre-flight         (N itens)
-    Block A — [nome]   (N itens)
+    Pre-flight         (N items)
+    Block A — [name]   (N items)
     ...
-    Verification       (N itens)
-  Labels: [names] → IDs: [idLabels resumidos ou contagem]
-  Membro : [fullName] ([username]) → [memberId]
+    Verification       (N items)
+  Labels: [names] → IDs: [idLabels summary or count]
+  Member: [fullName] ([username]) → [memberId]
   Due date: [date or omitted]
 
-Criar agora? [s] confirma · [n] cancela · [e] editar título/lista/membro/labels antes
+Create now? [y] confirm · [n] cancel · [e] edit title/list/member/labels first
 ```
 
-- **s / confirma** → proceed to publish sequence
-- **n / cancela** → stop; paste-ready output remains the artifact
-- **e / editar** → adjust title/board/list/due date/member/labels, show preview again
+- **y / confirm** → proceed to publish sequence
+- **n / cancel** → stop; paste-ready output remains the artifact
+- **e / edit** → adjust title/board/list/due date/member/labels, show preview again
 
 **NEVER** call write MCP tools (`create_card`, `trello_create_checklist`, etc.) before confirmation.
 
@@ -85,11 +85,11 @@ Only if Step 1 omitted `idLabels` / `idMembers` but Phase 5.2.5 resolved new val
 **Step 4 — Confirm**
 
 ```
-✓ Card criado: [shortUrl from create_card]
+✓ Card created: [shortUrl from create_card]
   Board : [board.name] → [listName]
-  Membro: [fullName or "não atribuído"]
-  Checklists: N criadas, M itens no total
-  Labels: [names aplicadas] (omitidas: [names sem match em labels[]])
+  Member: [fullName or "unassigned"]
+  Checklists: N created, M items total
+  Labels: [names applied] (omitted: [names with no match in labels[]])
 ```
 
 ### Error handling
@@ -97,8 +97,8 @@ Only if Step 1 omitted `idLabels` / `idMembers` but Phase 5.2.5 resolved new val
 | Failure                               | Action                                                                                                |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | MCP not connected                     | Abort Phase 5; deliver paste-ready output (Phase 4); check MCP server config and `TRELLO_*` env vars  |
-| `board.id` / `listId` not resolved    | Re-run § **MCP config discovery**; do not guess IDs                                                   |
-| Label name not in `.trello.json`      | Skip that label; continue; report under **omitidas**; do not auto-create labels                       |
+| `boardId` / `listId` not resolved     | Re-run § **MCP config discovery**; do not guess IDs                                                   |
+| Label name not in `.trello.json`      | Skip that label; continue; report under **omitted**; do not auto-create labels                        |
 | Member not in `members[]`             | Stop before create; list valid usernames                                                              |
 | Card creation fails                   | Abort; report error; no checklists created                                                            |
 | Checklist creation fails mid-sequence | Report card URL; which checklists succeeded vs "add manually"                                         |

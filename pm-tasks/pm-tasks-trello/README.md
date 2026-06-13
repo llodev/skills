@@ -40,9 +40,9 @@ Walk through the prompts. Output: `.trello.json` (repo) or `~/.config/llodev/pm-
 
 ## Use
 
-- `"publicar esse plano como cards no Trello"` → publish flow
-- `"marca o item 3 da task X no Trello"` → CRUD op
-- `"fecha o card Y"` → close
+- `"publish this plan as Trello cards"` → publish flow
+- `"check item 3 on task X in Trello"` → CRUD op
+- `"close card Y"` → close
 - `"[autonomous] create task in trello from plan @docs/plans/X.md"` → autonomous (requires `autonomous.enabled: true` in config)
 
 ## License

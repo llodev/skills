@@ -17,13 +17,13 @@ npx skills add llodev/skills/pm-tasks-asana
 
 Asana uses OAuth via the `claude.ai Asana` MCP. If you've already connected your Asana account in Cursor or Claude Code settings, you're done — no extra step.
 
-Claude Code:
+For any MCP-capable agent (Claude Code, Cursor, Codex, Windsurf, Cline, Roo Code):
 
-1. Open Cursor / Claude Code settings → MCP.
-2. Enable `claude.ai Asana`.
+1. Open the agent's MCP settings.
+2. Enable / register `claude.ai Asana` (or your agent's equivalent Asana MCP).
 3. Approve the OAuth flow in your browser.
 
-Verify with `claude mcp list` — `claude.ai Asana` should appear as authenticated.
+In Claude Code, verify with `claude mcp list` — `claude.ai Asana` should appear as authenticated. Other agents have their own listing commands; see your agent's MCP docs.
 
 ## Setup the config
 
@@ -40,10 +40,10 @@ The PAT is **only** used by `init`. The MCP itself uses OAuth — never put toke
 
 ## Use
 
-- `"publicar esse plano como tasks no Asana"` → publish flow (parent + subtasks)
-- `"marca a subtask 3 da task X no Asana"` → CRUD op
-- `"fecha a task Y"` → close
-- `"comenta na task X: ..."` → comment
+- `"publish this plan as Asana tasks"` → publish flow (parent + subtasks)
+- `"check subtask 3 on task X in Asana"` → CRUD op
+- `"close task Y"` → close
+- `"comment on task X: ..."` → comment
 - `"[autonomous] create task in asana from plan @docs/plans/X.md"` → autonomous (requires `autonomous.enabled: true` in config)
 
 ## Asana-specific notes

@@ -5,8 +5,8 @@ Every `pm-tasks-<tool>` adapter exposes `npx @llodev/pm-tasks-<tool> init` and f
 ## Step 1 — Scope prompt
 
 ```
-Onde criar o config?
-  > local    → ./.{tool}.json (override por repo)
+Where should the config live?
+  > local    → ./.{tool}.json (per-repo override)
     global   → ~/.config/llodev/pm-tasks/{tool}.json
 ```
 
@@ -24,17 +24,17 @@ Adapter probes the tool's MCP with the lightest read operation:
 
 Three outcomes:
 
-| Outcome | Action |
-|---|---|
-| MCP responded | Go to Step 3A (MCP-assisted). |
+| Outcome                        | Action                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| MCP responded                  | Go to Step 3A (MCP-assisted).                                             |
 | MCP exists but unauthenticated | Print exact env var names (`LLODEV_PM_TASKS_<TOOL>_<NAME>`) to set, exit. |
-| MCP not configured | Print MCP setup instructions for the adapter, go to Step 3B (scaffold). |
+| MCP not configured             | Print MCP setup instructions for the adapter, go to Step 3B (scaffold).   |
 
 ## Step 3A — MCP-assisted (happy path)
 
 Read-only MCP calls enumerate workspace → boards/projects → lists/sections → labels → members. User picks via interactive prompts (multi-select for arrays).
 
-Final prompt: *"Habilitar modo autônomo? (cria bloco `autonomous` com defaults conservadores: 6 verbos, rate 30/min, sem hard-coded scope — você adiciona depois)"* — default `n`.
+Final prompt: *"Enable autonomous mode? (adds an `autonomous` block with conservative defaults: 6 verbs, rate 30/min, no hard-coded scope — you add it afterwards)"* — default `n`.
 
 Write the config; validate against `schemas/config.json`; exit.
 
@@ -48,7 +48,7 @@ Print:
 
 - Path written
 - Schema validation result
-- Sample trigger prompt the user can paste (`"crie um card no <tool> a partir desse plano"`)
+- Sample trigger prompt the user can paste (`"create a card on <tool> from this plan"`)
 - Reminder: secrets go in env vars or OS keychain, NEVER in this JSON.
 
 ## Implementation API (consumed by adapters)

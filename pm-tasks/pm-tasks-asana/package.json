@@ -1,7 +1,7 @@
 {
   "name": "@llodev/pm-tasks-asana",
-  "version": "0.1.0",
-  "description": "Asana adapter for the @llodev/pm-tasks-* family. Use when the user mentions Asana (criar task no Asana, publicar no Asana, post to Asana, add comment in Asana, --publish-asana, fechar task, marcar subtask) or wants to publish a plan as Asana tasks with subtasks. Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous (sentinel [autonomous] / --auto). Implements 6 CRUD verbs from @llodev/pm-tasks-core/references/contract.md mapped to Asana (parent task + subtasks, custom fields, sections, multi-assignee). REQUIRES: @llodev/pm-tasks-core installed (skillpm / Claude Code marketplace cascade auto; Vercel CLI users install manually).",
+  "version": "1.0.0",
+  "description": "Asana adapter for the @llodev/pm-tasks-* family. Use when the user mentions Asana (create Asana task, publish to Asana, post to Asana, add comment in Asana, --publish-asana, close task, check subtask) or wants to publish a plan as Asana tasks with subtasks. Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous (sentinel [autonomous] / --auto). Implements 6 CRUD verbs from @llodev/pm-tasks-core/references/contract.md mapped to Asana (parent task + subtasks, custom fields, sections, multi-assignee). REQUIRES: @llodev/pm-tasks-core installed (skillpm / Claude Code marketplace cascade auto; Vercel CLI users install manually).",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/pm-tasks/pm-tasks-asana",
   "repository": {

@@ -32,11 +32,11 @@ Use when preview looks wrong **or** the user says paste mangled formatting. **Au
 
 **NEVER** pass label **names** to `create_card` — only **`idLabels`** (and **`idMembers`** with member IDs) resolved from `.trello.json`. **Why:** the API rejects names; wrong IDs attach to the wrong board.
 
-**NEVER** guess `board.id`, `listId`, `labels[].id`, or `members[].id` when `.trello.json` exists. **Why:** stale or invented IDs put cards on the wrong board or column; refresh via `mcpRefresh` tools in the config file.
+**NEVER** guess `boardId`, `listId`, `labels[].id`, or `members[].id` when `.trello.json` exists. **Why:** stale or invented IDs put cards on the wrong board or column; refresh via the discovery flow in [`../references/mcp-config.md`](../references/mcp-config.md) § **MCP config discovery**.
 
-**NEVER** auto-create labels with `trello_create_label` during publish unless the user explicitly asks. **Why:** pollutes the board palette; omit unknown names and report **omitidas**.
+**NEVER** auto-create labels with `trello_create_label` during publish unless the user explicitly asks. **Why:** pollutes the board palette; omit unknown names and report **omitted**.
 
-**NEVER** commit `currentUser` (or any per-developer member id) into `.trello.json`. **Why:** the file is shared in git; use `cardDefaults.member: "me"` and resolve via `trello_get_member` at Phase 5.2.5 with the caller's `TRELLO_TOKEN`.
+**NEVER** commit the active token user (or any per-developer member id) into `members[]` in `.trello.json`. **Why:** the file is shared in git; resolve "me" at runtime via `trello_get_member({ memberId: "me" })` at Phase 5.2.5 — each developer's `TRELLO_TOKEN` resolves to themselves without editing the repo.
 
 ---
 

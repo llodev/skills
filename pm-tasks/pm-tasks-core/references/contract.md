@@ -18,17 +18,17 @@ Multiple plausible candidates → list them, recommend one default, confirm befo
 
 Map sections by intent (labels vary across languages and authoring styles):
 
-| Concept | Common labels |
-|---|---|
-| Goal | `Goal`, `Objetivo`, `Purpose` |
-| Spec refs | `Spec:`, `Design doc`, links to spec files |
-| Prerequisites | `Pre-flight`, `Pré-requisito`, `Baseline check` |
-| File map | `File map`, `Files created/modified`, `Deliverables` |
-| Tasks | `## Task N`, `### Task N`, numbered blocks |
-| Task groups | `## Block A`, thematic headers grouping tasks |
+| Concept       | Common labels                                              |
+| ------------- | ---------------------------------------------------------- |
+| Goal          | `Goal`, `Objective`, `Purpose`                             |
+| Spec refs     | `Spec:`, `Design doc`, links to spec files                 |
+| Prerequisites | `Pre-flight`, `Requirements`, `Baseline check`             |
+| File map      | `File map`, `Files created/modified`, `Deliverables`       |
+| Tasks         | `## Task N`, `### Task N`, numbered blocks                 |
+| Task groups   | `## Block A`, thematic headers grouping tasks              |
 | Done criteria | `Done when`, `Self-review checklist`, `Final verification` |
-| Out of scope | `Out of scope`, `Fora de escopo`, `What comes after` |
-| Next step | `What comes after`, `Phase N+1`, `Next phase` |
+| Out of scope  | `Out of scope`, `What comes after`                         |
+| Next step     | `What comes after`, `Phase N+1`, `Next phase`              |
 
 Implicit sections → infer from structure. Tasks-only inputs → derive goal from first block, derive verification from last tasks, tag everything inferred with `(inferred)`.
 
@@ -47,12 +47,12 @@ Produce blocks in the order defined in [`generic-card.md`](generic-card.md):
 
 The core resolves and exposes these decisions before Phase 4 begins. Adapters reference them by name:
 
-| Decision | Values | Default |
-|---|---|---|
-| `scope` | `one-card-per-phase`, `parent+children`, `single-card` | `one-card-per-phase` |
-| `audience` | `solo`, `squad`, `dense-board` | `solo` |
-| `fidelity` | `verbatim`, `compressed` | `compressed` |
-| `language` | `pt`, `en`, `mixed` | detected from plan |
+| Decision   | Values                                                 | Default              |
+| ---------- | ------------------------------------------------------ | -------------------- |
+| `scope`    | `one-card-per-phase`, `parent+children`, `single-card` | `one-card-per-phase` |
+| `audience` | `solo`, `squad`, `dense-board`                         | `solo`               |
+| `fidelity` | `verbatim`, `compressed`                               | `compressed`         |
+| `language` | `pt`, `en`, `mixed`                                    | detected from plan   |
 
 ## CRUD verb vocabulary
 

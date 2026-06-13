@@ -63,7 +63,7 @@ If you show a **sample** checklist to the user outside the paste block, plain `�
 
 Trello labels are **board-scoped** and identified by **ID** in the API. When `.trello.json` exists, use only label **names** listed in `labels[]` — do not invent labels or use empty-name color stubs from the board.
 
-For paste output, map generic card labels to the board's catalog via `agentHints.labelsFromPath` and `labelsFromPlanKeywords`. If a generic label has no board match (e.g. `phase-2`, `ddd`), omit it and list under **omitidas** in the wrapper — do not call `trello_create_label` unless the user explicitly asks.
+For paste output, the agent infers candidate labels from the generic card content (file paths it touches, plan keywords, the LABELS block) and matches them against `labels[]` by `name` or `alias`. If a candidate has no match in `labels[]` (e.g. `phase-2`, `ddd`), omit it and list under **omitted** in the wrapper — do not call `trello_create_label` unless the user explicitly asks.
 
 Apply **3–5** named labels max (board gets noisy beyond that).
 

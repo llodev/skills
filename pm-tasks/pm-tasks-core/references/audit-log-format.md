@@ -4,24 +4,24 @@ Append-only JSONL at `~/.local/share/llodev/pm-tasks/<tool>/audit.log` (configur
 
 ## Required fields (every entry)
 
-| Field | Type | Notes |
-|---|---|---|
-| `ts` | string | ISO 8601 with timezone |
-| `verb` | string | one of the 6 CRUD verbs |
-| `tool` | string | `trello`, `asana`, etc. |
-| `ok` | boolean | success of the operation |
-| `session` | string | caller-provided session id (defaults to a random short id when missing) |
+| Field     | Type    | Notes                                                                   |
+| --------- | ------- | ----------------------------------------------------------------------- |
+| `ts`      | string  | ISO 8601 with timezone                                                  |
+| `verb`    | string  | one of the 6 CRUD verbs                                                 |
+| `tool`    | string  | `trello`, `asana`, etc.                                                 |
+| `ok`      | boolean | success of the operation                                                |
+| `session` | string  | caller-provided session id (defaults to a random short id when missing) |
 
 ## Verb-dependent fields
 
-| Verb | Additional |
-|---|---|
-| `task.create` | `id`, `url`, `name`, `clientToken?`, `scope.{board,list}` |
-| `checklist.check` | `id`, `item` |
-| `task.close` | `id` |
-| `task.due-date.set` | `id`, `due` |
-| `task.assignee.add` | `id`, `userAlias` |
-| `task.comment.add` | `id`, `commentId`, `clientToken?` |
+| Verb                | Additional                                                |
+| ------------------- | --------------------------------------------------------- |
+| `task.create`       | `id`, `url`, `name`, `clientToken?`, `scope.{board,list}` |
+| `checklist.check`   | `id`, `item`                                              |
+| `task.close`        | `id`                                                      |
+| `task.due-date.set` | `id`, `due`                                               |
+| `task.assignee.add` | `id`, `userAlias`                                         |
+| `task.comment.add`  | `id`, `commentId`, `clientToken?`                         |
 
 ## Example
 

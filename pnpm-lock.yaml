@@ -42,6 +42,10 @@ importers:
         specifier: workspace:^
         version: link:../pm-tasks-core
 
+  pm-tasks/pm-tasks-bitrix24: {}
+
+  pm-tasks/pm-tasks-clickup: {}
+
   pm-tasks/pm-tasks-core:
     dependencies:
       ajv:
@@ -50,6 +54,16 @@ importers:
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
+
+  pm-tasks/pm-tasks-jira: {}
+
+  pm-tasks/pm-tasks-linear: {}
+
+  pm-tasks/pm-tasks-monday: {}
+
+  pm-tasks/pm-tasks-notion: {}
+
+  pm-tasks/pm-tasks-todoist: {}
 
   pm-tasks/pm-tasks-trello:
     dependencies:
