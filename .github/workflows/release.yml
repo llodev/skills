@@ -19,6 +19,18 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm, registry-url: "https://registry.npmjs.org" }
       - run: pnpm install --frozen-lockfile
+      - name: Debug npm token identity (temporary)
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          echo "--- npm whoami ---"
+          npm whoami || echo "[FAILED] npm whoami"
+          echo "--- npm org ls llodev ---"
+          npm org ls llodev || echo "[FAILED] npm org ls"
+          echo "--- npm access list packages llodev ---"
+          npm access list packages llodev || echo "[FAILED] npm access list"
+          echo "--- end debug ---"
       - uses: changesets/action@v1
         with:
           version: pnpm run changeset:version
