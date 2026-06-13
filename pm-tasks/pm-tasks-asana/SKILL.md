@@ -64,7 +64,7 @@ MCP publish sequence:
 
 Skip 5.2 preview & approval. Apply autonomous-mode contract from [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Audit log entries per [`../pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
 
-Asana-specific autonomous scope: `autonomous.scope.projects[]` + `autonomous.scope.sections[]` must include the target GIDs. Any custom-field write must be in `autonomous.allow` (`task.create` covers create-time field set; ongoing field changes are out of scope for v0.1).
+Asana-specific autonomous scope: `autonomous.scope.projects[]` + `autonomous.scope.sections[]` must include the target GIDs. Any custom-field write must be in `autonomous.allow` (`task.create` covers create-time field set; ongoing field changes are out of scope for v1.x).
 
 ## Phase 6 — CRUD operations (existing tasks)
 
@@ -80,6 +80,37 @@ For verbs other than `task.create`, jump directly to the operation. Verb → MCP
 | `task.comment.add` | `add_comment` (story) | adds a comment story to the task |
 
 `<task-ref>` resolution: accept Asana permalinks (`https://app.asana.com/0/<project>/<task>`), bare GIDs, or aliases from `.asana.json` `taskAliases[]`.
+
+## Result envelope
+
+Every verb returns the core contract shape (see [`../pm-tasks-core/references/contract.md`](../pm-tasks-core/references/contract.md) §Result envelope):
+
+```json
+{
+  "ok": true,
+  "verb": "task.create",
+  "tool": "asana",
+  "ref": { "id": "<gid>", "url": "https://app.asana.com/0/<project>/<gid>", "alias": "<optional>" },
+  "details": { /* Asana-specific (see table below) */ }
+}
+```
+
+Asana-specific `details` per verb:
+
+| Verb | `details` fields |
+|---|---|
+| `task.create` | `{ parentGid, subtaskGids[], projectGid, sectionGid?, customFields[]? }` |
+| `checklist.check` | `{ subtaskGid, completed: true }` |
+| `task.close` | `{ parentGid, completed: true }` |
+| `task.due-date.set` | `{ taskGid, due_on }` |
+| `task.assignee.add` | `{ taskGid, assignee, followers[]? }` (primary vs follower split) |
+| `task.comment.add` | `{ taskGid, storyGid }` |
+
+On failure: `{ ok: false, verb, tool, error: { code, message, retriable } }`. Common codes: `FORBIDDEN_VERB`, `OUT_OF_SCOPE`, `NOT_FOUND`, `RATE_LIMITED`, `PARTIAL_CREATE` (subtask failed mid-create — see [`../pm-tasks-core/references/contract.md`](../pm-tasks-core/references/contract.md) §Partial-create recovery).
+
+## Anti-patterns
+
+See [`anti-patterns/asana.md`](anti-patterns/asana.md) — paste health, custom-field rules, GID requirements, partial-create handling.
 
 ## Standalone fallback
 
