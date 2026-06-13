@@ -1,0 +1,62 @@
+---
+name: pm-tasks-trello
+description: 'Trello adapter for the @llodev/pm-tasks-* family. Use when the user mentions Trello, asks to "criar card", "publicar no Trello", "post to Trello", "publish", or uses --publish; OR for CRUD on existing cards (marcar checklist, fechar card, mudar due-date, adicionar membro, comentar); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Modes: paste-ready (no MCP needed), MCP publish (via atlassian-trello-mcp), autonomous (write-through with allowlist). Implements 6 CRUD verbs (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add) from pm-tasks/pm-tasks-core/references/contract.md. Requires @llodev/pm-tasks-core installed.'
+license: MIT
+metadata:
+  version: 0.1.0
+  tags: [agent-skill, trello, plan-to-tasks, pm-tools]
+  family: pm-tasks
+  role: adapter
+  tool: trello
+compatibility:
+  agents: [claude-code, cursor, codex, windsurf, cline, roo-code]
+---
+
+# pm-tasks-trello
+
+Adapter for Trello within the `@llodev/pm-tasks-*` family. Use the core skill's extraction phases, then apply Trello formatting and optionally publish/operate via the `atlassian-trello-mcp` MCP server.
+
+## Routing
+
+| Mode | Trigger | Path |
+|---|---|---|
+| Paste-only | "format as Trello card" without MCP intent | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
+| MCP publish | "publicar no Trello", "criar no Trello", "--publish" | Phase 3 → Phase 4 → Phase 5 (publish via MCP) |
+| Autonomous | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1` | Phase 3 → Phase 4 → Phase 5b (write-through, no preview) |
+| CRUD ops | "marca item N da task X", "fecha card Y", "adiciona João na task Z", "comenta na task X" | Phase 6 (operations, direct verb dispatch) |
+
+## Phase 4 — Trello formatting
+
+**MANDATORY — READ ENTIRE FILE** [`references/format.md`](references/format.md) before producing any Trello-specific output. Then apply [`anti-patterns/tools.md`](anti-patterns/tools.md) § Trello.
+
+## Phase 5 — MCP publish
+
+**Prerequisites:** `atlassian-trello-mcp` configured (see [`references/mcp-config.md`](references/mcp-config.md)). Env vars `TRELLO_API_KEY` + `TRELLO_TOKEN` in shell.
+
+Strict order: 5.1 config discovery → 5.2.5 resolve labels/member → 5.2 preview & approval → 5.3 publish via MCP → 5.4 error handling.
+
+Full sequence in [`references/publish.md`](references/publish.md).
+
+## Phase 5b — Autonomous
+
+Skip 5.2 preview & approval. Apply autonomous-mode contract from [`pm-tasks/pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Tool-specific overlay in [`references/autonomous.md`](references/autonomous.md). Audit log entries per [`pm-tasks/pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
+
+## Phase 6 — CRUD operations (existing cards)
+
+For verbs other than `task.create`, jump directly to the operation. **MANDATORY — READ ENTIRE FILE** [`references/operations.md`](references/operations.md) which lists verb → MCP tool mapping and `<task-ref>` resolution for Trello URLs/IDs.
+
+## Standalone fallback
+
+If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (title + checklist items) and produce a paste-ready Trello card from this content alone. Quality is degraded — no scope/audience/fidelity inference. Print: *"Instale `@llodev/pm-tasks-core` para fluxo completo."*
+
+## Config
+
+Lookup order: `<git-root>/.trello.json` → `~/.config/llodev/pm-tasks/trello.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — only env vars / keychain.
+
+## Init
+
+```
+npx @llodev/pm-tasks-trello init
+```
+
+See [`pm-tasks/pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-ux.md) for the shared flow.
