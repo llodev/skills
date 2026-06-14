@@ -8,30 +8,30 @@
 
 # llodev/skills
 
-> Monorepo of [Agent Skills](https://agentskills.io) for Claude Code, Cursor, Codex, Windsurf, and any agent that speaks the open Skills spec.
+> Monorepo de [Agent Skills](https://agentskills.io) para Claude Code, Cursor, Codex, Windsurf y cualquier agente que hable la spec abierta de Skills.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
-Each skill in this repo ships as an **npm package**, a **Claude Code plugin**, and a **Vercel `skills add` entry**. Pick whichever channel your agent speaks — the skills are identical across all three.
+Cada skill de este repositorio se distribuye como **paquete npm**, **plugin de Claude Code** y **entrada `skills add` de Vercel**. Elige el canal que hable tu agente — las skills son idénticas en los tres.
 
-## Install
+## Instalación
 
-Pick the channel that matches your agent.
+Elige el canal que encaje con tu agente.
 
-**Claude Code (or any agent supporting the marketplace):**
+**Claude Code (o cualquier agente que soporte el marketplace):**
 
 ```bash
 /plugin marketplace add llodev/skills
 /plugin install pm-tasks-core pm-tasks-trello pm-tasks-asana
 ```
 
-**npm (skillpm, skills-npm, or `node_modules` bundling):**
+**npm (skillpm, skills-npm o bundling en `node_modules`):**
 
 ```bash
-npm i @llodev/pm-tasks    # meta — installs the whole family via peerDeps
+npm i @llodev/pm-tasks    # meta — instala toda la familia vía peerDeps
 ```
 
 **Vercel `skills add`:**
@@ -40,15 +40,15 @@ npm i @llodev/pm-tasks    # meta — installs the whole family via peerDeps
 npx skills add llodev/skills/pm-tasks/pm-tasks-trello
 ```
 
-See the [publishing guide](docs/publishing-guide.md) for how the three channels work together.
+Consulta la [guía de publicación](docs/publishing-guide.md) para ver cómo se conectan los tres canales.
 
-## Catalog
+## Catálogo
 
-### `pm-tasks-*` — Project Management adapters
+### `pm-tasks-*` — adaptadores de Project Management
 
-Turn implementation plans into PM tasks (Trello, Asana, …) and operate them via paste, MCP publish, or autonomous write-through.
+Convierten planes de implementación en tareas de PM (Trello, Asana, …) y las operan vía paste, MCP publish o write-through autónomo.
 
-| Package                     | Status      | Source                                                     | npm                             | Vercel CLI                                              |
+| Paquete                     | Estado      | Fuente                                                     | npm                             | Vercel CLI                                              |
 | --------------------------- | ----------- | ---------------------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
 | `@llodev/pm-tasks` _(meta)_ | ✅ v1.1.2   | [pm-tasks/pm-tasks/](pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`        | —                                                       |
 | `@llodev/pm-tasks-core`     | ✅ v1.1.1   | [pm-tasks/pm-tasks-core/](pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`   | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
@@ -63,54 +63,54 @@ Turn implementation plans into PM tasks (Trello, Asana, …) and operate them vi
 | `pm-tasks-todoist`          | 🔒 scaffold | [pm-tasks/pm-tasks-todoist/](pm-tasks/pm-tasks-todoist/)   | —                               | —                                                       |
 
 > [!NOTE]
-> `scaffold` skills are reserved namespaces with a placeholder `SKILL.md`. Their description tells agents NOT to activate until a real adapter ships.
+> Las skills marcadas como `scaffold` son namespaces reservados con un `SKILL.md` placeholder. Su descripción instruye a los agentes a NO activarse hasta que llegue un adaptador real.
 
-## Agent compatibility
+## Compatibilidad de agentes
 
-Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
+Cada skill publicada declara qué agentes soporta en el campo `compatibility.agents` de su frontmatter. La matriz actual:
 
-> **Claude Code** · **Cursor** · **Codex** · **Windsurf** · **Cline** · **Roo Code** (Gemini CLI partial via translation layer)
+> **Claude Code** · **Cursor** · **Codex** · **Windsurf** · **Cline** · **Roo Code** (Gemini CLI parcial vía capa de traducción)
 
-## Repository layout
+## Layout del repositorio
 
 ```
 .
-├── pm-tasks/                  Family folder — one directory per family member
-│   ├── pm-tasks-core/         Shared extraction + CRUD vocabulary
-│   ├── pm-tasks-asana/        Asana adapter (parent + subtasks, custom fields, sections)
-│   ├── pm-tasks-trello/       Trello adapter (boards, lists, labels, members)
-│   └── pm-tasks-<member>/     Reserved scaffolds (Jira, Linear, Notion, …)
-├── scripts/                   Validators, contract checks, skill-judge baseline gate
+├── pm-tasks/                  Carpeta de la familia — un directorio por miembro de la familia
+│   ├── pm-tasks-core/         Extracción compartida + vocabulario CRUD
+│   ├── pm-tasks-asana/        Adaptador Asana (parent + subtasks, custom fields, sections)
+│   ├── pm-tasks-trello/       Adaptador Trello (boards, lists, labels, members)
+│   └── pm-tasks-<member>/     Scaffolds reservados (Jira, Linear, Notion, …)
+├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
 ├── docs/                      publishing-guide.md (gitignored: plans/, tracking/)
-└── .changeset/                Release intent records (Changesets workflow)
+└── .changeset/                Registros de intención de release (workflow Changesets)
 ```
 
-## Local development
+## Desarrollo local
 
 ```bash
-make hooks       # one-time — installs lefthook (prettier on staged, gitleaks, Conventional Commits)
-make validate    # frontmatter + schema + link + locale-parity checks
-make help        # full target list
+make hooks       # una vez — instala lefthook (prettier sobre staged, gitleaks, Conventional Commits)
+make validate    # checks de frontmatter + schema + links + paridad de locale
+make help        # lista completa de targets
 ```
 
 > [!TIP]
-> The `Makefile` is the canonical entry point — shorter than remembering pnpm script names, and the only one that's enforced by lefthook on commit.
+> El `Makefile` es el punto de entrada canónico — más corto que recordar los nombres de scripts de pnpm y el único exigido por lefthook en el commit.
 
-Releases follow the [Changesets](https://github.com/changesets/changesets) workflow — record intent with `make changeset`, apply with `make release-version`, publish with `make release-publish`. See [`.changeset/README.md`](.changeset/README.md) for a step-by-step.
+Las releases siguen el workflow [Changesets](https://github.com/changesets/changesets) — registra la intención con `make changeset`, aplica con `make release-version`, publica con `make release-publish`. Consulta [`.changeset/README.md`](.changeset/README.md) para el paso a paso.
 
 ## Roadmap
 
-Future families will follow the same nested layout `<family>/<family>-<member>/`:
+Las familias futuras seguirán el mismo layout anidado `<family>/<family>-<member>/`:
 
-- **`ts-ddd-*`** — Domain-Driven Design building blocks for TypeScript codebases (entities, value objects, use cases, repositories, controllers).
-- Promote the `pm-tasks-*` scaffolds to real adapters as MCP servers land for each tool.
+- **`ts-ddd-*`** — bloques de Domain-Driven Design para codebases TypeScript (entidades, value objects, use cases, repositorios, controllers).
+- Promover los scaffolds `pm-tasks-*` a adaptadores reales conforme aterricen los servidores MCP para cada herramienta.
 
 ## Docs
 
-- [Publishing guide](docs/publishing-guide.md) — how the three distribution channels work.
-- [Changesets workflow](.changeset/README.md) — record → version → publish.
-- Per-family deep dives live in each member's `SKILL.md` and `references/`.
+- [Guía de publicación](docs/publishing-guide.md) — cómo se conectan los tres canales de distribución.
+- [Workflow Changesets](.changeset/README.md) — registrar → versionar → publicar.
+- Los deep dives de cada familia viven en el `SKILL.md` y `references/` de cada miembro.
 
-## License
+## Licencia
 
-MIT — see [LICENSE](LICENSE).
+MIT — consulta [LICENSE](LICENSE).
