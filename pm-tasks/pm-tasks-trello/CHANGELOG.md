@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-trello
 
+## 1.1.2
+
+### Patch Changes
+
+- Document recurring gotchas observed during v1.0.x dogfood: Asana subtasks not inheriting custom fields, MCP `get_task` missing activity stories (UI is the source of truth), Trello query-string concat bug class, `create_card` ignoring `idMembers`, and `add_member_to_card` false-error returns.
+
 ## 1.1.1
 
 ### Patch Changes
