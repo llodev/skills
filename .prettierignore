@@ -1,0 +1,19 @@
+# dependencies & build artifacts
+node_modules/
+dist/
+build/
+out/
+.next/
+.turbo/
+coverage/
+
+# typescript build state
+**/*.tsbuildinfo
+
+# env (never format, may contain secrets)
+.env
+.env.*
+!.env.example
+
+# lockfile (prettier already skips by default; explicit for clarity)
+pnpm-lock.yaml

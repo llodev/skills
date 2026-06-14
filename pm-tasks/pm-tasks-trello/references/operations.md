@@ -4,14 +4,14 @@ Maps each verb from [`pm-tasks/pm-tasks-core/references/crud-vocabulary.md`](../
 
 ## Verb → MCP tool
 
-| Verb | MCP tool | Params (key ones) |
-|---|---|---|
-| `task.create` | `create_card` | `listId`, `name`, `desc`, `pos`, `due`, `labelIds[]`, `memberIds[]`, optional checklist via follow-up `trello_create_checklist` + `trello_create_check_item` |
-| `checklist.check` | `trello_update_check_item` | `cardId`, `checkItemId`, `state: "complete"` |
-| `task.close` | `move_card` | `cardId`, `listId` = config `defaults.closeListAlias` resolved |
-| `task.due-date.set` | `update_card` | `cardId`, `due` (ISO 8601 or `null`) |
-| `task.assignee.add` | `trello_add_member_to_card` | `cardId`, `memberId` |
-| `task.comment.add` | `trello_add_comment` | `cardId`, `text` (prefixed with `[ct:<clientToken>]` if provided) |
+| Verb                | MCP tool                    | Params (key ones)                                                                                                                                            |
+| ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `task.create`       | `create_card`               | `listId`, `name`, `desc`, `pos`, `due`, `labelIds[]`, `memberIds[]`, optional checklist via follow-up `trello_create_checklist` + `trello_create_check_item` |
+| `checklist.check`   | `trello_update_check_item`  | `cardId`, `checkItemId`, `state: "complete"`                                                                                                                 |
+| `task.close`        | `move_card`                 | `cardId`, `listId` = config `defaults.closeListAlias` resolved                                                                                               |
+| `task.due-date.set` | `update_card`               | `cardId`, `due` (ISO 8601 or `null`)                                                                                                                         |
+| `task.assignee.add` | `trello_add_member_to_card` | `cardId`, `memberId`                                                                                                                                         |
+| `task.comment.add`  | `trello_add_comment`        | `cardId`, `text` (prefixed with `[ct:<clientToken>]` if provided)                                                                                            |
 
 ## `<task-ref>` resolution for Trello
 
@@ -35,11 +35,11 @@ Implementation steps in adapter's runtime logic:
 
 ## Result envelope (Trello-specific `details`)
 
-| Verb | `details` fields |
-|---|---|
-| `task.create` | `{ shortLink, dateLastActivity, checklists: [{id,name,items: [{id,name}]}] }` |
-| `checklist.check` | `{ checklistId, checkItemId }` |
-| `task.close` | `{ previousListId, newListId }` |
-| `task.due-date.set` | `{ previousDue, newDue }` |
-| `task.assignee.add` | `{ memberId, username }` |
-| `task.comment.add` | `{ commentId }` |
+| Verb                | `details` fields                                                              |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `task.create`       | `{ shortLink, dateLastActivity, checklists: [{id,name,items: [{id,name}]}] }` |
+| `checklist.check`   | `{ checklistId, checkItemId }`                                                |
+| `task.close`        | `{ previousListId, newListId }`                                               |
+| `task.due-date.set` | `{ previousDue, newDue }`                                                     |
+| `task.assignee.add` | `{ memberId, username }`                                                      |
+| `task.comment.add`  | `{ commentId }`                                                               |

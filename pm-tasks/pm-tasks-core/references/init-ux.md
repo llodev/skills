@@ -34,7 +34,7 @@ Three outcomes:
 
 Read-only MCP calls enumerate workspace → boards/projects → lists/sections → labels → members. User picks via interactive prompts (multi-select for arrays).
 
-Final prompt: *"Enable autonomous mode? (adds an `autonomous` block with conservative defaults: 6 verbs, rate 30/min, no hard-coded scope — you add it afterwards)"* — default `n`.
+Final prompt: _"Enable autonomous mode? (adds an `autonomous` block with conservative defaults: 6 verbs, rate 30/min, no hard-coded scope — you add it afterwards)"_ — default `n`.
 
 Write the config; validate against `schemas/config.json`; exit.
 
@@ -56,7 +56,15 @@ Print:
 Adapter `scripts/init.mjs` imports from `@llodev/pm-tasks-core/init-lib`:
 
 ```javascript
-import { promptScope, promptYesNo, multiSelect, writeConfig, validateConfig, probeMCP, printInstructions } from "@llodev/pm-tasks-core/init-lib";
+import {
+  promptScope,
+  promptYesNo,
+  multiSelect,
+  writeConfig,
+  validateConfig,
+  probeMCP,
+  printInstructions,
+} from "@llodev/pm-tasks-core/init-lib";
 ```
 
 Each adapter implements its own MCP-probing logic and field-mapping; UX primitives are shared.

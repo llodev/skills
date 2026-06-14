@@ -45,7 +45,8 @@ for (const rel of files) {
     if (len < 200) errs.push(`description too short (${len} < 200)`);
     if (len > 1200) errs.push(`description too long (${len} > 1200)`);
   }
-  for (const k of RECOMMENDED) if (!fm[k]) console.warn(`warn ${rel}: missing recommended field: ${k}`);
+  for (const k of RECOMMENDED)
+    if (!fm[k]) console.warn(`warn ${rel}: missing recommended field: ${k}`);
   if (errs.length) {
     failed = true;
     console.error(`FAIL ${rel}`);

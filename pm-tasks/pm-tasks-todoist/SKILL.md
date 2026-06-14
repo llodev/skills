@@ -1,6 +1,6 @@
 ---
 name: pm-tasks-todoist
-description: '[SCAFFOLD — NOT YET IMPLEMENTED] Future Todoist adapter for the @llodev/pm-tasks-* family. Do not activate. Scheduled for v1.x once MCP integration is finalized. See https://github.com/llodev/skills/issues for status.'
+description: "[SCAFFOLD — NOT YET IMPLEMENTED] Future Todoist adapter for the @llodev/pm-tasks-* family. Do not activate. Scheduled for v1.x once MCP integration is finalized. See https://github.com/llodev/skills/issues for status."
 license: MIT
 metadata:
   version: 0.0.0

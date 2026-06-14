@@ -68,14 +68,16 @@ Every CRUD operation returns:
   "verb": "<verb>",
   "tool": "<tool>",
   "ref": { "id": "<native-id>", "url": "<full-url>", "alias": "<alias-or-null>" },
-  "details": { /* verb-specific */ }
+  "details": {
+    /* verb-specific */
+  }
 }
 ```
 
 Failures:
 
 ```json
-{ "ok": false, "code": "<CODE>", "verb": "<verb>", "message": "<human>", "details": { } }
+{ "ok": false, "code": "<CODE>", "verb": "<verb>", "message": "<human>", "details": {} }
 ```
 
 Stable error codes: `FORBIDDEN_VERB`, `OUT_OF_SCOPE`, `ALLOWLIST_VIOLATION`, `RATE_LIMITED`, `REF_NOT_RESOLVED`, `MCP_ERROR`, `INVALID_CONFIG`.

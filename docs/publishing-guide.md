@@ -13,17 +13,17 @@ Reference guide for authoring and publishing **Agent Skills** — portable packa
 
 ## 1. What is a Skill (in 30 seconds)
 
-A skill is, at minimum, **a folder with a `SKILL.md` file**. `SKILL.md` is a markdown file with **YAML frontmatter** that the agent reads to decide *when* to activate the skill and *how* to execute the task.
+A skill is, at minimum, **a folder with a `SKILL.md` file**. `SKILL.md` is a markdown file with **YAML frontmatter** that the agent reads to decide _when_ to activate the skill and _how_ to execute the task.
 
 The format is an **open standard** published by Anthropic at `agentskills.io` (Dec/2025), supported by 40+ agents. Vercel maintains `skills.sh` as the public directory/leaderboard; SkillsMP indexes via GitHub (~350k skills in 2026); skillpm and skills-npm bring the model to the npm registry.
 
 There are **three distribution channels** working today — you can use one, two, or all three for the same skill:
 
-| Channel                            | How to install                                           | When to use                                                                     |
-| ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| **Git + skills.sh** (Vercel)       | `npx skills add owner/repo`                              | Default. No submission flow; appears on skills.sh via install telemetry.        |
+| Channel                            | How to install                                           | When to use                                                                       |
+| ---------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **Git + skills.sh** (Vercel)       | `npx skills add owner/repo`                              | Default. No submission flow; appears on skills.sh via install telemetry.          |
 | **npm + skillpm/skills-npm**       | `npx skillpm install <pkg>` or bundle via `node_modules` | When the skill ships with an SDK/lib; gets semver, lockfile, audit, npm registry. |
-| **Claude Code plugin marketplace** | `/plugin marketplace add <repo>`                         | When you want to bundle skills + hooks + MCP + agents together.                 |
+| **Claude Code plugin marketplace** | `/plugin marketplace add <repo>`                         | When you want to bundle skills + hooks + MCP + agents together.                   |
 
 ---
 
@@ -58,7 +58,7 @@ my-skill/
 
 ```yaml
 ---
-name: my-skill                          # kebab-case, unique within your scope
+name: my-skill # kebab-case, unique within your scope
 description: Does X for Y projects. Use when the user asks for X or mentions Y.
 ---
 ```
@@ -73,7 +73,7 @@ license: MIT
 compatibility:
   agents: ["claude-code", "cursor", "codex"]
 metadata:
-  version: 1.2.0                        # semver — not required by the spec, but a strong convention
+  version: 1.2.0 # semver — not required by the spec, but a strong convention
   tags: ["typescript", "ddd"]
 allowed-tools: ["Read", "Edit", "Bash"] # experimental, support varies per agent
 ```
@@ -88,18 +88,22 @@ A structure that works well:
 One line about the goal.
 
 ## When to use
+
 - Trigger 1
 - Trigger 2
 - Do NOT use when...
 
 ## Step by step
+
 1. ...
 2. ...
 
 ## Examples
+
 - Input: ... → Output: ...
 
 ## References
+
 - See references/<file>.md for case X
 ```
 
@@ -107,15 +111,15 @@ One line about the goal.
 
 ## 3. Conventions
 
-| Item                       | Standard                                                                    |
-| -------------------------- | --------------------------------------------------------------------------- |
-| Skill name (and folder)    | `kebab-case`, no prefix (`auth-flow` OK, not `agent-skill-auth-flow`)       |
-| Versioning                 | **semver** (`1.0.0`) in git tags and/or `package.json`/`metadata.version`   |
-| Main branch                | `main`                                                                      |
-| Git repository             | 1 repo per skill, public on GitHub (required for `skills.sh` to index)      |
-| Human README               | yes, separate from `SKILL.md` (that one is for the agent, not for humans)   |
-| Changelog                  | `CHANGELOG.md` in "Keep a Changelog" — optional but recommended             |
-| CI                         | GitHub Actions linting `SKILL.md` (valid frontmatter, broken links)         |
+| Item                    | Standard                                                                  |
+| ----------------------- | ------------------------------------------------------------------------- |
+| Skill name (and folder) | `kebab-case`, no prefix (`auth-flow` OK, not `agent-skill-auth-flow`)     |
+| Versioning              | **semver** (`1.0.0`) in git tags and/or `package.json`/`metadata.version` |
+| Main branch             | `main`                                                                    |
+| Git repository          | 1 repo per skill, public on GitHub (required for `skills.sh` to index)    |
+| Human README            | yes, separate from `SKILL.md` (that one is for the agent, not for humans) |
+| Changelog               | `CHANGELOG.md` in "Keep a Changelog" — optional but recommended           |
+| CI                      | GitHub Actions linting `SKILL.md` (valid frontmatter, broken links)       |
 
 ---
 

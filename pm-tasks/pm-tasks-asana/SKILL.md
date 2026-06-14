@@ -41,11 +41,11 @@ Adapter for Asana within the `@llodev/pm-tasks-*` family. Use the core skill's e
 
 ## Routing
 
-| Mode        | Trigger                                                                                   | Path                                                                     |
-| ----------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Paste-only  | "format as Asana task" without MCP intent                                                 | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
-| MCP publish | "publish to Asana", "create on Asana", "--publish-asana"                                  | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                            |
-| Autonomous  | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`                    | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                 |
+| Mode        | Trigger                                                                                    | Path                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Paste-only  | "format as Asana task" without MCP intent                                                  | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
+| MCP publish | "publish to Asana", "create on Asana", "--publish-asana"                                   | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                            |
+| Autonomous  | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`                     | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                 |
 | CRUD ops    | "check subtask N on task X", "close task Y", "assign Alice to task Z", "comment on task X" | Phase 6 (operations, direct verb dispatch)                               |
 
 ## Asana model
@@ -119,7 +119,9 @@ Every verb returns the core contract shape (see [`../pm-tasks-core/references/co
   "verb": "task.create",
   "tool": "asana",
   "ref": { "id": "<gid>", "url": "https://app.asana.com/0/<project>/<gid>", "alias": "<optional>" },
-  "details": { /* Asana-specific (see table below) */ }
+  "details": {
+    /* Asana-specific (see table below) */
+  }
 }
 ```
 
@@ -142,7 +144,7 @@ See [`anti-patterns/asana.md`](anti-patterns/asana.md) — paste health, custom-
 
 ## Standalone fallback
 
-If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (title + subtask names) and produce a paste-ready Asana task body from this content alone. Quality is degraded — no scope/audience/fidelity inference. Print: *"Install `@llodev/pm-tasks-core` for the full flow."*
+If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (title + subtask names) and produce a paste-ready Asana task body from this content alone. Quality is degraded — no scope/audience/fidelity inference. Print: _"Install `@llodev/pm-tasks-core` for the full flow."_
 
 ## Config
 

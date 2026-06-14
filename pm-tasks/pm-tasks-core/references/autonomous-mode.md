@@ -16,7 +16,14 @@ Autonomous mode requires an `autonomous` block in `.<tool>.json` (or its global 
 {
   "autonomous": {
     "enabled": true,
-    "allow": ["task.create", "checklist.check", "task.close", "task.due-date.set", "task.assignee.add", "task.comment.add"],
+    "allow": [
+      "task.create",
+      "checklist.check",
+      "task.close",
+      "task.due-date.set",
+      "task.assignee.add",
+      "task.comment.add"
+    ],
     "scope": {
       "boards": ["<board-or-project-id>"],
       "lists": ["<list-or-section-id>"]

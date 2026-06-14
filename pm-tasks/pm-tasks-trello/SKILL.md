@@ -39,12 +39,12 @@ Adapter for Trello within the `@llodev/pm-tasks-*` family. Use the core skill's 
 
 ## Routing
 
-| Mode        | Trigger                                                                                  | Path                                                                     |
-| ----------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Paste-only  | "format as Trello card" without MCP intent                                               | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
-| MCP publish | "publish to Trello", "create on Trello", "--publish"                                     | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                            |
-| Autonomous  | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`                   | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                 |
-| CRUD ops    | "check item N on task X", "close card Y", "add Alice to task Z", "comment on task X"     | Phase 6 (operations, direct verb dispatch)                               |
+| Mode        | Trigger                                                                              | Path                                                                     |
+| ----------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Paste-only  | "format as Trello card" without MCP intent                                           | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
+| MCP publish | "publish to Trello", "create on Trello", "--publish"                                 | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                            |
+| Autonomous  | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`               | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                 |
+| CRUD ops    | "check item N on task X", "close card Y", "add Alice to task Z", "comment on task X" | Phase 6 (operations, direct verb dispatch)                               |
 
 ## Phase 4 — Trello formatting
 
@@ -68,7 +68,7 @@ For verbs other than `task.create`, jump directly to the operation. **MANDATORY 
 
 ## Standalone fallback
 
-If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (title + checklist items) and produce a paste-ready Trello card from this content alone. Quality is degraded — no scope/audience/fidelity inference. Print: *"Install `@llodev/pm-tasks-core` for the full flow."*
+If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (title + checklist items) and produce a paste-ready Trello card from this content alone. Quality is degraded — no scope/audience/fidelity inference. Print: _"Install `@llodev/pm-tasks-core` for the full flow."_
 
 ## Config
 

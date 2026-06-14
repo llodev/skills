@@ -101,18 +101,18 @@ The authoritative schema is [`../schemas/config.json`](../schemas/config.json) (
 
 ### Top-level keys
 
-| Key            | Required | Purpose                                                                                          |
-| -------------- | -------- | ------------------------------------------------------------------------------------------------ |
-| `$schema`      | optional | URL pointer for editor IDE hover validation.                                                     |
-| `version`      | **yes**  | Const `"1"` — schema version of this file.                                                       |
-| `workspace`    | optional | Free-text workspace label (informational, not used by the API).                                  |
-| `boards[]`     | **yes**  | Catalog of accessible boards: `{ id, name?, alias, url? }`.                                      |
-| `lists[]`      | **yes**  | Catalog of board columns: `{ boardAlias, id, name?, alias }`.                                    |
-| `labels[]`     | optional | Catalog of named labels: `{ boardAlias, id, name?, color?, alias }`.                             |
-| `members[]`    | optional | Catalog of board members: `{ id, username?, fullName?, alias }`. **Do NOT include a personal "me" entry** committed to git — resolve at runtime (see below). |
-| `defaults`     | optional | `{ boardAlias?, listAlias?, closeListAlias? }` — preferred defaults when the user omits them.    |
-| `taskAliases[]`| optional | Stable aliases for individual cards: `{ alias, id, url? }`.                                      |
-| `autonomous`   | optional | Autonomous-mode envelope (see [`./autonomous.md`](./autonomous.md) for full spec).               |
+| Key             | Required | Purpose                                                                                                                                                      |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `$schema`       | optional | URL pointer for editor IDE hover validation.                                                                                                                 |
+| `version`       | **yes**  | Const `"1"` — schema version of this file.                                                                                                                   |
+| `workspace`     | optional | Free-text workspace label (informational, not used by the API).                                                                                              |
+| `boards[]`      | **yes**  | Catalog of accessible boards: `{ id, name?, alias, url? }`.                                                                                                  |
+| `lists[]`       | **yes**  | Catalog of board columns: `{ boardAlias, id, name?, alias }`.                                                                                                |
+| `labels[]`      | optional | Catalog of named labels: `{ boardAlias, id, name?, color?, alias }`.                                                                                         |
+| `members[]`     | optional | Catalog of board members: `{ id, username?, fullName?, alias }`. **Do NOT include a personal "me" entry** committed to git — resolve at runtime (see below). |
+| `defaults`      | optional | `{ boardAlias?, listAlias?, closeListAlias? }` — preferred defaults when the user omits them.                                                                |
+| `taskAliases[]` | optional | Stable aliases for individual cards: `{ alias, id, url? }`.                                                                                                  |
+| `autonomous`    | optional | Autonomous-mode envelope (see [`./autonomous.md`](./autonomous.md) for full spec).                                                                           |
 
 `alias` everywhere is `^[a-z0-9-]+$` — used by the agent as a stable, human-friendly key. `id` is the 24-char Trello object ID returned by the API.
 
@@ -124,16 +124,38 @@ The authoritative schema is [`../schemas/config.json`](../schemas/config.json) (
   "version": "1",
   "workspace": "llodev",
   "boards": [
-    { "id": "6a2b574aefe6fe9621a3d5a7", "name": "Skills", "alias": "skills", "url": "https://trello.com/b/bR5bbtoH" }
+    {
+      "id": "6a2b574aefe6fe9621a3d5a7",
+      "name": "Skills",
+      "alias": "skills",
+      "url": "https://trello.com/b/bR5bbtoH"
+    }
   ],
   "lists": [
-    { "boardAlias": "skills", "id": "6a2b57600f0f20cbea2277f0", "name": "Backlog", "alias": "backlog" },
-    { "boardAlias": "skills", "id": "6a2b576292aee4b8eeb82ed1", "name": "WIP",     "alias": "wip" },
-    { "boardAlias": "skills", "id": "6a2b5767058f005c9c063a8b", "name": "Done",    "alias": "done" }
+    {
+      "boardAlias": "skills",
+      "id": "6a2b57600f0f20cbea2277f0",
+      "name": "Backlog",
+      "alias": "backlog"
+    },
+    { "boardAlias": "skills", "id": "6a2b576292aee4b8eeb82ed1", "name": "WIP", "alias": "wip" },
+    { "boardAlias": "skills", "id": "6a2b5767058f005c9c063a8b", "name": "Done", "alias": "done" }
   ],
   "labels": [
-    { "boardAlias": "skills", "id": "6a2b574aefe6fe9621a3d5d2", "name": "core",    "color": "green",  "alias": "core" },
-    { "boardAlias": "skills", "id": "6a2b574aefe6fe9621a3d5d7", "name": "adapter", "color": "blue",   "alias": "adapter" }
+    {
+      "boardAlias": "skills",
+      "id": "6a2b574aefe6fe9621a3d5d2",
+      "name": "core",
+      "color": "green",
+      "alias": "core"
+    },
+    {
+      "boardAlias": "skills",
+      "id": "6a2b574aefe6fe9621a3d5d7",
+      "name": "adapter",
+      "color": "blue",
+      "alias": "adapter"
+    }
   ],
   "members": [
     { "id": "67d978bb...", "username": "alice", "fullName": "Alice Example", "alias": "alice" }

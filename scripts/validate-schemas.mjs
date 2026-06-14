@@ -25,7 +25,11 @@ async function walk(dir, depth = 0, acc = []) {
     if (entry.isDirectory()) {
       if (SKIP.has(entry.name) || entry.name.startsWith(".")) continue;
       await walk(full, depth + 1, acc);
-    } else if (entry.isFile() && entry.name.endsWith(".json") && path.basename(path.dirname(full)) === "schemas") {
+    } else if (
+      entry.isFile() &&
+      entry.name.endsWith(".json") &&
+      path.basename(path.dirname(full)) === "schemas"
+    ) {
       acc.push(path.relative(ROOT, full));
     }
   }

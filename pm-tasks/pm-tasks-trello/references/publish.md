@@ -94,14 +94,14 @@ Only if Step 1 omitted `idLabels` / `idMembers` but Phase 5.2.5 resolved new val
 
 ### Error handling
 
-| Failure                               | Action                                                                                                |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| MCP not connected                     | Abort Phase 5; deliver paste-ready output (Phase 4); check MCP server config and `TRELLO_*` env vars  |
-| `boardId` / `listId` not resolved     | Re-run § **MCP config discovery**; do not guess IDs                                                   |
-| Label name not in `.trello.json`      | Skip that label; continue; report under **omitted**; do not auto-create labels                        |
-| Member not in `members[]`             | Stop before create; list valid usernames                                                              |
-| Card creation fails                   | Abort; report error; no checklists created                                                            |
-| Checklist creation fails mid-sequence | Report card URL; which checklists succeeded vs "add manually"                                         |
-| Label/member fallback fails           | Report card URL; list what was applied at create vs failed fallback                                   |
+| Failure                               | Action                                                                                               |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| MCP not connected                     | Abort Phase 5; deliver paste-ready output (Phase 4); check MCP server config and `TRELLO_*` env vars |
+| `boardId` / `listId` not resolved     | Re-run § **MCP config discovery**; do not guess IDs                                                  |
+| Label name not in `.trello.json`      | Skip that label; continue; report under **omitted**; do not auto-create labels                       |
+| Member not in `members[]`             | Stop before create; list valid usernames                                                             |
+| Card creation fails                   | Abort; report error; no checklists created                                                           |
+| Checklist creation fails mid-sequence | Report card URL; which checklists succeeded vs "add manually"                                        |
+| Label/member fallback fails           | Report card URL; list what was applied at create vs failed fallback                                  |
 
 **NEVER** leave a partial card without reporting what was and wasn't created.

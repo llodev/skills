@@ -6,8 +6,8 @@ Apply when Phase 4 / Phase 5 / Phase 5b target Asana. Authoritative formatting +
 
 ## Paste health and fallbacks
 
-| Healthy paste                                                                                                       | If it degrades → fallback                                                                            |
-| ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Healthy paste                                                                                                         | If it degrades → fallback                                                                                                   |
+| --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Prefer `**Section**` in task descriptions when `##` headings are unreliable; **only one** nesting level for subtasks. | Swap heading hierarchy for bold labels; split deep trees into sibling tasks. See [`../SKILL.md`](../SKILL.md) §Asana model. |
 
 **Switching tools mid-thread:** re-load the new tool's adapter; do not carry Asana rules into Trello / Jira / Linear (see **Cross-tool** below).

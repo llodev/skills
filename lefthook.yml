@@ -1,0 +1,42 @@
+# lefthook — git hooks runner (https://github.com/evilmartians/lefthook)
+#
+# Install:  make hooks   (ou: lefthook install)
+# Bypass:    git commit --no-verify   (use ONLY in emergencies)
+
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      glob: "*.{ts,tsx,js,jsx,json,yml,yaml,md,css}"
+      run: |
+        if ! command -v pnpm >/dev/null 2>&1; then
+          echo "✗ pnpm not installed. corepack enable && corepack prepare pnpm@11 --activate" >&2
+          exit 1
+        fi
+        pnpm exec prettier --write --ignore-unknown {staged_files}
+        git add {staged_files}
+
+    gitleaks:
+      run: |
+        if ! command -v gitleaks >/dev/null 2>&1; then
+          echo "⚠ gitleaks not installed — skipping. Install: brew install gitleaks" >&2
+          exit 0
+        fi
+        gitleaks protect --staged --redact --verbose
+
+commit-msg:
+  commands:
+    # Conventional Commits lightweight — "type(scope): subject" or "type: subject"
+    conventional:
+      run: |
+        msg=$(head -n1 "{1}")
+        # Allow merges/reverts/comments without validation
+        case "$msg" in
+          "Merge "*|"Revert "*|"#"*) exit 0 ;;
+        esac
+        if ! echo "$msg" | grep -qE '^(feat|fix|chore|docs|refactor|test|build|ci|perf|style|revert)(\([a-z0-9_-]+\))?!?: .{3,}'; then
+          echo "✗ commit message does not follow Conventional Commits."
+          echo "  Expected: type(scope): subject   (type ∈ feat|fix|chore|docs|refactor|test|build|ci|perf|style|revert)"
+          echo "  Received: $msg"
+          exit 1
+        fi

@@ -10,9 +10,9 @@ Apply **only** when Phase 4 targets Trello (after reading [`../references/format
 
 Use when preview looks wrong **or** the user says paste mangled formatting. **Authoritative detail** also lives in [`../references/format.md`](../references/format.md).
 
-| Target     | Healthy paste                                                                                                                                           | If it degrades → fallback                                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Trello** | **No Markdown tables** anywhere in DESCRIPTION (timeline, tiers, grids) — bullets or `**Key:** value` lines only. Checklist lines **flat**, no nesting. | Flatten tables → bullets; reread § _Tables vs paste_ in [`../references/format.md`](../references/format.md).                        |
+| Target     | Healthy paste                                                                                                                                           | If it degrades → fallback                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Trello** | **No Markdown tables** anywhere in DESCRIPTION (timeline, tiers, grids) — bullets or `**Key:** value` lines only. Checklist lines **flat**, no nesting. | Flatten tables → bullets; reread § _Tables vs paste_ in [`../references/format.md`](../references/format.md). |
 
 **Switching tools mid-thread:** re-run Phase 4 **exclusive** load for the **new** tool; do not carry Trello rules into another adapter (see **Cross-tool** below).
 
