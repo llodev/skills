@@ -208,10 +208,9 @@ async function run() {
 
   await collectEscalationMember(out, { coreStrings, trelloStrings });
 
-  const wantAuto = await promptYesNo(
-    "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
-    { strings: coreStrings },
-  );
+  const wantAuto = await promptYesNo(coreStrings.autonomousPromptQuestion, {
+    strings: coreStrings,
+  });
   if (wantAuto) {
     out.autonomous = {
       enabled: false,
@@ -220,10 +219,7 @@ async function run() {
       rateLimit: { writesPerMinute: 30, commentsPerMinute: 10 },
       auditLog: "~/.local/share/llodev/pm-tasks/trello/audit.log",
     };
-    printInstructions([
-      "autonomous block added with enabled:false.",
-      "Review scope.boards and scope.lists in the JSON before enabling.",
-    ]);
+    printInstructions([coreStrings.autonomousAddedTitle, coreStrings.autonomousReviewBody]);
   }
 
   const schema = await loadSchema();

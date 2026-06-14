@@ -280,10 +280,9 @@ async function run() {
     };
   }
 
-  const wantAuto = await promptYesNo(
-    "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
-    { strings: coreStrings },
-  );
+  const wantAuto = await promptYesNo(coreStrings.autonomousPromptQuestion, {
+    strings: coreStrings,
+  });
   if (wantAuto) {
     out.autonomous = {
       enabled: false,
@@ -295,10 +294,7 @@ async function run() {
       rateLimit: { writesPerMinute: 30, commentsPerMinute: 10 },
       auditLog: "~/.local/share/llodev/pm-tasks/asana/audit.log",
     };
-    printInstructions([
-      "autonomous block added with enabled:false.",
-      "Review scope.projects and scope.sections in the JSON before enabling.",
-    ]);
+    printInstructions([coreStrings.autonomousAddedTitle, coreStrings.autonomousReviewBody]);
   }
 
   const schema = await loadSchema();
