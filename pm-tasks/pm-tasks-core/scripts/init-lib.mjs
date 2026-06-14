@@ -2,9 +2,64 @@
 // Shared init primitives. Node 20+ built-ins + Ajv for schema validation.
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { mkdir, writeFile, access, readFile } from "node:fs/promises";
+import { mkdir, writeFile, access, readFile, readdir } from "node:fs/promises";
 import { homedir, platform } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+
+const ADAPTER_I18N_ROOTS = {
+  core: path.resolve(HERE, "..", "i18n"),
+};
+
+export function registerI18nRoot(adapterPkg, absRoot) {
+  ADAPTER_I18N_ROOTS[adapterPkg] = absRoot;
+}
+
+export async function listLocales(adapterPkg) {
+  const root = ADAPTER_I18N_ROOTS[adapterPkg];
+  if (!root) throw new Error(`unknown adapterPkg for i18n: ${adapterPkg}`);
+  const files = await readdir(root);
+  return files
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""))
+    .sort();
+}
+
+export async function loadStrings(adapterPkg, locale) {
+  const root = ADAPTER_I18N_ROOTS[adapterPkg];
+  if (!root) throw new Error(`unknown adapterPkg for i18n: ${adapterPkg}`);
+  const target = path.join(root, `${locale}.json`);
+  try {
+    return JSON.parse(await readFile(target, "utf8"));
+  } catch (e) {
+    if (e.code !== "ENOENT") throw e;
+    return JSON.parse(await readFile(path.join(root, "en-US.json"), "utf8"));
+  }
+}
+
+export function interpolate(template, vars) {
+  return template.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? String(vars[k]) : `{${k}}`));
+}
+
+export async function promptLocale(adapterPkg = "core", { defaultLocale = "en-US" } = {}) {
+  const locales = await listLocales(adapterPkg);
+  const r = rl();
+  try {
+    const probe = await loadStrings("core", defaultLocale);
+    console.log(`\n${probe.localePromptHeader}`);
+    locales.forEach((l, i) => console.log(`  ${i + 1}) ${l}`));
+    const defaultIndex = Math.max(0, locales.indexOf(defaultLocale));
+    const a = (await r.question(probe.localePromptQuestion)).trim();
+    if (a === "") return locales[defaultIndex];
+    const i = parseInt(a, 10) - 1;
+    if (i < 0 || i >= locales.length) throw new Error(`invalid choice: ${a}`);
+    return locales[i];
+  } finally {
+    r.close();
+  }
+}
 
 const rl = () => createInterface({ input, output });
 

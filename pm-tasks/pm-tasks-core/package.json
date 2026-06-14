@@ -14,6 +14,7 @@
     "references",
     "anti-patterns",
     "scripts",
+    "i18n",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"
@@ -29,7 +30,8 @@
   ],
   "type": "module",
   "exports": {
-    "./init-lib": "./scripts/init-lib.mjs"
+    "./init-lib": "./scripts/init-lib.mjs",
+    "./i18n/*.json": "./i18n/*.json"
   },
   "engines": {
     "node": ">=20"
