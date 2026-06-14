@@ -3,20 +3,38 @@
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { mkdir, writeFile, access, readFile } from "node:fs/promises";
-import { homedir } from "node:os";
+import { homedir, platform } from "node:os";
 import path from "node:path";
 
 const rl = () => createInterface({ input, output });
 
+export function resolveGlobalConfigDir() {
+  if (process.env.LLODEV_PM_TASKS_CONFIG_HOME) {
+    return path.resolve(process.env.LLODEV_PM_TASKS_CONFIG_HOME);
+  }
+  if (platform() === "win32" && process.env.APPDATA) {
+    return path.join(process.env.APPDATA, "llodev", "pm-tasks");
+  }
+  const base = process.env.XDG_CONFIG_HOME || path.join(homedir(), ".config");
+  return path.join(base, "llodev", "pm-tasks");
+}
+
 export async function promptScope(toolName) {
   const r = rl();
   try {
-    console.log(`\nWhere should the ${toolName} config live?\n  1) local   → ./.${toolName}.json\n  2) global  → ~/.config/llodev/pm-tasks/${toolName}.json`);
+    const localPath = path.resolve(`.${toolName}.json`);
+    const globalPath = path.join(resolveGlobalConfigDir(), `${toolName}.json`);
+    console.log(
+      `\nWhere should the ${toolName} config live?\n  1) local   → ${localPath}\n  2) global  → ${globalPath}`,
+    );
+    console.log(`  (override the global dir with LLODEV_PM_TASKS_CONFIG_HOME)`);
     const a = (await r.question("Choose [1/2] (default 1): ")).trim() || "1";
-    if (a === "1") return { scope: "local", path: path.resolve(`.${toolName}.json`) };
-    if (a === "2") return { scope: "global", path: path.join(homedir(), ".config", "llodev", "pm-tasks", `${toolName}.json`) };
+    if (a === "1") return { scope: "local", path: localPath };
+    if (a === "2") return { scope: "global", path: globalPath };
     throw new Error(`invalid choice: ${a}`);
-  } finally { r.close(); }
+  } finally {
+    r.close();
+  }
 }
 
 export async function promptYesNo(question, defaultNo = true) {
@@ -25,7 +43,9 @@ export async function promptYesNo(question, defaultNo = true) {
     const a = (await r.question(`${question} [y/N]: `)).trim().toLowerCase();
     if (a === "y" || a === "yes") return true;
     return false;
-  } finally { r.close(); }
+  } finally {
+    r.close();
+  }
 }
 
 export async function multiSelect(label, choices) {
@@ -33,15 +53,59 @@ export async function multiSelect(label, choices) {
   try {
     console.log(`\n${label}`);
     choices.forEach((c, i) => console.log(`  ${i + 1}) ${c.label}`));
-    const a = (await r.question("Select (comma-separated, e.g. 1,3,5): ")).trim();
-    const picks = a.split(",").map((x) => parseInt(x.trim(), 10) - 1).filter((i) => i >= 0 && i < choices.length);
+    const a = (await r.question("Select (comma-separated, e.g. 1,3,5; empty = all): ")).trim();
+    if (a === "") return choices.map((c) => c.value);
+    const picks = a
+      .split(",")
+      .map((x) => parseInt(x.trim(), 10) - 1)
+      .filter((i) => i >= 0 && i < choices.length);
     return picks.map((i) => choices[i].value);
-  } finally { r.close(); }
+  } finally {
+    r.close();
+  }
+}
+
+export async function promptPick(label, choices, { defaultIndex = -1, allowSkip = false } = {}) {
+  const r = rl();
+  try {
+    console.log(`\n${label}`);
+    choices.forEach((c, i) => console.log(`  ${i + 1}) ${c.label}`));
+    const hint = [
+      defaultIndex >= 0 ? `default ${defaultIndex + 1}` : null,
+      allowSkip ? "s = skip" : null,
+    ]
+      .filter(Boolean)
+      .join(", ");
+    const suffix = hint ? ` (${hint})` : "";
+    const a = (await r.question(`Select one${suffix}: `)).trim();
+    if (allowSkip && (a === "s" || a === "skip")) return null;
+    if (a === "") {
+      if (defaultIndex >= 0) return choices[defaultIndex].value;
+      throw new Error("no choice and no default");
+    }
+    const i = parseInt(a, 10) - 1;
+    if (i < 0 || i >= choices.length) throw new Error(`invalid choice: ${a}`);
+    return choices[i].value;
+  } finally {
+    r.close();
+  }
+}
+
+export function aliasOf(name) {
+  return String(name)
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 export async function writeConfig(targetPath, data) {
   await mkdir(path.dirname(targetPath), { recursive: true });
-  try { await access(targetPath); throw new Error(`config already exists at ${targetPath}, aborting`); } catch (e) {
+  try {
+    await access(targetPath);
+    throw new Error(`config already exists at ${targetPath}, aborting`);
+  } catch (e) {
     if (e.code !== "ENOENT") throw e;
   }
   await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n");
