@@ -1,0 +1,19 @@
+{
+  "localePromptHeader": "¿Qué idioma debe usar el init?",
+  "localePromptQuestion": "Selecciona una opción (predeterminado 1): ",
+  "scopePromptHeader": "¿Dónde debe vivir la configuración de {tool}?",
+  "scopePromptLocal": "  1) local   → {localPath}",
+  "scopePromptGlobal": "  2) global  → {globalPath}",
+  "scopePromptOverrideHint": "  (anula el directorio global con LLODEV_PM_TASKS_CONFIG_HOME)",
+  "scopePromptQuestion": "Elige [1/2] (predeterminado 1): ",
+  "yesNoYes": "s",
+  "yesNoNo": "n",
+  "multiSelectQuestion": "Selecciona (separado por comas, ej.: 1,3,5; vacío = todos): ",
+  "promptPickQuestion": "Selecciona una opción",
+  "promptPickSkip": "s = omitir",
+  "autonomousPromptQuestion": "¿Activar modo autónomo? (añade un bloque autonomous con defaults conservadores)",
+  "autonomousAddedTitle": "bloque autonomous añadido con enabled:false.",
+  "autonomousReviewBody": "Revisa el scope en el JSON antes de activar.",
+  "errAuthMissing": "auth: falta una variable de entorno obligatoria",
+  "errInvalidConfig": "config inválido"
+}
