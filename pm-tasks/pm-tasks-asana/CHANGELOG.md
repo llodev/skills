@@ -1,5 +1,18 @@
 # @llodev/pm-tasks-asana
 
+## 1.0.1
+
+### Patch Changes
+
+- Fix `npx @llodev/pm-tasks-asana init` silently doing nothing. Two bugs collapsed the init flow: (a) the `bin` entry was named `pm-tasks-asana-init` (not matching the package name), so npx never resolved the binary; (b) the script's `import.meta.url === file://${process.argv[1]}` guard failed under npx's symlinked bin shim, so even when invoked the `run()` entry-point was skipped. The bin is now `pm-tasks-asana` and the entry-point runs unconditionally.
+- Cross-platform global config path. The init prompt now honors `LLODEV_PM_TASKS_CONFIG_HOME` first, then `XDG_CONFIG_HOME` (macOS/Linux), then `%APPDATA%` (Windows), then `~/.config` as the last fallback. The prompt prints the absolute path before asking, so the destination is always visible.
+- Slug aliases are now Unicode-aware (via `@llodev/pm-tasks-core@1.0.1`): `"Em execução"` → `"em-execucao"`, `"Média"` → `"media"` (was `"em-execu-o"` / `"m-dia"`).
+- Drop the language-specific regex for inferring the "closed" section. The init now explicitly asks: "Which section is the default for newly-created tasks?" and "Which section means 'closed / done'?" with sensible defaults (first / last picked) and a skip option.
+- Add an explicit escalation prompt. After the member list is collected, the init asks: "Pick the escalation contact (will receive escalation comments + add_member on critical cards)" and stores it as `defaults.escalateToAlias`. The chosen member is re-aliased to `"owner"` if no other member already holds that alias.
+- Fallback for empty membership lists: if the PAT's scope didn't return any project members beyond `me`, the init now offers a manual entry (gid + name + alias) so single-collaborator projects can still wire an escalation contact.
+- `multiSelect`: empty input now means "select all" instead of "select none".
+- README clarifies the per-OS defaults and the env override.
+
 ## 1.0.0
 
 ### Major Changes

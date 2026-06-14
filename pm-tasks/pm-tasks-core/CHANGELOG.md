@@ -1,5 +1,19 @@
 # @llodev/pm-tasks-core
 
+## 1.0.1
+
+### Patch Changes
+
+- `init-lib.promptScope` now resolves the global config dir per OS:
+  - `LLODEV_PM_TASKS_CONFIG_HOME` env var wins on any platform.
+  - macOS / Linux: `XDG_CONFIG_HOME` → fallback `~/.config/llodev/pm-tasks/`.
+  - Windows: `%APPDATA%\llodev\pm-tasks\`.
+  - The prompt prints the resolved absolute path before asking the user to confirm.
+- New named export `resolveGlobalConfigDir()` for adapters or docs tooling that need the same logic.
+- New named export `aliasOf(name)`. Now Unicode-aware: NFD-normalizes and strips combining diacritics before slugging, so `"Em execução"` → `"em-execucao"` and `"Média"` → `"media"` instead of `"em-execu-o"` / `"m-dia"`.
+- New named export `promptPick(label, choices, { defaultIndex, allowSkip })`. Single-choice prompt with optional default index and skip support — used by adapters to ask which list/section means "closed" and which member is the escalation target.
+- `multiSelect`: empty input now selects ALL choices instead of returning an empty array. Prompt label updated to `"(empty = all)"`.
+
 ## 1.0.0
 
 ### Major Changes

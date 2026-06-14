@@ -1,5 +1,17 @@
 # @llodev/pm-tasks-trello
 
+## 1.0.1
+
+### Patch Changes
+
+- Fix `npx @llodev/pm-tasks-trello init` silently doing nothing. Same two bugs as the asana adapter: (a) the `bin` entry was named `pm-tasks-trello-init` (not matching the package name), so npx never resolved the binary; (b) the script's `import.meta.url === file://${process.argv[1]}` guard failed under npx's symlinked bin shim, so even when invoked the `run()` entry-point was skipped. The bin is now `pm-tasks-trello` and the entry-point runs unconditionally.
+- Cross-platform global config path (via `@llodev/pm-tasks-core@1.0.1`): honors `LLODEV_PM_TASKS_CONFIG_HOME` / `XDG_CONFIG_HOME` / `%APPDATA%`, prints the absolute target path before asking.
+- Slug aliases are now Unicode-aware (via shared `aliasOf` in core).
+- Drop the language-specific regex for inferring the "closed" list. The init now explicitly asks: "Which list is the default for newly-created cards?" and "Which list means 'closed / done'?" with sensible defaults (first / last picked).
+- Fetch board members during init and add them to `members[]`. After collection, the init asks: "Pick the escalation contact" and stores it as `defaults.escalateToAlias` (the chosen member is re-aliased to `"owner"`). Manual fallback prompts for `(id, username, fullName)` when the Trello API returns no board members.
+- `multiSelect`: empty input now means "select all" instead of "select none".
+- README clarifies the per-OS defaults and the env override.
+
 ## 1.0.0
 
 ### Major Changes
