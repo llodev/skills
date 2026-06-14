@@ -11,13 +11,17 @@
   },
   "files": [
     "SKILL.md",
+    "SKILL.pt-BR.md",
+    "SKILL.es-ES.md",
+    "README.md",
+    "README.pt-BR.md",
+    "README.es-ES.md",
     "schemas",
     "references",
     "anti-patterns",
     "scripts",
     "i18n",
     "LICENSE",
-    "README.md",
     "CHANGELOG.md"
   ],
   "keywords": [
