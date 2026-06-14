@@ -14,6 +14,7 @@
   "autonomousPromptQuestion": "¿Activar modo autónomo? (añade un bloque autonomous con defaults conservadores)",
   "autonomousAddedTitle": "bloque autonomous añadido con enabled:false.",
   "autonomousReviewBody": "Revisa el scope en el JSON antes de activar.",
+  "configWritten": "Config escrito en {path}.",
   "errAuthMissing": "auth: falta una variable de entorno obligatoria",
   "errInvalidConfig": "config inválido"
 }

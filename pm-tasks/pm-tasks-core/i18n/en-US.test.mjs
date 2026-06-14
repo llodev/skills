@@ -24,6 +24,7 @@ test("en-US has all required core keys", async () => {
     "autonomousPromptQuestion",
     "autonomousAddedTitle",
     "autonomousReviewBody",
+    "configWritten",
     "errAuthMissing",
     "errInvalidConfig",
   ];

@@ -300,13 +300,13 @@ async function run() {
   const schema = await loadSchema();
   const valid = await validateConfig(out, schema);
   if (!valid.ok) {
-    console.error("invalid config:", JSON.stringify(valid.errors, null, 2));
+    console.error(`${coreStrings.errInvalidConfig}:`, JSON.stringify(valid.errors, null, 2));
     process.exit(1);
   }
 
   await writeConfig(outPath, out);
   printInstructions([
-    `Config written to ${outPath}.`,
+    interpolate(coreStrings.configWritten, { path: outPath }),
     asanaStrings.tryItTitle,
     asanaStrings.tokenReminderTitle,
     asanaStrings.tokenReminderBody,

@@ -14,6 +14,7 @@
   "autonomousPromptQuestion": "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
   "autonomousAddedTitle": "autonomous block added with enabled:false.",
   "autonomousReviewBody": "Review scope in the JSON before enabling.",
+  "configWritten": "Config written to {path}.",
   "errAuthMissing": "auth: required environment variable is missing",
   "errInvalidConfig": "invalid config"
 }
