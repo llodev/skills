@@ -43,3 +43,12 @@ Implementation steps in adapter's runtime logic:
 | `task.due-date.set` | `{ previousDue, newDue }`                                                     |
 | `task.assignee.add` | `{ memberId, username }`                                                      |
 | `task.comment.add`  | `{ commentId }`                                                               |
+
+## `task.close` — close requirements
+
+**Important:** `task.close` MUST set `dueComplete: true` on the card in addition to moving it to the close list. The Trello UI shows the due-date strikethrough only when `dueComplete` is set; relying on the list position alone leaves the card visually unresolved.
+
+Implementation in the adapter:
+
+1. `mcp__trello__update_card` with `{ id, dueComplete: true }`
+2. `mcp__trello__move_card` with `{ cardId, idList: <closeListId> }`
