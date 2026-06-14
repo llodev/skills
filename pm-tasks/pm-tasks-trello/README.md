@@ -36,7 +36,15 @@ Cursor/Windsurf: see [`references/mcp-config.md`](references/mcp-config.md).
 npx @llodev/pm-tasks-trello init
 ```
 
-Walk through the prompts. Output: `.trello.json` (repo) or `~/.config/llodev/pm-tasks/trello.json` (global).
+Walk through the prompts. Pick where the config should live:
+
+- **local** → `./.trello.json` (recommended for project-scoped configs, can be committed).
+- **global** → a platform default, customizable. Defaults:
+  - macOS / Linux (XDG): `$XDG_CONFIG_HOME/llodev/pm-tasks/trello.json`, falling back to `~/.config/llodev/pm-tasks/trello.json`.
+  - Windows: `%APPDATA%\llodev\pm-tasks\trello.json`.
+  - Override on any OS with `LLODEV_PM_TASKS_CONFIG_HOME=/your/path` — the file lands at `$LLODEV_PM_TASKS_CONFIG_HOME/trello.json`.
+
+The `init` prompt prints the absolute path it will write to, so you always see exactly where the file goes.
 
 ## Use
 
