@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-asana
 
+## 1.0.2
+
+### Patch Changes
+
+- Allow `defaults.escalateToAlias` (and `defaults.assigneeAlias` on Trello) in the config schemas. The v1.0.1 init scripts emit these keys, but the JSON Schemas still had `additionalProperties: false` rejecting them — making `npx @llodev/pm-tasks-{asana,trello} init` fail at the validate step with "must NOT have additional properties". Trello init also now emits `assigneeAlias: "me"` for parity with Asana.
+
 ## 1.0.1
 
 ### Patch Changes

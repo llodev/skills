@@ -7,16 +7,15 @@ description: >-
   existing tasks (check subtask, close task, change due-date, assign person,
   comment); OR when invoked autonomously by another agent with [autonomous] /
   --auto sentinel. Asana hierarchy: workspace > project > section > parent task
-  > subtasks (one level), with custom fields and multi-assignee support.
-  Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP),
-  autonomous (write-through with allowlist). Implements 6 CRUD verbs
-  (task.create, checklist.check, task.close, task.due-date.set,
-  task.assignee.add, task.comment.add) from
-  pm-tasks/pm-tasks-core/references/contract.md. Requires @llodev/pm-tasks-core
-  installed.
+  > subtasks (one level), with custom fields and multi-assignee support. Modes:
+  paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous
+  (write-through with allowlist). Implements 6 CRUD verbs (task.create,
+  checklist.check, task.close, task.due-date.set, task.assignee.add,
+  task.comment.add) from pm-tasks/pm-tasks-core/references/contract.md. Requires
+  @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.0.0
+  version: 1.0.2
   tags:
     - agent-skill
     - asana

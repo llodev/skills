@@ -10,8 +10,8 @@
   },
   "peerDependencies": {
     "@llodev/pm-tasks-core": "^1.0.0",
-    "@llodev/pm-tasks-trello": "^1.0.0",
-    "@llodev/pm-tasks-asana": "^1.0.0"
+    "@llodev/pm-tasks-trello": "^1.0.2",
+    "@llodev/pm-tasks-asana": "^1.0.2"
   },
   "devDependencies": {
     "@llodev/pm-tasks-core": "workspace:*",

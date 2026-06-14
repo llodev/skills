@@ -3,10 +3,10 @@ name: pm-tasks-trello
 description: >-
   Trello adapter for the @llodev/pm-tasks-* family. Use when the user mentions
   Trello, asks to "create card", "publish to Trello", "post to Trello",
-  "publish", or uses --publish; OR for CRUD on existing cards (check
-  checklist item, close card, change due-date, add member, comment); OR when
-  invoked autonomously by another agent with [autonomous] / --auto sentinel.
-  Modes: paste-ready (no MCP needed), MCP publish (via atlassian-trello-mcp),
+  "publish", or uses --publish; OR for CRUD on existing cards (check checklist
+  item, close card, change due-date, add member, comment); OR when invoked
+  autonomously by another agent with [autonomous] / --auto sentinel. Modes:
+  paste-ready (no MCP needed), MCP publish (via atlassian-trello-mcp),
   autonomous (write-through with allowlist). Implements 6 CRUD verbs
   (task.create, checklist.check, task.close, task.due-date.set,
   task.assignee.add, task.comment.add) from
@@ -14,7 +14,7 @@ description: >-
   installed.
 license: MIT
 metadata:
-  version: 1.0.0
+  version: 1.0.2
   tags:
     - agent-skill
     - trello
