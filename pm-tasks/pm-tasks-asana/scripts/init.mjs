@@ -13,6 +13,10 @@ import {
   validateConfig,
   probeMCP,
   printInstructions,
+  promptLocale,
+  loadStrings,
+  registerI18nRoot,
+  interpolate,
 } from "@llodev/pm-tasks-core/init-lib";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -51,30 +55,30 @@ async function asanaProbe() {
   };
 }
 
-async function promptManualMember() {
+async function promptManualMember(asanaStrings) {
   const { createInterface } = await import("node:readline/promises");
   const { stdin: input, stdout: output } = await import("node:process");
   const r = createInterface({ input, output });
   try {
-    const gid = (await r.question("Escalation member gid (Asana user ID): ")).trim();
+    const gid = (await r.question(asanaStrings.manualMemberGid)).trim();
     if (!gid) return null;
-    const name = (await r.question("Display name: ")).trim() || "owner";
-    const alias = (await r.question(`Alias (default "owner"): `)).trim() || "owner";
+    const name = (await r.question(asanaStrings.manualMemberName)).trim() || "owner";
+    const alias = (await r.question(asanaStrings.manualMemberAlias)).trim() || "owner";
     return { id: gid, name, alias };
   } finally {
     r.close();
   }
 }
 
-async function collectEscalationMember(out) {
+async function collectEscalationMember(out, { coreStrings, asanaStrings }) {
   const candidates = out.members.filter((m) => m.alias !== "me");
   if (candidates.length) {
     const choices = candidates.map((m) => ({ label: `${m.name} (${m.alias})`, value: m }));
-    const picked = await promptPick(
-      "Pick the escalation contact (will receive escalation comments + add_member on critical cards):",
-      choices,
-      { defaultIndex: 0, allowSkip: true },
-    );
+    const picked = await promptPick(asanaStrings.escalationPrompt, choices, {
+      defaultIndex: 0,
+      allowSkip: true,
+      strings: coreStrings,
+    });
     if (picked) {
       if (picked.alias !== "owner") {
         if (!out.members.find((m) => m.alias === "owner")) picked.alias = "owner";
@@ -83,11 +87,9 @@ async function collectEscalationMember(out) {
     }
     return;
   }
-  const add = await promptYesNo(
-    "Project membership listing returned nothing (PAT scope or solo project). Add an escalation contact manually?",
-  );
+  const add = await promptYesNo(asanaStrings.noMembersPrompt, { strings: coreStrings });
   if (!add) return;
-  const manual = await promptManualMember();
+  const manual = await promptManualMember(asanaStrings);
   if (!manual) return;
   out.members.push(manual);
   out.defaults.escalateToAlias = manual.alias;
@@ -111,9 +113,13 @@ function mapResourceType(subtype) {
 }
 
 async function run() {
-  console.log("\n@llodev/pm-tasks-asana init\n");
+  registerI18nRoot("asana", path.join(ROOT, "i18n"));
+  const locale = await promptLocale("core", { defaultLocale: "en-US" });
+  const coreStrings = await loadStrings("core", locale);
+  const asanaStrings = await loadStrings("asana", locale);
+  console.log(`\n${asanaStrings.header}\n`);
 
-  const { path: outPath } = await promptScope("asana");
+  const { path: outPath } = await promptScope("asana", { strings: coreStrings });
 
   const probe = await probeMCP({
     tool: "asana",
@@ -125,22 +131,12 @@ async function run() {
   });
 
   if (probe.unauthenticated) {
-    printInstructions([
-      "Asana MCP detected, but credentials missing for init probe.",
-      "Generate a Personal Access Token at https://app.asana.com/0/my-apps,",
-      "then set it in your shell and re-run:",
-      "  export LLODEV_PM_TASKS_ASANA_PAT=...",
-      "(The token is used only by this init script; the MCP itself uses OAuth.)",
-    ]);
+    printInstructions([asanaStrings.patMissingTitle, asanaStrings.patMissingBody]);
     return;
   }
 
   if (!probe.mcpAvailable) {
-    printInstructions([
-      "Asana MCP not available. Connect your Asana account first:",
-      "  In Cursor / Claude Code settings → MCP → enable 'claude.ai Asana'.",
-      "Then re-run this init.",
-    ]);
+    printInstructions([asanaStrings.mcpMissingTitle, asanaStrings.mcpMissingBody]);
     return;
   }
 
@@ -149,28 +145,31 @@ async function run() {
   const workspaces = await api.getWorkspaces();
 
   const pickedWorkspaces = await multiSelect(
-    "Available workspaces (select 1):",
+    asanaStrings.workspacePrompt,
     workspaces.map((w) => ({ label: `${w.name} (${w.gid})`, value: w })),
+    { strings: coreStrings },
   );
   if (!pickedWorkspaces.length) {
-    console.error("no workspace selected, aborting");
+    console.error(asanaStrings.noWorkspace);
     process.exit(1);
   }
   const workspace = pickedWorkspaces[0];
 
   const projects = await api.getProjects(workspace.gid);
   const pickedProjects = await multiSelect(
-    `Projects in "${workspace.name}" (select 1+):`,
+    interpolate(asanaStrings.projectsPrompt, { workspace: workspace.name }),
     projects.map((p) => ({ label: `${p.name} (${p.gid})`, value: p })),
+    { strings: coreStrings },
   );
   if (!pickedProjects.length) {
-    console.error("no project selected, aborting");
+    console.error(asanaStrings.noProject);
     process.exit(1);
   }
 
   const out = {
     $schema: "https://llodev.github.io/skills/schemas/pm-tasks-asana.json",
     version: "1",
+    locale,
     workspace: { id: workspace.gid, name: workspace.name },
     projects: [],
     sections: [],
@@ -187,8 +186,9 @@ async function run() {
 
     const sections = await api.getSections(p.gid);
     const pickedSections = await multiSelect(
-      `Sections in "${p.name}":`,
+      interpolate(asanaStrings.sectionsPrompt, { project: p.name }),
       sections.map((s) => ({ label: s.name, value: s })),
+      { strings: coreStrings },
     );
     for (const s of pickedSections) {
       out.sections.push({
@@ -203,8 +203,9 @@ async function run() {
     const fields = cfSettings.map((cs) => cs.custom_field).filter(Boolean);
     if (fields.length) {
       const pickedFields = await multiSelect(
-        `Custom fields in "${p.name}" (select fields to expose to the adapter):`,
+        interpolate(asanaStrings.customFieldsPrompt, { project: p.name }),
         fields.map((f) => ({ label: `${f.name} [${f.resource_subtype}]`, value: f })),
+        { strings: coreStrings },
       );
       for (const f of pickedFields) {
         const entry = {
@@ -226,8 +227,9 @@ async function run() {
 
       if (pickedFields.length) {
         const inheritPicked = await multiSelect(
-          `Of those, which should subtasks inherit from the parent?`,
+          asanaStrings.inheritPrompt,
           pickedFields.map((f) => ({ label: f.name, value: f })),
+          { strings: coreStrings },
         );
         for (const f of inheritPicked) inheritFieldIds.add(f.gid);
       }
@@ -254,21 +256,22 @@ async function run() {
       value: s,
     }));
     if (sectionChoices.length) {
-      const open = await promptPick(
-        "Which section is the default for newly-created tasks?",
-        sectionChoices,
-        { defaultIndex: 0, allowSkip: true },
-      );
+      const open = await promptPick(asanaStrings.openSectionPrompt, sectionChoices, {
+        defaultIndex: 0,
+        allowSkip: true,
+        strings: coreStrings,
+      });
       if (open) out.defaults.sectionAlias = open.alias;
-      const close = await promptPick("Which section means 'closed / done'?", sectionChoices, {
+      const close = await promptPick(asanaStrings.closeSectionPrompt, sectionChoices, {
         defaultIndex: sectionChoices.length - 1,
         allowSkip: true,
+        strings: coreStrings,
       });
       if (close) out.defaults.closeSectionAlias = close.alias;
     }
   }
 
-  await collectEscalationMember(out);
+  await collectEscalationMember(out, { coreStrings, asanaStrings });
 
   if (inheritFieldIds.size) {
     out.subtaskDefaults = {
@@ -279,6 +282,7 @@ async function run() {
 
   const wantAuto = await promptYesNo(
     "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
+    { strings: coreStrings },
   );
   if (wantAuto) {
     out.autonomous = {
@@ -307,9 +311,9 @@ async function run() {
   await writeConfig(outPath, out);
   printInstructions([
     `Config written to ${outPath}.`,
-    "Try it in Claude Code: 'create an Asana task from this plan'.",
-    "Reminder: the Asana MCP holds OAuth — never put tokens in this JSON.",
-    "The LLODEV_PM_TASKS_ASANA_PAT env var is only used by this init script.",
+    asanaStrings.tryItTitle,
+    asanaStrings.tokenReminderTitle,
+    asanaStrings.tokenReminderBody,
   ]);
 }
 
