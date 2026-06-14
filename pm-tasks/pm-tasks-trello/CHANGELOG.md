@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-trello
 
+## 1.0.3
+
+### Patch Changes
+
+- Fix `npx @llodev/pm-tasks-trello init` failing with HTTP 401 even when `TRELLO_API_KEY` + `TRELLO_TOKEN` are correctly exported. The internal `url(p)` builder appended `?key=...&token=...` even when `p` already contained a query string (every endpoint did — `/members/me?fields=...`, `/boards/.../lists?filter=open&fields=...`, etc.), producing URLs with TWO `?`. Trello parsed `fields=id,username,fullName?key=...` as one field value, leaving `key` effectively unset. Fix: detect existing query string and use `&` as separator. Bug was present since v1.0.0; only surfaced now because the init flow was unreachable until v1.0.1's npx fix.
+
 ## 1.0.2
 
 ### Patch Changes

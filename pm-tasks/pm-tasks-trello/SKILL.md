@@ -14,7 +14,7 @@ description: >-
   installed.
 license: MIT
 metadata:
-  version: 1.0.2
+  version: 1.0.3
   tags:
     - agent-skill
     - trello
