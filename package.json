@@ -11,6 +11,7 @@
   "scripts": {
     "validate": "node scripts/validate-frontmatter.mjs && node scripts/validate-schemas.mjs && node scripts/validate-links.mjs",
     "contract:check": "node scripts/contract-check.mjs",
+    "skill-judge:check": "node scripts/skill-judge-check.mjs",
     "version:sync": "node scripts/sync-version.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && pnpm run version:sync",

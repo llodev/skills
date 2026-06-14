@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset release-version release-publish init-asana init-trello clean
+.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset release-version release-publish init-asana init-trello skill-judge clean
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -43,6 +43,9 @@ init-asana: ## run pm-tasks-asana init (needs LLODEV_PM_TASKS_ASANA_PAT)
 
 init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 	node pm-tasks/pm-tasks-trello/scripts/init.mjs
+
+skill-judge: ## skill-judge:check — reads scores from stdin as JSON {path: score}
+	pnpm skill-judge:check
 
 clean: ## remove build artefacts and pnpm caches in node_modules
 	rm -rf node_modules pm-tasks/*/node_modules
