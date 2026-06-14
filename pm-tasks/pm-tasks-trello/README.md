@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+</p>
+
 # @llodev/pm-tasks-trello
 
 Trello adapter for the `@llodev/pm-tasks-*` family. Convert implementation plans into Trello cards (paste-ready or published via MCP) and operate them (`checklist.check`, `task.close`, `task.comment.add`, etc.).

@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+</p>
+
 # @llodev/pm-tasks-core
 
 Skill núcleo compartida por todos los adaptadores `@llodev/pm-tasks-<tool>` (Trello, Asana, Jira, Linear, Notion, ClickUp, Monday, Bitrix24, Todoist).

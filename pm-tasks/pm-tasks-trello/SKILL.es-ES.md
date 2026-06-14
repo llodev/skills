@@ -33,6 +33,12 @@ compatibility:
     - roo-code
 ---
 
+<p align="center">
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/SKILL.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/SKILL.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/SKILL.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+</p>
+
 # pm-tasks-trello
 
 Adaptador para Trello dentro de la familia `@llodev/pm-tasks-*`. Usa las fases de extracción de la skill núcleo, luego aplica el formato de Trello y, opcionalmente, publica/opera vía el servidor MCP `atlassian-trello-mcp`.

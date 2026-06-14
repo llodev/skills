@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+</p>
+
 # @llodev/pm-tasks-asana
 
 Adaptador de Asana para la familia `@llodev/pm-tasks-*`. Convierte planes de implementación en parent tasks + subtareas de Asana (listas para pegar o publicadas vía MCP) y opera sobre ellas (`checklist.check`, `task.close`, `task.comment.add`, etc.).

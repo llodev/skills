@@ -29,6 +29,12 @@ compatibility:
     - roo-code
 ---
 
+<p align="center">
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+</p>
+
 # pm-tasks-core
 
 Núcleo compartilhado por todos os adapters `pm-tasks-<tool>`. Define as fases de extração, a estrutura do generic-card, o vocabulário CRUD, o contrato do modo autônomo, as regras de lookup de configuração e o formato do log de auditoria. Os adapters referenciam essa skill por caminho — não há mecanismo formal de dependência na especificação.
