@@ -31,3 +31,11 @@ test("listLocales('core') returns BCP-47 codes sorted", async () => {
   assert.ok(locales.includes("es-ES"));
   assert.deepEqual([...locales].sort(), locales, "locales should be sorted");
 });
+
+test("promptScope uses strings.scopePromptHeader from supplied locale strings", async () => {
+  const strings = await loadStrings("core", "pt-BR");
+  // Assert that the strings table has the expected placeholders.
+  assert.match(strings.scopePromptHeader, /\{tool\}/);
+  assert.match(strings.scopePromptLocal, /\{localPath\}/);
+  assert.match(strings.scopePromptGlobal, /\{globalPath\}/);
+});

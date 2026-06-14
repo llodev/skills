@@ -74,16 +74,17 @@ export function resolveGlobalConfigDir() {
   return path.join(base, "llodev", "pm-tasks");
 }
 
-export async function promptScope(toolName) {
+export async function promptScope(toolName, { strings } = {}) {
+  const s = strings || (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     const localPath = path.resolve(`.${toolName}.json`);
     const globalPath = path.join(resolveGlobalConfigDir(), `${toolName}.json`);
     console.log(
-      `\nWhere should the ${toolName} config live?\n  1) local   → ${localPath}\n  2) global  → ${globalPath}`,
+      `\n${interpolate(s.scopePromptHeader, { tool: toolName })}\n${interpolate(s.scopePromptLocal, { localPath })}\n${interpolate(s.scopePromptGlobal, { globalPath })}`,
     );
-    console.log(`  (override the global dir with LLODEV_PM_TASKS_CONFIG_HOME)`);
-    const a = (await r.question("Choose [1/2] (default 1): ")).trim() || "1";
+    console.log(s.scopePromptOverrideHint);
+    const a = (await r.question(s.scopePromptQuestion)).trim() || "1";
     if (a === "1") return { scope: "local", path: localPath };
     if (a === "2") return { scope: "global", path: globalPath };
     throw new Error(`invalid choice: ${a}`);
@@ -92,23 +93,29 @@ export async function promptScope(toolName) {
   }
 }
 
-export async function promptYesNo(question, defaultNo = true) {
+export async function promptYesNo(question, { defaultNo = true, strings } = {}) {
+  const s = strings || (await loadStrings("core", "en-US"));
   const r = rl();
   try {
-    const a = (await r.question(`${question} [y/N]: `)).trim().toLowerCase();
-    if (a === "y" || a === "yes") return true;
+    const yesShort = s.yesNoYes;
+    const noShort = s.yesNoNo;
+    const a = (await r.question(`${question} [${yesShort}/${noShort.toUpperCase()}]: `))
+      .trim()
+      .toLowerCase();
+    if (a === yesShort || a === "yes" || a === "sim" || a === "si") return true;
     return false;
   } finally {
     r.close();
   }
 }
 
-export async function multiSelect(label, choices) {
+export async function multiSelect(label, choices, { strings } = {}) {
+  const s = strings || (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     console.log(`\n${label}`);
     choices.forEach((c, i) => console.log(`  ${i + 1}) ${c.label}`));
-    const a = (await r.question("Select (comma-separated, e.g. 1,3,5; empty = all): ")).trim();
+    const a = (await r.question(s.multiSelectQuestion)).trim();
     if (a === "") return choices.map((c) => c.value);
     const picks = a
       .split(",")
@@ -120,19 +127,24 @@ export async function multiSelect(label, choices) {
   }
 }
 
-export async function promptPick(label, choices, { defaultIndex = -1, allowSkip = false } = {}) {
+export async function promptPick(
+  label,
+  choices,
+  { defaultIndex = -1, allowSkip = false, strings } = {},
+) {
+  const s = strings || (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     console.log(`\n${label}`);
     choices.forEach((c, i) => console.log(`  ${i + 1}) ${c.label}`));
     const hint = [
       defaultIndex >= 0 ? `default ${defaultIndex + 1}` : null,
-      allowSkip ? "s = skip" : null,
+      allowSkip ? s.promptPickSkip : null,
     ]
       .filter(Boolean)
       .join(", ");
     const suffix = hint ? ` (${hint})` : "";
-    const a = (await r.question(`Select one${suffix}: `)).trim();
+    const a = (await r.question(`${s.promptPickQuestion}${suffix}: `)).trim();
     if (allowSkip && (a === "s" || a === "skip")) return null;
     if (a === "") {
       if (defaultIndex >= 0) return choices[defaultIndex].value;
