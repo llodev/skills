@@ -93,6 +93,23 @@ Skip 5.2 preview & approval. Apply autonomous-mode contract from [`../pm-tasks-c
 
 Asana-specific autonomous scope: `autonomous.scope.projects[]` + `autonomous.scope.sections[]` must include the target GIDs. Any custom-field write must be in `autonomous.allow` (`task.create` covers create-time field set; ongoing field changes are out of scope for v1.x).
 
+### Continuous operation in multi-task loops
+
+Mandatory when the controller is executing a plan with multiple tasks autonomously. Mirror each task transition on the corresponding Asana task in real time — NEVER batch state updates at end-of-loop. See [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md) § **Continuous operation across multi-task loops** for the full contract and anti-patterns.
+
+Asana-specific verb mapping:
+
+| Transition              | MCP call(s)                                                                                                                                                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Task start              | `mcp__asana__update_tasks { task: <gid>, add_projects: [{ project_id, section_id: <wipSectionGid> }] }`                                                                                                                                             |
+| Step complete (subtask) | `mcp__asana__update_tasks { task: <subtaskGid>, completed: true }`                                                                                                                                                                                  |
+| Task complete (full)    | `mcp__asana__add_comment { task_id: <parentGid>, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `mcp__asana__update_tasks { task: <parentGid>, completed: true, add_projects: [{ project_id, section_id: <doneSectionGid> }] }` |
+| Task failed             | `mcp__asana__add_comment` with failure mode + `mcp__asana__update_tasks { task: <gid>, add_followers: ["<escalateToAliasGid>"] }` for human escalation. Do NOT close.                                                                               |
+
+Resolve `<wipSectionGid>` / `<doneSectionGid>` from `.asana.json` `sections[]` by alias (`wip`, `done`, or `closeSectionAlias` from `defaults`). Both must already be in `autonomous.scope.sections` — otherwise the verb returns `OUT_OF_SCOPE`.
+
+**Asana caveat (per [`anti-patterns/asana.md`](./anti-patterns/asana.md)):** the MCP `get_task` doesn't return activity stories, so verifying the lifecycle programmatically is incomplete. The UI activity feed IS the human's audit log — keep it dense and accurate.
+
 ## Phase 6 — CRUD operations (existing tasks)
 
 For verbs other than `task.create`, jump directly to the operation. Verb → MCP tool mapping:

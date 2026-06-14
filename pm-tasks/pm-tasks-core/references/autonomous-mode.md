@@ -59,6 +59,55 @@ Returns `{ code: "FORBIDDEN_VERB" }` without touching MCP.
 - Emit structured envelope to caller (JSON, not human-formatted).
 - Append entry to audit log per [`audit-log-format.md`](audit-log-format.md).
 
+## Continuous operation across multi-task loops
+
+Autonomous mode is **stateful** when the controlling agent is executing a plan with multiple tasks (subagent-driven-development, executing-plans, manual TDD loops, etc.). Each task transition in code MUST be mirrored on the PM tool in real time — same session, NOT batched at the end of the loop.
+
+This is the single most common misinterpretation of autonomous mode: treating it as a one-shot publish flag instead of an ongoing posture. The allowlist verbs (`checklist.check`, `task.close`, `task.comment.add`) exist precisely so the loop can keep the PM tool in sync as it goes.
+
+### Per-task lifecycle (mandatory)
+
+For each task the controller works on, in order:
+
+1. **Start**: move the corresponding task/card from the open list (e.g., `backlog`) to the in-progress list (e.g., `wip`). Tool-specific verb: see the adapter overlay (`task.move` / `move_card` / `add_projects` with new section).
+2. **Per step**: `checklist.check` the matching checklist item as soon as that step is verified complete. Do NOT wait for the whole task to finish.
+3. **On completion**:
+   - `task.comment.add` with the commit SHA: `🤖 [agent] Task complete. Commit: <SHA>. <branch>.`
+   - `task.close` — which for most adapters means moving to the close list AND setting completion state (`dueComplete: true` on Trello, `completed: true` on Asana).
+4. **On failure / blocker**: `task.comment.add` with the failure mode. If `defaults.escalateToAlias` is set, `task.assignee.add` (or equivalent) adds the human as collaborator/follower. Do NOT call `task.close` — leave the card in WIP with the escalation visible.
+
+### Anti-patterns
+
+NEVER:
+
+- Leave cards in `backlog` while the code work is in progress (humans lose visibility into what's running).
+- Skip the per-step `checklist.check` and only mark "Steps" complete at the end (the audit log on disk has the data, but the PM tool — which is what the human watches — looks frozen).
+- Skip the per-task commit-SHA comment (breaks the human's ability to map cards ↔ commits in their PM tool).
+- Batch all moves into a final sweep after the loop completes (defeats the purpose of running autonomously, masks failures until everything is "done").
+
+### Why this matters
+
+Humans use the PM tool — Trello, Asana, Jira, etc. — to monitor progress in real time. If the autonomous loop batches state at end-of-loop, the human has no visibility into:
+
+- which task is currently running
+- whether a long task is making progress vs hanging
+- whether to escalate, intervene, or kill the run
+- which commits correspond to which task
+
+The disk audit log captures everything programmatically, but a human checking Trello at minute 30 of a 90-minute autonomous run needs to see real-time card movement. **The PM tool IS the human's audit log.** The disk file is the agent's audit log; both must be kept in sync.
+
+### Quick checklist before claiming autonomous compliance
+
+Before reporting a task complete in an autonomous loop:
+
+- [ ] Card / task was moved to the in-progress list when work started
+- [ ] Each implementation step was marked done as it completed (not at the end)
+- [ ] A comment with the commit SHA was posted on completion
+- [ ] The card was moved to the close list AND closed
+- [ ] On failure: comment + escalation, no close
+
+If any of the above is "no" for a given task, the autonomous mode contract was not honored for that task.
+
 ## Failure handling
 
 Any failure → structured envelope. Skill does NOT auto-retry. Caller decides retry/abort/escalate. If the verb supports `clientToken`, caller can safely retry the exact same call (will be deduped).
