@@ -1,5 +1,14 @@
 # @llodev/pm-tasks
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @llodev/pm-tasks-core@1.1.0
+  - @llodev/pm-tasks-asana@1.1.0
+  - @llodev/pm-tasks-trello@1.1.0
+
 ## 1.0.0
 
 First stable release. Meta-package: `npm i @llodev/pm-tasks` installs the entire family (core + Trello + Asana) via peer dependencies.

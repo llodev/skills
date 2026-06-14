@@ -1,5 +1,16 @@
 # @llodev/pm-tasks-asana
 
+## 1.1.0
+
+### Minor Changes
+
+- Localize init prompts in en-US, pt-BR, es-ES. The first prompt of `npx @llodev/pm-tasks-{asana,trello} init` is now a language picker, and every subsequent prompt is rendered in the chosen locale. The selected locale is recorded as `locale` at the root of the config JSON. New helpers in `@llodev/pm-tasks-core/init-lib`: `promptLocale`, `loadStrings`, `interpolate`, `listLocales`, `registerI18nRoot`. JSON Schemas updated to accept `locale` as an enum. No breaking changes — existing configs without `locale` continue to validate and adapters keep emitting en-US prompts if the strings table is omitted.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @llodev/pm-tasks-core@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes
