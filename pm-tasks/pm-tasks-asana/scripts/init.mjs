@@ -7,6 +7,8 @@ import {
   promptScope,
   promptYesNo,
   multiSelect,
+  promptPick,
+  aliasOf,
   writeConfig,
   validateConfig,
   probeMCP,
@@ -39,8 +41,7 @@ async function asanaProbe() {
     getWorkspaces: () => j("/workspaces?opt_fields=name"),
     getProjects: (workspaceGid) =>
       j(`/projects?workspace=${workspaceGid}&opt_fields=name&limit=100`),
-    getSections: (projectGid) =>
-      j(`/projects/${projectGid}/sections?opt_fields=name&limit=100`),
+    getSections: (projectGid) => j(`/projects/${projectGid}/sections?opt_fields=name&limit=100`),
     getCustomFields: (projectGid) =>
       j(
         `/projects/${projectGid}/custom_field_settings?opt_fields=custom_field.name,custom_field.gid,custom_field.resource_subtype,custom_field.enum_options.name,custom_field.enum_options.gid&limit=100`,
@@ -50,11 +51,46 @@ async function asanaProbe() {
   };
 }
 
-function aliasOf(name) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+async function promptManualMember() {
+  const { createInterface } = await import("node:readline/promises");
+  const { stdin: input, stdout: output } = await import("node:process");
+  const r = createInterface({ input, output });
+  try {
+    const gid = (await r.question("Escalation member gid (Asana user ID): ")).trim();
+    if (!gid) return null;
+    const name = (await r.question("Display name: ")).trim() || "owner";
+    const alias = (await r.question(`Alias (default "owner"): `)).trim() || "owner";
+    return { id: gid, name, alias };
+  } finally {
+    r.close();
+  }
+}
+
+async function collectEscalationMember(out) {
+  const candidates = out.members.filter((m) => m.alias !== "me");
+  if (candidates.length) {
+    const choices = candidates.map((m) => ({ label: `${m.name} (${m.alias})`, value: m }));
+    const picked = await promptPick(
+      "Pick the escalation contact (will receive escalation comments + add_member on critical cards):",
+      choices,
+      { defaultIndex: 0, allowSkip: true },
+    );
+    if (picked) {
+      if (picked.alias !== "owner") {
+        if (!out.members.find((m) => m.alias === "owner")) picked.alias = "owner";
+      }
+      out.defaults.escalateToAlias = picked.alias;
+    }
+    return;
+  }
+  const add = await promptYesNo(
+    "Project membership listing returned nothing (PAT scope or solo project). Add an escalation contact manually?",
+  );
+  if (!add) return;
+  const manual = await promptManualMember();
+  if (!manual) return;
+  out.members.push(manual);
+  out.defaults.escalateToAlias = manual.alias;
 }
 
 function mapResourceType(subtype) {
@@ -212,12 +248,27 @@ async function run() {
 
   if (out.projects.length === 1) {
     out.defaults.projectAlias = out.projects[0].alias;
-    const backlog = out.sections.find((s) => /backlog|todo|to.do|inbox/i.test(s.name));
-    const done = out.sections.find((s) => /done|completed|published|conclu/i.test(s.name));
-    if (backlog) out.defaults.sectionAlias = backlog.alias;
-    if (done) out.defaults.closeSectionAlias = done.alias;
     out.defaults.assigneeAlias = "me";
+    const sectionChoices = out.sections.map((s) => ({
+      label: `${s.name} (${s.alias})`,
+      value: s,
+    }));
+    if (sectionChoices.length) {
+      const open = await promptPick(
+        "Which section is the default for newly-created tasks?",
+        sectionChoices,
+        { defaultIndex: 0, allowSkip: true },
+      );
+      if (open) out.defaults.sectionAlias = open.alias;
+      const close = await promptPick("Which section means 'closed / done'?", sectionChoices, {
+        defaultIndex: sectionChoices.length - 1,
+        allowSkip: true,
+      });
+      if (close) out.defaults.closeSectionAlias = close.alias;
+    }
   }
+
+  await collectEscalationMember(out);
 
   if (inheritFieldIds.size) {
     out.subtaskDefaults = {
@@ -262,9 +313,7 @@ async function run() {
   ]);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  run().catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
-}
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

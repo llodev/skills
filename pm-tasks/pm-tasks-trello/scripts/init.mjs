@@ -7,6 +7,8 @@ import {
   promptScope,
   promptYesNo,
   multiSelect,
+  promptPick,
+  aliasOf,
   writeConfig,
   validateConfig,
   probeMCP,
@@ -41,11 +43,50 @@ async function trelloProbe() {
   };
 }
 
-function aliasOf(name) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+async function promptManualMember() {
+  const { createInterface } = await import("node:readline/promises");
+  const { stdin: input, stdout: output } = await import("node:process");
+  const r = createInterface({ input, output });
+  try {
+    const id = (await r.question("Escalation member id (Trello member ID): ")).trim();
+    if (!id) return null;
+    const username = (await r.question("Username: ")).trim();
+    const fullName = (await r.question("Display name: ")).trim();
+    const alias = (await r.question(`Alias (default "owner"): `)).trim() || "owner";
+    return { id, username, fullName, alias };
+  } finally {
+    r.close();
+  }
+}
+
+async function collectEscalationMember(out) {
+  const candidates = out.members.filter((m) => m.alias !== "me");
+  if (candidates.length) {
+    const choices = candidates.map((m) => ({
+      label: `${m.fullName || m.username} (${m.alias})`,
+      value: m,
+    }));
+    const picked = await promptPick(
+      "Pick the escalation contact (will receive escalation comments + add_member on critical cards):",
+      choices,
+      { defaultIndex: 0, allowSkip: true },
+    );
+    if (picked) {
+      if (picked.alias !== "owner") {
+        if (!out.members.find((m) => m.alias === "owner")) picked.alias = "owner";
+      }
+      out.defaults.escalateToAlias = picked.alias;
+    }
+    return;
+  }
+  const add = await promptYesNo(
+    "Board members weren't picked up. Add an escalation contact manually?",
+  );
+  if (!add) return;
+  const manual = await promptManualMember();
+  if (!manual) return;
+  out.members.push(manual);
+  out.defaults.escalateToAlias = manual.alias;
 }
 
 async function run() {
@@ -125,15 +166,42 @@ async function run() {
         alias: aliasOf(l.name),
       });
     }
+    try {
+      const members = await api.getMembers(b.id);
+      for (const m of members) {
+        if (m.id === me.id) continue;
+        if (out.members.find((x) => x.id === m.id)) continue;
+        out.members.push({
+          id: m.id,
+          username: m.username,
+          fullName: m.fullName,
+          alias: aliasOf(m.username || m.fullName || m.id),
+        });
+      }
+    } catch (e) {
+      // Board membership listing may require additional scopes; skip silently.
+    }
   }
 
   if (out.boards.length === 1) {
     out.defaults.boardAlias = out.boards[0].alias;
-    const backlog = out.lists.find((l) => /backlog|todo|to.do/i.test(l.name));
-    const done = out.lists.find((l) => /done|published|concluído/i.test(l.name));
-    if (backlog) out.defaults.listAlias = backlog.alias;
-    if (done) out.defaults.closeListAlias = done.alias;
+    const listChoices = out.lists.map((l) => ({ label: `${l.name} (${l.alias})`, value: l }));
+    if (listChoices.length) {
+      const open = await promptPick(
+        "Which list is the default for newly-created cards?",
+        listChoices,
+        { defaultIndex: 0, allowSkip: true },
+      );
+      if (open) out.defaults.listAlias = open.alias;
+      const close = await promptPick("Which list means 'closed / done'?", listChoices, {
+        defaultIndex: listChoices.length - 1,
+        allowSkip: true,
+      });
+      if (close) out.defaults.closeListAlias = close.alias;
+    }
   }
+
+  await collectEscalationMember(out);
 
   const wantAuto = await promptYesNo(
     "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
@@ -167,9 +235,7 @@ async function run() {
   ]);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  run().catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
-}
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
