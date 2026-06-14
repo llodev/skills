@@ -109,7 +109,8 @@
         "projectAlias": { "type": "string" },
         "sectionAlias": { "type": "string" },
         "closeSectionAlias": { "type": "string" },
-        "assigneeAlias": { "type": "string" }
+        "assigneeAlias": { "type": "string" },
+        "escalateToAlias": { "type": "string" }
       }
     },
     "taskAliases": {

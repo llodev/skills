@@ -73,7 +73,9 @@
       "properties": {
         "boardAlias": { "type": "string" },
         "listAlias": { "type": "string" },
-        "closeListAlias": { "type": "string" }
+        "closeListAlias": { "type": "string" },
+        "assigneeAlias": { "type": "string" },
+        "escalateToAlias": { "type": "string" }
       }
     },
     "taskAliases": {

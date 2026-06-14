@@ -185,6 +185,7 @@ async function run() {
 
   if (out.boards.length === 1) {
     out.defaults.boardAlias = out.boards[0].alias;
+    out.defaults.assigneeAlias = "me";
     const listChoices = out.lists.map((l) => ({ label: `${l.name} (${l.alias})`, value: l }));
     if (listChoices.length) {
       const open = await promptPick(
