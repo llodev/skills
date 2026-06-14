@@ -28,7 +28,10 @@ async function trelloProbe() {
   // We use this only to enumerate boards/lists/labels/members for the user.
   const { TRELLO_API_KEY: KEY, TRELLO_TOKEN: TOKEN } = process.env;
   if (!KEY || !TOKEN) throw new Error("auth: TRELLO_API_KEY or TRELLO_TOKEN missing");
-  const url = (p) => `https://api.trello.com/1${p}?key=${KEY}&token=${TOKEN}`;
+  const url = (p) => {
+    const sep = p.includes("?") ? "&" : "?";
+    return `https://api.trello.com/1${p}${sep}key=${KEY}&token=${TOKEN}`;
+  };
   const j = async (p) => {
     const r = await fetch(url(p));
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
