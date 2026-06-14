@@ -1,12 +1,26 @@
+<!-- readme-selector:start -->
 <p align="center">
   <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
   <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
   <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
 </p>
+<!-- readme-selector:end -->
 
 # @llodev/pm-tasks-asana
 
-Asana adapter for the `@llodev/pm-tasks-*` family. Convert implementation plans into Asana parent tasks + subtasks (paste-ready or published via MCP) and operate them (`checklist.check`, `task.close`, `task.comment.add`, etc.).
+> Asana adapter for the `@llodev/pm-tasks-*` family — turn implementation plans into Asana parent tasks + subtasks and operate them via paste, MCP publish, or autonomous write-through.
+
+[![npm](https://img.shields.io/npm/v/@llodev/pm-tasks-asana?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/pm-tasks-asana)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
+
+What you get:
+
+- **Paste-ready output** — agent renders a generic card; you paste into Asana manually.
+- **MCP publish** via the `claude.ai Asana` MCP server (OAuth, no PATs in JSON). Parent task + flat subtasks + custom fields + section placement in one batch.
+- **CRUD operations** on existing tasks: `checklist.check`, `task.close`, `task.comment.add`, `task.due-date.set`, `task.assignee.add`.
+- **Autonomous mode** — `[autonomous]` / `--auto` sentinel for write-through under allowlist + scope + rate limits. Multi-task loops mirror state to Asana in real time.
 
 ## Install
 
@@ -15,13 +29,13 @@ Asana adapter for the `@llodev/pm-tasks-*` family. Convert implementation plans 
 npm i @llodev/pm-tasks-core @llodev/pm-tasks-asana
 
 # Vercel CLI (install core manually too)
-npx skills add llodev/skills/pm-tasks-core
-npx skills add llodev/skills/pm-tasks-asana
+npx skills add llodev/skills/pm-tasks/pm-tasks-core
+npx skills add llodev/skills/pm-tasks/pm-tasks-asana
 ```
 
 ## Setup the MCP
 
-Asana uses OAuth via the `claude.ai Asana` MCP. If you've already connected your Asana account in Cursor or Claude Code settings, you're done — no extra step.
+Asana uses OAuth via the `claude.ai Asana` MCP. If you've already connected your Asana account in Cursor or Claude Code settings, you're done.
 
 For any MCP-capable agent (Claude Code, Cursor, Codex, Windsurf, Cline, Roo Code):
 
@@ -29,7 +43,7 @@ For any MCP-capable agent (Claude Code, Cursor, Codex, Windsurf, Cline, Roo Code
 2. Enable / register `claude.ai Asana` (or your agent's equivalent Asana MCP).
 3. Approve the OAuth flow in your browser.
 
-In Claude Code, verify with `claude mcp list` — `claude.ai Asana` should appear as authenticated. Other agents have their own listing commands; see your agent's MCP docs.
+In Claude Code, verify with `claude mcp list` — `claude.ai Asana` should appear as authenticated.
 
 ## Setup the config
 
@@ -50,21 +64,36 @@ Walk through the prompts. Pick where the config should live:
 
 The `init` prompt prints the absolute path it will write to, so you always see exactly where the file goes.
 
-The PAT is **only** used by `init`. The MCP itself uses OAuth — never put tokens in the JSON.
+> [!IMPORTANT]
+> The PAT is **only** used by `init`. The MCP itself uses OAuth — never put tokens in the JSON.
 
 ## Use
 
-- `"publish this plan as Asana tasks"` → publish flow (parent + subtasks)
-- `"check subtask 3 on task X in Asana"` → CRUD op
-- `"close task Y"` → close
-- `"comment on task X: ..."` → comment
-- `"[autonomous] create task in asana from plan @docs/plans/X.md"` → autonomous (requires `autonomous.enabled: true` in config)
+| Prompt example                                                   | What the agent does                                                   |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `"publish this plan as Asana tasks"`                             | Phase 5 publish — parent + subtasks + custom fields in one batch      |
+| `"check subtask 3 on task X in Asana"`                           | Phase 6 CRUD — `checklist.check` on the subtask                       |
+| `"close task Y"`                                                 | Phase 6 CRUD — `task.close` (moves to close section + sets completed) |
+| `"comment on task X: shipped"`                                   | Phase 6 CRUD — `task.comment.add`                                     |
+| `"[autonomous] create task in asana from plan @docs/plans/X.md"` | Phase 5b autonomous (requires `autonomous.enabled: true`)             |
 
 ## Asana-specific notes
 
-- **Subtasks are one level deep** — the adapter flattens nested checklists into a single subtask layer.
-- **Custom fields do NOT inherit by default** — list field IDs in `subtaskDefaults.inheritParentFields` so the adapter copies them from parent to subtasks at create time.
+> [!NOTE]
+> **Subtasks are one level deep** — the adapter flattens nested checklists into a single subtask layer.
+
+> [!WARNING]
+> **Custom fields do NOT inherit by default** — list field IDs in `subtaskDefaults.inheritParentFields` so the adapter copies them from parent to subtasks at create time.
+
 - **Assignee is a single field** — use `task.assignee.add` to add followers; the primary assignee replaces on conflict.
+- **MCP `get_task` doesn't return activity stories** — the Asana UI activity feed is the source of truth for attribution audits. See [`anti-patterns/asana.md`](./anti-patterns/asana.md).
+
+## Documentation
+
+- [`SKILL.md`](./SKILL.md) — phase routing + CRUD vocabulary.
+- [`schemas/config.json`](./schemas/config.json) — `.asana.json` JSON Schema.
+- [`anti-patterns/asana.md`](./anti-patterns/asana.md) — recurring gotchas.
+- [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md) — autonomous-mode contract.
 
 ## License
 
