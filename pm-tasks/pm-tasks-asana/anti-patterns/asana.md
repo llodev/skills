@@ -39,3 +39,24 @@ Apply when Phase 4 / Phase 5 / Phase 5b target Asana. Authoritative formatting +
 ## Cross-tool
 
 **NEVER** apply Asana's quirks to another adapter after switching targets mid-chat. **Why:** the user said "actually use Trello" — re-load that adapter and apply only its rules.
+
+---
+
+## UI is the source of truth for activity attribution
+
+The MCP's `mcp__asana__get_task` returns user-authored comments but does NOT return activity stories (creation, section moves, assignee changes, custom-field edits, follower changes). Programmatic verification of attribution is therefore incomplete by design.
+
+When auditing whether an agent action was correctly attributed to the agent account (not the human account), open the task in the Asana UI and inspect the activity feed. Do not infer attribution from the MCP response.
+
+## Subtasks do NOT inherit custom fields automatically
+
+Asana itself does not propagate `custom_fields` from a parent task to its subtasks at create time, regardless of project-level defaults. The adapter MUST replicate the parent's selected `inheritParentFields` (declared in `.asana.json` under `subtaskDefaults`) when creating each subtask:
+
+```javascript
+await createSubtasks({
+  parent: parentGid,
+  custom_fields: pick(parent.custom_fields, config.subtaskDefaults.inheritParentFields),
+});
+```
+
+Failing to do this leaves subtasks with empty custom fields even when the parent had them set.
