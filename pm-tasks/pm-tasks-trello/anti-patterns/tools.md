@@ -43,3 +43,26 @@ Use when preview looks wrong **or** the user says paste mangled formatting. **Au
 ## Cross-tool
 
 **NEVER** apply one tool's quirks to another after switching targets mid-chat. **Why:** user said "actually use Jira/Asana" — re-read the matching adapter reference + **re-apply only that adapter's rules** instead of these.
+
+---
+
+## Query-string concat in custom Trello API calls
+
+When building Trello API URLs by hand (without the URL constructor), check whether the path already contains a `?` before appending `?key=...&token=...`. Trello will silently parse `fields=id,name?key=X` as a single field value and return 401. Prefer:
+
+```javascript
+const url = new URL(`https://api.trello.com/1${path}`);
+url.searchParams.set("key", KEY);
+url.searchParams.set("token", TOKEN);
+for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+```
+
+(Bug surfaced in v1.0.3; latent since v1.0.0.)
+
+## `create_card` ignores `idMembers` silently
+
+`mcp__trello__create_card` accepts an `idMembers` array but the underlying MCP does not assign the members. Always follow up with `mcp__trello__trello_add_member_to_card` per member ID. Never trust the create-time response for member assignment.
+
+## `add_member_to_card` may report failure on success
+
+`mcp__trello__trello_add_member_to_card` sometimes returns `"Error adding member to card: Unknown error occurred"` even when the member was added. After the call, re-fetch the card with `mcp__trello__get_card { includeDetails: true }` and check `members[]`. Treat the error as a warning unless the re-fetch confirms the member is absent.
