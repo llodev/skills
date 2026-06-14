@@ -1,5 +1,14 @@
 # @llodev/pm-tasks-trello
 
+## 1.1.1
+
+### Patch Changes
+
+- Ship pt-BR and es-ES translations of SKILL.md and README.md alongside the existing English originals. Adapters keep en-US as the canonical version; localized files follow the `<basename>.<lang-code>.md` convention. The package tarballs now include the localized files via the `files` field.
+
+- Updated dependencies []:
+  - @llodev/pm-tasks-core@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
