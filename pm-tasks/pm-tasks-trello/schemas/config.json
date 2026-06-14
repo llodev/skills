@@ -8,6 +8,10 @@
   "properties": {
     "$schema": { "type": "string" },
     "version": { "const": "1" },
+    "locale": {
+      "type": "string",
+      "enum": ["en-US", "pt-BR", "es-ES"]
+    },
     "workspace": { "type": "string" },
     "boards": {
       "type": "array",

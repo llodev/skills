@@ -13,6 +13,10 @@ import {
   validateConfig,
   probeMCP,
   printInstructions,
+  promptLocale,
+  loadStrings,
+  registerI18nRoot,
+  interpolate,
 } from "@llodev/pm-tasks-core/init-lib";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -46,34 +50,34 @@ async function trelloProbe() {
   };
 }
 
-async function promptManualMember() {
+async function promptManualMember(trelloStrings) {
   const { createInterface } = await import("node:readline/promises");
   const { stdin: input, stdout: output } = await import("node:process");
   const r = createInterface({ input, output });
   try {
-    const id = (await r.question("Escalation member id (Trello member ID): ")).trim();
+    const id = (await r.question(trelloStrings.manualMemberId)).trim();
     if (!id) return null;
-    const username = (await r.question("Username: ")).trim();
-    const fullName = (await r.question("Display name: ")).trim();
-    const alias = (await r.question(`Alias (default "owner"): `)).trim() || "owner";
+    const username = (await r.question(trelloStrings.manualMemberUsername)).trim();
+    const fullName = (await r.question(trelloStrings.manualMemberFullName)).trim();
+    const alias = (await r.question(trelloStrings.manualMemberAlias)).trim() || "owner";
     return { id, username, fullName, alias };
   } finally {
     r.close();
   }
 }
 
-async function collectEscalationMember(out) {
+async function collectEscalationMember(out, { coreStrings, trelloStrings }) {
   const candidates = out.members.filter((m) => m.alias !== "me");
   if (candidates.length) {
     const choices = candidates.map((m) => ({
       label: `${m.fullName || m.username} (${m.alias})`,
       value: m,
     }));
-    const picked = await promptPick(
-      "Pick the escalation contact (will receive escalation comments + add_member on critical cards):",
-      choices,
-      { defaultIndex: 0, allowSkip: true },
-    );
+    const picked = await promptPick(trelloStrings.escalationPrompt, choices, {
+      defaultIndex: 0,
+      allowSkip: true,
+      strings: coreStrings,
+    });
     if (picked) {
       if (picked.alias !== "owner") {
         if (!out.members.find((m) => m.alias === "owner")) picked.alias = "owner";
@@ -82,20 +86,22 @@ async function collectEscalationMember(out) {
     }
     return;
   }
-  const add = await promptYesNo(
-    "Board members weren't picked up. Add an escalation contact manually?",
-  );
+  const add = await promptYesNo(trelloStrings.noMembersPrompt, { strings: coreStrings });
   if (!add) return;
-  const manual = await promptManualMember();
+  const manual = await promptManualMember(trelloStrings);
   if (!manual) return;
   out.members.push(manual);
   out.defaults.escalateToAlias = manual.alias;
 }
 
 async function run() {
-  console.log("\n@llodev/pm-tasks-trello init\n");
+  registerI18nRoot("trello", path.join(ROOT, "i18n"));
+  const locale = await promptLocale("core", { defaultLocale: "en-US" });
+  const coreStrings = await loadStrings("core", locale);
+  const trelloStrings = await loadStrings("trello", locale);
+  console.log(`\n${trelloStrings.header}\n`);
 
-  const { path: outPath } = await promptScope("trello");
+  const { path: outPath } = await promptScope("trello", { strings: coreStrings });
 
   const probe = await probeMCP({
     tool: "trello",
@@ -107,21 +113,12 @@ async function run() {
   });
 
   if (probe.unauthenticated) {
-    printInstructions([
-      "Trello MCP detected, but credentials missing.",
-      "Set them in your shell and re-run:",
-      "  export TRELLO_API_KEY=...",
-      "  export TRELLO_TOKEN=...",
-    ]);
+    printInstructions([trelloStrings.credsMissingTitle, trelloStrings.credsMissingBody]);
     return;
   }
 
   if (!probe.mcpAvailable) {
-    printInstructions([
-      "Trello MCP not available. Configure it first:",
-      "  claude mcp add trello -s project -- npx -y atlassian-trello-mcp",
-      "See references/mcp-config.md for details. Re-run this init afterward.",
-    ]);
+    printInstructions([trelloStrings.mcpMissingTitle, trelloStrings.mcpMissingBody]);
     return;
   }
 
@@ -130,17 +127,19 @@ async function run() {
   const boards = await api.getBoards();
 
   const pickedBoards = await multiSelect(
-    "Available boards (select 1+):",
+    trelloStrings.boardsPrompt,
     boards.map((b) => ({ label: `${b.name} (${b.id})`, value: b })),
+    { strings: coreStrings },
   );
   if (!pickedBoards.length) {
-    console.error("no board selected, aborting");
+    console.error(trelloStrings.noBoard);
     process.exit(1);
   }
 
   const out = {
     $schema: "https://llodev.github.io/skills/schemas/pm-tasks-trello.json",
     version: "1",
+    locale,
     boards: [],
     lists: [],
     labels: [],
@@ -153,8 +152,9 @@ async function run() {
     out.boards.push({ id: b.id, name: b.name, alias, url: b.url });
     const lists = await api.getLists(b.id);
     const pickedLists = await multiSelect(
-      `Lists in "${b.name}":`,
+      interpolate(trelloStrings.listsPrompt, { board: b.name }),
       lists.map((l) => ({ label: l.name, value: l })),
+      { strings: coreStrings },
     );
     for (const l of pickedLists) {
       out.lists.push({ boardAlias: alias, id: l.id, name: l.name, alias: aliasOf(l.name) });
@@ -191,24 +191,26 @@ async function run() {
     out.defaults.assigneeAlias = "me";
     const listChoices = out.lists.map((l) => ({ label: `${l.name} (${l.alias})`, value: l }));
     if (listChoices.length) {
-      const open = await promptPick(
-        "Which list is the default for newly-created cards?",
-        listChoices,
-        { defaultIndex: 0, allowSkip: true },
-      );
+      const open = await promptPick(trelloStrings.openListPrompt, listChoices, {
+        defaultIndex: 0,
+        allowSkip: true,
+        strings: coreStrings,
+      });
       if (open) out.defaults.listAlias = open.alias;
-      const close = await promptPick("Which list means 'closed / done'?", listChoices, {
+      const close = await promptPick(trelloStrings.closeListPrompt, listChoices, {
         defaultIndex: listChoices.length - 1,
         allowSkip: true,
+        strings: coreStrings,
       });
       if (close) out.defaults.closeListAlias = close.alias;
     }
   }
 
-  await collectEscalationMember(out);
+  await collectEscalationMember(out, { coreStrings, trelloStrings });
 
   const wantAuto = await promptYesNo(
     "Enable autonomous mode? (adds an autonomous block with conservative defaults)",
+    { strings: coreStrings },
   );
   if (wantAuto) {
     out.autonomous = {
@@ -234,8 +236,8 @@ async function run() {
   await writeConfig(outPath, out);
   printInstructions([
     `Config written to ${outPath}.`,
-    "Try it in Claude Code: 'create a Trello card from this plan'.",
-    "Reminder: secrets belong in env vars or OS keychain — never in this JSON.",
+    trelloStrings.tryItTitle,
+    trelloStrings.tokenReminderTitle,
   ]);
 }
 

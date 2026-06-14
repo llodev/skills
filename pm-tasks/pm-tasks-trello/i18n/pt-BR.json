@@ -1,0 +1,20 @@
+{
+  "header": "@llodev/pm-tasks-trello init",
+  "credsMissingTitle": "MCP do Trello detectado, mas faltam credenciais.",
+  "credsMissingBody": "Exporte no shell e rode de novo:\n  export TRELLO_API_KEY=...\n  export TRELLO_TOKEN=...",
+  "mcpMissingTitle": "MCP do Trello não disponível. Configure primeiro:",
+  "mcpMissingBody": "  claude mcp add trello -s project -- npx -y atlassian-trello-mcp\nVeja references/mcp-config.md. Rode este init depois.",
+  "boardsPrompt": "Boards disponíveis (selecione 1+):",
+  "noBoard": "nenhum board selecionado, abortando",
+  "listsPrompt": "Listas em \"{board}\":",
+  "openListPrompt": "Qual lista é o default para novos cards?",
+  "closeListPrompt": "Qual lista significa 'fechada / concluída'?",
+  "escalationPrompt": "Escolha o contato de escalation (recebe comentários de escalation + add_member em cards críticos):",
+  "noMembersPrompt": "Membros do board não foram capturados. Adicionar um contato de escalation manualmente?",
+  "manualMemberId": "ID do membro de escalation (Trello member ID): ",
+  "manualMemberUsername": "Username: ",
+  "manualMemberFullName": "Nome de exibição: ",
+  "manualMemberAlias": "Alias (default \"owner\"): ",
+  "tryItTitle": "Teste no Claude Code: 'crie um card no Trello a partir desse plano'.",
+  "tokenReminderTitle": "Lembrete: secrets vão em env vars ou keychain do OS — nunca neste JSON."
+}
