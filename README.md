@@ -6,8 +6,9 @@ skills sit at the repo root.
 
 ## Families
 
-### `pm-tasks-*` — Plans → project-management tasks
+### Project Management Tasks
 
+slug: `pm-tasks-*`
 Turn implementation plans into PM tasks (Trello, Asana, Jira, Linear,
 Notion, ClickUp, Monday, Bitrix24, Todoist) and operate them — paste,
 publish via MCP, or autonomous mode invoked by other agents.

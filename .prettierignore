@@ -1,16 +1,7 @@
-# dependencies & build artifacts
+# dependencies
 node_modules/
-dist/
-build/
-out/
-.next/
-.turbo/
-coverage/
 
-# typescript build state
-**/*.tsbuildinfo
-
-# env (never format, may contain secrets)
+# secrets — never format env files (.env.example is fine to format)
 .env
 .env.*
 !.env.example
