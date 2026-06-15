@@ -18,10 +18,10 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "pm-tasks/pm-tasks-core/SKILL.md": {
-    "score": 80,
-    "version": "1.0.1",
+    "score": 85,
+    "version": "1.1.1",
     "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (skill-judge 96/120, Grade B)"
+    "notes": "v1.1 post-implementation (skill-judge 102/120, Grade B)"
   },
   "pm-tasks/pm-tasks-jira/SKILL.md": {
     "score": 29,
@@ -54,9 +54,9 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "pm-tasks/pm-tasks-trello/SKILL.md": {
-    "score": 76,
-    "version": "1.0.3",
+    "score": 80,
+    "version": "1.1.2",
     "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (skill-judge 91/120, Grade C)"
+    "notes": "v1.1 post-implementation (skill-judge 96/120, Grade B)"
   }
 }
