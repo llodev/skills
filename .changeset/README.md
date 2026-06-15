@@ -39,6 +39,19 @@ Output is one big commit's worth of edits. Review the diff before committing as 
 
 Publishes every workspace package whose `version` is ahead of what's on npm. Requires npm auth (handled by CI in `release.yml` — locally you need `npm login`).
 
+## Quality gate — skill-judge
+
+`make release-version` is prerequisite-chained to `make pre-release`, which enforces the [skill-judge](../scripts/skill-judge-check.mjs) ratchet: if any `pm-tasks/*/SKILL.md` was modified on this branch vs `origin/main` AND `scripts/skill-judge-baseline.json` was NOT updated in the same range, the gate blocks the release.
+
+The flow when SKILL.md changed:
+
+1. Run `make skill-judge` with current scores piped in as JSON (`{<path>: <score 0–100>}`) — agent scores each modified SKILL.md via the `skill-judge` skill, pipes the JSON to the make target.
+2. Compare against `scripts/skill-judge-baseline.json`. Verdicts: **PASS** (Δ ≥ 0), **WARN** (drop within tolerance), **FAIL** (regression beyond tolerance), **NEW** (no baseline entry).
+3. **If Δ ≥ +3 for any modified skill**: ratchet that entry in `scripts/skill-judge-baseline.json` (bump `version` + `capturedAt`) and commit on this branch — that's what unblocks the gate.
+4. **If drift is noise (Δ ∈ [-2, +2])**: bypass with `SKIP_SKILL_JUDGE_GATE=1 make release-version` and document the justification in the next changeset summary.
+
+The gate prints exactly which files triggered it and which action is required, so there's no guessing.
+
 ## Cheatsheet
 
 | Want to …                                       | Run                                                    |

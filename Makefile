@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset release-version release-publish init-asana init-trello skill-judge clean
+.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge clean
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -32,7 +32,10 @@ version-sync: ## sync package.json versions across workspace
 changeset: ## record a new changeset (interactive)
 	pnpm changeset
 
-release-version: ## apply changesets + bump versions
+pre-release: ## quality gate before release-version (skill-judge ratchet check)
+	@bash scripts/pre-release-check.sh
+
+release-version: pre-release ## apply changesets + bump versions (runs pre-release first)
 	pnpm changeset:version
 
 release-publish: ## publish to npm (gated by CI/auth)
