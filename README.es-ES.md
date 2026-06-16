@@ -50,10 +50,10 @@ Convierten planes de implementación en tareas de PM (Trello, Asana, …) y las 
 
 | Paquete                     | Estado      | Fuente                                                     | npm                             | Vercel CLI                                              |
 | --------------------------- | ----------- | ---------------------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
-| `@llodev/pm-tasks` _(meta)_ | ✅ v1.1.2   | [pm-tasks/pm-tasks/](pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`        | —                                                       |
-| `@llodev/pm-tasks-core`     | ✅ v1.1.1   | [pm-tasks/pm-tasks-core/](pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`   | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
-| `@llodev/pm-tasks-asana`    | ✅ v1.1.2   | [pm-tasks/pm-tasks-asana/](pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`  | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
-| `@llodev/pm-tasks-trello`   | ✅ v1.1.2   | [pm-tasks/pm-tasks-trello/](pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello` | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
+| `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [pm-tasks/pm-tasks/](pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`        | —                                                       |
+| `@llodev/pm-tasks-core`     | ✅ v1.3.0   | [pm-tasks/pm-tasks-core/](pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`   | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
+| `@llodev/pm-tasks-asana`    | ✅ v1.3.0   | [pm-tasks/pm-tasks-asana/](pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`  | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
+| `@llodev/pm-tasks-trello`   | ✅ v1.3.0   | [pm-tasks/pm-tasks-trello/](pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello` | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
 | `pm-tasks-jira`             | 🔒 scaffold | [pm-tasks/pm-tasks-jira/](pm-tasks/pm-tasks-jira/)         | —                               | —                                                       |
 | `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](pm-tasks/pm-tasks-linear/)     | —                               | —                                                       |
 | `pm-tasks-notion`           | 🔒 scaffold | [pm-tasks/pm-tasks-notion/](pm-tasks/pm-tasks-notion/)     | —                               | —                                                       |
@@ -64,6 +64,9 @@ Convierten planes de implementación en tareas de PM (Trello, Asana, …) y las 
 
 > [!NOTE]
 > Las skills marcadas como `scaffold` son namespaces reservados con un `SKILL.md` placeholder. Su descripción instruye a los agentes a NO activarse hasta que llegue un adaptador real.
+
+> [!NOTE]
+> `@llodev/pm-tasks` (meta) se versiona de forma independiente de la familia mediante `onlyUpdatePeerDependentsWhenOutOfRange`. La familia está en `v1.x`; el meta saltó a `v3.0.0` antes del desacoplamiento y permanecerá en `v3.x` hasta que la familia alcance `v2.0.0`.
 
 ## Compatibilidad de agentes
 
@@ -100,10 +103,29 @@ Las releases siguen el workflow [Changesets](https://github.com/changesets/chang
 
 ## Roadmap
 
-Las familias futuras seguirán el mismo layout anidado `<family>/<family>-<member>/`:
+Foco actual: consolidar la base del `pm-tasks-*` antes de lanzar nuevos adaptadores. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](docs/roadmap.md).
+
+**Próximos lanzamientos — base del `pm-tasks-*` (`v1.3.1` → `v1.4.0`):**
+
+- `v1.3.1` (patch) — cerrar brechas de tests: tests i18n adapter-scoped, validador de rutas localizadas, documentación inline de `NOISE_BAND`, golden master del skill-judge.
+- `v1.4.0` (minor) — base de DX: `.d.ts` artesanales para los exports de `init-lib`, canary E2E (PR ejecuta `pnpm pack` + `npx <pkg>` en un sandbox limpio), `@llodev/pm-tasks-testkit` (fakes en memoria para los 6 verbos canónicos).
+
+**Tras la base — primera expansión de adapters (`v1.5.x`):**
+
+- `pm-tasks-jira` — Atlassian Remote MCP. Mayor cuota de mercado dev/agile.
+- `pm-tasks-linear` — Linear MCP. Gran presencia en el ecosistema dev; `Cycle` se alinea de forma nativa con nuestro modelo de verbos.
+- 7.º verbo canónico `task.sprint.set` (necesario para Jira / Linear / ClickUp).
+- Jerarquía parent/child (epic → story → task) para Jira / Linear / Asana.
+
+**Mediano plazo (`v1.6+`):**
+
+- Más adaptadores: `pm-tasks-clickup`, `pm-tasks-notion`, `pm-tasks-github-projects`, `pm-tasks-monday`, `pm-tasks-todoist`, `pm-tasks-bitrix24`.
+- Más verbos: `task.time.log`, `task.estimate.set`, grafo de dependencias (`task.blocks.add`).
+- Sincronización bidireccional (read-back desde la herramienta PM → plan).
+
+**Familias futuras:**
 
 - **`ts-ddd-*`** — bloques de Domain-Driven Design para codebases TypeScript (entidades, value objects, use cases, repositorios, controllers).
-- Promover los scaffolds `pm-tasks-*` a adaptadores reales conforme aterricen los servidores MCP para cada herramienta.
 
 ## Docs
 
