@@ -86,6 +86,10 @@ Stable error codes: `FORBIDDEN_VERB`, `OUT_OF_SCOPE`, `ALLOWLIST_VIOLATION`, `RA
 
 Adapters MUST include a short fallback section in their own `SKILL.md` (~10 lines) for when this core is not installed: ask user for minimum input (title + checklist), skip extraction.
 
+## See also
+
+- [`attribution.md`](attribution.md) — opt-in runtime attribution policy (added in v1.2.0).
+
 ## Compatibility notes for adapters
 
 - Reference this file by relative path: `pm-tasks/pm-tasks-core/references/contract.md`.
