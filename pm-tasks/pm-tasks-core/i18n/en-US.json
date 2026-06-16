@@ -16,5 +16,8 @@
   "autonomousReviewBody": "Review scope in the JSON before enabling.",
   "configWritten": "Config written to {path}.",
   "errAuthMissing": "auth: required environment variable is missing",
-  "errInvalidConfig": "invalid config"
+  "errInvalidConfig": "invalid config",
+  "attribution.descriptionFooter": "— posted by {agent} via @llodev/pm-tasks-{tool}",
+  "attribution.commentPrefix": "[{agent}]",
+  "attribution.autonomousCommentPrefix": "[{agent} · autonomous]"
 }

@@ -1,5 +1,14 @@
 # @llodev/pm-tasks
 
+## 3.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`d8da409`](https://github.com/llodev/skills/commit/d8da409a0a08a481264f8bf64e7bf6a501a16793)]:
+  - @llodev/pm-tasks-core@1.2.0
+  - @llodev/pm-tasks-asana@1.2.0
+  - @llodev/pm-tasks-trello@1.2.0
+
 ## 2.0.0
 
 ### Patch Changes

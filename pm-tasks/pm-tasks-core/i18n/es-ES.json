@@ -16,5 +16,8 @@
   "autonomousReviewBody": "Revisa el scope en el JSON antes de activar.",
   "configWritten": "Config escrito en {path}.",
   "errAuthMissing": "auth: falta una variable de entorno obligatoria",
-  "errInvalidConfig": "config inválido"
+  "errInvalidConfig": "config inválido",
+  "attribution.descriptionFooter": "— publicado por {agent} vía @llodev/pm-tasks-{tool}",
+  "attribution.commentPrefix": "[{agent}]",
+  "attribution.autonomousCommentPrefix": "[{agent} · autónomo]"
 }

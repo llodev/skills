@@ -95,6 +95,7 @@
         }
       }
     },
+    "attribution": { "$ref": "https://llodev.com/pm-tasks/attribution.schema.json" },
     "autonomous": {
       "type": "object",
       "additionalProperties": false,

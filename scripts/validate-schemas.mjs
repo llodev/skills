@@ -38,12 +38,27 @@ async function walk(dir, depth = 0, acc = []) {
 
 const schemaFiles = await walk(ROOT);
 
-let failed = false;
+// Pass 1: register every schema by $id so cross-schema $ref resolves
+const schemas = [];
 for (const rel of schemaFiles) {
   const full = path.join(ROOT, rel);
   const schema = JSON.parse(await readFile(full, "utf8"));
+  schemas.push({ rel, schema });
+  if (schema.$id) {
+    ajv.addSchema(schema, schema.$id);
+  }
+}
+
+// Pass 2: compile each schema (resolves cross-references via in-memory registry)
+let failed = false;
+for (const { rel, schema } of schemas) {
   try {
-    ajv.compile(schema);
+    if (schema.$id) {
+      const fn = ajv.getSchema(schema.$id);
+      if (!fn) throw new Error(`schema not found in registry: ${schema.$id}`);
+    } else {
+      ajv.compile(schema);
+    }
     console.log(`ok   ${rel}`);
   } catch (e) {
     console.error(`FAIL ${rel}: ${e.message}`);

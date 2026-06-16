@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llodev.com/pm-tasks/attribution.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": { "type": "boolean", "default": false },
+    "includeAgentName": { "type": "boolean", "default": true },
+    "autonomousOnly": { "type": "boolean", "default": false }
+  },
+  "required": ["enabled"]
+}

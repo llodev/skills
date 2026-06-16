@@ -14,7 +14,7 @@ description: >-
   installed.
 license: MIT
 metadata:
-  version: 1.1.2
+  version: 1.2.0
   tags:
     - agent-skill
     - trello
@@ -66,13 +66,17 @@ Strict order: 5.1 config discovery → 5.2.5 resolve labels/member → 5.2 previ
 
 Full sequence in [`references/publish.md`](references/publish.md).
 
+### Attribution (opt-in)
+
+Before calling the MCP create tool, read `config.attribution`. If `enabled === true`, prefix the comment with the `commentPrefix` returned by `getAttribution()` and append the `descriptionFooter` to the end of `description`. In autonomous mode (`[autonomous]` sentinel), the `commentPrefix` automatically becomes the `autonomousCommentPrefix`. See [references/attribution.md in pm-tasks-core](../pm-tasks-core/references/attribution.md) (added in v1.2.0).
+
 ## Phase 5b — Autonomous
 
 Skip 5.2 preview & approval. Apply autonomous-mode contract from [`pm-tasks/pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Tool-specific overlay in [`references/autonomous.md`](references/autonomous.md). Audit log entries per [`pm-tasks/pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
 
 ## Phase 6 — CRUD operations (existing cards)
 
-For verbs other than `task.create`, jump directly to the operation. **MANDATORY — READ ENTIRE FILE** [`references/operations.md`](references/operations.md) which lists verb → MCP tool mapping and `<task-ref>` resolution for Trello URLs/IDs.
+For verbs other than `task.create`, jump directly to the operation. **MANDATORY — READ ENTIRE FILE** [`references/operations.md`](references/operations.md) which lists verb → MCP tool mapping and `<task-ref>` resolution for Trello URLs/IDs. For `task.comment.add`, apply attribution prefix if `config.attribution.enabled === true` (see Phase 5 § Attribution).
 
 ## Standalone fallback
 

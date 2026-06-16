@@ -15,7 +15,7 @@ description: >-
   @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.1.2
+  version: 1.2.0
   tags:
     - agent-skill
     - asana
@@ -95,6 +95,10 @@ MCP publish sequence:
 3. **Tags** (optional) — `addTag` per tag GID.
 4. **Confirm** — list parent + subtasks with permalinks.
 
+### Attribution (opt-in)
+
+Before calling the MCP create tool, read `config.attribution`. If `enabled === true`, prefix the comment with the `commentPrefix` returned by `getAttribution()` and append the `descriptionFooter` to the end of `description`. In autonomous mode (`[autonomous]` sentinel), the `commentPrefix` automatically becomes the `autonomousCommentPrefix`. See [references/attribution.md in pm-tasks-core](../pm-tasks-core/references/attribution.md) (added in v1.2.0).
+
 ## Phase 5b — Autonomous
 
 Skip 5.2 preview & approval. Apply autonomous-mode contract from [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Audit log entries per [`../pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
@@ -129,7 +133,7 @@ For verbs other than `task.create`, jump directly to the operation. Verb → MCP
 | `task.close`        | `update_tasks`                 | `completed: true` on parent                                           |
 | `task.due-date.set` | `update_tasks`                 | `due_on: "YYYY-MM-DD"`                                                |
 | `task.assignee.add` | `update_tasks` + `addFollower` | primary assignee replaces; additional are followers                   |
-| `task.comment.add`  | `add_comment` (story)          | adds a comment story to the task                                      |
+| `task.comment.add`  | `add_comment` (story)          | adds a comment story to the task; apply attribution prefix if enabled |
 
 `<task-ref>` resolution: accept Asana permalinks (`https://app.asana.com/0/<project>/<task>`), bare GIDs, or aliases from `.asana.json` `taskAliases[]`.
 

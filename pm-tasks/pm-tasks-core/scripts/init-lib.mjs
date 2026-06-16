@@ -220,3 +220,17 @@ export async function readJsonIfExists(p) {
     throw e;
   }
 }
+
+export async function getAttribution({ locale, tool, agent, autonomous, config }) {
+  const att = config?.attribution;
+  if (!att?.enabled) return { commentPrefix: null, descriptionFooter: null };
+  if (att.autonomousOnly && !autonomous) return { commentPrefix: null, descriptionFooter: null };
+
+  const s = await loadStrings("core", locale);
+  const agentName = att.includeAgentName === false ? "agent" : agent;
+  const prefixKey = autonomous ? "attribution.autonomousCommentPrefix" : "attribution.commentPrefix";
+  return {
+    commentPrefix: interpolate(s[prefixKey], { agent: agentName }),
+    descriptionFooter: interpolate(s["attribution.descriptionFooter"], { agent: agentName, tool }),
+  };
+}
