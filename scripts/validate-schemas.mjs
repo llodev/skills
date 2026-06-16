@@ -54,7 +54,8 @@ let failed = false;
 for (const { rel, schema } of schemas) {
   try {
     if (schema.$id) {
-      ajv.getSchema(schema.$id);
+      const fn = ajv.getSchema(schema.$id);
+      if (!fn) throw new Error(`schema not found in registry: ${schema.$id}`);
     } else {
       ajv.compile(schema);
     }

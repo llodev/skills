@@ -55,3 +55,13 @@ test("attribution { enabled: 'yes' } is invalid (wrong type)", async () => {
   const result = validate({ enabled: "yes" })
   assert.equal(result, false)
 })
+
+test("attribution: { enabled: true, unknownField: 1 } → invalid (additionalProperties: false)", async () => {
+  const schema = JSON.parse(
+    await readFile(path.join(HERE, "attribution.schema.json"), "utf8"),
+  )
+  const ajv = new Ajv2020({ strict: false })
+  const validate = ajv.compile(schema)
+  const result = validate({ enabled: true, unknownField: 1 })
+  assert.equal(result, false)
+})
