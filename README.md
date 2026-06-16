@@ -8,7 +8,7 @@
 
 # llodev/skills
 
-> Monorepo of [Agent Skills](https://agentskills.io) for Claude Code, Cursor, Codex, Windsurf, and any agent that speaks the open Skills spec.
+> Collection of [Agent Skills](https://agentskills.io) created by [@lloliveiradev](https://github.com/lloliveiradev) for Claude Code, Cursor, Codex, Windsurf, and any agent that speaks the open Skills spec. Skills are packaged instructions and scripts that extend agent capabilities across development, documentation, planning, and professional workflows.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
