@@ -102,6 +102,21 @@ For any plan that lists multiple releases (e.g. `docs/plans/2026-06-15-…`):
 
 Most modern monorepos using Changesets follow this same rule (shadcn/ui, vercel/swr, changesets/changesets itself, TanStack repos). The exceptions are projects with explicit quarterly release cadence on a release-branch model — which is heavier process than this repo needs.
 
+## Meta-package versioning (`@llodev/pm-tasks`)
+
+The meta-package's version is **decoupled** from the family's SemVer. Treat it as a release-wave counter:
+
+| Meta version           | Family range it ships                  |
+| ---------------------- | -------------------------------------- |
+| `@llodev/pm-tasks@1.x` | `pm-tasks-*@1.0.x` (first stable)      |
+| `@llodev/pm-tasks@2.x` | `pm-tasks-*@1.1.x`                     |
+| `@llodev/pm-tasks@3.x` | `pm-tasks-*@1.2.x` (current)           |
+| `@llodev/pm-tasks@4.x` | will ship with family `2.x` (breaking) |
+
+**Why decoupled:** Changesets bumps `peerDependencies` as `major` by default (any peer change = breaking). That made meta jump `1.0.0 → 2.0.0 → 3.0.0` across two family minors. From v1.2.0 onward, `.changeset/config.json` sets `onlyUpdatePeerDependentsWhenOutOfRange: true`, so the meta only re-versions when the new family version exits the existing peer range (`^1.0.0`). Until family `2.0.0` ships, meta stays in the `3.x.x` line.
+
+**Consumer-facing:** the meta declares broad peer ranges (`^1.0.0`) so anyone on any family `1.x.y` can install `@llodev/pm-tasks` without `EPEERINVALID` complaints.
+
 ## Cheatsheet
 
 | Want to …                                       | Run                                                    |
