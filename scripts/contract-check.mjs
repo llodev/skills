@@ -16,6 +16,20 @@ if (!changed.includes(CONTRACT)) {
   process.exit(0);
 }
 
+// Additive-only check: if zero deletions, it's non-breaking → minor permitted.
+const numstat = execSync(`git diff --numstat origin/${BASE}...HEAD -- ${CONTRACT}`, {
+  encoding: "utf8",
+}).trim();
+if (numstat) {
+  const [insertions, deletions] = numstat.split(/\s+/);
+  if (Number(deletions) === 0 && Number(insertions) > 0) {
+    console.log(
+      `ok   contract.md additive-only (${insertions} insertions, 0 deletions) — minor permitted`
+    );
+    process.exit(0);
+  }
+}
+
 const csDir = ".changeset";
 if (!existsSync(csDir)) {
   console.error("FAIL contract changed but .changeset/ missing");

@@ -60,6 +60,15 @@ The gate prints exactly which files triggered it and which action is required, s
 > versions you might mention in a plan or CHANGELOG don't actually exist on
 > npm unless they're published individually.
 
+### Contract gate (additive vs breaking)
+
+`scripts/contract-check.mjs` enforces SemVer at the contract layer:
+
+- **Additive change** to `contract.md` (only insertions, zero deletions) → permitted in any release type (patch / minor / major). The gate detects this via `git diff --numstat`.
+- **Modification or deletion** of existing contract lines → requires `"@llodev/pm-tasks-core": major` in the changeset, or the gate blocks.
+
+Rationale: adding a new section (e.g., "Custom verbs (extension API)" in v1.3.0) is non-breaking. Removing or rewriting an existing verb description IS breaking and demands a major.
+
 ### Why
 
 `changeset version` reads **all** pending `.changeset/*.md`, applies the **highest bump per package** (minor > patch), and writes **one** version to each `package.json`. The intermediate steps you might imagine — e.g. "we wanted v1.2.0 then v1.2.1 then v1.3.0" — are collapsed.
