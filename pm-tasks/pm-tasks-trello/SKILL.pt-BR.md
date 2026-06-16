@@ -68,7 +68,7 @@ Sequência completa em [`references/publish.md`](references/publish.md).
 
 ### Atribuição (opt-in)
 
-Antes de chamar a MCP-call de criação, leia `config.attribution`. Se `enabled === true`, prefixe o comentário com o `commentPrefix` retornado por `getAttribution()` e anexe o `descriptionFooter` ao final do `description`. Em modo autônomo (`[autonomous]` sentinel), o `commentPrefix` automaticamente se torna o `autonomousCommentPrefix`. Veja `references/attribution.md` no pm-tasks-core (adicionado em v1.2.0; arquivo criado na Task 1.5).
+Antes de chamar a ferramenta MCP de criação, leia `config.attribution`. Se `enabled === true`, prefixe o comentário com o `commentPrefix` retornado por `getAttribution()` e anexe o `descriptionFooter` ao final do `description`. Em modo autônomo (`[autonomous]` sentinel), o `commentPrefix` automaticamente se torna o `autonomousCommentPrefix`. Veja [references/attribution.md no pm-tasks-core](../pm-tasks-core/references/attribution.md) (adicionado em v1.2.0).
 
 ## Fase 5b — Autônomo
 
