@@ -1,0 +1,11 @@
+{
+  "tool": "trello",
+  "verbs": [
+    "task.create",
+    "task.close",
+    "task.due-date.set",
+    "task.assignee.add",
+    "task.comment.add",
+    "checklist.check"
+  ]
+}

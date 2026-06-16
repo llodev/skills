@@ -22,7 +22,8 @@
     "scripts",
     "i18n",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "manifest.json"
   ],
   "keywords": [
     "agent-skill",
