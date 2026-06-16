@@ -66,13 +66,17 @@ Ordem estrita: 5.1 config discovery → 5.2.5 resolve labels/member → 5.2 prev
 
 Sequência completa em [`references/publish.md`](references/publish.md).
 
+### Atribuição (opt-in)
+
+Antes de chamar a MCP-call de criação, leia `config.attribution`. Se `enabled === true`, prefixe o comentário com o `commentPrefix` retornado por `getAttribution()` e anexe o `descriptionFooter` ao final do `description`. Em modo autônomo (`[autonomous]` sentinel), o `commentPrefix` automaticamente se torna o `autonomousCommentPrefix`. Veja [`references/attribution.md`](../pm-tasks-core/references/attribution.md) (adicionado em v1.2.0).
+
 ## Fase 5b — Autônomo
 
 Pule 5.2 preview & aprovação. Aplique o contrato de modo autônomo de [`pm-tasks/pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Overlay específico da ferramenta em [`references/autonomous.md`](references/autonomous.md). Entradas no log de auditoria conforme [`pm-tasks/pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
 
 ## Fase 6 — Operações CRUD (cards existentes)
 
-Para verbos diferentes de `task.create`, vá direto para a operação. **OBRIGATÓRIO — LEIA O ARQUIVO INTEIRO** [`references/operations.md`](references/operations.md) que lista o mapeamento verbo → tool MCP e a resolução de `<task-ref>` para URLs/IDs do Trello.
+Para verbos diferentes de `task.create`, vá direto para a operação. **OBRIGATÓRIO — LEIA O ARQUIVO INTEIRO** [`references/operations.md`](references/operations.md) que lista o mapeamento verbo → tool MCP e a resolução de `<task-ref>` para URLs/IDs do Trello. Para `task.comment.add`, aplique o prefixo de atribuição se `config.attribution.enabled === true` (veja Fase 5 § Atribuição).
 
 ## Fallback standalone
 

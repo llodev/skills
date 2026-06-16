@@ -95,6 +95,10 @@ Sequência do MCP publish:
 3. **Tags** (opcional) — `addTag` por GID de tag.
 4. **Confirmação** — lista parent + subtasks com permalinks.
 
+### Atribuição (opt-in)
+
+Antes de chamar a MCP-call de criação, leia `config.attribution`. Se `enabled === true`, prefixe o comentário com o `commentPrefix` retornado por `getAttribution()` e anexe o `descriptionFooter` ao final do `description`. Em modo autônomo (`[autonomous]` sentinel), o `commentPrefix` automaticamente se torna o `autonomousCommentPrefix`. Veja [`references/attribution.md`](../pm-tasks-core/references/attribution.md) (adicionado em v1.2.0).
+
 ## Fase 5b — Autônomo
 
 Pule 5.2 preview & aprovação. Aplique o contrato de modo autônomo de [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md). Entradas no log de auditoria conforme [`../pm-tasks-core/references/audit-log-format.md`](../pm-tasks-core/references/audit-log-format.md).
@@ -105,14 +109,14 @@ Scope autônomo específico do Asana: `autonomous.scope.projects[]` + `autonomou
 
 Para verbos diferentes de `task.create`, vá direto para a operação. Mapeamento verbo → tool MCP:
 
-| Verbo do core       | Tool MCP do Asana              | Notas                                                                   |
-| ------------------- | ------------------------------ | ----------------------------------------------------------------------- |
-| `task.create`       | `create_tasks`                 | parent + subtasks conforme Fase 5                                       |
-| `checklist.check`   | `update_tasks`                 | para subtasks: `completed: true`; emula checklist via modelo de subtask |
-| `task.close`        | `update_tasks`                 | `completed: true` no parent                                             |
-| `task.due-date.set` | `update_tasks`                 | `due_on: "YYYY-MM-DD"`                                                  |
-| `task.assignee.add` | `update_tasks` + `addFollower` | assignee primário substitui; adicionais viram followers                 |
-| `task.comment.add`  | `add_comment` (story)          | adiciona uma comment story na task                                      |
+| Verbo do core       | Tool MCP do Asana              | Notas                                                                          |
+| ------------------- | ------------------------------ | ------------------------------------------------------------------------------ |
+| `task.create`       | `create_tasks`                 | parent + subtasks conforme Fase 5                                              |
+| `checklist.check`   | `update_tasks`                 | para subtasks: `completed: true`; emula checklist via modelo de subtask        |
+| `task.close`        | `update_tasks`                 | `completed: true` no parent                                                    |
+| `task.due-date.set` | `update_tasks`                 | `due_on: "YYYY-MM-DD"`                                                         |
+| `task.assignee.add` | `update_tasks` + `addFollower` | assignee primário substitui; adicionais viram followers                        |
+| `task.comment.add`  | `add_comment` (story)          | adiciona uma comment story na task; aplica prefixo de atribuição se habilitado |
 
 Resolução de `<task-ref>`: aceita permalinks do Asana (`https://app.asana.com/0/<project>/<task>`), GIDs nus, ou aliases de `taskAliases[]` em `.asana.json`.
 
