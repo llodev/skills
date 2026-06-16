@@ -228,7 +228,9 @@ export async function getAttribution({ locale, tool, agent, autonomous, config }
 
   const s = await loadStrings("core", locale);
   const agentName = att.includeAgentName === false ? "agent" : agent;
-  const prefixKey = autonomous ? "attribution.autonomousCommentPrefix" : "attribution.commentPrefix";
+  const prefixKey = autonomous
+    ? "attribution.autonomousCommentPrefix"
+    : "attribution.commentPrefix";
   return {
     commentPrefix: interpolate(s[prefixKey], { agent: agentName }),
     descriptionFooter: interpolate(s["attribution.descriptionFooter"], { agent: agentName, tool }),

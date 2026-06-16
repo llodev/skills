@@ -18,16 +18,13 @@ for (const locale of LOCALES) {
     const data = JSON.parse(raw);
 
     for (const key of KEYS) {
-      assert.ok(
-        Object.prototype.hasOwnProperty.call(data, key),
-        `${locale}: missing key "${key}"`
-      );
+      assert.ok(Object.prototype.hasOwnProperty.call(data, key), `${locale}: missing key "${key}"`);
       const value = data[key];
       assert.equal(typeof value, "string", `${locale}/${key} must be a string`);
       assert.ok(value.length > 0, `${locale}/${key} must be non-empty`);
       assert.ok(
         value.includes("{agent}"),
-        `${locale}/${key} must contain {agent} token — got: "${value}"`
+        `${locale}/${key} must contain {agent} token — got: "${value}"`,
       );
     }
   });
@@ -39,11 +36,11 @@ for (const locale of LOCALES) {
     assert.equal(
       typeof value,
       "string",
-      `${locale}/attribution.descriptionFooter must be a string`
+      `${locale}/attribution.descriptionFooter must be a string`,
     );
     assert.ok(
       value.includes("{tool}"),
-      `${locale}/attribution.descriptionFooter must contain {tool} token — got: "${value}"`
+      `${locale}/attribution.descriptionFooter must contain {tool} token — got: "${value}"`,
     );
   });
 }

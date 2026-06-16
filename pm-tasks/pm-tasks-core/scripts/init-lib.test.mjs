@@ -53,17 +53,35 @@ test("getAttribution returns prefix+footer for normal mode", async () => {
 });
 
 test("autonomous mode uses autonomousCommentPrefix", async () => {
-  const att = await getAttribution({ locale: "en-US", tool: "asana", agent: "claude-opus", autonomous: true, config: { attribution: { enabled: true, includeAgentName: true } } });
+  const att = await getAttribution({
+    locale: "en-US",
+    tool: "asana",
+    agent: "claude-opus",
+    autonomous: true,
+    config: { attribution: { enabled: true, includeAgentName: true } },
+  });
   assert.match(att.commentPrefix, /autonomous/);
 });
 
 test("returns null markers when attribution disabled", async () => {
-  const att = await getAttribution({ locale: "en-US", tool: "trello", agent: "x", autonomous: false, config: {} });
+  const att = await getAttribution({
+    locale: "en-US",
+    tool: "trello",
+    agent: "x",
+    autonomous: false,
+    config: {},
+  });
   assert.equal(att.commentPrefix, null);
   assert.equal(att.descriptionFooter, null);
 });
 
 test("respects autonomousOnly flag — silent in normal mode", async () => {
-  const att = await getAttribution({ locale: "en-US", tool: "trello", agent: "x", autonomous: false, config: { attribution: { enabled: true, autonomousOnly: true } } });
+  const att = await getAttribution({
+    locale: "en-US",
+    tool: "trello",
+    agent: "x",
+    autonomous: false,
+    config: { attribution: { enabled: true, autonomousOnly: true } },
+  });
   assert.equal(att.commentPrefix, null);
 });
