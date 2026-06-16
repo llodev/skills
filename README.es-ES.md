@@ -84,7 +84,7 @@ Cada skill publicada declara qué agentes soporta en el campo `compatibility.age
 │   ├── pm-tasks-trello/       Adaptador Trello (boards, lists, labels, members)
 │   └── pm-tasks-<member>/     Scaffolds reservados (Jira, Linear, Notion, …)
 ├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
-├── docs/                      publishing-guide.md (gitignored: plans/, tracking/)
+├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intención de release (workflow Changesets)
 ```
 

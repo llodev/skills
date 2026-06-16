@@ -84,7 +84,7 @@ Every published skill declares which agents it targets via the `compatibility.ag
 │   ├── pm-tasks-trello/       Trello adapter (boards, lists, labels, members)
 │   └── pm-tasks-<member>/     Reserved scaffolds (Jira, Linear, Notion, …)
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
-├── docs/                      publishing-guide.md (gitignored: plans/, tracking/)
+├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
 ```
 
