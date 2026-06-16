@@ -15,6 +15,7 @@
     "package/i18n/es-ES.json",
     "package/i18n/parity.test.mjs",
     "package/i18n/pt-BR.json",
+    "package/i18n/registry.test.mjs",
     "package/package.json",
     "package/references/attribution.md",
     "package/references/audit-log-format.md",
