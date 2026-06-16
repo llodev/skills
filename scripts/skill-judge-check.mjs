@@ -6,6 +6,13 @@ import { fileURLToPath } from "node:url";
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASELINE_PATH = path.join(REPO, "scripts/skill-judge-baseline.json");
 const DEFAULT_TOLERANCE = 5;
+// NOISE_BAND (2) — tolerance window for skill-judge drift between runs.
+// |Δ| ≤ 2 is treated as rubric variance, not real regression. A score
+// dropping within this window is logged as WARN (does not fail CI); a
+// score improving within this window does NOT require a baseline ratchet.
+// Update the baseline (mandatory) when Δ ≥ +3. Bypass with
+// SKIP_SKILL_JUDGE_GATE=1 + changeset note when drift is inside [-2, +2].
+// See `.changeset/README.md` § Quality gate for the operational flow.
 const NOISE_BAND = 2;
 
 export function computeVerdict({ current, baseline, tolerance = DEFAULT_TOLERANCE }) {
