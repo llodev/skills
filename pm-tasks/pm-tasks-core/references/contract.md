@@ -88,7 +88,7 @@ Adapters MUST include a short fallback section in their own `SKILL.md` (~10 line
 
 ## See also
 
-- [`attribution.md`](attribution.md) — opt-in runtime attribution policy (added in v1.2.0).
+- `attribution.md` — opt-in runtime attribution policy (added in v1.2.0; file created in Task 1.5).
 
 ## Compatibility notes for adapters
 

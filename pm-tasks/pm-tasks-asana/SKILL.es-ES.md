@@ -97,7 +97,7 @@ Secuencia del MCP publish:
 
 ### Atribución (opt-in)
 
-Antes de llamar a la herramienta MCP de creación, lee `config.attribution`. Si `enabled === true`, prefija el comentario con el `commentPrefix` devuelto por `getAttribution()` y añade el `descriptionFooter` al final de `description`. En modo autónomo (`[autonomous]` sentinel), el `commentPrefix` se convierte automáticamente en el `autonomousCommentPrefix`. Consulta [`references/attribution.md`](../pm-tasks-core/references/attribution.md) (añadido en v1.2.0).
+Antes de llamar a la herramienta MCP de creación, lee `config.attribution`. Si `enabled === true`, prefija el comentario con el `commentPrefix` devuelto por `getAttribution()` y añade el `descriptionFooter` al final de `description`. En modo autónomo (`[autonomous]` sentinel), el `commentPrefix` se convierte automáticamente en el `autonomousCommentPrefix`. Consulta `references/attribution.md` en pm-tasks-core (añadido en v1.2.0; archivo creado en Task 1.5).
 
 ## Fase 5b — Autónomo
 
