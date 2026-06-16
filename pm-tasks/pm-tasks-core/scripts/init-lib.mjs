@@ -102,6 +102,9 @@ export async function promptYesNo(question, { defaultNo = true, strings } = {}) 
     const a = (await r.question(`${question} [${yesShort}/${noShort.toUpperCase()}]: `))
       .trim()
       .toLowerCase();
+    // Cross-locale tolerance: accept the locale-native short answer (`s.yesNoYes`)
+    // AND the three canonical short forms (`yes`/`sim`/`si`). Deliberate so users
+    // can answer prompts in their own language even if the wrong locale was picked.
     if (a === yesShort || a === "yes" || a === "sim" || a === "si") return true;
     return false;
   } finally {

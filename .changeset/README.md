@@ -22,7 +22,7 @@ Interactive prompt:
 
 Writes a file like `.changeset/<random-name>.md`. **Commit it together with the code change.** Nothing in `package.json` or `CHANGELOG.md` is touched yet — this step only records the intent.
 
-Multiple changesets can pile up between releases; they're consolidated at version time.
+Multiple changesets can pile up between releases; they're consolidated at version time. **Important — see [§ Release granularity](#release-granularity) below** for why piling up changesets is usually NOT what you want.
 
 ### 2. `make release-version` — apply the bumps
 
@@ -52,6 +52,56 @@ The flow when SKILL.md changed:
 
 The gate prints exactly which files triggered it and which action is required, so there's no guessing.
 
+## Release granularity
+
+> [!IMPORTANT]
+> **Repo policy: 1 PR = 1 changeset = 1 release.** Don't accumulate multiple
+> changesets across PRs and release them in a single batch. Intermediate
+> versions you might mention in a plan or CHANGELOG don't actually exist on
+> npm unless they're published individually.
+
+### Why
+
+`changeset version` reads **all** pending `.changeset/*.md`, applies the **highest bump per package** (minor > patch), and writes **one** version to each `package.json`. The intermediate steps you might imagine — e.g. "we wanted v1.2.0 then v1.2.1 then v1.3.0" — are collapsed.
+
+Concrete example:
+
+```
+Starting state:  pm-tasks-core@1.1.1
+Pending:
+  v1-2-0-attribution.md      → minor
+  v1-2-1-ci-hardening.md     → patch
+  v1-3-0-conformance.md      → minor
+  v1-3-1-test-gaps.md        → patch
+  v1-4-0-dx-foundation.md    → minor
+
+`changeset version` outputs:
+  pm-tasks-core@1.2.0   ← single version; highest minor wins
+                          v1.2.1 / v1.3.0 / v1.3.1 / v1.4.0 never exist on npm
+```
+
+Consumers can't `npm i @llodev/pm-tasks-core@1.3.0` to test an intermediate milestone. GitHub releases consolidate everything into one entry. Rollback granularity is lost.
+
+### Practical fix
+
+For any plan that lists multiple releases (e.g. `docs/plans/2026-06-15-…`):
+
+1. One Phase per branch — **branch name = the version** (`v1.2.0`, `v1.2.1`, `v1.3.0`). No `feat/` prefix, no theme suffix. The theme goes in the PR title and the changeset, not in the branch name.
+2. One changeset per branch.
+3. PR → CI → merge → publish → confirm on npm.
+4. **Only then** start the next Phase.
+
+5 small PRs > 1 mega-PR — npm history stays faithful to the work shipped, and bisect (`npm i pkg@1.2.0` vs `pkg@1.3.0`) remains a real tool. Branch naming convention is documented in [`CLAUDE.md` § Release convention](../CLAUDE.md).
+
+### When batching IS OK
+
+- Multiple changesets in **the same PR** that all describe one logical change (e.g. a coordinated bump across all 3 packages for the same feature) — totally fine.
+- A hotfix released between planned Phases — its own PR, its own release; doesn't break the policy.
+
+### Industry note
+
+Most modern monorepos using Changesets follow this same rule (shadcn/ui, vercel/swr, changesets/changesets itself, TanStack repos). The exceptions are projects with explicit quarterly release cadence on a release-branch model — which is heavier process than this repo needs.
+
 ## Cheatsheet
 
 | Want to …                                       | Run                                                    |
@@ -68,6 +118,7 @@ The gate prints exactly which files triggered it and which action is required, s
 - **Manually edited `package.json` version?** Safe ONLY if `.changeset/` has no pending `*.md`. Otherwise `release-version` will double-bump on top of your edit.
 - **Workspace deps (`"workspace:^"`) on inter-package imports** are rewritten to real ranges at publish time — don't pre-resolve them by hand.
 - **`commit: false` in `config.json`** is intentional. Changesets don't auto-commit; you control which commit ships the bump.
+- **"Why didn't my v1.2.1 ship?"** Because you batched it with v1.3.0 in the same PR. `changeset version` collapsed both into a single `v1.3.0`. See [§ Release granularity](#release-granularity) — split into separate PRs.
 
 ## Reference
 
