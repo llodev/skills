@@ -52,6 +52,30 @@ The flow when SKILL.md changed:
 
 The gate prints exactly which files triggered it and which action is required, so there's no guessing.
 
+### NOISE_BAND policy (concrete numbers)
+
+The skill-judge gate uses a tolerance window to distinguish rubric variance from real regressions. The constant `NOISE_BAND = 2` lives in `scripts/skill-judge-check.mjs`.
+
+| Δ (current − baseline) | Verdict                    | Action                                                                                                                            |
+| ---------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Δ ≥ +3                 | PASS + ratchet recommended | Update the baseline entry (`score` + `version` + `capturedAt`); commit on this branch. The gate unblocks.                         |
+| 0 ≤ Δ ≤ +2             | PASS (within noise band)   | No baseline change required. Bypass not needed.                                                                                   |
+| -2 ≤ Δ < 0             | WARN (within noise band)   | No baseline change. Bypass with `SKIP_SKILL_JUDGE_GATE=1` + note in the changeset summary acknowledging the drift.                |
+| Δ < -2                 | FAIL (real regression)     | Investigate. Either fix the regression OR ratchet baseline with rationale OR roll back the SKILL.md edit. Do NOT bypass silently. |
+
+#### Worked example (v1.2.0 — runtime attribution)
+
+Modified `pm-tasks-asana/SKILL.md` and `pm-tasks-trello/SKILL.md` to add a small `### Attribution (opt-in)` subsection. Scored each:
+
+- `pm-tasks-asana/SKILL.md`: baseline 83 → current 84 → **Δ +1** → noise band → bypass with note.
+- `pm-tasks-trello/SKILL.md`: baseline 80 → current 81 → **Δ +1** → noise band → bypass with note.
+
+Changeset summary appended:
+
+> Skill-judge gate: measured drift is within the documented noise band ([-2, +2]). Asana: 83 → 84 (Δ +1). Trello: 80 → 81 (Δ +1). No baseline ratchet required; gate bypassed via `SKIP_SKILL_JUDGE_GATE=1`.
+
+`SKIP_SKILL_JUDGE_GATE=1 make release-version` then proceeded.
+
 ## Release granularity
 
 > [!IMPORTANT]
