@@ -1,245 +1,232 @@
 # @llodev/skills — Roadmap
 
-Data: 2026-06-16. Baseline: branch `main` no commit `0ae773c` (v1.3.0 mergeada
-via squash, PR #4). Doc forward-looking, complementa os trackings em
-[`tracking/`](tracking/). Cada item tem **status real** (entregue / parcial /
-pendente) e **prioridade**.
+Date: 2026-06-16. Baseline: `main` at commit `0ae773c` (v1.3.0 merged via squash, PR #4). Forward-looking roadmap — single source of truth for the project; each item carries **real status** (delivered / partial / pending) and **priority**.
 
-**Plano P0 ativo:** [`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md) — Phase C runtime attribution + CI hardening + contract conformance + custom-verbs API + DX foundation. Sem tools novos até concluir.
+**Active P0 plan:** [`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md) — Phase C runtime attribution + CI hardening + contract conformance + custom-verbs API + DX foundation. No new tools until complete.
 
 > [!NOTE]
-> "Pendente" aqui significa "não implementado". "Parcial" significa que parte
-> existe mas tem gap aberto. Itens marcados como resolvidos foram removidos do
-> backlog mesmo que apareçam como TODO em trackings antigos.
+> "Pending" means "not implemented". "Partial" means part of it exists but has an open gap. Items marked as resolved have been removed from the backlog even if they appear as TODO in older review notes.
 
 ---
 
-## 1. Limpeza dos trackings — o que já foi resolvido
+## 1. Already delivered
 
-Itens listados como TODO em trackings antigos que **já estão feitos** e devem
-ser ignorados de agora em diante:
+Items previously identified as gaps that have been delivered and should not be re-tracked. Reference for what's behind us; not actionable backlog.
 
-| Origem                           | Item                                                                                               | Status real                                  | Onde foi resolvido                                                                                                                                                     |
-| -------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| v1.0.1 § Próximo 1               | Skill-judge baseline + quality gate pré-release                                                    | ✅ entregue                                  | `scripts/skill-judge-baseline.json` + `skill-judge-check.mjs` + `pre-release-check.sh` + Makefile `pre-release`                                                        |
-| v1.0.1 § Próximo 2 A             | i18n config + init (locale picker, 3 locales no schema)                                            | ✅ entregue                                  | `pm-tasks-core/i18n/{en-US,pt-BR,es-ES}.json` + `init-lib` `loadStrings/interpolate`                                                                                   |
-| v1.0.1 § Próximo 2 B             | Docs localizadas (SKILL.md, README.md em pt-BR/es-ES)                                              | ✅ entregue                                  | Cada pacote tem `SKILL.<locale>.md` + `README.<locale>.md` + `package.json files`                                                                                      |
-| v1.0.0 § proposals               | Tactical fixes (task.close/dueComplete, UI-as-truth, URL/MCP gotchas)                              | ✅ entregue (Phase 4 do plano v1.1)          | Commits da branch v1.1                                                                                                                                                 |
-| v1.1 código review               | Autonomous mode stateful em multi-task loops                                                       | ✅ documentado                               | `pm-tasks-core/references/autonomous-mode.md` § "Continuous operation"                                                                                                 |
-| v1.1 código review               | Frontmatter stale `1.1.0` em SKILL.md localizadas                                                  | ✅ corrigido                                 | Commit `048e78b`                                                                                                                                                       |
-| v1.1 código review               | `errInvalidConfig` não usado + `Config written` hardcoded EN                                       | ✅ corrigido                                 | Commit `048e78b`                                                                                                                                                       |
-| v1.0.0 § proposals               | Convenção `<basename>.<lang-code>.md`                                                              | ✅ adotada                                   | Doc + uso real em todos os 3 pacotes ativos                                                                                                                            |
-| v1.1 § Próximos                  | Push v1.1 + PR → main + CI publica 3 pacotes                                                       | ✅ entregue                                  | Branch v1.1 mergeada via squash; tags + releases publicadas pelo Changesets action                                                                                     |
-| v1.0.0 § Deferred 5.3            | Migrar workflow `~/.claude/skills/plan-to-task-cards/` pros pacotes                                | ✅ entregue                                  | Workflow diário já consome `@llodev/pm-tasks-*` em produção                                                                                                            |
-| v1.0.0 § Deferred 3.13           | Asana dogfood em workspace limpo                                                                   | ✅ entregue                                  | Validado em sessão real                                                                                                                                                |
-| v1.1 § Próximos 2.2              | Spot-check pt-BR/es-ES com revisão humana                                                          | ✅ entregue                                  | Validado pelo dono do repo                                                                                                                                             |
-| v1.1 review nice-to-have         | `promptYesNo` cross-locale tolerance — comentário explicativo                                      | ✅ entregue                                  | `pm-tasks-core/scripts/init-lib.mjs` § promptYesNo                                                                                                                     |
-| plan v1.2-v1.4 §Phase 1          | Phase C — runtime attribution opt-in (commentPrefix / autonomousCommentPrefix / descriptionFooter) | ✅ entregue v1.2.0                           | `pm-tasks-core/scripts/init-lib.mjs#getAttribution` + 3 i18n keys × 3 locales + `references/attribution.md`                                                            |
-| plan v1.2-v1.4 §Phase 2          | CI release workflow validate + contract-check + pre-release gates + npm provenance                 | ✅ entregue v1.2.1                           | `.github/workflows/release.yml` (post-PR #3)                                                                                                                           |
-| plan v1.2-v1.4 §Phase 2          | Tarball snapshot test (detect `files` field drift)                                                 | ✅ entregue v1.2.1                           | `scripts/tarball-snapshot.test.mjs` + `scripts/tarball-snapshot.json` golden, wired in `pnpm validate`                                                                 |
-| plan v1.2-v1.4 §Phase 3          | Adapter `manifest.json` + custom-verbs extension API                                               | ✅ entregue v1.3.0                           | `pm-tasks-core/schemas/adapter-manifest.schema.json` + `pm-tasks-{asana,trello}/manifest.json` + Phase B em `scripts/contract-check.mjs` + nova seção em `contract.md` |
-| plan v1.2-v1.4 §Task 3.0 (extra) | Contract gate distingue mudanças aditivas em `contract.md` (não exigem major)                      | ✅ entregue v1.3.0                           | `scripts/contract-check.mjs` § Phase A additive check; docs em `.changeset/README.md` § Contract gate                                                                  |
-| Discoveries pós-v1.2.0           | Meta-package versão acoplada a minor da família (jump espúrio 1.0 → 2.0 → 3.0)                     | ✅ resolvido (PR #2 separado, fora do plano) | `.changeset/config.json` `onlyUpdatePeerDependentsWhenOutOfRange: true` + peer ranges relaxadas pra `^1.0.0` + doc em `.changeset/README.md` § Meta-package versioning |
+| Source                        | Item                                                                                               | Real status                         | Where it was resolved                                                                                                                                                   |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.0.x                        | Skill-judge baseline + quality gate pre-release                                                    | ✅ delivered                        | `scripts/skill-judge-baseline.json` + `skill-judge-check.mjs` + `pre-release-check.sh` + Makefile `pre-release`                                                         |
+| v1.0.x                        | i18n config + init (locale picker, 3 locales in schema)                                            | ✅ delivered                        | `pm-tasks-core/i18n/{en-US,pt-BR,es-ES}.json` + `init-lib` `loadStrings/interpolate`                                                                                    |
+| v1.0.x                        | Localized docs (SKILL.md, README.md in pt-BR/es-ES)                                                | ✅ delivered                        | Each package has `SKILL.<locale>.md` + `README.<locale>.md` + `package.json files`                                                                                      |
+| v1.0.x                        | Tactical fixes (task.close/dueComplete, UI-as-truth, URL/MCP gotchas)                              | ✅ delivered (Phase 4 of v1.1 plan) | Commits on branch v1.1                                                                                                                                                  |
+| v1.1.x                        | Autonomous mode stateful in multi-task loops                                                       | ✅ documented                       | `pm-tasks-core/references/autonomous-mode.md` § "Continuous operation"                                                                                                  |
+| v1.1.x                        | Stale frontmatter `1.1.0` in localized SKILL.md files                                              | ✅ fixed                            | Commit `048e78b`                                                                                                                                                        |
+| v1.1.x                        | `errInvalidConfig` unused + `Config written` hardcoded EN                                          | ✅ fixed                            | Commit `048e78b`                                                                                                                                                        |
+| v1.0.x                        | Convention `<basename>.<lang-code>.md`                                                             | ✅ adopted                          | Doc + real usage across all 3 active packages                                                                                                                           |
+| v1.1.x                        | Push v1.1 + PR → main + CI publishes 3 packages                                                    | ✅ delivered                        | Branch v1.1 merged via squash; tags + releases published by Changesets action                                                                                           |
+| v1.0.x                        | Migrate workflow `~/.claude/skills/plan-to-task-cards/` to packages                                | ✅ delivered                        | Daily workflow already consumes `@llodev/pm-tasks-*` in production                                                                                                      |
+| v1.0.x                        | Asana dogfood in a clean workspace                                                                 | ✅ delivered                        | Validated in a real session                                                                                                                                             |
+| v1.1.x                        | Spot-check pt-BR/es-ES with human review                                                           | ✅ delivered                        | Validated by repo owner                                                                                                                                                 |
+| v1.1.x                        | `promptYesNo` cross-locale tolerance — explanatory comment                                         | ✅ delivered                        | `pm-tasks-core/scripts/init-lib.mjs` § promptYesNo                                                                                                                      |
+| v1.2.0 (PR #1)                | Phase C — runtime attribution opt-in (commentPrefix / autonomousCommentPrefix / descriptionFooter) | ✅ delivered v1.2.0                 | `pm-tasks-core/scripts/init-lib.mjs#getAttribution` + 3 i18n keys × 3 locales + `references/attribution.md`                                                             |
+| v1.2.1 (PR #3)                | CI release workflow validate + contract-check + pre-release gates + npm provenance                 | ✅ delivered v1.2.1                 | `.github/workflows/release.yml` (post-PR #3)                                                                                                                            |
+| v1.2.1 (PR #3)                | Tarball snapshot test (detect `files` field drift)                                                 | ✅ delivered v1.2.1                 | `scripts/tarball-snapshot.test.mjs` + `scripts/tarball-snapshot.json` golden, wired in `pnpm validate`                                                                  |
+| v1.3.0 (PR #4)                | Adapter `manifest.json` + custom-verbs extension API                                               | ✅ delivered v1.3.0                 | `pm-tasks-core/schemas/adapter-manifest.schema.json` + `pm-tasks-{asana,trello}/manifest.json` + Phase B in `scripts/contract-check.mjs` + new section in `contract.md` |
+| v1.3.0 (PR #4)                | Contract gate distinguishes additive changes in `contract.md` (do not require major)               | ✅ delivered v1.3.0                 | `scripts/contract-check.mjs` § Phase A additive check; docs in `.changeset/README.md` § Contract gate                                                                   |
+| PR #2 (separate, out of plan) | Meta-package version coupled to family minor (spurious jump 1.0 → 2.0 → 3.0)                       | ✅ resolved                         | `.changeset/config.json` `onlyUpdatePeerDependentsWhenOutOfRange: true` + peer ranges relaxed to `^1.0.0` + doc in `.changeset/README.md` § Meta-package versioning     |
 
 ---
 
-## 2. Backlog real (depois da limpeza)
+## 2. Real backlog
 
-### 2.1 Pendências carregadas dos trackings
+### 2.1 Carry-over backlog
 
-| #   | Item                                                                                        | Origem      | Tamanho | Bloqueia release? |
-| --- | ------------------------------------------------------------------------------------------- | ----------- | ------- | ----------------- |
-| D   | Testes para `registerI18nRoot` / `loadStrings` adapter-scoped + `promptLocale` invalid path | v1.1 review | S       | Não               |
-| E   | Validador de path-correctness em `.md` localizados (`references/contract.pt-BR.md` etc.)    | v1.1 review | S       | Não               |
-| F   | Documentar `NOISE_BAND` no skill-judge gate (atualmente "diff silencioso vs test name")     | v1.1 review | XS      | Não               |
+Items from prior reviews that have not yet shipped.
+
+| #   | Item                                                                                       | Source      | Size | Blocks release? |
+| --- | ------------------------------------------------------------------------------------------ | ----------- | ---- | --------------- |
+| D   | Tests for `registerI18nRoot` / `loadStrings` adapter-scoped + `promptLocale` invalid path  | v1.1 review | S    | No              |
+| E   | Path-correctness validator for localized `.md` files (`references/contract.pt-BR.md` etc.) | v1.1 review | S    | No              |
+| F   | Document `NOISE_BAND` in skill-judge gate (currently "silent diff vs test name")           | v1.1 review | XS   | No              |
 
 > [!NOTE]
-> Itens B, C, G, H removidos — todos resolvidos (B/C/G) ou virados acompanhamento
-> manual fora-de-roadmap (H, `skills.sh` indexação é cron externo do índice).
+> Items B, C, G, H removed — all resolved (B/C/G) or moved to manual monitoring outside the roadmap (H, `skills.sh` indexing is an external cron for the index).
 
-### 2.2 Itens de polish entregues durante esta revisão
+### 2.2 Polish items delivered during this review
 
-- ✅ Comentário explicativo da tolerância cross-locale do `promptYesNo` adicionado.
-- ✅ Revisão humana das traduções pt-BR/es-ES feita pelo dono do repo.
+- ✅ Explanatory comment for `promptYesNo` cross-locale tolerance added.
+- ✅ Human review of pt-BR/es-ES translations done by repo owner.
 
 ---
 
-## 3. Gaps de engenharia (código / processo)
+## 3. Engineering gaps (code / process)
 
-Identificados varrendo o repositório atual. Cada um inclui **por que importa**
-no contexto pm-tasks + agent skills.
+Identified by scanning the current repository. Each includes **why it matters** in the pm-tasks + agent skills context.
 
-### 3.1 Testes e qualidade
+### 3.1 Tests and quality
 
-| #     | Gap                                                                                                                               | Por quê                                                                                                                           | Esforço |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| E1    | **Sem teste E2E** consumindo um pacote publicado (tarball local via `pnpm pack` + `npx`). Hoje só temos unit tests do `init-lib`. | Bug do v1.0.1 (bin entry / shebang) escapou porque `node scripts/init.mjs` rodava local mas `npx @llodev/pm-tasks-asana` falhava. | M       |
-| E2    | **Sem golden master** do skill-judge baseline. Score só vive no `baseline.json`; sem snapshot do rubric input.                    | Score muda silenciosamente se rubric da skill `skill-judge` mudar — perdemos a explicação do "porque 85".                         | S       |
-| ✅ E3 | **Sem contract conformance test** que prove adapter ↔ `contract.md`. `contract-check.mjs` existe mas é frouxo.                    | Quando um novo verbo for adicionado ao core, adapters podem ficar desatualizados sem alarme. **entregue v1.3.0**                  | S       |
-| E4    | **Sem coverage gate** (Istanbul / c8).                                                                                            | Não conseguimos exigir cobertura mínima no PR.                                                                                    | S       |
-| E5    | **Sem mutation testing**.                                                                                                         | Testes do `init-lib` podem estar fracos sem perceber.                                                                             | M       |
-| ✅ E6 | **Sem snapshot test do tarball** (`pnpm pack` + listar arquivos).                                                                 | Já tivemos o bug do `files` field excluindo i18n; snapshot teria detectado. **entregue v1.2.1**                                   | S       |
+| #     | Gap                                                                                                                                  | Why                                                                                                                                 | Effort |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| E1    | **No E2E test** consuming a published package (local tarball via `pnpm pack` + `npx`). Today we only have unit tests for `init-lib`. | Bug in v1.0.1 (bin entry / shebang) escaped because `node scripts/init.mjs` worked locally but `npx @llodev/pm-tasks-asana` failed. | M      |
+| E2    | **No golden master** for the skill-judge baseline. Score only lives in `baseline.json`; no snapshot of the rubric input.             | Score changes silently if the `skill-judge` rubric changes — we lose the explanation for "why 85".                                  | S      |
+| ✅ E3 | **No contract conformance test** proving adapter ↔ `contract.md`. `contract-check.mjs` exists but was loose.                         | When a new verb is added to core, adapters could fall behind without an alarm. **delivered v1.3.0**                                 | S      |
+| E4    | **No coverage gate** (Istanbul / c8).                                                                                                | Cannot enforce minimum coverage on PRs.                                                                                             | S      |
+| E5    | **No mutation testing**.                                                                                                             | `init-lib` tests could be weak without us noticing.                                                                                 | M      |
+| ✅ E6 | **No tarball snapshot test** (`pnpm pack` + list files).                                                                             | We already had the `files` field bug excluding i18n; a snapshot would have caught it. **delivered v1.2.1**                          | S      |
 
 ### 3.2 TypeScript / DX
 
-| #   | Gap                                                                                                                   | Por quê                                                                                                                            | Esforço |
-| --- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| T1  | Repo é 100% `.mjs` (decisão registrada). Sem `.d.ts` shipped → consumidores TS não tem tipos do `init-lib` exportado. | Adapters de terceiros (Jira, Linear quando chegarem) ganhariam tipo `loadStrings(scope, locale): Promise<Record<string, string>>`. | M       |
-| T2  | Sem JSDoc `@type` mínimo em `init-lib.mjs`.                                                                           | Mesmo sem TS, JSDoc dá autocomplete e contrato implícito.                                                                          | S       |
+| #   | Gap                                                                                                               | Why                                                                                                                                 | Effort |
+| --- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| T1  | Repo is 100% `.mjs` (recorded decision). No `.d.ts` shipped → TS consumers have no types for exported `init-lib`. | Third-party adapters (Jira, Linear when they arrive) would gain type `loadStrings(scope, locale): Promise<Record<string, string>>`. | M      |
+| T2  | No minimal JSDoc `@type` annotations in `init-lib.mjs`.                                                           | Even without TS, JSDoc gives autocomplete and an implicit contract.                                                                 | S      |
 
 ### 3.3 Release engineering
 
-| #     | Gap                                                                                                       | Por quê                                                                                                       | Esforço |
-| ----- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------- |
-| ✅ R1 | **CI `release` não roda `validate` nem `contract-check` antes de publicar**. Só roda `changesets/action`. | Bug que passou pelo lefthook (rodando local) pode publicar quebrado. Validate é só na PR. **entregue v1.2.1** | XS      |
-| R2    | **Sem CHANGELOG.md auto-publicado nos pacotes** — confiamos no GitHub Releases gerado por Changesets.     | npm consumer não vê changelog ao instalar.                                                                    | S       |
-| ✅ R3 | **Sem npm provenance** (`--provenance`). Em 2026 já é tabela.                                             | Sinal de supply-chain. **entregue v1.2.1**                                                                    | XS      |
-| R4    | **Sem canary publish** (versão `0.0.0-pr-<n>`) para testar tarball antes do release definitivo.           | Ainda dependemos de `pnpm pack` manual.                                                                       | M       |
-| R5    | **Sem package-size budget** (bundlephobia / size-limit).                                                  | Skills são markdown + JSON, mas tarballs cresceram >50kB com i18n; sem teto explícito.                        | S       |
-| R6    | **Sem dependabot / renovate.json**. `ajv` `^8.17.1` pode envelhecer silenciosamente.                      | Supply-chain hygiene.                                                                                         | XS      |
+| #     | Gap                                                                                                          | Why                                                                                                                  | Effort |
+| ----- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ------ |
+| ✅ R1 | **CI `release` did not run `validate` or `contract-check` before publishing**. Only ran `changesets/action`. | A bug that passed lefthook (running locally) could have published broken. Validate was PR-only. **delivered v1.2.1** | XS     |
+| R2    | **No per-package CHANGELOG.md** — we rely on GitHub Releases generated by Changesets.                        | npm consumers don't see the changelog on install.                                                                    | S      |
+| ✅ R3 | **No npm provenance** (`--provenance`). Standard in 2026.                                                    | Supply-chain signal. **delivered v1.2.1**                                                                            | XS     |
+| R4    | **No canary publish** (version `0.0.0-pr-<n>`) to test tarball before final release.                         | Still depends on manual `pnpm pack`.                                                                                 | M      |
+| R5    | **No package-size budget** (bundlephobia / size-limit).                                                      | Skills are markdown + JSON, but tarballs grew >50kB with i18n; no explicit ceiling.                                  | S      |
+| R6    | **No dependabot / renovate.json**. `ajv` `^8.17.1` can age silently.                                         | Supply-chain hygiene.                                                                                                | XS     |
 
 ### 3.4 Repository hygiene
 
-| #   | Gap                                                                                     | Por quê                                                                         | Esforço |
-| --- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------- |
-| H1  | Sem `CONTRIBUTING.md`.                                                                  | Repo é público no llodev; sem guia, contribuição externa fica adivinhação.      | S       |
-| H2  | Sem `SECURITY.md`.                                                                      | npm registry exige um canal de reporte.                                         | XS      |
-| H3  | Sem `CODE_OF_CONDUCT.md`.                                                               | Padrão GitHub community-files.                                                  | XS      |
-| H4  | Sem issue / PR templates (`.github/ISSUE_TEMPLATE/`).                                   | Acelera triage; útil quando scaffolds virarem adapters reais.                   | S       |
-| H5  | Sem `CODEOWNERS`.                                                                       | Sem auto-assign de review por pacote.                                           | XS      |
-| H6  | `marketplace.json` não está versionado no roadmap (existe via Claude Code marketplace). | Sem teste que prove paridade entre `marketplace.json` e pacotes npm publicados. | S       |
+| #   | Gap                                                                                   | Why                                                                            | Effort |
+| --- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------ |
+| H1  | No `CONTRIBUTING.md`.                                                                 | Repo is public on llodev; without a guide, external contribution is guesswork. | S      |
+| H2  | No `SECURITY.md`.                                                                     | npm registry expects a reporting channel.                                      | XS     |
+| H3  | No `CODE_OF_CONDUCT.md`.                                                              | Standard GitHub community files.                                               | XS     |
+| H4  | No issue / PR templates (`.github/ISSUE_TEMPLATE/`).                                  | Speeds up triage; useful when scaffolds become real adapters.                  | S      |
+| H5  | No `CODEOWNERS`.                                                                      | No auto-assign review by package.                                              | XS     |
+| H6  | `marketplace.json` not versioned in the roadmap (exists via Claude Code marketplace). | No test proving parity between `marketplace.json` and published npm packages.  | S      |
 
-### 3.5 Observabilidade / debugging
+### 3.5 Observability / debugging
 
-| #   | Gap                                                                                                                         | Por quê                                                                          | Esforço |
-| --- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------- |
-| O1  | **Audit log existe mas sem rotação automatizada inteligente** (`pm-tasks-core/scripts/rotate-audit.sh` é shell rudimentar). | Em uso real, audit cresce rápido; rotation precisa ser idempotente + size-aware. | S       |
-| O2  | **Sem telemetria opt-in**. Não sabemos quais verbos são mais usados, quais adapters falham mais.                            | Bloqueia decisão de roadmap baseada em dados.                                    | M       |
-| O3  | **Sem comando `pm-tasks doctor`** (verifica config válido, MCP acessível, allowlist OK, audit gravável).                    | Hoje o user descobre que MCP está offline só quando tenta publicar.              | S       |
-
----
-
-## 4. Gaps de Project Management (features novas)
-
-Recortadas do contexto real de uso (engenheiros + agências usando pm-tasks
-todo dia). Priorizadas por dor observada.
-
-### 4.1 Features de alto valor PM
-
-| #   | Feature                                          | Descrição                                                                                             | Tools que suportam                   | Esforço |
-| --- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | ------------------------------------ | ------- |
-| F1  | **Sync reverso (read-back)**                     | Pull cards do tool → atualiza o plano local (estado, datas, comentários). Bidirecional.               | Todos                                | L       |
-| F2  | **Sprint / iteration support**                   | `task.sprint.set` como 7º verbo. Jira / Linear / ClickUp têm sprints nativos.                         | Jira, Linear, ClickUp, Monday        | M       |
-| F3  | **Parent/child hierarchy (epic → story → task)** | Hoje só temos checklist items (1 nível). Asana suporta nativo; Jira/Linear têm epics.                 | Jira, Linear, Asana, ClickUp         | M       |
-| F4  | **Cross-tool migration**                         | `pm-tasks-migrate from=trello to=linear` mapeia cards via core vocabulary.                            | Todos os que implementam os 6 verbos | L       |
-| F5  | **Time tracking**                                | `task.time.log(hours, comment)` 8º verbo. Jira / Linear / ClickUp / Todoist têm time-tracking nativo. | Jira, ClickUp, Linear, Todoist       | M       |
-| F6  | **Dependency graph** (blocks/blocked-by)         | `task.blocks.add(otherTaskId)`. Jira, Linear, Monday suportam.                                        | Jira, Linear, Monday                 | M       |
-| F7  | **Story points / estimation**                    | `task.estimate.set(points)`. Linear / Jira nativos.                                                   | Jira, Linear, ClickUp                | S       |
-| F8  | **Card templates**                               | Pré-define um card-archetype (ex.: "bug report") com checklist + labels + custom fields.              | Todos                                | S       |
-| F9  | **Multi-board orchestration**                    | Plano único distribuído em múltiplos boards/projetos (ex.: backend → board A, frontend → board B).    | Todos                                | M       |
-| F10 | **WIP limits enforcement**                       | Bloqueia `task.create` se coluna destino estourou WIP.                                                | Trello, Jira, Linear                 | S       |
-| F11 | **Standup notes verb**                           | `task.standup.post(channel)` resume estado dos cards do agente nas últimas 24h.                       | Todos                                | M       |
-| F12 | **Velocity / burndown reporter**                 | Read-only analytics agregando audit log + tool API.                                                   | Todos                                | M       |
-
-### 4.2 Boas práticas de programação que viraram features
-
-| #     | Item                                                                                                                                                               | Por quê                                                             |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| P1    | **`@llodev/pm-tasks-testkit`** — pacote separado com fakes para os 6 verbos, útil pra plugins testarem sem MCP real.                                               | Hoje cada adapter precisa reinventar mocks.                         |
-| P2    | **`@llodev/pm-tasks-cli`** — CLI standalone que consome adapters via `import()` dinâmico. Útil pra uso fora de IDE/agent context.                                  | Hoje o único entrypoint é via skill activation.                     |
-| ✅ P3 | **Custom-verbs extension API** — permitir adapters declararem verbos próprios (ex.: `card.cover-image.set` exclusivo Trello) sem alterar core. **entregue v1.3.0** | Hoje verbos não-canônicos forçam o adapter a violar contract-check. |
-| P4    | **Plugin SDK + contract.test.mjs reuso** — exportar do core uma suite de testes que adapters terceiros podem rodar com `npx pm-tasks-contract-tests`.              | Eleva qualidade do ecossistema sem precisar de PR no monorepo.      |
+| #   | Gap                                                                                                                             | Why                                                                          | Effort |
+| --- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------ |
+| O1  | **Audit log exists but with no intelligent automated rotation** (`pm-tasks-core/scripts/rotate-audit.sh` is rudimentary shell). | In real use, audit grows fast; rotation needs to be idempotent + size-aware. | S      |
+| O2  | **No opt-in telemetry**. We don't know which verbs are most used or which adapters fail most.                                   | Blocks data-driven roadmap decisions.                                        | M      |
+| O3  | **No `pm-tasks doctor` command** (validates config, MCP accessible, allowlist OK, audit writable).                              | Today users only discover that MCP is offline when they try to publish.      | S      |
 
 ---
 
-## 5. Skills `pm-tasks-*` faltando (ranked por mercado)
+## 4. Project Management gaps (new features)
 
-Hoje temos 3 ativos (core, asana, trello) + 7 scaffolds. Ranking de
-implementação por **share de mercado de teams reais usando PM tools** (2025–26):
+Cut from real usage context (engineers + agencies using pm-tasks daily). Prioritized by observed pain.
 
-| #      | Skill                   | Justificativa de mercado                                                                                                                                | MCP status                                                           | Esforço                                               | Prioridade |
-| ------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------- | ---------- |
-| **S1** | **`pm-tasks-jira`**     | Líder absoluto em dev/agile (~40% do mercado dev). Atlassian é default em qualquer empresa >100 devs. Cobre o maior TAM da família por larga margem.    | Atlassian Remote MCP GA + Atlassian Rovo MCP, ambos production-ready | L (custom fields, projects, JQL, workflows estaduais) | 🔴 P0      |
-| **S2** | **`pm-tasks-linear`**   | Premium dev market. Mindshare desproporcional ao share (startups, scale-ups, open-source). Modelo opinativo (cycle = sprint nativo) facilita o adapter. | Linear MCP oficial GA                                                | M (cycles, triage, priorities, sub-issues)            | 🔴 P0      |
-| **S3** | **`pm-tasks-clickup`**  | Fastest-growing PM tool, especialmente forte em agências/SMB e times híbridos (dev + marketing).                                                        | ClickUp MCP community em maturação                                   | M (lists, statuses custom, custom fields ricos)       | 🟠 P1      |
-| **S4** | **`pm-tasks-notion`**   | Maior install base, PM via databases. Cobre mercado que NÃO compra Jira (founders, criadores, micro-times).                                             | Notion MCP oficial GA                                                | M (databases relacionais, propriedades dinâmicas)     | 🟠 P1      |
-| **S5** | **`pm-tasks-monday`**   | Forte em enterprise não-dev (operação, marketing, RH). TAM enterprise grande.                                                                           | Monday MCP em desenvolvimento                                        | M (boards, items, columns custom)                     | 🟡 P2      |
-| **S6** | **`pm-tasks-todoist`**  | Maior base consumidor (~30M). Útil pra freelancer / solo dev / 1-2 pessoas. MCP trivial de fazer (API simples).                                         | Todoist MCP community estável                                        | S (tasks, projects, labels — modelo simples)          | 🟡 P2      |
-| **S7** | **`pm-tasks-bitrix24`** | Niche geográfico (LATAM, Eastern Europe, SMB com CRM integrado). Penetração relevante no Brasil.                                                        | Sem MCP oficial; API REST bem documentada                            | M (REST puro, sem MCP, precisa cliente próprio)       | 🟢 P3      |
+### 4.1 High-value PM features
 
-### 5.1 Skills `pm-tasks-*` adicionais a considerar (fora dos scaffolds atuais)
+| #   | Feature                                          | Description                                                                                            | Tools that support             | Effort |
+| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------ | ------ |
+| F1  | **Reverse sync (read-back)**                     | Pull cards from the tool → update the local plan (status, dates, comments). Bidirectional.             | All                            | L      |
+| F2  | **Sprint / iteration support**                   | `task.sprint.set` as 7th verb. Jira / Linear / ClickUp have native sprints.                            | Jira, Linear, ClickUp, Monday  | M      |
+| F3  | **Parent/child hierarchy (epic → story → task)** | Today we only have checklist items (1 level). Asana supports natively; Jira/Linear have epics.         | Jira, Linear, Asana, ClickUp   | M      |
+| F4  | **Cross-tool migration**                         | `pm-tasks-migrate from=trello to=linear` maps cards via core vocabulary.                               | All that implement the 6 verbs | L      |
+| F5  | **Time tracking**                                | `task.time.log(hours, comment)` 8th verb. Jira / Linear / ClickUp / Todoist have native time-tracking. | Jira, ClickUp, Linear, Todoist | M      |
+| F6  | **Dependency graph** (blocks/blocked-by)         | `task.blocks.add(otherTaskId)`. Jira, Linear, Monday support this.                                     | Jira, Linear, Monday           | M      |
+| F7  | **Story points / estimation**                    | `task.estimate.set(points)`. Linear / Jira native.                                                     | Jira, Linear, ClickUp          | S      |
+| F8  | **Card templates**                               | Pre-define a card archetype (e.g., "bug report") with checklist + labels + custom fields.              | All                            | S      |
+| F9  | **Multi-board orchestration**                    | Single plan distributed across multiple boards/projects (e.g., backend → board A, frontend → board B). | All                            | M      |
+| F10 | **WIP limits enforcement**                       | Blocks `task.create` if destination column exceeded WIP.                                               | Trello, Jira, Linear           | S      |
+| F11 | **Standup notes verb**                           | `task.standup.post(channel)` summarizes agent card status from the last 24h.                           | All                            | M      |
+| F12 | **Velocity / burndown reporter**                 | Read-only analytics aggregating audit log + tool API.                                                  | All                            | M      |
 
-| #   | Skill                          | Justificativa                                                                                                                                 | Prioridade                      |
-| --- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| S8  | **`pm-tasks-github-projects`** | GitHub Projects (v2) é PM nativo do GitHub; integração direta com PRs/issues. MCP oficial (`github-mcp-server`) já cobre. Audiência dev pura. | 🟠 P1 (alto valor, baixo custo) |
-| S9  | **`pm-tasks-height`**          | Modern PM com AI nativo; cresce no mesmo segmento de Linear.                                                                                  | 🟢 P3                           |
-| S10 | **`pm-tasks-basecamp`**        | Legado-mas-vivo; SMB stable.                                                                                                                  | 🟢 P3                           |
-| S11 | **`pm-tasks-airtable`**        | Não é PM puro mas usado como tal por many teams; databases flexíveis.                                                                         | 🟢 P3                           |
-| S12 | **`pm-tasks-wrike`**           | Enterprise (Citrix-owned); footprint grande mas pouco mindshare.                                                                              | ⚪ P4                           |
-| S13 | **`pm-tasks-smartsheet`**      | Enterprise (PMI), TAM grande mas overlap com Monday.                                                                                          | ⚪ P4                           |
+### 4.2 Best practices turned features
+
+| #     | Item                                                                                                                                                                       | Why                                                                       |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| P1    | **`@llodev/pm-tasks-testkit`** — separate package with fakes for the 6 verbs, useful for plugins to test without a real MCP.                                               | Today each adapter reinvents its own mocks.                               |
+| P2    | **`@llodev/pm-tasks-cli`** — standalone CLI that consumes adapters via dynamic `import()`. Useful for use outside IDE/agent context.                                       | Today the only entry point is via skill activation.                       |
+| ✅ P3 | **Custom-verbs extension API** — allows adapters to declare their own verbs (e.g., `card.cover-image.set` exclusive to Trello) without altering core. **delivered v1.3.0** | Non-canonical verbs previously forced adapters to violate contract-check. |
+| P4    | **Plugin SDK + contract.test.mjs reuse** — export from core a test suite that third-party adapters can run with `npx pm-tasks-contract-tests`.                             | Raises ecosystem quality without requiring PRs to the monorepo.           |
 
 ---
 
-## 6. Roadmap priorizado (lista única ordenada)
+## 5. Missing pm-tasks-\* skills (ranked by market)
 
-Ordem de execução proposta. Critério: **valor × dor × custo-de-retrofit**.
+Today we have 3 active (core, asana, trello) + 7 scaffolds. Implementation ranking by **market share of real teams using PM tools** (2025–26):
+
+| #      | Skill                   | Market rationale                                                                                                                                                  | MCP status                                                          | Effort                                            | Priority |
+| ------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------- | -------- |
+| **S1** | **`pm-tasks-jira`**     | Absolute leader in dev/agile (~40% of dev market). Atlassian is the default at any company with >100 devs. Covers the largest TAM in the family by a wide margin. | Atlassian Remote MCP GA + Atlassian Rovo MCP, both production-ready | L (custom fields, projects, JQL, state workflows) | 🔴 P0    |
+| **S2** | **`pm-tasks-linear`**   | Premium dev market. Disproportionate mindshare vs. share (startups, scale-ups, open-source). Opinionated model (cycle = native sprint) eases the adapter.         | Linear MCP official GA                                              | M (cycles, triage, priorities, sub-issues)        | 🔴 P0    |
+| **S3** | **`pm-tasks-clickup`**  | Fastest-growing PM tool, especially strong in agencies/SMB and hybrid teams (dev + marketing).                                                                    | ClickUp MCP community maturing                                      | M (lists, custom statuses, rich custom fields)    | 🟠 P1    |
+| **S4** | **`pm-tasks-notion`**   | Largest install base, PM via databases. Covers market that does NOT buy Jira (founders, creators, micro-teams).                                                   | Notion MCP official GA                                              | M (relational databases, dynamic properties)      | 🟠 P1    |
+| **S5** | **`pm-tasks-monday`**   | Strong in non-dev enterprise (operations, marketing, HR). Large enterprise TAM.                                                                                   | Monday MCP in development                                           | M (boards, items, custom columns)                 | 🟡 P2    |
+| **S6** | **`pm-tasks-todoist`**  | Largest consumer base (~30M). Useful for freelancer / solo dev / 1–2 people. MCP trivial to build (simple API).                                                   | Todoist MCP community stable                                        | S (tasks, projects, labels — simple model)        | 🟡 P2    |
+| **S7** | **`pm-tasks-bitrix24`** | Geographic niche (LATAM, Eastern Europe, SMB with integrated CRM). Relevant penetration in Brazil.                                                                | No official MCP; well-documented REST API                           | M (pure REST, no MCP, needs own client)           | 🟢 P3    |
+
+### 5.1 Additional skills to consider (outside current scaffolds)
+
+| #   | Skill                          | Rationale                                                                                                                                                 | Priority                     |
+| --- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| S8  | **`pm-tasks-github-projects`** | GitHub Projects (v2) is native PM on GitHub; direct integration with PRs/issues. Official MCP (`github-mcp-server`) already covers it. Pure dev audience. | 🟠 P1 (high value, low cost) |
+| S9  | **`pm-tasks-height`**          | Modern PM with native AI; growing in the same segment as Linear.                                                                                          | 🟢 P3                        |
+| S10 | **`pm-tasks-basecamp`**        | Legacy-but-alive; stable SMB.                                                                                                                             | 🟢 P3                        |
+| S11 | **`pm-tasks-airtable`**        | Not pure PM but used as such by many teams; flexible databases.                                                                                           | 🟢 P3                        |
+| S12 | **`pm-tasks-wrike`**           | Enterprise (Citrix-owned); large footprint but low mindshare.                                                                                             | ⚪ P4                        |
+| S13 | **`pm-tasks-smartsheet`**      | Enterprise (PMI), large TAM but overlaps with Monday.                                                                                                     | ⚪ P4                        |
+
+---
+
+## 6. Prioritized roadmap (single ordered list)
+
+Proposed execution order. Criterion: **value × pain × retrofit cost**.
 
 > [!IMPORTANT]
-> **Princípio guia (2026-06-15):** **qualidade / testes / foundation antes de
-> qualquer novo adapter de PM tool.** Custo de retrofit cresce linearmente com
-> o número de adapters publicados. Hoje só temos 2 (asana + trello), janela
-> ideal pra lock-in arquitetural. Jira / Linear / ClickUp ficam reservados pra
-> P1 e só entram depois que P0 estiver fechado.
+> **Guiding principle (2026-06-15):** quality / tests / foundation **before** any new PM tool adapter. Retrofit cost grows linearly with the number of published adapters. Today we only have 2 active (asana + trello) — ideal window for architectural lock-in. Jira / Linear / ClickUp are reserved for P1 and only start after P0 closes.
 >
-> Plano de execução do P0: **[`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md)**.
+> P0 execution plan: **[`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md)**.
 
 ### 🔴 P0 — Foundation & Quality (v1.2 → v1.4)
 
-Sem novos adapters. 5 releases planejadas (3 minor + 2 patch). Mantém v1.x —
-nenhuma das mudanças é breaking.
+No new adapters. 5 planned releases (3 minor + 2 patch). Stays at v1.x — none of the changes are breaking.
 
-1. ✅ **v1.2.0 — Phase C: runtime attribution** [§2.1 A] — **entregue (PR #1)**
+1. ✅ **v1.2.0 — Phase C: runtime attribution** [§2.1 A] — **delivered (PR #1)**
    - `commentPrefix` / `autonomousCommentPrefix` / `descriptionFooter` opt-in, locale-aware.
-   - Fecha a feature mais visível pendente, deferida explicitamente em v1.1.
-2. ✅ **v1.2.1 — CI release hardening** [§3.3 R1 + §3.1 E6 + §3.3 R3] — **entregue (PR #3)**
-   - Workflow `release.yml` ganha steps de `validate` + `contract-check` + skill-judge + tarball snapshot. Publish com `--provenance`.
-   - Blast radius enorme, esforço XS-S. Patch.
-3. ✅ **v1.3.0 — Contract conformance + custom-verbs API** [§3.1 E3 + §4.2 P3] — **entregue (PR #4)**
-   - `manifest.json` por adapter + namespace pra verbos custom (`<tool>.*`).
-   - **A entrega mais crítica do plano** — retrofit em 4+ adapters depois custa 4× mais.
+   - Closes the most visible pending feature, explicitly deferred in v1.1.
+2. ✅ **v1.2.1 — CI release hardening** [§3.3 R1 + §3.1 E6 + §3.3 R3] — **delivered (PR #3)**
+   - `release.yml` workflow gains steps for `validate` + `contract-check` + skill-judge + tarball snapshot. Publish with `--provenance`.
+   - Large blast radius, XS-S effort. Patch.
+3. ✅ **v1.3.0 — Contract conformance + custom-verbs API** [§3.1 E3 + §4.2 P3] — **delivered (PR #4)**
+   - `manifest.json` per adapter + namespace for custom verbs (`<tool>.*`).
+   - **Most critical delivery of the plan** — retrofitting 4+ adapters afterward costs 4× more.
 4. **v1.3.1 — Test gaps + docs polish** [§2.1 D + E + F + §3.1 E2] — **next**
-   - `registerI18nRoot` / `loadStrings` adapter-scoped tests, `promptLocale` invalid path, validador de path-correctness em `.md` localizados, `NOISE_BAND` documentado inline, golden master do rubric skill-judge.
-5. **v1.4.0 — DX foundation** [§3.2 T1 + §3.1 E1 + §3.3 R4 + §4.2 P1] — **planejado**
-   - `.d.ts` handcrafted shippado pelo core + adapters, JSDoc fallback nos `.mjs`.
-   - E2E canary test (`pnpm pack` + `npx <pkg>` em sandbox limpo) em todo PR.
-   - `@llodev/pm-tasks-testkit` publicado (fakes pros 6 verbos canônicos).
+   - `registerI18nRoot` / `loadStrings` adapter-scoped tests, `promptLocale` invalid path, path-correctness validator for localized `.md` files, `NOISE_BAND` documented inline, golden master for skill-judge rubric.
+5. **v1.4.0 — DX foundation** [§3.2 T1 + §3.1 E1 + §3.3 R4 + §4.2 P1] — **planned**
+   - Handcrafted `.d.ts` shipped by core + adapters, JSDoc fallback in `.mjs` files.
+   - E2E canary test (`pnpm pack` + `npx <pkg>` in a clean sandbox) on every PR.
+   - `@llodev/pm-tasks-testkit` published (fakes for the 6 canonical verbs).
 
-### 🟠 P1 — Primeiros adapters novos (v1.5)
+### 🟠 P1 — First new adapters (v1.5)
 
-6. **`pm-tasks-jira`** [§5 S1] — maior TAM da família.
-7. **`pm-tasks-linear`** [§5 S2] — premium dev; cycle alinhado com nosso vocabulário.
-8. **F2 — Sprint / iteration support** (7º verbo `task.sprint.set`) [§4.1]
-   - Habilita Jira / Linear / ClickUp natural-fit.
+6. **`pm-tasks-jira`** [§5 S1] — largest TAM in the family.
+7. **`pm-tasks-linear`** [§5 S2] — premium dev; cycle aligns with our vocabulary.
+8. **F2 — Sprint / iteration support** (7th verb `task.sprint.set`) [§4.1]
+   - Enables natural-fit Jira / Linear / ClickUp.
 9. **F3 — Parent/child hierarchy** (epic → story → task) [§4.1]
-   - Necessário pra Jira (epics) e Linear (sub-issues).
+   - Required for Jira (epics) and Linear (sub-issues).
 
-### 🟡 P2 — Expansão (v1.6 → v1.7)
+### 🟡 P2 — Expansion (v1.6 → v1.7)
 
 10. **`pm-tasks-clickup`** [§5 S3]
 11. **`pm-tasks-notion`** [§5 S4]
 12. **`pm-tasks-github-projects`** [§5 S8]
-13. **F5 — Time tracking** (8º verbo) [§4.1]
+13. **F5 — Time tracking** (8th verb) [§4.1]
 14. **F7 — Story points / estimation** [§4.1]
-15. **F1 — Sync reverso (read-back)** [§4.1]
-    - Bidirecional é grande mudança arquitetural; entrega depois de termos 4–5 adapters maduros.
+15. **F1 — Reverse sync (read-back)** [§4.1]
+    - Bidirectional is a large architectural change; deliver after we have 4–5 mature adapters.
 
-### 🟢 P3 — Cauda longa (v1.8+)
+### 🟢 P3 — Long tail (v1.8+)
 
 16. **`pm-tasks-monday`** [§5 S5]
 17. **`pm-tasks-todoist`** [§5 S6]
 18. **`pm-tasks-bitrix24`** [§5 S7]
 19. **`pm-tasks-height` / `pm-tasks-basecamp` / `pm-tasks-airtable`** [§5 S9–S11]
-20. **F4 — Cross-tool migration** [§4.1] — viável depois de ≥4 adapters.
+20. **F4 — Cross-tool migration** [§4.1] — viable after ≥4 adapters.
 21. **F6 — Dependency graph** [§4.1]
 22. **F8 — Card templates** [§4.1]
 23. **F10 — WIP limits enforcement** [§4.1]
@@ -247,56 +234,55 @@ nenhuma das mudanças é breaking.
 25. **F12 — Velocity / burndown reporter** [§4.1]
 26. **`@llodev/pm-tasks-cli`** [§4.2 P2]
 
-### ⚪ P4 — Backlog distante
+### ⚪ P4 — Distant backlog
 
 27. **`pm-tasks-wrike` / `pm-tasks-smartsheet`** [§5 S12–S13]
-28. **Telemetria opt-in** [§3.5 O2]
+28. **Opt-in telemetry** [§3.5 O2]
 29. **Multi-board orchestration** [§4.1 F9]
 30. **Mutation testing** [§3.1 E5]
 
-### Polish contínuo (qualquer release)
+### Continuous polish (any release)
 
-- §3.3 R2/R5/R6: CHANGELOG por pacote, size budget, dependabot.
+- §3.3 R2/R5/R6: per-package CHANGELOG, size budget, dependabot.
 - §3.4 H1-H6: community files (CONTRIBUTING, SECURITY, CoC, templates, CODEOWNERS, marketplace parity).
-- §3.5 O1/O3: audit rotation inteligente + `pm-tasks doctor`.
-- §4.2 P4: plugin SDK + contract.test.mjs reuso externo.
+- §3.5 O1/O3: intelligent audit rotation + `pm-tasks doctor`.
+- §4.2 P4: plugin SDK + external `contract.test.mjs` reuse.
 
 ---
 
-## 7. Riscos e dependências externas
+## 7. Risks and external dependencies
 
-| Risco                                                                                                | Mitigação                                                                                                                              |
-| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| MCP de uma ferramenta sai do ar / muda contrato                                                      | Cada adapter precisa de teste de smoke contra MCP em CI (com secrets em env, não no PR).                                               |
-| Phase C (runtime attribution) interage com Phase A (locale config) — refactor pode quebrar v1.1 i18n | TDD obrigatório; `getAttribution()` deve consumir `loadStrings(scope, locale)` sem hardcode. Plano P0 §Phase 1 detalha.                |
-| Contract conformance test (v1.3.0) precisa entrar **antes** do primeiro adapter novo                 | Posicionado como v1.3.0 no plano P0 — Jira/Linear (P1) só começam depois. Bypass intencional bloqueia release com mensagem específica. |
-| Tarball size explode com 6+ adapters localizados em N idiomas                                        | Tarball snapshot test (v1.2.1) detecta inflate; size-limit (R5) entra como gate em P3.                                                 |
-| TypeScript `.d.ts` handcrafted sai de sync com `.mjs` source                                         | `types-check.mjs` no `validate` script roda `tsc --noEmit` contra os `.d.ts` em cada PR.                                               |
+| Risk                                                                                                  | Mitigation                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| A tool's MCP goes down or changes its contract                                                        | Each adapter needs a smoke test against MCP in CI (with secrets in env, not in the PR).                                             |
+| Phase C (runtime attribution) interacts with Phase A (locale config) — refactor could break v1.1 i18n | TDD required; `getAttribution()` must consume `loadStrings(scope, locale)` without hardcoding. P0 plan §Phase 1 details this.       |
+| Contract conformance test (v1.3.0) must land **before** the first new adapter                         | Positioned as v1.3.0 in the P0 plan — Jira/Linear (P1) only start after. Intentional bypass blocks release with a specific message. |
+| Tarball size explodes with 6+ adapters localized in N languages                                       | Tarball snapshot test (v1.2.1) detects inflation; size-limit (R5) lands as a gate in P3.                                            |
+| Handcrafted TypeScript `.d.ts` drifts out of sync with `.mjs` source                                  | `types-check.mjs` in the `validate` script runs `tsc --noEmit` against `.d.ts` files on every PR.                                   |
 
 ---
 
-## 8. Histórico das versões
+## 8. Version history
 
 **Released:**
 
-- v1.0.0 (2026-06-13) — primeira release pública dos 4 pacotes; scaffolds reservam namespaces.
-- v1.0.1–v1.0.3 (2026-06-14) — hotfixes de bin entry / publishConfig / files field.
-- v1.1.x (2026-06-14) — skill-judge gate + i18n init + docs localizadas (pt-BR/es-ES) + autonomous mode stateful doc + tactical fixes Phase 4.
+- v1.0.0 (2026-06-13) — first public release of 4 packages; scaffolds reserve namespaces.
+- v1.0.1–v1.0.3 (2026-06-14) — hotfixes for bin entry / publishConfig / files field.
+- v1.1.x (2026-06-14) — skill-judge gate + i18n init + localized docs (pt-BR/es-ES) + autonomous mode stateful doc + tactical fixes Phase 4.
 - v1.2.0 (2026-06-16) — Phase C runtime attribution (commentPrefix / autonomousCommentPrefix / descriptionFooter + i18n). PR #1.
 - v1.2.1 (2026-06-16) — CI release hardening (validate + contract-check + skill-judge + tarball snapshot + npm provenance). PR #3.
 - v1.3.0 (2026-06-16) — Contract conformance test + custom-verbs extension API (`manifest.json`, namespace `<tool>.*`). PR #4.
 
-**Planejado (P0 — plano em [`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md)):**
+**Planned (P0 — plan in [`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md)):**
 
 - v1.3.1 — Test gaps + docs polish (i18n adapter-scoped tests + path-correctness validator + `NOISE_BAND` doc + golden master skill-judge).
 - v1.4.0 — DX foundation (TypeScript `.d.ts` + E2E canary + `@llodev/pm-tasks-testkit`).
 
-**Planejado (P1):**
+**Planned (P1):**
 
-- v1.5.x — `pm-tasks-jira` + `pm-tasks-linear` + verbos `task.sprint.set` + parent/child hierarchy.
+- v1.5.x — `pm-tasks-jira` + `pm-tasks-linear` + verb `task.sprint.set` + parent/child hierarchy.
 
 ---
 
 > [!TIP]
-> Quando um item desta lista for entregue, mova-o para o tracking da versão
-> correspondente e marque ✅ em §1 deste doc.
+> When an item from this roadmap ships, mark it ✅ in §1 of this doc and remove it from §2.1 / §6 if it appeared there. This doc is the single source of truth; there is no separate per-version tracking doc.
