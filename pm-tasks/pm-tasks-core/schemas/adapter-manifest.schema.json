@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llodev.com/pm-tasks/adapter-manifest.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tool", "verbs"],
+  "properties": {
+    "tool": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "verbs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(task\\.(create|close|due-date\\.set|assignee\\.add|comment\\.add)|checklist\\.check|[a-z0-9-]+\\.[a-z0-9.-]+)$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}
