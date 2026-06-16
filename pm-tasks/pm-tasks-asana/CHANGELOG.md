@@ -1,5 +1,16 @@
 # @llodev/pm-tasks-asana
 
+## 1.3.0
+
+### Minor Changes
+
+- Introduce adapter `manifest.json` + custom-verbs extension API. Each adapter now declares which canonical verbs it implements plus any tool-specific verbs under a `<tool>.*` namespace. `contract-check.mjs` validates the manifest against `adapter-manifest.schema.json`, enforces the `<tool>.<verb>` namespace prefix, and cross-checks each declared verb against the adapter's `SKILL.md`. The same gate now permits additive-only changes to `contract.md` as non-major (deletions still require major). No runtime behaviour changes for existing consumers.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @llodev/pm-tasks-core@1.3.0
+
 ## 1.2.1
 
 ### Patch Changes

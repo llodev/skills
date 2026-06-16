@@ -41,6 +41,7 @@
     "package/i18n/es-ES.json",
     "package/i18n/parity.test.mjs",
     "package/i18n/pt-BR.json",
+    "package/manifest.json",
     "package/package.json",
     "package/schemas/config.json",
     "package/scripts/init.mjs"
@@ -59,6 +60,7 @@
     "package/i18n/es-ES.json",
     "package/i18n/parity.test.mjs",
     "package/i18n/pt-BR.json",
+    "package/manifest.json",
     "package/package.json",
     "package/references/autonomous.md",
     "package/references/format.md",

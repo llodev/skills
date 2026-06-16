@@ -58,6 +58,24 @@ The core resolves and exposes these decisions before Phase 4 begins. Adapters re
 
 The 6 verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
 
+## Custom verbs (extension API)
+
+Adapters MAY declare custom verbs in addition to the 6 canonical verbs. Custom verbs MUST use a namespace prefix matching the tool name declared in the adapter's `manifest.json`. Examples:
+
+- `trello.card.cover-image.set` — Trello-only feature.
+- `linear.cycle.move` — Linear-only feature.
+- `asana.section.move` — Asana-only feature.
+
+Rules:
+
+- Custom verbs MUST be declared in the adapter's `manifest.json` alongside the canonical verbs the adapter implements.
+- Custom verbs MUST be documented in the adapter's `SKILL.md` (the grep cross-check in `scripts/contract-check.mjs` enforces this).
+- Custom verbs MUST start with `<tool>.` (the namespace prefix equals the manifest's `tool` field) — `contract-check.mjs` rejects any custom verb that doesn't match its declared tool.
+- Custom verbs do NOT replace canonical verbs. An adapter declaring `trello.card.cover-image.set` still must implement the 6 canonical verbs if it supports them.
+- Consumers can branch on the manifest at runtime to discover which custom verbs an adapter supports.
+
+The schema for `manifest.json` ([`pm-tasks-core/schemas/adapter-manifest.schema.json`](../schemas/adapter-manifest.schema.json)) accepts both canonical verbs and namespaced custom verbs via regex; the tool/namespace consistency check is enforced by `contract-check.mjs`.
+
 ## Result envelope
 
 Every CRUD operation returns:
