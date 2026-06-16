@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks-core",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Core skill for the pm-tasks-* family: extracts implementation plans into structured task content, defines the CRUD vocabulary (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add), specifies the autonomous-mode contract, and provides the shared init UX library for tool adapters. Use when an adapter (pm-tasks-trello, pm-tasks-asana, etc.) needs the canonical generic-card structure or when running the init helper for any tool.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/pm-tasks/pm-tasks-core",

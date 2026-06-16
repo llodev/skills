@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-core
 
+## 1.3.1
+
+### Patch Changes
+
+- Internal: close test coverage gaps from v1.1 review. Adds `pm-tasks-core/i18n/registry.test.mjs` (adapter-scoped `loadStrings` + `registerI18nRoot` edge cases) and covers `promptLocale` out-of-range error path in `init-lib.test.mjs`. New repo-level `scripts/validate-localized-paths.mjs` validator catches broken/unlocalized links in `*.{pt-BR,es-ES}.md` files (wired into `pnpm validate`). Skill-judge gate now documents `NOISE_BAND = 2` inline (`scripts/skill-judge-check.mjs`) and ships a golden-master rubric snapshot (`scripts/skill-judge-golden.json`) with consistency assertion against baseline. No runtime changes; tarball contents grow by 1 file (`i18n/registry.test.mjs` in pm-tasks-core).
+
 ## 1.3.0
 
 ### Minor Changes
