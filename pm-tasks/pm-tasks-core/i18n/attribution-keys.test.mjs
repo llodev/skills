@@ -36,8 +36,13 @@ for (const locale of LOCALES) {
     const raw = await readFile(path.join(HERE, `${locale}.json`), "utf8");
     const data = JSON.parse(raw);
     const value = data["attribution.descriptionFooter"];
+    assert.equal(
+      typeof value,
+      "string",
+      `${locale}/attribution.descriptionFooter must be a string`
+    );
     assert.ok(
-      typeof value === "string" && value.includes("{tool}"),
+      value.includes("{tool}"),
       `${locale}/attribution.descriptionFooter must contain {tool} token — got: "${value}"`
     );
   });
