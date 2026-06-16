@@ -1,0 +1,62 @@
+{
+  "pm-tasks/pm-tasks-asana/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 83
+  },
+  "pm-tasks/pm-tasks-bitrix24/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-clickup/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-core/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 85
+  },
+  "pm-tasks/pm-tasks-jira/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-linear/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-monday/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-notion/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-todoist/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 29
+  },
+  "pm-tasks/pm-tasks-trello/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 80
+  }
+}
