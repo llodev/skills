@@ -22,6 +22,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run typecheck
       - run: pnpm -r build
+      - run: node scripts/checks/canary-e2e.mjs
       - run: pnpm run validate
       - run: pnpm run contract:check
       - run: bash scripts/shell/pre-release-check.sh
