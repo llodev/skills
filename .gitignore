@@ -23,6 +23,11 @@ node_modules/
 .agents/
 skills-lock.json
 
+# build
+dist/
+coverage/
+*.tsbuildinfo
+
 # dev
 logs/
 .cursor/
