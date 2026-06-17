@@ -34,7 +34,7 @@ Backwards-compat: configs without an `attribution` block behave identically to `
 
 ## How adapters use it
 
-Call `getAttribution({ locale, tool, agent, autonomous, config })` from `@llodev/pm-tasks-core/scripts/init-lib.mjs`.
+Call `getAttribution({ locale, tool, agent, autonomous, config })` from `@llodev/pm-tasks-core/init-lib`.
 
 Return shape:
 
