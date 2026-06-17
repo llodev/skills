@@ -29,6 +29,7 @@ coverage/
 *.tsbuildinfo
 
 # dev
+sandbox/
 logs/
 .cursor/
 .claude/
