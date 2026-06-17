@@ -5,7 +5,6 @@
     "package/README.md",
     "package/SKILL.md",
     "package/anti-patterns/core.md",
-    "package/dist/.tsbuildinfo",
     "package/dist/i18n/registry.d.ts",
     "package/dist/i18n/registry.d.ts.map",
     "package/dist/i18n/registry.js",
