@@ -2,7 +2,7 @@
 
 Date: 2026-06-16. Baseline: `main` at commit `0ae773c` (v1.3.0 merged via squash, PR #4). Forward-looking roadmap — single source of truth for the project; each item carries **real status** (delivered / partial / pending) and **priority**.
 
-**Active P0 plan:** [`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md) — Phase C runtime attribution + CI hardening + contract conformance + custom-verbs API + DX foundation. No new tools until complete.
+**Active P0 plan:** [`plans/2026-06-16-pm-tasks-v1.3.2-v1.5-org-ts-migration.md`](plans/2026-06-16-pm-tasks-v1.3.2-v1.5-org-ts-migration.md) — repo organization (v1.3.2) + TypeScript migration (v1.4.0 core, v1.5.0 adapters+testkit+E2E) + 7th canonical verb `task.move`. Predecessor plan ([`plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md`](plans/2026-06-15-pm-tasks-v1.2-v1.4-repo-quality.md)) covered v1.2.0 → v1.3.1 (delivered).
 
 > [!NOTE]
 > "Pending" means "not implemented". "Partial" means part of it exists but has an open gap. Items marked as resolved have been removed from the backlog even if they appear as TODO in older review notes.
@@ -205,10 +205,11 @@ No new adapters. 5 planned releases (3 minor + 2 patch). Stays at v1.x — none 
 
 6. **`pm-tasks-jira`** [§5 S1] — largest TAM in the family.
 7. **`pm-tasks-linear`** [§5 S2] — premium dev; cycle aligns with our vocabulary.
-8. **F2 — Sprint / iteration support** (7th verb `task.sprint.set`) [§4.1]
+8. **F2 — 7th canonical verb `task.move`** (WIP transitions) — formalizes the move-to-WIP step the autonomous contract already requires but lacks a verb for. Delivered as part of v1.5.0 plan Task 3.0.
+9. **F3 — Sprint / iteration support** (8th verb `task.sprint.set`) [§4.1]
    - Enables natural-fit Jira / Linear / ClickUp.
-9. **F3 — Parent/child hierarchy** (epic → story → task) [§4.1]
-   - Required for Jira (epics) and Linear (sub-issues).
+10. **F4 — Parent/child hierarchy** (epic → story → task) [§4.1]
+    - Required for Jira (epics) and Linear (sub-issues).
 
 ### 🟡 P2 — Expansion (v1.6 → v1.7)
 
@@ -219,6 +220,8 @@ No new adapters. 5 planned releases (3 minor + 2 patch). Stays at v1.x — none 
 14. **F7 — Story points / estimation** [§4.1]
 15. **F1 — Reverse sync (read-back)** [§4.1]
     - Bidirectional is a large architectural change; deliver after we have 4–5 mature adapters.
+16. **F13 — Batch card+checklists creation** (custom namespaced verb `<adapter>.task.batch-create-with-checklists`) — Trello / Asana REST APIs lack native batch endpoints for nested resources; today each item is a separate POST. Wrapping in a custom verb that fan-outs parallel requests internally (or clones via Trello `idChecklistSource` template) cuts publish time ~10× for large plans. Roll out per-adapter as opt-in.
+17. **F14 — Runtime adapter as library (headless mode)** — expose each adapter's resolution logic (label/member resolution from `.tool.json` aliases, attribution prefix from `config.locale`, audit log append, MCP call orchestration) as a callable module that subagents OR end users can invoke without activating the full skill flow. Today the adapter has only two entry points: full skill activation (heavy) or raw MCP calls (loses all config-driven guarantees — labels, members, locale, attribution, audit). A library mode (`import { createAdapter } from '@llodev/pm-tasks-trello/adapter'`) covers two real use cases: (a) high-volume bulk operations dispatched to cheaper subagents, (b) direct user invocation from Node scripts when no agent is running. Natural follow-up to v1.5.0 TS migration since the surface is already typed.
 
 ### 🟢 P3 — Long tail (v1.8+)
 

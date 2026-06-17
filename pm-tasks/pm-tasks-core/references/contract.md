@@ -54,6 +54,19 @@ The core resolves and exposes these decisions before Phase 4 begins. Adapters re
 | `fidelity` | `verbatim`, `compressed`                               | `compressed`         |
 | `language` | `pt`, `en`, `mixed`                                    | detected from plan   |
 
+### Scope of the `language` decision
+
+The `language` decision governs **two distinct surfaces**, with different sources:
+
+| Surface                                                                                                          | Source of language                                         |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **User-authored content** (card title, description, checklist items)                                             | Mirrors the **plan document's** language (verbatim)        |
+| **Adapter-rendered strings** (attribution prefix, autonomous-mode system comments, error messages, init prompts) | Driven by `config.locale` in `.<tool>.json` (e.g. `pt-BR`) |
+
+Adapters MUST NOT translate user-authored content — verbatim is the contract. If the plan is in Portuguese, cards stay in Portuguese; if mixed, cards stay mixed. The `config.locale` only governs strings the adapter itself emits.
+
+**Why this split:** users author plans in whatever language fits the work (often mixing PT/EN technical terms). The adapter is not a translator. But the adapter IS the source of its own metadata (attribution, system comments), so those should match the user's preferred display locale.
+
 ## CRUD verb vocabulary
 
 The 6 verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
