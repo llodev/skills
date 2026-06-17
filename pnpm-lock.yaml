@@ -57,8 +57,8 @@ importers:
   pm-tasks/pm-tasks-asana:
     dependencies:
       '@llodev/pm-tasks-core':
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: workspace:^
+        version: link:../pm-tasks-core
       ajv:
         specifier: ^8.17.1
         version: 8.20.0
@@ -90,8 +90,8 @@ importers:
   pm-tasks/pm-tasks-testkit:
     dependencies:
       '@llodev/pm-tasks-core':
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: workspace:^
+        version: link:../pm-tasks-core
     devDependencies:
       vitest:
         specifier: ^2.0.0
@@ -102,8 +102,8 @@ importers:
   pm-tasks/pm-tasks-trello:
     dependencies:
       '@llodev/pm-tasks-core':
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: workspace:^
+        version: link:../pm-tasks-core
       ajv:
         specifier: ^8.17.1
         version: 8.20.0
@@ -525,10 +525,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@llodev/pm-tasks-core@1.4.0':
-    resolution: {integrity: sha512-F9KBYJ8U7yhcIaW2nwF1bfRTW15JkUttBc1cKZg/Z2e23hSOZGB3dez1FxX0bYvDXY3EGPBSGCVy4nvbcP7zZg==}
-    engines: {node: '>=20'}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -1850,11 +1846,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@llodev/pm-tasks-core@1.4.0':
-    dependencies:
-      ajv: 8.20.0
-      ajv-formats: 3.0.1(ajv@8.20.0)
 
   '@manypkg/find-root@1.1.0':
     dependencies:

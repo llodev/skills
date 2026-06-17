@@ -54,7 +54,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@llodev/pm-tasks-core": "^1.5.0",
+    "@llodev/pm-tasks-core": "workspace:^",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1"
   },
