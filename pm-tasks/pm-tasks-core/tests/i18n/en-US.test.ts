@@ -1,13 +1,12 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { test, expect } from "vitest";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-const HERE = import.meta.dirname;
+const I18N_DIR = path.resolve(import.meta.dirname, "..", "..", "i18n");
 
 test("en-US has all required core keys", async () => {
-  const raw = await readFile(path.join(HERE, "en-US.json"), "utf8");
-  const s = JSON.parse(raw);
+  const raw = await readFile(path.join(I18N_DIR, "en-US.json"), "utf8");
+  const s = JSON.parse(raw) as Record<string, string>;
   const requiredKeys = [
     "localePromptHeader",
     "localePromptQuestion",
@@ -29,7 +28,7 @@ test("en-US has all required core keys", async () => {
     "errInvalidConfig",
   ];
   for (const k of requiredKeys) {
-    assert.equal(typeof s[k], "string", `missing key: ${k}`);
-    assert.ok(s[k].length > 0, `empty value for: ${k}`);
+    expect(typeof s[k], `missing key: ${k}`).toBe("string");
+    expect(s[k].length, `empty value for: ${k}`).toBeGreaterThan(0);
   }
 });
