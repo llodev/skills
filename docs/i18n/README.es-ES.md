@@ -52,8 +52,8 @@ Convierten planes de implementación en tareas de PM (Trello, Asana, …) y las 
 | --------------------------- | ----------- | ---------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------- |
 | `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [pm-tasks/pm-tasks/](../../pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`            | —                                                       |
 | `@llodev/pm-tasks-core`     | ✅ v1.4.0   | [pm-tasks/pm-tasks-core/](../../pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
-| `@llodev/pm-tasks-asana`    | ✅ v1.5.0   | [pm-tasks/pm-tasks-asana/](../../pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
-| `@llodev/pm-tasks-trello`   | ✅ v1.5.0   | [pm-tasks/pm-tasks-trello/](../../pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
+| `@llodev/pm-tasks-asana`    | ✅ v1.4.0   | [pm-tasks/pm-tasks-asana/](../../pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
+| `@llodev/pm-tasks-trello`   | ✅ v1.4.0   | [pm-tasks/pm-tasks-trello/](../../pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
 | `@llodev/pm-tasks-testkit`  | ✅ v0.1.0   | [pm-tasks/pm-tasks-testkit/](../../pm-tasks/pm-tasks-testkit/)   | `npm i -D @llodev/pm-tasks-testkit` | —                                                       |
 | `pm-tasks-jira`             | 🔒 scaffold | [pm-tasks/pm-tasks-jira/](../../pm-tasks/pm-tasks-jira/)         | —                                   | —                                                       |
 | `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](../../pm-tasks/pm-tasks-linear/)     | —                                   | —                                                       |
