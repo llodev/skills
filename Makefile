@@ -45,7 +45,7 @@ init-asana: ## run pm-tasks-asana init (needs LLODEV_PM_TASKS_ASANA_PAT)
 	node pm-tasks/pm-tasks-asana/dist/bin/init.js
 
 init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
-	node pm-tasks/pm-tasks-trello/scripts/init.mjs
+	node pm-tasks/pm-tasks-trello/dist/bin/init.js
 
 skill-judge: ## skill-judge:check — reads scores from stdin as JSON {path: score}
 	pnpm skill-judge:check

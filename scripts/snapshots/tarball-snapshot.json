@@ -55,12 +55,15 @@
     "package/LICENSE",
     "package/README.md",
     "package/SKILL.md",
+    "package/anti-patterns/tools.md",
+    "package/dist/bin/init.d.ts",
+    "package/dist/bin/init.d.ts.map",
+    "package/dist/bin/init.js",
+    "package/dist/bin/init.js.map",
     "package/docs/i18n/README.es-ES.md",
     "package/docs/i18n/README.pt-BR.md",
-    "package/anti-patterns/tools.md",
     "package/i18n/en-US.json",
     "package/i18n/es-ES.json",
-    "package/i18n/parity.test.mjs",
     "package/i18n/pt-BR.json",
     "package/manifest.json",
     "package/package.json",
@@ -69,7 +72,6 @@
     "package/references/mcp-config.md",
     "package/references/operations.md",
     "package/references/publish.md",
-    "package/schemas/config.json",
-    "package/scripts/init.mjs"
+    "package/schemas/config.json"
   ]
 }

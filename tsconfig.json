@@ -2,5 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {},
   "files": [],
-  "references": [{ "path": "./pm-tasks/pm-tasks-core" }, { "path": "./pm-tasks/pm-tasks-asana" }]
+  "references": [
+    { "path": "./pm-tasks/pm-tasks-core" },
+    { "path": "./pm-tasks/pm-tasks-asana" },
+    { "path": "./pm-tasks/pm-tasks-trello" }
+  ]
 }
