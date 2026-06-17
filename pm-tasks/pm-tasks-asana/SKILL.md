@@ -9,8 +9,8 @@ description: >-
   --auto sentinel. Asana hierarchy: workspace > project > section > parent task
   > subtasks (one level), with custom fields and multi-assignee support. Modes:
   paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous
-  (write-through with allowlist). Implements 6 CRUD verbs (task.create,
-  checklist.check, task.close, task.due-date.set, task.assignee.add,
+  (write-through with allowlist). Implements 7 CRUD verbs (task.create,
+  task.move, checklist.check, task.close, task.due-date.set, task.assignee.add,
   task.comment.add) from pm-tasks/pm-tasks-core/references/contract.md. Requires
   @llodev/pm-tasks-core installed.
 license: MIT
@@ -103,14 +103,14 @@ Mandatory when the controller is executing a plan with multiple tasks autonomous
 
 Asana-specific verb mapping:
 
-| Transition              | MCP call(s)                                                                                                                                                                                                                                         |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Task start              | `mcp__asana__update_tasks { task: <gid>, add_projects: [{ project_id, section_id: <wipSectionGid> }] }`                                                                                                                                             |
-| Step complete (subtask) | `mcp__asana__update_tasks { task: <subtaskGid>, completed: true }`                                                                                                                                                                                  |
-| Task complete (full)    | `mcp__asana__add_comment { task_id: <parentGid>, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `mcp__asana__update_tasks { task: <parentGid>, completed: true, add_projects: [{ project_id, section_id: <doneSectionGid> }] }` |
-| Task failed             | `mcp__asana__add_comment` with failure mode + `mcp__asana__update_tasks { task: <gid>, add_followers: ["<escalateToAliasGid>"] }` for human escalation. Do NOT close.                                                                               |
+| Transition              | Canonical verb + MCP call(s)                                                                                                                                                                                                                                                                                                                                                                                     |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Task start              | `task.move(cardId, "wip")` → `mcp__claude_ai_Asana__update_tasks { task: <gid>, memberships: [{ project: <projectGid>, section: <wipSectionGid> }] }`                                                                                                                                                                                                                                                            |
+| Step complete (subtask) | `checklist.check` → `mcp__claude_ai_Asana__update_tasks { task: <subtaskGid>, completed: true }`                                                                                                                                                                                                                                                                                                                 |
+| Task complete (full)    | `task.move(cardId, "done")` → `mcp__claude_ai_Asana__update_tasks { task: <parentGid>, memberships: [{ project: <projectGid>, section: <doneSectionGid> }] }` then `task.comment.add` → `mcp__claude_ai_Asana__add_comment { task_id: <parentGid>, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `task.close` → `mcp__claude_ai_Asana__update_tasks { task: <parentGid>, completed: true }` |
+| Task failed             | `task.comment.add` → `mcp__claude_ai_Asana__add_comment` with failure mode + `mcp__claude_ai_Asana__update_tasks { task: <gid>, add_followers: ["<escalateToAliasGid>"] }` for human escalation. Do NOT call `task.move(_, "done")` or `task.close`.                                                                                                                                                             |
 
-Resolve `<wipSectionGid>` / `<doneSectionGid>` from `.asana.json` `sections[]` by alias (`wip`, `done`, or `closeSectionAlias` from `defaults`). Both must already be in `autonomous.scope.sections` — otherwise the verb returns `OUT_OF_SCOPE`.
+Resolve `<wipSectionGid>` / `<doneSectionGid>` from `.asana.json` using `defaults.wipSectionAlias` / `defaults.doneSectionAlias` to look up the matching entry in `sections[]` by alias. Both must already be in `autonomous.scope.sections` — otherwise the verb returns `OUT_OF_SCOPE`.
 
 **Asana caveat (per [`anti-patterns/asana.md`](./anti-patterns/asana.md)):** the MCP `get_task` doesn't return activity stories, so verifying the lifecycle programmatically is incomplete. The UI activity feed IS the human's audit log — keep it dense and accurate.
 
@@ -118,14 +118,15 @@ Resolve `<wipSectionGid>` / `<doneSectionGid>` from `.asana.json` `sections[]` b
 
 For verbs other than `task.create`, jump directly to the operation. Verb → MCP tool mapping:
 
-| Core verb           | Asana MCP tool                 | Notes                                                                 |
-| ------------------- | ------------------------------ | --------------------------------------------------------------------- |
-| `task.create`       | `create_tasks`                 | parent + subtasks per Phase 5                                         |
-| `checklist.check`   | `update_tasks`                 | for subtasks: `completed: true`; emulates checklist via subtask model |
-| `task.close`        | `update_tasks`                 | `completed: true` on parent                                           |
-| `task.due-date.set` | `update_tasks`                 | `due_on: "YYYY-MM-DD"`                                                |
-| `task.assignee.add` | `update_tasks` + `addFollower` | primary assignee replaces; additional are followers                   |
-| `task.comment.add`  | `add_comment` (story)          | adds a comment story to the task; apply attribution prefix if enabled |
+| Core verb           | Asana MCP tool                 | Notes                                                                                                                                                                                                                                   |
+| ------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `task.create`       | `create_tasks`                 | parent + subtasks per Phase 5                                                                                                                                                                                                           |
+| `task.move`         | `update_tasks`                 | `memberships: [{ project, section: <resolvedGid> }]`. Resolve `"wip"` / `"done"` / `"open"` via `defaults.wipSectionAlias` / `defaults.doneSectionAlias` / `defaults.openSectionAlias` in `.asana.json`. Raw section GIDs pass through. |
+| `checklist.check`   | `update_tasks`                 | for subtasks: `completed: true`; emulates checklist via subtask model                                                                                                                                                                   |
+| `task.close`        | `update_tasks`                 | `completed: true` on parent                                                                                                                                                                                                             |
+| `task.due-date.set` | `update_tasks`                 | `due_on: "YYYY-MM-DD"`                                                                                                                                                                                                                  |
+| `task.assignee.add` | `update_tasks` + `addFollower` | primary assignee replaces; additional are followers                                                                                                                                                                                     |
+| `task.comment.add`  | `add_comment` (story)          | adds a comment story to the task; apply attribution prefix if enabled                                                                                                                                                                   |
 
 `<task-ref>` resolution: accept Asana permalinks (`https://app.asana.com/0/<project>/<task>`), bare GIDs, or aliases from `.asana.json` `taskAliases[]`.
 
@@ -150,6 +151,7 @@ Asana-specific `details` per verb:
 | Verb                | `details` fields                                                         |
 | ------------------- | ------------------------------------------------------------------------ |
 | `task.create`       | `{ parentGid, subtaskGids[], projectGid, sectionGid?, customFields[]? }` |
+| `task.move`         | `{ taskGid, sectionGid, targetList }`                                    |
 | `checklist.check`   | `{ subtaskGid, completed: true }`                                        |
 | `task.close`        | `{ parentGid, completed: true }`                                         |
 | `task.due-date.set` | `{ taskGid, due_on }`                                                    |

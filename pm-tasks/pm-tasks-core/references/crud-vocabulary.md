@@ -1,6 +1,6 @@
 # CRUD vocabulary (v1)
 
-Six verbs. Each adapter maps every verb to one or more MCP tool calls.
+Seven verbs. Each adapter maps every verb to one or more MCP tool calls.
 
 ## task.create
 
@@ -46,6 +46,18 @@ Post a comment / note / story.
 
 - **Inputs:** `taskRef`, `body`, `clientToken?`.
 - **Idempotency:** body is prefixed with `[ct:<clientToken>]` if provided. Adapter scans recent comments for matching token before posting.
+
+## task.move
+
+Reposition a task/card to a different list/section without changing its completion state.
+
+- **Inputs:** `cardId` (native card/task ID), `targetList` (`"open"` | `"wip"` | `"done"` | raw list/section ID string).
+- **Schema:** `{ cardId: string, targetList: "open" | "wip" | "done" | string }`. The enum values (`open`, `wip`, `done`) map to named workflow states resolved from adapter config. A raw list ID string bypasses config lookup and is passed through directly.
+- **Idempotency:** no-op if the card is already in the target list. Adapter checks current list/section before MCP call.
+- **Independent of `task.close`:** `task.close` moves the card AND sets the completion flag (e.g., `dueComplete`, `completed`). `task.move` only repositions — the completion flag is left unchanged. Use `task.move(cardId, "done")` before `task.close` when the visual transition and the closed-flag are separate adapter operations.
+- **MCP mappings:**
+  - Trello → `mcp__trello__move_card({ cardId, idList })`. Resolve `targetList` alias to `idList` via `lists.wip` / `lists.done` / `lists.open` in `.trello.json`. Raw list IDs pass through. If the named alias is not configured, skip silently and emit `WARN: task.move skipped — <alias> not in lists config` to the audit log.
+  - Asana → `mcp__claude_ai_Asana__update_tasks` with `memberships.section`. Resolve `"wip"` / `"done"` / `"open"` via `defaults.wipSectionAlias` / `defaults.doneSectionAlias` / `defaults.openSectionAlias` in `.asana.json`. Raw section IDs pass through.
 
 ## Verbs forbidden in autonomous mode (v1, hard-coded)
 

@@ -69,11 +69,15 @@ Adapters MUST NOT translate user-authored content — verbatim is the contract. 
 
 ## CRUD verb vocabulary
 
-The 6 verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
+The 7 canonical verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
+
+The 7th verb — `task.move` — was added in v1.5.0 (additive, non-breaking). Schema: `{ cardId: string, targetList: "open" | "wip" | "done" | string }`. The string tier accepts raw list IDs for adapter-specific cases; the enum tier handles named workflow states.
+
+`task.move` is **independent** of `task.close`. `task.close` moves the card to a terminal state AND sets the completion flag (e.g., `dueComplete`, `completed`). `task.move` only repositions the card — useful when the visual transition and the closed-flag are separate operations in the adapter (e.g., Asana section change vs. `completed: true`).
 
 ## Custom verbs (extension API)
 
-Adapters MAY declare custom verbs in addition to the 6 canonical verbs. Custom verbs MUST use a namespace prefix matching the tool name declared in the adapter's `manifest.json`. Examples:
+Adapters MAY declare custom verbs in addition to the 7 canonical verbs. Custom verbs MUST use a namespace prefix matching the tool name declared in the adapter's `manifest.json`. Examples:
 
 - `trello.card.cover-image.set` — Trello-only feature.
 - `linear.cycle.move` — Linear-only feature.
@@ -84,7 +88,7 @@ Rules:
 - Custom verbs MUST be declared in the adapter's `manifest.json` alongside the canonical verbs the adapter implements.
 - Custom verbs MUST be documented in the adapter's `SKILL.md` (the grep cross-check in `scripts/contract-check.mjs` enforces this).
 - Custom verbs MUST start with `<tool>.` (the namespace prefix equals the manifest's `tool` field) — `contract-check.mjs` rejects any custom verb that doesn't match its declared tool.
-- Custom verbs do NOT replace canonical verbs. An adapter declaring `trello.card.cover-image.set` still must implement the 6 canonical verbs if it supports them.
+- Custom verbs do NOT replace canonical verbs. An adapter declaring `trello.card.cover-image.set` still must implement the 7 canonical verbs if it supports them.
 - Consumers can branch on the manifest at runtime to discover which custom verbs an adapter supports.
 
 The schema for `manifest.json` ([`pm-tasks-core/schemas/adapter-manifest.schema.json`](../schemas/adapter-manifest.schema.json)) accepts both canonical verbs and namespaced custom verbs via regex; the tool/namespace consistency check is enforced by `contract-check.mjs`.

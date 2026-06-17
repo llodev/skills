@@ -18,6 +18,7 @@ Autonomous mode requires an `autonomous` block in `.<tool>.json` (or its global 
     "enabled": true,
     "allow": [
       "task.create",
+      "task.move",
       "checklist.check",
       "task.close",
       "task.due-date.set",
@@ -69,12 +70,13 @@ This is the single most common misinterpretation of autonomous mode: treating it
 
 For each task the controller works on, in order:
 
-1. **Start**: move the corresponding task/card from the open list (e.g., `backlog`) to the in-progress list (e.g., `wip`). Tool-specific verb: see the adapter overlay (`task.move` / `move_card` / `add_projects` with new section).
+1. **Start**: `task.move(cardId, "wip")` — move the card from the open/backlog list to the in-progress list. This must be the first PM-tool call when work begins on a task.
 2. **Per step**: `checklist.check` the matching checklist item as soon as that step is verified complete. Do NOT wait for the whole task to finish.
 3. **On completion**:
+   - `task.move(cardId, "done")` — reposition the card to the done/close list first, so the visual transition is immediately visible.
    - `task.comment.add` with the commit SHA: `🤖 [agent] Task complete. Commit: <SHA>. <branch>.`
-   - `task.close` — which for most adapters means moving to the close list AND setting completion state (`dueComplete: true` on Trello, `completed: true` on Asana).
-4. **On failure / blocker**: `task.comment.add` with the failure mode. If `defaults.escalateToAlias` is set, `task.assignee.add` (or equivalent) adds the human as collaborator/follower. Do NOT call `task.close` — leave the card in WIP with the escalation visible.
+   - `task.close` — sets the completion flag (`dueComplete: true` on Trello, `completed: true` on Asana). `task.move` and `task.close` are kept separate because some adapters implement the visual transition (section change) independently from the closed-flag.
+4. **On failure / blocker**: `task.comment.add` with the failure mode. If `defaults.escalateToAlias` is set, `task.assignee.add` (or equivalent) adds the human as collaborator/follower. Do NOT call `task.move(_, "done")` or `task.close` — leave the card in WIP with the escalation visible.
 
 ### Anti-patterns
 
@@ -100,11 +102,12 @@ The disk audit log captures everything programmatically, but a human checking Tr
 
 Before reporting a task complete in an autonomous loop:
 
-- [ ] Card / task was moved to the in-progress list when work started
-- [ ] Each implementation step was marked done as it completed (not at the end)
+- [ ] `task.move(cardId, "wip")` called when work started (not after)
+- [ ] Each implementation step was marked done via `checklist.check` as it completed (not at the end)
+- [ ] `task.move(cardId, "done")` called before `task.close` on completion
 - [ ] A comment with the commit SHA was posted on completion
-- [ ] The card was moved to the close list AND closed
-- [ ] On failure: comment + escalation, no close
+- [ ] `task.close` called to set the completion flag
+- [ ] On failure: comment + escalation, no `task.move(_, "done")`, no `task.close`
 
 If any of the above is "no" for a given task, the autonomous mode contract was not honored for that task.
 

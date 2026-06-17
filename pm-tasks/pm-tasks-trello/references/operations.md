@@ -7,8 +7,9 @@ Maps each verb from [`pm-tasks/pm-tasks-core/references/crud-vocabulary.md`](../
 | Verb                | MCP tool                    | Params (key ones)                                                                                                                                            |
 | ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `task.create`       | `create_card`               | `listId`, `name`, `desc`, `pos`, `due`, `labelIds[]`, `memberIds[]`, optional checklist via follow-up `trello_create_checklist` + `trello_create_check_item` |
+| `task.move`         | `move_card`                 | `cardId`, `idList` = resolved from `targetList` alias. See § `task.move` below.                                                                              |
 | `checklist.check`   | `trello_update_check_item`  | `cardId`, `checkItemId`, `state: "complete"`                                                                                                                 |
-| `task.close`        | `move_card`                 | `cardId`, `listId` = config `defaults.closeListAlias` resolved                                                                                               |
+| `task.close`        | `move_card` + `update_card` | `cardId`, `idList` = `defaults.closeListAlias` resolved; ALSO `dueComplete: true` via `update_card`. See § `task.close` below.                               |
 | `task.due-date.set` | `update_card`               | `cardId`, `due` (ISO 8601 or `null`)                                                                                                                         |
 | `task.assignee.add` | `trello_add_member_to_card` | `cardId`, `memberId`                                                                                                                                         |
 | `task.comment.add`  | `trello_add_comment`        | `cardId`, `text` (prefixed with `[ct:<clientToken>]` if provided)                                                                                            |
@@ -27,6 +28,7 @@ Implementation steps in adapter's runtime logic:
 ## Idempotency
 
 - `task.create` — checks card description for `[ct:<token>]` marker via `trello_get_list_cards` on target list.
+- `task.move` — fetches current list via `get_card`; skips `move_card` if `card.idList` already matches resolved target. Silent skip (with audit warn) if alias not in config.
 - `checklist.check` — fetches checkItem state via `trello_get_check_item` first; skips MCP call if already `complete`.
 - `task.close` — fetches current list via `get_card`; skips if already in `closeListAlias`.
 - `task.due-date.set` — fetches `due` via `get_card`; skips if equal.
@@ -38,11 +40,29 @@ Implementation steps in adapter's runtime logic:
 | Verb                | `details` fields                                                              |
 | ------------------- | ----------------------------------------------------------------------------- |
 | `task.create`       | `{ shortLink, dateLastActivity, checklists: [{id,name,items: [{id,name}]}] }` |
+| `task.move`         | `{ previousListId, newListId, targetList }`                                   |
 | `checklist.check`   | `{ checklistId, checkItemId }`                                                |
 | `task.close`        | `{ previousListId, newListId }`                                               |
 | `task.due-date.set` | `{ previousDue, newDue }`                                                     |
 | `task.assignee.add` | `{ memberId, username }`                                                      |
 | `task.comment.add`  | `{ commentId }`                                                               |
+
+## `task.move` — resolution rules
+
+Schema: `{ cardId: string, targetList: "open" | "wip" | "done" | string }`
+
+Resolution order for `targetList`:
+
+1. If `targetList` is `"wip"` → look up `lists.wip` in `.trello.json`, use its `id` as `idList`.
+2. If `targetList` is `"done"` → look up `lists.done` in `.trello.json`.
+3. If `targetList` is `"open"` → look up `lists.open` in `.trello.json`.
+4. Otherwise → treat `targetList` as a raw Trello list ID and pass through directly to `move_card`.
+
+Fallback: if the named alias (e.g., `lists.wip`) is not present in the config, skip the MCP call silently and emit a warning to the audit log: `WARN: task.move skipped — "wip" not found in lists config`. Do NOT return an error envelope — the card stays where it is.
+
+The resolved `idList` MUST be in `autonomous.scope.lists` — otherwise the verb returns `{ ok: false, code: "OUT_OF_SCOPE" }`.
+
+Idempotency: fetch current list via `get_card`; skip `move_card` if `card.idList === resolvedIdList`.
 
 ## `task.close` — close requirements
 

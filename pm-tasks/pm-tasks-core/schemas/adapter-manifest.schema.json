@@ -10,7 +10,7 @@
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^(task\\.(create|close|due-date\\.set|assignee\\.add|comment\\.add)|checklist\\.check|[a-z0-9-]+\\.[a-z0-9.-]+)$"
+        "pattern": "^(task\\.(create|move|close|due-date\\.set|assignee\\.add|comment\\.add)|checklist\\.check|[a-z0-9-]+\\.[a-z0-9.-]+)$"
       },
       "minItems": 1,
       "uniqueItems": true

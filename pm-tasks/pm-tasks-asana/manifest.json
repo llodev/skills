@@ -2,6 +2,7 @@
   "tool": "asana",
   "verbs": [
     "task.create",
+    "task.move",
     "task.close",
     "task.due-date.set",
     "task.assignee.add",

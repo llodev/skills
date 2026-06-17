@@ -44,6 +44,7 @@
     "package/i18n/pt-BR.json",
     "package/manifest.json",
     "package/package.json",
+    "package/references/operations.md",
     "package/schemas/config.json",
     "package/scripts/init.mjs"
   ],
