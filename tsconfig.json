@@ -5,6 +5,7 @@
   "references": [
     { "path": "./pm-tasks/pm-tasks-core" },
     { "path": "./pm-tasks/pm-tasks-asana" },
-    { "path": "./pm-tasks/pm-tasks-trello" }
+    { "path": "./pm-tasks/pm-tasks-trello" },
+    { "path": "./pm-tasks/pm-tasks-testkit" }
   ]
 }

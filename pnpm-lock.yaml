@@ -87,6 +87,16 @@ importers:
 
   pm-tasks/pm-tasks-notion: {}
 
+  pm-tasks/pm-tasks-testkit:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: ^1.4.0
+        version: 1.4.0
+    devDependencies:
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@20.19.43)(lightningcss@1.32.0)
+
   pm-tasks/pm-tasks-todoist: {}
 
   pm-tasks/pm-tasks-trello:

@@ -1,0 +1,52 @@
+{
+  "name": "@llodev/pm-tasks-testkit",
+  "version": "0.0.0",
+  "description": "In-memory fakes for the 7 canonical pm-tasks CRUD verbs (task.create, task.move, task.close, task.due-date.set, task.assignee.add, task.comment.add, checklist.check). Useful for testing custom skills/adapters without hitting real MCP servers.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/pm-tasks/pm-tasks-testkit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "pm-tasks/pm-tasks-testkit"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@llodev/pm-tasks-core": "^1.4.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "agent-skill",
+    "pm-tasks",
+    "testkit",
+    "fakes",
+    "in-memory"
+  ],
+  "devDependencies": {
+    "vitest": "^2.0.0"
+  }
+}
