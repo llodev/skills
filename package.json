@@ -20,7 +20,7 @@
     "format:check": "prettier --check --ignore-unknown .",
     "build": "tsc -b",
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run --passWithNoTests",
+    "test": "pnpm -r build && vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
   "devDependencies": {

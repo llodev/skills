@@ -33,7 +33,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "pnpm build && vitest run --passWithNoTests"
   },
   "exports": {
     "./init-lib": "./scripts/init-lib.mjs",
