@@ -15,7 +15,7 @@ description: >-
   @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.3.0
+  version: 1.3.1
   tags:
     - agent-skill
     - asana
