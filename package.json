@@ -19,7 +19,7 @@
     "format": "prettier --write --ignore-unknown .",
     "format:check": "prettier --check --ignore-unknown .",
     "build": "tsc -b",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "pnpm -r typecheck",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },

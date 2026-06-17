@@ -30,6 +30,11 @@
     "pm-tools"
   ],
   "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
   "exports": {
     "./init-lib": "./scripts/init-lib.mjs",
     "./i18n/*.json": "./i18n/*.json"

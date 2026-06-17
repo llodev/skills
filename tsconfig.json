@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true
-  },
-  "references": []
+  "compilerOptions": {},
+  "files": [],
+  "references": [{ "path": "./pm-tasks/pm-tasks-core" }]
 }

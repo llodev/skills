@@ -7,17 +7,104 @@ import { homedir, platform } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// ---------------------------------------------------------------------------
+// Types & interfaces
+// ---------------------------------------------------------------------------
+
+export interface Choice<T = string> {
+  label: string;
+  value: T;
+}
+
+export type StringsTable = Record<string, string>;
+
+export interface PromptLocaleOptions {
+  defaultLocale?: string;
+}
+
+export interface PromptScopeOptions {
+  strings?: StringsTable;
+}
+
+export interface ScopeResult {
+  scope: "local" | "global";
+  path: string;
+}
+
+export interface PromptYesNoOptions {
+  defaultNo?: boolean;
+  strings?: StringsTable;
+}
+
+export interface MultiSelectOptions<T = string> {
+  strings?: StringsTable;
+}
+
+export interface PromptPickOptions<T = string> {
+  defaultIndex?: number;
+  allowSkip?: boolean;
+  strings?: StringsTable;
+}
+
+export interface AttributionConfig {
+  enabled?: boolean;
+  autonomousOnly?: boolean;
+  includeAgentName?: boolean;
+}
+
+export interface ConfigWithAttribution {
+  attribution?: AttributionConfig;
+}
+
+export interface GetAttributionParams {
+  locale: string;
+  tool: string;
+  agent: string;
+  autonomous: boolean;
+  config: ConfigWithAttribution | undefined | null;
+}
+
+export interface AttributionResult {
+  commentPrefix: string | null;
+  descriptionFooter: string | null;
+}
+
+export interface ValidationResult {
+  ok: boolean;
+  errors?: unknown[] | null;
+}
+
+export interface ProbeMCPParams {
+  tool: string;
+  probeCommand: () => Promise<unknown>;
+}
+
+export interface ProbeMCPResult {
+  mcpAvailable: boolean;
+  result?: unknown;
+  unauthenticated?: boolean;
+  error?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Internal state
+// ---------------------------------------------------------------------------
+
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
-const ADAPTER_I18N_ROOTS = {
+const ADAPTER_I18N_ROOTS: Record<string, string> = {
   core: path.resolve(HERE, "..", "i18n"),
 };
 
-export function registerI18nRoot(adapterPkg, absRoot) {
+// ---------------------------------------------------------------------------
+// Exports
+// ---------------------------------------------------------------------------
+
+export function registerI18nRoot(adapterPkg: string, absRoot: string): void {
   ADAPTER_I18N_ROOTS[adapterPkg] = absRoot;
 }
 
-export async function listLocales(adapterPkg) {
+export async function listLocales(adapterPkg: string): Promise<string[]> {
   const root = ADAPTER_I18N_ROOTS[adapterPkg];
   if (!root) throw new Error(`unknown adapterPkg for i18n: ${adapterPkg}`);
   const files = await readdir(root);
@@ -27,23 +114,26 @@ export async function listLocales(adapterPkg) {
     .sort();
 }
 
-export async function loadStrings(adapterPkg, locale) {
+export async function loadStrings(adapterPkg: string, locale: string): Promise<StringsTable> {
   const root = ADAPTER_I18N_ROOTS[adapterPkg];
   if (!root) throw new Error(`unknown adapterPkg for i18n: ${adapterPkg}`);
   const target = path.join(root, `${locale}.json`);
   try {
-    return JSON.parse(await readFile(target, "utf8"));
+    return JSON.parse(await readFile(target, "utf8")) as StringsTable;
   } catch (e) {
-    if (e.code !== "ENOENT") throw e;
-    return JSON.parse(await readFile(path.join(root, "en-US.json"), "utf8"));
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    return JSON.parse(await readFile(path.join(root, "en-US.json"), "utf8")) as StringsTable;
   }
 }
 
-export function interpolate(template, vars) {
-  return template.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? String(vars[k]) : `{${k}}`));
+export function interpolate(template: string, vars: Record<string, unknown>): string {
+  return template.replace(/\{(\w+)\}/g, (_, k: string) => (k in vars ? String(vars[k]) : `{${k}}`));
 }
 
-export async function promptLocale(adapterPkg = "core", { defaultLocale = "en-US" } = {}) {
+export async function promptLocale(
+  adapterPkg = "core",
+  { defaultLocale = "en-US" }: PromptLocaleOptions = {},
+): Promise<string> {
   const locales = await listLocales(adapterPkg);
   const r = rl();
   try {
@@ -63,19 +153,22 @@ export async function promptLocale(adapterPkg = "core", { defaultLocale = "en-US
 
 const rl = () => createInterface({ input, output });
 
-export function resolveGlobalConfigDir() {
+export function resolveGlobalConfigDir(): string {
   if (process.env.LLODEV_PM_TASKS_CONFIG_HOME) {
     return path.resolve(process.env.LLODEV_PM_TASKS_CONFIG_HOME);
   }
   if (platform() === "win32" && process.env.APPDATA) {
     return path.join(process.env.APPDATA, "llodev", "pm-tasks");
   }
-  const base = process.env.XDG_CONFIG_HOME || path.join(homedir(), ".config");
+  const base = process.env.XDG_CONFIG_HOME ?? path.join(homedir(), ".config");
   return path.join(base, "llodev", "pm-tasks");
 }
 
-export async function promptScope(toolName, { strings } = {}) {
-  const s = strings || (await loadStrings("core", "en-US"));
+export async function promptScope(
+  toolName: string,
+  { strings }: PromptScopeOptions = {},
+): Promise<ScopeResult> {
+  const s = strings ?? (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     const localPath = path.resolve(`.${toolName}.json`);
@@ -93,8 +186,11 @@ export async function promptScope(toolName, { strings } = {}) {
   }
 }
 
-export async function promptYesNo(question, { defaultNo = true, strings } = {}) {
-  const s = strings || (await loadStrings("core", "en-US"));
+export async function promptYesNo(
+  question: string,
+  { defaultNo = true, strings }: PromptYesNoOptions = {},
+): Promise<boolean> {
+  const s = strings ?? (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     const yesShort = s.yesNoYes;
@@ -112,8 +208,12 @@ export async function promptYesNo(question, { defaultNo = true, strings } = {}) 
   }
 }
 
-export async function multiSelect(label, choices, { strings } = {}) {
-  const s = strings || (await loadStrings("core", "en-US"));
+export async function multiSelect<T = string>(
+  label: string,
+  choices: Choice<T>[],
+  { strings }: MultiSelectOptions<T> = {},
+): Promise<T[]> {
+  const s = strings ?? (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     console.log(`\n${label}`);
@@ -130,12 +230,12 @@ export async function multiSelect(label, choices, { strings } = {}) {
   }
 }
 
-export async function promptPick(
-  label,
-  choices,
-  { defaultIndex = -1, allowSkip = false, strings } = {},
-) {
-  const s = strings || (await loadStrings("core", "en-US"));
+export async function promptPick<T = string>(
+  label: string,
+  choices: Choice<T>[],
+  { defaultIndex = -1, allowSkip = false, strings }: PromptPickOptions<T> = {},
+): Promise<T | null> {
+  const s = strings ?? (await loadStrings("core", "en-US"));
   const r = rl();
   try {
     console.log(`\n${label}`);
@@ -161,7 +261,7 @@ export async function promptPick(
   }
 }
 
-export function aliasOf(name) {
+export function aliasOf(name: unknown): string {
   return String(name)
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
@@ -170,23 +270,31 @@ export function aliasOf(name) {
     .replace(/^-|-$/g, "");
 }
 
-export async function writeConfig(targetPath, data) {
+export async function writeConfig(targetPath: string, data: unknown): Promise<void> {
   await mkdir(path.dirname(targetPath), { recursive: true });
   try {
     await access(targetPath);
     throw new Error(`config already exists at ${targetPath}, aborting`);
   } catch (e) {
-    if (e.code !== "ENOENT") throw e;
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
   }
   await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n");
 }
 
-export async function validateConfig(data, schema) {
+export async function validateConfig(data: unknown, schema: unknown): Promise<ValidationResult> {
   // Adapter loads its own schemas/config.json and passes it here for validation.
-  const { default: Ajv2020 } = await import("ajv/dist/2020.js");
-  const { default: addFormats } = await import("ajv-formats");
-  const ajv = new Ajv2020({ allErrors: true, strict: false });
-  addFormats(ajv);
+  // Dynamic imports use `as unknown as` casts because ajv's CJS default export
+  // types don't surface construct/call signatures through NodeNext dynamic import.
+  const { default: Ajv2020Ctor } = (await import("ajv/dist/2020.js")) as unknown as {
+    default: new (opts: { allErrors: boolean; strict: boolean }) => {
+      compile: (schema: unknown) => ((data: unknown) => boolean) & { errors?: unknown[] | null };
+    };
+  };
+  const { default: addFormatsFn } = (await import("ajv-formats")) as unknown as {
+    default: (ajv: unknown) => void;
+  };
+  const ajv = new Ajv2020Ctor({ allErrors: true, strict: false });
+  addFormatsFn(ajv);
   const validate = ajv.compile(schema);
   if (!validate(data)) {
     return { ok: false, errors: validate.errors };
@@ -194,34 +302,44 @@ export async function validateConfig(data, schema) {
   return { ok: true };
 }
 
-export async function probeMCP({ tool, probeCommand }) {
+export async function probeMCP({
+  tool: _tool,
+  probeCommand,
+}: ProbeMCPParams): Promise<ProbeMCPResult> {
   // Caller-supplied async probe function; library only sequences UX.
   try {
     const result = await probeCommand();
     return { mcpAvailable: true, result };
   } catch (e) {
-    if (/^auth\b|\b(unauthorized|forbidden)\b|\b40[13]\b/i.test(e.message)) {
-      return { mcpAvailable: true, unauthenticated: true, error: e.message };
+    const err = e as Error;
+    if (/^auth\b|\b(unauthorized|forbidden)\b|\b40[13]\b/i.test(err.message)) {
+      return { mcpAvailable: true, unauthenticated: true, error: err.message };
     }
-    return { mcpAvailable: false, error: e.message };
+    return { mcpAvailable: false, error: err.message };
   }
 }
 
-export function printInstructions(lines) {
+export function printInstructions(lines: string[]): void {
   console.log(`\n${lines.join("\n")}\n`);
 }
 
-export async function readJsonIfExists(p) {
+export async function readJsonIfExists(p: string): Promise<unknown> {
   try {
     const src = await readFile(p, "utf8");
-    return JSON.parse(src);
+    return JSON.parse(src) as unknown;
   } catch (e) {
-    if (e.code === "ENOENT") return null;
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw e;
   }
 }
 
-export async function getAttribution({ locale, tool, agent, autonomous, config }) {
+export async function getAttribution({
+  locale,
+  tool,
+  agent,
+  autonomous,
+  config,
+}: GetAttributionParams): Promise<AttributionResult> {
   const att = config?.attribution;
   if (!att?.enabled) return { commentPrefix: null, descriptionFooter: null };
   if (att.autonomousOnly && !autonomous) return { commentPrefix: null, descriptionFooter: null };

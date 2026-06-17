@@ -22,8 +22,6 @@
     "package/references/crud-vocabulary.md",
     "package/references/generic-card.md",
     "package/references/init-ux.md",
-    "package/scripts/init-lib.mjs",
-    "package/scripts/init-lib.test.mjs",
     "package/scripts/rotate-audit.sh"
   ],
   "pm-tasks-asana": [
