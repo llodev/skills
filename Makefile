@@ -42,7 +42,7 @@ release-publish: ## publish to npm (gated by CI/auth)
 	pnpm changeset:publish
 
 init-asana: ## run pm-tasks-asana init (needs LLODEV_PM_TASKS_ASANA_PAT)
-	node pm-tasks/pm-tasks-asana/scripts/init.mjs
+	node pm-tasks/pm-tasks-asana/dist/bin/init.js
 
 init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 	node pm-tasks/pm-tasks-trello/scripts/init.mjs

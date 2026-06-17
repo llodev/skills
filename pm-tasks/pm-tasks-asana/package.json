@@ -9,18 +9,20 @@
     "url": "https://github.com/llodev/skills.git",
     "directory": "pm-tasks/pm-tasks-asana"
   },
+  "main": "./dist/bin/init.js",
+  "types": "./dist/bin/init.d.ts",
   "files": [
     "SKILL.md",
     "README.md",
-    "docs",
-    "schemas",
-    "references",
-    "anti-patterns",
-    "scripts",
-    "i18n",
     "LICENSE",
     "CHANGELOG.md",
-    "manifest.json"
+    "docs",
+    "anti-patterns",
+    "references",
+    "i18n",
+    "schemas",
+    "manifest.json",
+    "dist"
   ],
   "keywords": [
     "agent-skill",
@@ -30,11 +32,28 @@
     "asana-mcp"
   ],
   "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/init.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/bin/init.d.ts",
+      "import": "./dist/bin/init.js"
+    },
+    "./i18n/*.json": "./i18n/*.json",
+    "./schemas/*.json": "./schemas/*.json",
+    "./manifest.json": "./manifest.json"
+  },
   "bin": {
-    "pm-tasks-asana": "./scripts/init.mjs"
+    "pm-tasks-asana": "./dist/bin/init.js"
   },
   "dependencies": {
-    "@llodev/pm-tasks-core": "workspace:^"
+    "@llodev/pm-tasks-core": "^1.4.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   },
   "publishConfig": {
     "access": "public"
