@@ -29,11 +29,12 @@ coverage/
 *.tsbuildinfo
 
 # dev
-sandbox/
-logs/
-.cursor/
 .claude/
+.cursor/
+.mcp.json
+.vscode/
 docs/plans/
 docs/specs/
 docs/tracking/
-.mcp.json
+logs/
+sandbox/
