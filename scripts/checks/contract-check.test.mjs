@@ -3,11 +3,11 @@ import assert from "node:assert/strict";
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync, renameSync } from "node:fs";
 
-const ROOT = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
+const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 
 function runScript() {
   try {
-    const stdout = execSync("node scripts/contract-check.mjs", {
+    const stdout = execSync("node scripts/checks/contract-check.mjs", {
       cwd: ROOT,
       encoding: "utf8",
       stdio: "pipe",

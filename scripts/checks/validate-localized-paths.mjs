@@ -16,7 +16,8 @@ import { readFile, access, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+// "docs" is not skipped so walker can descend into docs/i18n/
 const SKIP = new Set(["node_modules", ".git", ".changeset", ".github", "scripts"]);
 const MAX_DEPTH = 8;
 

@@ -22,7 +22,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run validate
       - run: pnpm run contract:check
-      - run: bash scripts/pre-release-check.sh
+      - run: bash scripts/shell/pre-release-check.sh
       - uses: changesets/action@v1
         with:
           version: pnpm run changeset:version

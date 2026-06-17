@@ -12,7 +12,7 @@ description: >-
   create task"). Do NOT activate alone — it has no tool-specific formatting.
 license: MIT
 metadata:
-  version: 1.3.1
+  version: 1.3.2
   tags:
     - agent-skill
     - plan-to-tasks
@@ -28,14 +28,6 @@ compatibility:
     - cline
     - roo-code
 ---
-
-<!-- readme-selector:start -->
-<p align="center">
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
-</p>
-<!-- readme-selector:end -->
 
 # pm-tasks-core
 

@@ -3,7 +3,7 @@ import { readFile, access, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const LINK_RE = /\[[^\]]+\]\(([^)#]+?)(#[^)]*)?\)/g;
 const SKIP = new Set(["node_modules", ".git", ".changeset", ".github", "docs", "scripts"]);
 const MAX_DEPTH = 6;

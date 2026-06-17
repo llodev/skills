@@ -15,7 +15,7 @@ description: >-
   @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.3.0
+  version: 1.3.1
   tags:
     - agent-skill
     - asana
@@ -33,14 +33,6 @@ compatibility:
     - cline
     - roo-code
 ---
-
-<!-- readme-selector:start -->
-<p align="center">
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/SKILL.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/SKILL.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/SKILL.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
-</p>
-<!-- readme-selector:end -->
 
 # pm-tasks-asana
 

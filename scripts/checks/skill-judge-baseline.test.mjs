@@ -3,10 +3,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-const REPO = path.resolve(import.meta.dirname, "..");
+const REPO = path.resolve(import.meta.dirname, "../..");
 
 test("baseline file is valid JSON keyed by relative SKILL.md path", async () => {
-  const raw = await readFile(path.join(REPO, "scripts/skill-judge-baseline.json"), "utf8");
+  const raw = await readFile(path.join(REPO, "scripts/snapshots/skill-judge-baseline.json"), "utf8");
   const data = JSON.parse(raw);
   for (const [key, entry] of Object.entries(data)) {
     assert.match(key, /^pm-tasks\/[a-z0-9-]+\/SKILL\.md$/);
@@ -18,8 +18,8 @@ test("baseline file is valid JSON keyed by relative SKILL.md path", async () => 
 });
 
 // Golden-master rubric snapshot tests
-const GOLDEN_PATH = path.join(REPO, "scripts/skill-judge-golden.json");
-const BASELINE_PATH = path.join(REPO, "scripts/skill-judge-baseline.json");
+const GOLDEN_PATH = path.join(REPO, "scripts/snapshots/skill-judge-golden.json");
+const BASELINE_PATH = path.join(REPO, "scripts/snapshots/skill-judge-baseline.json");
 
 test("golden: every entry has the 4 required keys", async () => {
   const raw = await readFile(GOLDEN_PATH, "utf8");

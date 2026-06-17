@@ -33,7 +33,7 @@ changeset: ## record a new changeset (interactive)
 	pnpm changeset
 
 pre-release: ## quality gate before release-version (skill-judge ratchet check)
-	@bash scripts/pre-release-check.sh
+	@bash scripts/shell/pre-release-check.sh
 
 release-version: pre-release ## apply changesets + bump versions (runs pre-release first)
 	pnpm changeset:version

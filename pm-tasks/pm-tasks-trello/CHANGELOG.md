@@ -1,5 +1,25 @@
 # @llodev/pm-tasks-trello
 
+## 1.3.1
+
+### Patch Changes
+
+- chore: reorganize repo structure
+
+  Pure chore release. Zero runtime change. Splits across:
+
+  - Reorganized root `scripts/` into `checks/`, `snapshots/`, `shell/` subfolders.
+  - Dropped `SKILL.{pt-BR,es-ES}.md` translations (agents read canonical EN-only per agentskills.io spec).
+  - Moved localized READMEs to `docs/i18n/` in root + each package (anticipates 5+ locales without cluttering package roots).
+  - Updated validators (`validate-localized-paths.mjs`) and tarball snapshot for new paths.
+
+  Skill-judge: bypassed with `SKIP_SKILL_JUDGE_GATE=1` — only SKILL.md change was decorative readme-selector block removal; expected delta = 0 (cosmetic-only). Per NOISE_BAND policy [-2, +2] bypass allowed.
+
+  Meta package `@llodev/pm-tasks` not bumped — no tarball content changes, only peerDeps inheritance.
+
+- Updated dependencies []:
+  - @llodev/pm-tasks-core@1.3.2
+
 ## 1.3.0
 
 ### Minor Changes
