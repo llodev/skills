@@ -1,5 +1,24 @@
 # @llodev/pm-tasks-core
 
+## 1.4.0
+
+### Minor Changes
+
+- Migrate @llodev/pm-tasks-core to TypeScript; add types export; switch from node:test to Vitest.
+
+  - Source moved from `scripts/init-lib.mjs` to `src/init-lib.ts` (strict TS, 15 exported interfaces).
+  - i18n primitives (registerI18nRoot, listLocales, loadStrings, interpolate) extracted to `src/i18n/registry.ts`; re-exported from init-lib for backwards compatibility.
+  - Build pipeline: `tsc` produces `dist/init-lib.{js,d.ts,js.map,d.ts.map}` and `dist/i18n/registry.*`.
+  - `package.json` exports map now points at compiled `dist/` (`.` root export + `./init-lib` subpath for backcompat).
+  - Adds `main` and `types` top-level fields for tooling that doesn't read exports.
+  - `prepublishOnly` hook ensures the build runs before npm publish; CI also runs `pnpm typecheck` + `pnpm -r build` before publish.
+  - Test runner switched from `node:test` to Vitest 2.x (36/36 tests pass).
+  - Tarball ships `dist/` + JSON schemas + i18n locales + `scripts/rotate-audit.sh`; no source, no tests, no tsbuildinfo.
+
+  Skill-judge: non-functional change (TS migration of internal lib + test runner swap); expect Δ ≈ 0. Bypass with `SKIP_SKILL_JUDGE_GATE=1` per NOISE_BAND policy if needed.
+
+  Backwards compatibility: consumers (adapters and external) keep importing `@llodev/pm-tasks-core/init-lib` — the resolution target changes from `scripts/init-lib.mjs` to `dist/init-lib.js` with the same runtime behavior.
+
 ## 1.3.2
 
 ### Patch Changes
