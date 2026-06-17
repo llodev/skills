@@ -9,16 +9,20 @@
     "url": "https://github.com/llodev/skills.git",
     "directory": "pm-tasks/pm-tasks-core"
   },
+  "main": "./dist/init-lib.js",
+  "types": "./dist/init-lib.d.ts",
   "files": [
     "SKILL.md",
     "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
     "docs",
     "references",
     "anti-patterns",
     "scripts",
+    "schemas",
     "i18n",
-    "LICENSE",
-    "CHANGELOG.md"
+    "dist"
   ],
   "keywords": [
     "agent-skill",
@@ -33,10 +37,23 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "pnpm build && vitest run --passWithNoTests"
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
   },
   "exports": {
-    "./init-lib": "./scripts/init-lib.mjs",
+    ".": {
+      "types": "./dist/init-lib.d.ts",
+      "import": "./dist/init-lib.js"
+    },
+    "./init-lib": {
+      "types": "./dist/init-lib.d.ts",
+      "import": "./dist/init-lib.js"
+    },
+    "./i18n": {
+      "types": "./dist/i18n/registry.d.ts",
+      "import": "./dist/i18n/registry.js"
+    },
+    "./schemas/*.json": "./schemas/*.json",
     "./i18n/*.json": "./i18n/*.json"
   },
   "engines": {
