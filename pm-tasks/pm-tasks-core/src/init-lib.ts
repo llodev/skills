@@ -5,6 +5,9 @@ import { stdin as input, stdout as output } from "node:process";
 import { mkdir, writeFile, access, readFile } from "node:fs/promises";
 import { homedir, platform } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 import { registerI18nRoot, listLocales, loadStrings, interpolate } from "./i18n/registry.js";
 import type { StringsTable } from "./i18n/registry.js";
@@ -243,6 +246,12 @@ export async function writeConfig(targetPath: string, data: unknown): Promise<vo
   await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n");
 }
 
+// Schemas in this list are pre-registered on the Ajv instance before any
+// adapter schema is compiled. Adapter configs ($id under llodev.github.io)
+// declare $ref to these schemas via their stable llodev.com $id; Ajv must
+// know about them up front or compilation throws MissingRefError.
+const CORE_REF_SCHEMAS = ["attribution.schema.json", "adapter-manifest.schema.json"];
+
 export async function validateConfig(data: unknown, schema: unknown): Promise<ValidationResult> {
   // Adapter loads its own schemas/config.json and passes it here for validation.
   // Dynamic imports use `as unknown as` casts because ajv's CJS default export
@@ -250,6 +259,7 @@ export async function validateConfig(data: unknown, schema: unknown): Promise<Va
   const { default: Ajv2020Ctor } = (await import("ajv/dist/2020.js")) as unknown as {
     default: new (opts: { allErrors: boolean; strict: boolean }) => {
       compile: (schema: unknown) => ((data: unknown) => boolean) & { errors?: unknown[] | null };
+      addSchema: (schema: unknown) => void;
     };
   };
   const { default: addFormatsFn } = (await import("ajv-formats")) as unknown as {
@@ -257,6 +267,17 @@ export async function validateConfig(data: unknown, schema: unknown): Promise<Va
   };
   const ajv = new Ajv2020Ctor({ allErrors: true, strict: false });
   addFormatsFn(ajv);
+
+  const schemasDir = path.resolve(HERE, "..", "schemas");
+  for (const name of CORE_REF_SCHEMAS) {
+    try {
+      const raw = await readFile(path.join(schemasDir, name), "utf8");
+      ajv.addSchema(JSON.parse(raw));
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    }
+  }
+
   const validate = ajv.compile(schema);
   if (!validate(data)) {
     return { ok: false, errors: validate.errors };
