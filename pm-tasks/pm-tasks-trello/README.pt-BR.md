@@ -92,7 +92,7 @@ O prompt de `init` imprime o caminho absoluto onde vai escrever, então você se
 
 ## Documentação
 
-- [`SKILL.pt-BR.md`](./SKILL.pt-BR.md) — roteamento de phases + vocabulário CRUD.
+- [`SKILL.md`](./SKILL.md) — roteamento de phases + vocabulário CRUD.
 - [`references/format.md`](./references/format.md) — convenções de formatação do Trello.
 - [`references/publish.md`](./references/publish.md) — sequência de MCP publish.
 - [`references/operations.md`](./references/operations.md) — verbos CRUD → mapeamento de ferramenta MCP.

@@ -90,7 +90,7 @@ O prompt de `init` imprime o caminho absoluto onde vai escrever, então você se
 
 ## Documentação
 
-- [`SKILL.pt-BR.md`](./SKILL.pt-BR.md) — roteamento de phases + vocabulário CRUD.
+- [`SKILL.md`](./SKILL.md) — roteamento de phases + vocabulário CRUD.
 - [`schemas/config.json`](./schemas/config.json) — JSON Schema do `.asana.json`.
 - [`anti-patterns/asana.md`](./anti-patterns/asana.md) — pegadinhas recorrentes.
 - [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md) — contrato do autonomous mode.

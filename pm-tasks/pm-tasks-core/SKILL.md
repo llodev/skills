@@ -29,14 +29,6 @@ compatibility:
     - roo-code
 ---
 
-<!-- readme-selector:start -->
-<p align="center">
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/SKILL.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
-</p>
-<!-- readme-selector:end -->
-
 # pm-tasks-core
 
 Shared core for all `pm-tasks-<tool>` adapters. Defines the extraction phases, the generic-card structure, the CRUD vocabulary, the autonomous-mode contract, the configuration lookup rules, and the audit-log format. Adapters reference this skill by path — no formal dependency mechanism in the spec.

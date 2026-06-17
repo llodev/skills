@@ -90,7 +90,7 @@ El prompt de `init` imprime la ruta absoluta donde va a escribir, así siempre v
 
 ## Documentación
 
-- [`SKILL.es-ES.md`](./SKILL.es-ES.md) — enrutado de phases + vocabulario CRUD.
+- [`SKILL.md`](./SKILL.md) — enrutado de phases + vocabulario CRUD.
 - [`schemas/config.json`](./schemas/config.json) — JSON Schema de `.asana.json`.
 - [`anti-patterns/asana.md`](./anti-patterns/asana.md) — gotchas recurrentes.
 - [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md) — contrato de autonomous mode.
