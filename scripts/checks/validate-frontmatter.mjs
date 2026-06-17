@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import matter from "gray-matter";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const REQUIRED = ["name", "description"];
 const RECOMMENDED = ["license", "metadata"];
 const SKIP = new Set(["node_modules", ".git", ".changeset", ".github", "docs", "scripts"]);

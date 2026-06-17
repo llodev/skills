@@ -5,9 +5,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const PACKAGES = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello"];
-const golden = JSON.parse(readFileSync("scripts/tarball-snapshot.json", "utf8"));
+const golden = JSON.parse(readFileSync("scripts/snapshots/tarball-snapshot.json", "utf8"));
 
-const ROOT = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
+const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 
 for (const pkg of PACKAGES) {
   test(`${pkg} tarball contents match golden`, () => {

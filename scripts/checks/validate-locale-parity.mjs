@@ -3,7 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 const REQUIRED_LOCALES = ["en-US", "pt-BR", "es-ES"];
 const ADAPTERS = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello"];

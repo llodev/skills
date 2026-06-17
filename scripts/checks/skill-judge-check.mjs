@@ -3,8 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const BASELINE_PATH = path.join(REPO, "scripts/skill-judge-baseline.json");
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const BASELINE_PATH = path.join(REPO, "scripts/snapshots/skill-judge-baseline.json");
 const DEFAULT_TOLERANCE = 5;
 // NOISE_BAND (2) — tolerance window for skill-judge drift between runs.
 // |Δ| ≤ 2 is treated as rubric variance, not real regression. A score

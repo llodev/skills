@@ -9,10 +9,10 @@
     "node": ">=20"
   },
   "scripts": {
-    "validate": "node scripts/validate-frontmatter.mjs && node scripts/validate-schemas.mjs && node scripts/validate-links.mjs && node scripts/validate-localized-paths.mjs && node scripts/validate-locale-parity.mjs && node --test scripts/tarball-snapshot.test.mjs",
-    "contract:check": "node scripts/contract-check.mjs",
-    "skill-judge:check": "node scripts/skill-judge-check.mjs",
-    "version:sync": "node scripts/sync-version.mjs",
+    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node --test scripts/checks/tarball-snapshot.test.mjs",
+    "contract:check": "node scripts/checks/contract-check.mjs",
+    "skill-judge:check": "node scripts/checks/skill-judge-check.mjs",
+    "version:sync": "node scripts/checks/sync-version.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && pnpm run version:sync",
     "changeset:publish": "changeset publish",

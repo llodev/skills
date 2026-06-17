@@ -21,7 +21,7 @@ if ! git rev-parse --verify --quiet "$BASE_REF" >/dev/null; then
 fi
 
 SKILL_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'pm-tasks/*/SKILL.md' || true)"
-BASELINE_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'scripts/skill-judge-baseline.json' || true)"
+BASELINE_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'scripts/snapshots/skill-judge-baseline.json' || true)"
 
 if [ -z "$SKILL_CHANGES" ]; then
   echo "pre-release: no SKILL.md changes vs $BASE_REF — skill-judge gate skipped."
@@ -29,14 +29,14 @@ if [ -z "$SKILL_CHANGES" ]; then
 fi
 
 if [ -n "$BASELINE_CHANGES" ]; then
-  echo "pre-release: SKILL.md changes detected and scripts/skill-judge-baseline.json"
+  echo "pre-release: SKILL.md changes detected and scripts/snapshots/skill-judge-baseline.json"
   echo "             was updated in the same range. Assuming the gate was run."
   exit 0
 fi
 
 cat <<EOF
 ─── skill-judge gate ───────────────────────────────────────────────────────
-SKILL.md files were modified on this branch but scripts/skill-judge-baseline.json
+SKILL.md files were modified on this branch but scripts/snapshots/skill-judge-baseline.json
 has NOT been updated. The skill-judge contract says the baseline should be
 re-evaluated before shipping changes that touch SKILL.md.
 
@@ -46,7 +46,7 @@ $(echo "$SKILL_CHANGES" | sed 's/^/  - /')
 Required action — one of:
 
   (a) Run 'make skill-judge' with current scores piped in. If the scores
-      improved meaningfully (Δ ≥ +3), ratchet scripts/skill-judge-baseline.json
+      improved meaningfully (Δ ≥ +3), ratchet scripts/snapshots/skill-judge-baseline.json
       and commit it on this branch, then re-run 'make release-version'.
 
   (b) If you ran the gate and concluded the score drift is within the noise

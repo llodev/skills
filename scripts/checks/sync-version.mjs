@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import matter from "gray-matter";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const SKIP = new Set(["node_modules", ".git", ".changeset", ".github", "docs", "scripts"]);
 const MAX_DEPTH = 4;
 
