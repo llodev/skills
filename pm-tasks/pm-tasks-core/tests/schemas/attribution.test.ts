@@ -1,5 +1,4 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { test, expect } from "vitest";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -8,7 +7,7 @@ const HERE = import.meta.dirname;
 
 test("config without attribution is valid (backwards-compat)", async () => {
   const attributionSchema = JSON.parse(
-    await readFile(path.join(HERE, "attribution.schema.json"), "utf8"),
+    await readFile(path.join(HERE, "..", "..", "schemas", "attribution.schema.json"), "utf8"),
   );
   const ajv = new Ajv2020({ strict: false });
   ajv.addSchema(attributionSchema);
@@ -23,37 +22,45 @@ test("config without attribution is valid (backwards-compat)", async () => {
   const validate = ajv.compile(wrapperSchema);
   // Adapter config omitting attribution entirely — must be valid
   const result = validate({ version: "1" });
-  assert.equal(result, true);
+  expect(result).toBe(true);
 });
 
 test("attribution { enabled: true } is valid", async () => {
-  const schema = JSON.parse(await readFile(path.join(HERE, "attribution.schema.json"), "utf8"));
+  const schema = JSON.parse(
+    await readFile(path.join(HERE, "..", "..", "schemas", "attribution.schema.json"), "utf8"),
+  );
   const ajv = new Ajv2020({ strict: false });
   const validate = ajv.compile(schema);
   const result = validate({ enabled: true });
-  assert.equal(result, true);
+  expect(result).toBe(true);
 });
 
 test("attribution with all fields is valid", async () => {
-  const schema = JSON.parse(await readFile(path.join(HERE, "attribution.schema.json"), "utf8"));
+  const schema = JSON.parse(
+    await readFile(path.join(HERE, "..", "..", "schemas", "attribution.schema.json"), "utf8"),
+  );
   const ajv = new Ajv2020({ strict: false });
   const validate = ajv.compile(schema);
   const result = validate({ enabled: true, includeAgentName: true, autonomousOnly: false });
-  assert.equal(result, true);
+  expect(result).toBe(true);
 });
 
 test("attribution { enabled: 'yes' } is invalid (wrong type)", async () => {
-  const schema = JSON.parse(await readFile(path.join(HERE, "attribution.schema.json"), "utf8"));
+  const schema = JSON.parse(
+    await readFile(path.join(HERE, "..", "..", "schemas", "attribution.schema.json"), "utf8"),
+  );
   const ajv = new Ajv2020({ strict: false });
   const validate = ajv.compile(schema);
   const result = validate({ enabled: "yes" });
-  assert.equal(result, false);
+  expect(result).toBe(false);
 });
 
 test("attribution: { enabled: true, unknownField: 1 } → invalid (additionalProperties: false)", async () => {
-  const schema = JSON.parse(await readFile(path.join(HERE, "attribution.schema.json"), "utf8"));
+  const schema = JSON.parse(
+    await readFile(path.join(HERE, "..", "..", "schemas", "attribution.schema.json"), "utf8"),
+  );
   const ajv = new Ajv2020({ strict: false });
   const validate = ajv.compile(schema);
   const result = validate({ enabled: true, unknownField: 1 });
-  assert.equal(result, false);
+  expect(result).toBe(false);
 });

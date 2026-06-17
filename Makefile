@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge clean
+.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge test typecheck build clean
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -49,6 +49,15 @@ init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 
 skill-judge: ## skill-judge:check — reads scores from stdin as JSON {path: score}
 	pnpm skill-judge:check
+
+build: ## typescript build (tsc -b with project references)
+	pnpm build
+
+typecheck: ## typescript type check only (no emit)
+	pnpm typecheck
+
+test: ## run vitest suite
+	pnpm test
 
 clean: ## remove build artefacts and pnpm caches in node_modules
 	rm -rf node_modules pm-tasks/*/node_modules

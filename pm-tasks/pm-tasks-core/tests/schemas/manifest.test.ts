@@ -1,5 +1,4 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { test, expect } from "vitest";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -8,7 +7,7 @@ const HERE = import.meta.dirname;
 
 async function buildValidate() {
   const schema = JSON.parse(
-    await readFile(path.join(HERE, "adapter-manifest.schema.json"), "utf8"),
+    await readFile(path.join(HERE, "..", "..", "schemas", "adapter-manifest.schema.json"), "utf8"),
   );
   const ajv = new Ajv2020({ strict: false });
   return ajv.compile(schema);
@@ -27,7 +26,7 @@ test("manifest with 6 canonical verbs is valid", async () => {
       "checklist.check",
     ],
   });
-  assert.equal(result, true);
+  expect(result).toBe(true);
 });
 
 test("manifest with 4 canonical + 1 custom namespaced verb is valid", async () => {
@@ -42,7 +41,7 @@ test("manifest with 4 canonical + 1 custom namespaced verb is valid", async () =
       "trello.card.cover-image.set",
     ],
   });
-  assert.equal(result, true);
+  expect(result).toBe(true);
 });
 
 test("manifest without tool field is invalid", async () => {
@@ -50,7 +49,7 @@ test("manifest without tool field is invalid", async () => {
   const result = validate({
     verbs: ["task.create"],
   });
-  assert.equal(result, false);
+  expect(result).toBe(false);
 });
 
 test("manifest with uppercase verb (Task.Create) is invalid", async () => {
@@ -59,7 +58,7 @@ test("manifest with uppercase verb (Task.Create) is invalid", async () => {
     tool: "trello",
     verbs: ["Task.Create"],
   });
-  assert.equal(result, false);
+  expect(result).toBe(false);
 });
 
 test("manifest with empty verbs array is invalid (minItems: 1)", async () => {
@@ -68,7 +67,7 @@ test("manifest with empty verbs array is invalid (minItems: 1)", async () => {
     tool: "trello",
     verbs: [],
   });
-  assert.equal(result, false);
+  expect(result).toBe(false);
 });
 
 test("manifest with uppercase tool field (Trello) is invalid", async () => {
@@ -77,5 +76,5 @@ test("manifest with uppercase tool field (Trello) is invalid", async () => {
     tool: "Trello",
     verbs: ["task.create"],
   });
-  assert.equal(result, false);
+  expect(result).toBe(false);
 });

@@ -1,6 +1,6 @@
 # Init UX (shared across pm-tasks-<tool> adapters)
 
-Every `pm-tasks-<tool>` adapter exposes `npx @llodev/pm-tasks-<tool> init` and follows this four-step flow. Implementation library at `pm-tasks/pm-tasks-core/scripts/init-lib.mjs`.
+Every `pm-tasks-<tool>` adapter exposes `npx @llodev/pm-tasks-<tool> init` and follows this four-step flow. Implementation library at `pm-tasks/pm-tasks-core/src/init-lib.ts` (compiled to `dist/init-lib.js`; consumers import via `@llodev/pm-tasks-core/init-lib`).
 
 ## Step 1 — Scope prompt
 

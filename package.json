@@ -17,14 +17,23 @@
     "changeset:version": "changeset version && pnpm run version:sync",
     "changeset:publish": "changeset publish",
     "format": "prettier --write --ignore-unknown .",
-    "format:check": "prettier --check --ignore-unknown ."
+    "format:check": "prettier --check --ignore-unknown .",
+    "build": "tsc -b",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r build && vitest run --passWithNoTests",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.27.0",
+    "@types/node": "^20.19.43",
+    "@vitest/coverage-v8": "^2.1.9",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "gray-matter": "^4.0.3",
-    "prettier": "^3.3.0"
+    "prettier": "^3.3.0",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
   }
 }
