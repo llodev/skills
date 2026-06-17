@@ -1,8 +1,8 @@
 <!-- readme-selector:start -->
 <p align="center">
   <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/docs/i18n/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-asana/docs/i18n/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
 </p>
 <!-- readme-selector:end -->
 
@@ -11,7 +11,7 @@
 > Adapter para Asana de la familia `@llodev/pm-tasks-*` — convierte planes de implementación en parent tasks + subtasks de Asana y los opera mediante paste, MCP publish o autonomous write-through.
 
 [![npm](https://img.shields.io/npm/v/@llodev/pm-tasks-asana?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/pm-tasks-asana)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
@@ -86,15 +86,15 @@ El prompt de `init` imprime la ruta absoluta donde va a escribir, así siempre v
 > **Los custom fields NO se heredan por defecto** — lista los IDs de field en `subtaskDefaults.inheritParentFields` para que el adapter los copie del parent a las subtasks en el momento del create.
 
 - **Assignee es un campo único** — usa `task.assignee.add` para añadir followers; el assignee principal se reemplaza en caso de conflicto.
-- **El `get_task` del MCP no devuelve activity stories** — el activity feed de la UI de Asana es la fuente de verdad para auditorías de atribución. Mira [`anti-patterns/asana.md`](./anti-patterns/asana.md).
+- **El `get_task` del MCP no devuelve activity stories** — el activity feed de la UI de Asana es la fuente de verdad para auditorías de atribución. Mira [`anti-patterns/asana.md`](../../anti-patterns/asana.md).
 
 ## Documentación
 
-- [`SKILL.md`](./SKILL.md) — enrutado de phases + vocabulario CRUD.
-- [`schemas/config.json`](./schemas/config.json) — JSON Schema de `.asana.json`.
-- [`anti-patterns/asana.md`](./anti-patterns/asana.md) — gotchas recurrentes.
-- [`../pm-tasks-core/references/autonomous-mode.md`](../pm-tasks-core/references/autonomous-mode.md) — contrato de autonomous mode.
+- [`SKILL.md`](../../SKILL.md) — enrutado de phases + vocabulario CRUD.
+- [`schemas/config.json`](../../schemas/config.json) — JSON Schema de `.asana.json`.
+- [`anti-patterns/asana.md`](../../anti-patterns/asana.md) — gotchas recurrentes.
+- [`../pm-tasks-core/references/autonomous-mode.md`](../../../pm-tasks-core/references/autonomous-mode.md) — contrato de autonomous mode.
 
 ## Licencia
 
-MIT — mira [LICENSE](./LICENSE).
+MIT — mira [LICENSE](../../LICENSE).

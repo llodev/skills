@@ -12,8 +12,7 @@
   "files": [
     "SKILL.md",
     "README.md",
-    "README.pt-BR.md",
-    "README.es-ES.md",
+    "docs",
     "schemas",
     "references",
     "anti-patterns",

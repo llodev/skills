@@ -1,8 +1,8 @@
 <!-- readme-selector:start -->
 <p align="center">
   <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/docs/i18n/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-core/docs/i18n/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
 </p>
 <!-- readme-selector:end -->
 

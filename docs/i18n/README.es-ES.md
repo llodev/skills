@@ -1,8 +1,8 @@
 <!-- readme-selector:start -->
 <p align="center">
   <a href="https://github.com/llodev/skills/blob/main/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+  <a href="https://github.com/llodev/skills/blob/main/docs/i18n/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/docs/i18n/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
 </p>
 <!-- readme-selector:end -->
 
@@ -10,7 +10,7 @@
 
 > Colección de [Agent Skills](https://agentskills.io) creadas por [@lloliveiradev](https://github.com/lloliveiradev) para Claude Code, Cursor, Codex, Windsurf y cualquier agente que hable la spec abierta de Skills. Las skills son paquetes de instrucciones y scripts que extienden las capacidades de los agentes en workflows de desarrollo, documentación, planificación y profesionales.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
@@ -40,7 +40,7 @@ npm i @llodev/pm-tasks    # meta — instala toda la familia vía peerDeps
 npx skills add llodev/skills/pm-tasks/pm-tasks-trello
 ```
 
-Consulta la [guía de publicación](docs/publishing-guide.md) para ver cómo se conectan los tres canales.
+Consulta la [guía de publicación](../../docs/publishing-guide.md) para ver cómo se conectan los tres canales.
 
 ## Catálogo
 
@@ -48,19 +48,19 @@ Consulta la [guía de publicación](docs/publishing-guide.md) para ver cómo se 
 
 Convierten planes de implementación en tareas de PM (Trello, Asana, …) y las operan vía paste, MCP publish o write-through autónomo.
 
-| Paquete                     | Estado      | Fuente                                                     | npm                             | Vercel CLI                                              |
-| --------------------------- | ----------- | ---------------------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
-| `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [pm-tasks/pm-tasks/](pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`        | —                                                       |
-| `@llodev/pm-tasks-core`     | ✅ v1.3.0   | [pm-tasks/pm-tasks-core/](pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`   | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
-| `@llodev/pm-tasks-asana`    | ✅ v1.3.0   | [pm-tasks/pm-tasks-asana/](pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`  | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
-| `@llodev/pm-tasks-trello`   | ✅ v1.3.0   | [pm-tasks/pm-tasks-trello/](pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello` | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
-| `pm-tasks-jira`             | 🔒 scaffold | [pm-tasks/pm-tasks-jira/](pm-tasks/pm-tasks-jira/)         | —                               | —                                                       |
-| `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](pm-tasks/pm-tasks-linear/)     | —                               | —                                                       |
-| `pm-tasks-notion`           | 🔒 scaffold | [pm-tasks/pm-tasks-notion/](pm-tasks/pm-tasks-notion/)     | —                               | —                                                       |
-| `pm-tasks-clickup`          | 🔒 scaffold | [pm-tasks/pm-tasks-clickup/](pm-tasks/pm-tasks-clickup/)   | —                               | —                                                       |
-| `pm-tasks-monday`           | 🔒 scaffold | [pm-tasks/pm-tasks-monday/](pm-tasks/pm-tasks-monday/)     | —                               | —                                                       |
-| `pm-tasks-bitrix24`         | 🔒 scaffold | [pm-tasks/pm-tasks-bitrix24/](pm-tasks/pm-tasks-bitrix24/) | —                               | —                                                       |
-| `pm-tasks-todoist`          | 🔒 scaffold | [pm-tasks/pm-tasks-todoist/](pm-tasks/pm-tasks-todoist/)   | —                               | —                                                       |
+| Paquete                     | Estado      | Fuente                                                           | npm                             | Vercel CLI                                              |
+| --------------------------- | ----------- | ---------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
+| `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [pm-tasks/pm-tasks/](../../pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`        | —                                                       |
+| `@llodev/pm-tasks-core`     | ✅ v1.3.0   | [pm-tasks/pm-tasks-core/](../../pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`   | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
+| `@llodev/pm-tasks-asana`    | ✅ v1.3.0   | [pm-tasks/pm-tasks-asana/](../../pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`  | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
+| `@llodev/pm-tasks-trello`   | ✅ v1.3.0   | [pm-tasks/pm-tasks-trello/](../../pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello` | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
+| `pm-tasks-jira`             | 🔒 scaffold | [pm-tasks/pm-tasks-jira/](../../pm-tasks/pm-tasks-jira/)         | —                               | —                                                       |
+| `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](../../pm-tasks/pm-tasks-linear/)     | —                               | —                                                       |
+| `pm-tasks-notion`           | 🔒 scaffold | [pm-tasks/pm-tasks-notion/](../../pm-tasks/pm-tasks-notion/)     | —                               | —                                                       |
+| `pm-tasks-clickup`          | 🔒 scaffold | [pm-tasks/pm-tasks-clickup/](../../pm-tasks/pm-tasks-clickup/)   | —                               | —                                                       |
+| `pm-tasks-monday`           | 🔒 scaffold | [pm-tasks/pm-tasks-monday/](../../pm-tasks/pm-tasks-monday/)     | —                               | —                                                       |
+| `pm-tasks-bitrix24`         | 🔒 scaffold | [pm-tasks/pm-tasks-bitrix24/](../../pm-tasks/pm-tasks-bitrix24/) | —                               | —                                                       |
+| `pm-tasks-todoist`          | 🔒 scaffold | [pm-tasks/pm-tasks-todoist/](../../pm-tasks/pm-tasks-todoist/)   | —                               | —                                                       |
 
 > [!NOTE]
 > Las skills marcadas como `scaffold` son namespaces reservados con un `SKILL.md` placeholder. Su descripción instruye a los agentes a NO activarse hasta que llegue un adaptador real.
@@ -99,11 +99,11 @@ make help        # lista completa de targets
 > [!TIP]
 > El `Makefile` es el punto de entrada canónico — más corto que recordar los nombres de scripts de pnpm y el único exigido por lefthook en el commit.
 
-Las releases siguen el workflow [Changesets](https://github.com/changesets/changesets) — registra la intención con `make changeset`, aplica con `make release-version`, publica con `make release-publish`. Consulta [`.changeset/README.md`](.changeset/README.md) para el paso a paso.
+Las releases siguen el workflow [Changesets](https://github.com/changesets/changesets) — registra la intención con `make changeset`, aplica con `make release-version`, publica con `make release-publish`. Consulta [`.changeset/README.md`](../../.changeset/README.md) para el paso a paso.
 
 ## Roadmap
 
-Foco actual: consolidar la base del `pm-tasks-*` antes de lanzar nuevos adaptadores. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](docs/roadmap.md).
+Foco actual: consolidar la base del `pm-tasks-*` antes de lanzar nuevos adaptadores. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](../../docs/roadmap.md).
 
 **Próximos lanzamientos — base del `pm-tasks-*` (`v1.3.1` → `v1.4.0`):**
 
@@ -129,10 +129,10 @@ Foco actual: consolidar la base del `pm-tasks-*` antes de lanzar nuevos adaptado
 
 ## Docs
 
-- [Guía de publicación](docs/publishing-guide.md) — cómo se conectan los tres canales de distribución.
-- [Workflow Changesets](.changeset/README.md) — registrar → versionar → publicar.
+- [Guía de publicación](../../docs/publishing-guide.md) — cómo se conectan los tres canales de distribución.
+- [Workflow Changesets](../../.changeset/README.md) — registrar → versionar → publicar.
 - Los deep dives de cada familia viven en el `SKILL.md` y `references/` de cada miembro.
 
 ## Licencia
 
-MIT — consulta [LICENSE](LICENSE).
+MIT — consulta [LICENSE](../../LICENSE).

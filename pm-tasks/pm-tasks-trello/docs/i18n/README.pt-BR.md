@@ -1,8 +1,8 @@
 <!-- readme-selector:start -->
 <p align="center">
   <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/docs/i18n/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/pm-tasks/pm-tasks-trello/docs/i18n/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
 </p>
 <!-- readme-selector:end -->
 
@@ -11,7 +11,7 @@
 > Adapter para Trello da família `@llodev/pm-tasks-*` — transforma planos de implementação em cards do Trello e opera via paste, MCP publish ou autonomous write-through.
 
 [![npm](https://img.shields.io/npm/v/@llodev/pm-tasks-trello?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/pm-tasks-trello)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
@@ -48,7 +48,7 @@ export TRELLO_API_KEY=...
 export TRELLO_TOKEN=...
 ```
 
-Cursor / Windsurf / Codex / outros agentes: veja [`references/mcp-config.md`](./references/mcp-config.md).
+Cursor / Windsurf / Codex / outros agentes: veja [`references/mcp-config.md`](../../references/mcp-config.md).
 
 ## Setup da config
 
@@ -88,18 +88,18 @@ O prompt de `init` imprime o caminho absoluto onde vai escrever, então você se
 > **`create_card` ignora `idMembers` silenciosamente** — sempre faça um follow-up com `trello_add_member_to_card` por ID de member. O adapter faz isso pra você.
 
 - **`add_member_to_card`** às vezes reporta um erro falso mesmo em caso de sucesso — o adapter refaz o fetch do card e checa `members[]` para confirmar.
-- **Descrições do Trello não renderizam tabelas** — o adapter as achata em bullets automaticamente (veja [`references/format.md`](./references/format.md)).
+- **Descrições do Trello não renderizam tabelas** — o adapter as achata em bullets automaticamente (veja [`references/format.md`](../../references/format.md)).
 
 ## Documentação
 
-- [`SKILL.md`](./SKILL.md) — roteamento de phases + vocabulário CRUD.
-- [`references/format.md`](./references/format.md) — convenções de formatação do Trello.
-- [`references/publish.md`](./references/publish.md) — sequência de MCP publish.
-- [`references/operations.md`](./references/operations.md) — verbos CRUD → mapeamento de ferramenta MCP.
-- [`references/mcp-config.md`](./references/mcp-config.md) — setup de MCP específico por agente.
-- [`references/autonomous.md`](./references/autonomous.md) — overlay autonomous do Trello (padrão de ciclo de vida do card).
-- [`anti-patterns/tools.md`](./anti-patterns/tools.md) — pegadinhas recorrentes.
+- [`SKILL.md`](../../SKILL.md) — roteamento de phases + vocabulário CRUD.
+- [`references/format.md`](../../references/format.md) — convenções de formatação do Trello.
+- [`references/publish.md`](../../references/publish.md) — sequência de MCP publish.
+- [`references/operations.md`](../../references/operations.md) — verbos CRUD → mapeamento de ferramenta MCP.
+- [`references/mcp-config.md`](../../references/mcp-config.md) — setup de MCP específico por agente.
+- [`references/autonomous.md`](../../references/autonomous.md) — overlay autonomous do Trello (padrão de ciclo de vida do card).
+- [`anti-patterns/tools.md`](../../anti-patterns/tools.md) — pegadinhas recorrentes.
 
 ## Licença
 
-MIT — veja [LICENSE](./LICENSE).
+MIT — veja [LICENSE](../../LICENSE).
