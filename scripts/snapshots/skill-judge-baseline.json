@@ -19,9 +19,9 @@
   },
   "pm-tasks/pm-tasks-core/SKILL.md": {
     "score": 85,
-    "version": "1.1.1",
-    "capturedAt": "2026-06-14",
-    "notes": "v1.1 post-implementation (skill-judge 102/120, Grade B)"
+    "version": "1.4.0",
+    "capturedAt": "2026-06-17",
+    "notes": "v1.4 re-grade after TS migration path update (skill-judge 97/120, Grade B); Δ vs v1.1.1 baseline within rubric variance, no content change"
   },
   "pm-tasks/pm-tasks-jira/SKILL.md": {
     "score": 29,
