@@ -6,14 +6,14 @@ Supplements [`pm-tasks/pm-tasks-core/references/autonomous-mode.md`](../../pm-ta
 
 `autonomous.scope.boards` → values are Trello board IDs (24-char hex). Operations targeting any card outside these boards fail `OUT_OF_SCOPE`.
 
-`autonomous.scope.lists` → values are list IDs. For `task.create`, the target list MUST be in this set. For `task.close`, the destination list (`closeListAlias` resolved) MUST be in this set.
+`autonomous.scope.lists` → values are list IDs. For `task.create`, the target list MUST be in this set. For `task.move` and `task.close`, the destination list MUST be in this set.
 
 ## Allowlist defaults (suggested by `init`)
 
 ```json
 "autonomous": {
   "enabled": false,
-  "allow": ["task.create", "checklist.check", "task.close", "task.comment.add"],
+  "allow": ["task.create", "task.move", "checklist.check", "task.close", "task.comment.add"],
   "scope": { "boards": [], "lists": [] },
   "rateLimit": { "writesPerMinute": 30, "commentsPerMinute": 10 },
   "auditLog": "~/.local/share/llodev/pm-tasks/trello/audit.log"
@@ -26,6 +26,7 @@ Note `enabled: false` and empty `scope.*` — user must explicitly turn on AND p
 
 ```jsonl
 {"ts":"...","verb":"task.create","tool":"trello","ok":true,"id":"<cardId>","url":"https://trello.com/c/<shortLink>","name":"...","clientToken":"...","scope":{"board":"<boardId>","list":"<listId>"},"session":"..."}
+{"ts":"...","verb":"task.move","tool":"trello","ok":true,"id":"<cardId>","previousListId":"<oldListId>","newListId":"<wipListId>","targetList":"wip","session":"..."}
 {"ts":"...","verb":"checklist.check","tool":"trello","ok":true,"id":"<cardId>","item":"<checkItem name>","session":"..."}
 {"ts":"...","verb":"task.close","tool":"trello","ok":true,"id":"<cardId>","session":"..."}
 {"ts":"...","verb":"task.due-date.set","tool":"trello","ok":true,"id":"<cardId>","due":"2026-07-01T00:00:00Z","session":"..."}
@@ -50,14 +51,14 @@ Implements the contract in [`../../pm-tasks-core/references/autonomous-mode.md`]
 
 Concrete MCP calls per transition:
 
-| Transition           | MCP call(s)                                                                                                                                                                                                                               |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Task start           | `mcp__trello__move_card { cardId, idList: <wipListId> }`                                                                                                                                                                                  |
-| Step complete        | `mcp__trello__trello_update_check_item { cardId, checkItemId, state: "complete" }`                                                                                                                                                        |
-| Task complete (full) | `mcp__trello__trello_add_comment { cardId, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `mcp__trello__update_card { id: cardId, dueComplete: true }` then `mcp__trello__move_card { cardId, idList: <doneListId> }` |
-| Task failed          | `mcp__trello__trello_add_comment` with failure mode + `mcp__trello__trello_add_member_to_card { cardId, memberId: <escalateToAliasId> }` for human escalation. Do NOT close.                                                              |
+| Transition           | Canonical verb + MCP call(s)                                                                                                                                                                                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Task start           | `task.move(cardId, "wip")` → `mcp__trello__move_card { cardId, idList: <wipListId> }`. If `lists.wip` not in config, skip silently and emit `WARN: task.move skipped — "wip" not in lists config` to audit log.                                                                                             |
+| Step complete        | `checklist.check` → `mcp__trello__trello_update_check_item { cardId, checkItemId, state: "complete" }`                                                                                                                                                                                                      |
+| Task complete (full) | `task.move(cardId, "done")` → `mcp__trello__move_card { cardId, idList: <doneListId> }` then `task.comment.add` → `mcp__trello__trello_add_comment { cardId, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `task.close` → `mcp__trello__update_card { id: cardId, dueComplete: true }` |
+| Task failed          | `task.comment.add` → `mcp__trello__trello_add_comment` with failure mode + `mcp__trello__trello_add_member_to_card { cardId, memberId: <escalateToAliasId> }`. Do NOT call `task.move(_, "done")` or `task.close`.                                                                                          |
 
-Resolve `<wipListId>` / `<doneListId>` from `.trello.json` `lists[]` by alias (`wip`, `done`, or `closeListAlias` from `defaults`). The IDs MUST already be in `autonomous.scope.lists` — otherwise the verb returns `OUT_OF_SCOPE`.
+Resolve `<wipListId>` / `<doneListId>` from `.trello.json` via `lists.wip` / `lists.done`. The IDs MUST already be in `autonomous.scope.lists` — otherwise the verb returns `OUT_OF_SCOPE`.
 
 ### Pacing
 

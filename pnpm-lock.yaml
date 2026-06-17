@@ -59,6 +59,12 @@ importers:
       '@llodev/pm-tasks-core':
         specifier: workspace:^
         version: link:../pm-tasks-core
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
 
   pm-tasks/pm-tasks-bitrix24: {}
 
@@ -81,6 +87,16 @@ importers:
 
   pm-tasks/pm-tasks-notion: {}
 
+  pm-tasks/pm-tasks-testkit:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
+    devDependencies:
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@20.19.43)(lightningcss@1.32.0)
+
   pm-tasks/pm-tasks-todoist: {}
 
   pm-tasks/pm-tasks-trello:
@@ -88,6 +104,12 @@ importers:
       '@llodev/pm-tasks-core':
         specifier: workspace:^
         version: link:../pm-tasks-core
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
 
 packages:
 

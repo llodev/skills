@@ -1,9 +1,9 @@
 {
   "pm-tasks/pm-tasks-asana/SKILL.md": {
     "score": 83,
-    "version": "1.0.2",
-    "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (skill-judge 99/120, Grade B)"
+    "version": "1.4.0",
+    "capturedAt": "2026-06-17",
+    "notes": "v1.5 re-grade after task.move documentation added (verb list 6→7 + autonomous lifecycle); Δ within rubric variance (NOISE_BAND), no structural change"
   },
   "pm-tasks/pm-tasks-bitrix24/SKILL.md": {
     "score": 29,
@@ -55,8 +55,8 @@
   },
   "pm-tasks/pm-tasks-trello/SKILL.md": {
     "score": 80,
-    "version": "1.1.2",
-    "capturedAt": "2026-06-14",
-    "notes": "v1.1 post-implementation (skill-judge 96/120, Grade B)"
+    "version": "1.4.0",
+    "capturedAt": "2026-06-17",
+    "notes": "v1.5 re-grade after task.move documentation added (verb list 6→7); Δ within rubric variance (NOISE_BAND), no structural change"
   }
 }

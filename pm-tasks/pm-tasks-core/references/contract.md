@@ -71,6 +71,12 @@ Adapters MUST NOT translate user-authored content — verbatim is the contract. 
 
 The 6 verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
 
+### task.move (added v1.5.0, additive)
+
+A 7th canonical verb, `task.move`, is added in v1.5.0 alongside the original 6. Schema: `{ cardId: string, targetList: "open" | "wip" | "done" | string }`. The string tier accepts raw list IDs for adapter-specific cases; the enum tier handles named workflow states.
+
+`task.move` is **independent** of `task.close`. `task.close` moves the card to a terminal state AND sets the completion flag (e.g., `dueComplete`, `completed`). `task.move` only repositions the card — useful when the visual transition and the closed-flag are separate operations in the adapter (e.g., Asana section change vs. `completed: true`).
+
 ## Custom verbs (extension API)
 
 Adapters MAY declare custom verbs in addition to the 6 canonical verbs. Custom verbs MUST use a namespace prefix matching the tool name declared in the adapter's `manifest.json`. Examples:

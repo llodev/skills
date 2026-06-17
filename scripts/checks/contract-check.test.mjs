@@ -46,6 +46,37 @@ test("missing manifest → exit 1 with specific message", () => {
   }
 });
 
+test("task.move accepted as canonical verb — no namespace prefix required", () => {
+  const manifestPath = `${ROOT}/pm-tasks/pm-tasks-asana/manifest.json`;
+  const original = readFileSync(manifestPath, "utf8");
+  const patched = JSON.parse(original);
+  // task.move should already be present; if not, add it to verify acceptance
+  if (!patched.verbs.includes("task.move")) {
+    patched.verbs.push("task.move");
+  }
+  writeFileSync(manifestPath, JSON.stringify(patched, null, 2));
+  try {
+    const result = runScript();
+    assert.equal(result.code, 0, `task.move should be accepted as canonical. stderr: ${result.stderr} stdout: ${result.stdout}`);
+  } finally {
+    writeFileSync(manifestPath, original);
+  }
+});
+
+test("manifest with only task.create and task.move validates without errors", () => {
+  const manifestPath = `${ROOT}/pm-tasks/pm-tasks-asana/manifest.json`;
+  const original = readFileSync(manifestPath, "utf8");
+  const patched = { tool: "asana", verbs: ["task.create", "task.move"] };
+  writeFileSync(manifestPath, JSON.stringify(patched, null, 2));
+  try {
+    const result = runScript();
+    // contract-check validates manifest schema + namespace rules; a minimal verb list is valid
+    assert.equal(result.code, 0, `Manifest with task.create + task.move should pass schema. stderr: ${result.stderr} stdout: ${result.stdout}`);
+  } finally {
+    writeFileSync(manifestPath, original);
+  }
+});
+
 test("custom verb with wrong namespace → exit 1", () => {
   const manifestPath = `${ROOT}/pm-tasks/pm-tasks-asana/manifest.json`;
   const original = readFileSync(manifestPath, "utf8");

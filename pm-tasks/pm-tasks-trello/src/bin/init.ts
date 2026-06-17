@@ -18,39 +18,149 @@ import {
   registerI18nRoot,
   interpolate,
 } from "@llodev/pm-tasks-core/init-lib";
+import type { StringsTable } from "@llodev/pm-tasks-core/init-lib";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
-async function loadSchema() {
+async function loadSchema(): Promise<unknown> {
   const raw = await readFile(path.join(ROOT, "schemas", "config.json"), "utf8");
   return JSON.parse(raw);
 }
 
-async function trelloProbe() {
+// ---------------------------------------------------------------------------
+// Trello REST API types
+// ---------------------------------------------------------------------------
+
+interface TrelloBoard {
+  id: string;
+  name: string;
+  url: string;
+}
+
+interface TrelloList {
+  id: string;
+  name: string;
+}
+
+interface TrelloLabel {
+  id: string;
+  name: string;
+  color: string;
+}
+
+interface TrelloMember {
+  id: string;
+  username: string;
+  fullName: string;
+}
+
+interface TrelloMe {
+  id: string;
+  username: string;
+  fullName: string;
+}
+
+interface TrelloApi {
+  getBoards: () => Promise<TrelloBoard[]>;
+  getLists: (boardId: string) => Promise<TrelloList[]>;
+  getLabels: (boardId: string) => Promise<TrelloLabel[]>;
+  getMembers: (boardId: string) => Promise<TrelloMember[]>;
+  getMe: () => Promise<TrelloMe>;
+}
+
+// ---------------------------------------------------------------------------
+// Config output types
+// ---------------------------------------------------------------------------
+
+interface MemberEntry {
+  id: string;
+  username: string;
+  fullName: string;
+  alias: string;
+}
+
+interface BoardEntry {
+  id: string;
+  name: string;
+  alias: string;
+  url: string;
+}
+
+interface ListEntry {
+  boardAlias: string;
+  id: string;
+  name: string;
+  alias: string;
+}
+
+interface LabelEntry {
+  boardAlias: string;
+  id: string;
+  name: string;
+  color: string;
+  alias: string;
+}
+
+interface ConfigDefaults {
+  boardAlias?: string;
+  assigneeAlias?: string;
+  listAlias?: string;
+  closeListAlias?: string;
+  escalateToAlias?: string;
+}
+
+interface AutonomousConfig {
+  enabled: boolean;
+  allow: string[];
+  scope: { boards: string[]; lists: string[] };
+  rateLimit: { writesPerMinute: number; commentsPerMinute: number };
+  auditLog: string;
+}
+
+interface TrelloConfig {
+  $schema: string;
+  version: string;
+  locale: string;
+  boards: BoardEntry[];
+  lists: ListEntry[];
+  labels: LabelEntry[];
+  members: MemberEntry[];
+  defaults: ConfigDefaults;
+  autonomous?: AutonomousConfig;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+async function trelloProbe(): Promise<TrelloApi> {
   // The MCP runs in a different process. To probe within this script, call the
   // Trello REST API directly with env vars TRELLO_API_KEY + TRELLO_TOKEN.
   // We use this only to enumerate boards/lists/labels/members for the user.
   const { TRELLO_API_KEY: KEY, TRELLO_TOKEN: TOKEN } = process.env;
   if (!KEY || !TOKEN) throw new Error("auth: TRELLO_API_KEY or TRELLO_TOKEN missing");
-  const url = (p) => {
+  const url = (p: string): string => {
     const sep = p.includes("?") ? "&" : "?";
     return `https://api.trello.com/1${p}${sep}key=${KEY}&token=${TOKEN}`;
   };
-  const j = async (p) => {
+  const j = async <T>(p: string): Promise<T> => {
     const r = await fetch(url(p));
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
+    return r.json() as Promise<T>;
   };
   return {
-    getBoards: () => j("/members/me/boards?filter=open&fields=id,name,url"),
-    getLists: (boardId) => j(`/boards/${boardId}/lists?filter=open&fields=id,name`),
-    getLabels: (boardId) => j(`/boards/${boardId}/labels?fields=id,name,color`),
-    getMembers: (boardId) => j(`/boards/${boardId}/members?fields=id,username,fullName`),
-    getMe: () => j("/members/me?fields=id,username,fullName"),
+    getBoards: () => j<TrelloBoard[]>("/members/me/boards?filter=open&fields=id,name,url"),
+    getLists: (boardId: string) =>
+      j<TrelloList[]>(`/boards/${boardId}/lists?filter=open&fields=id,name`),
+    getLabels: (boardId: string) =>
+      j<TrelloLabel[]>(`/boards/${boardId}/labels?fields=id,name,color`),
+    getMembers: (boardId: string) =>
+      j<TrelloMember[]>(`/boards/${boardId}/members?fields=id,username,fullName`),
+    getMe: () => j<TrelloMe>("/members/me?fields=id,username,fullName"),
   };
 }
 
-async function promptManualMember(trelloStrings) {
+async function promptManualMember(trelloStrings: StringsTable): Promise<MemberEntry | null> {
   const { createInterface } = await import("node:readline/promises");
   const { stdin: input, stdout: output } = await import("node:process");
   const r = createInterface({ input, output });
@@ -66,7 +176,10 @@ async function promptManualMember(trelloStrings) {
   }
 }
 
-async function collectEscalationMember(out, { coreStrings, trelloStrings }) {
+async function collectEscalationMember(
+  out: TrelloConfig,
+  { coreStrings, trelloStrings }: { coreStrings: StringsTable; trelloStrings: StringsTable },
+): Promise<void> {
   const candidates = out.members.filter((m) => m.alias !== "me");
   if (candidates.length) {
     const choices = candidates.map((m) => ({
@@ -94,7 +207,11 @@ async function collectEscalationMember(out, { coreStrings, trelloStrings }) {
   out.defaults.escalateToAlias = manual.alias;
 }
 
-async function run() {
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+async function run(): Promise<void> {
   registerI18nRoot("trello", path.join(ROOT, "i18n"));
   const locale = await promptLocale("core", { defaultLocale: "en-US" });
   const coreStrings = await loadStrings("core", locale);
@@ -122,7 +239,7 @@ async function run() {
     return;
   }
 
-  const api = probe.result;
+  const api = probe.result as TrelloApi;
   const me = await api.getMe();
   const boards = await api.getBoards();
 
@@ -136,7 +253,7 @@ async function run() {
     process.exit(1);
   }
 
-  const out = {
+  const out: TrelloConfig = {
     $schema: "https://llodev.github.io/skills/schemas/pm-tasks-trello.json",
     version: "1",
     locale,
@@ -181,7 +298,7 @@ async function run() {
           alias: aliasOf(m.username || m.fullName || m.id),
         });
       }
-    } catch (e) {
+    } catch (_e) {
       // Board membership listing may require additional scopes; skip silently.
     }
   }

@@ -76,6 +76,7 @@ const validate = ajv.compile(schema);
 
 const CANONICAL_VERBS = new Set([
   "task.create",
+  "task.move",
   "task.close",
   "task.due-date.set",
   "task.assignee.add",

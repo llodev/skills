@@ -7,14 +7,14 @@ description: >-
   item, close card, change due-date, add member, comment); OR when invoked
   autonomously by another agent with [autonomous] / --auto sentinel. Modes:
   paste-ready (no MCP needed), MCP publish (via atlassian-trello-mcp),
-  autonomous (write-through with allowlist). Implements 6 CRUD verbs
-  (task.create, checklist.check, task.close, task.due-date.set,
+  autonomous (write-through with allowlist). Implements 7 CRUD verbs
+  (task.create, task.move, checklist.check, task.close, task.due-date.set,
   task.assignee.add, task.comment.add) from
   pm-tasks/pm-tasks-core/references/contract.md. Requires @llodev/pm-tasks-core
   installed.
 license: MIT
 metadata:
-  version: 1.3.1
+  version: 1.4.0
   tags:
     - agent-skill
     - trello

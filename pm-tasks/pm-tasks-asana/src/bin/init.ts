@@ -18,44 +18,180 @@ import {
   registerI18nRoot,
   interpolate,
 } from "@llodev/pm-tasks-core/init-lib";
+import type { StringsTable } from "@llodev/pm-tasks-core/init-lib";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
-async function loadSchema() {
+async function loadSchema(): Promise<unknown> {
   const raw = await readFile(path.join(ROOT, "schemas", "config.json"), "utf8");
   return JSON.parse(raw);
 }
 
-async function asanaProbe() {
+// ---------------------------------------------------------------------------
+// Asana REST API types
+// ---------------------------------------------------------------------------
+
+interface AsanaUser {
+  gid: string;
+  name: string;
+  email?: string;
+}
+
+interface AsanaWorkspace {
+  gid: string;
+  name: string;
+}
+
+interface AsanaProject {
+  gid: string;
+  name: string;
+}
+
+interface AsanaSection {
+  gid: string;
+  name: string;
+}
+
+interface AsanaEnumOption {
+  gid: string;
+  name: string;
+}
+
+interface AsanaCustomField {
+  gid: string;
+  name: string;
+  resource_subtype: string;
+  enum_options?: AsanaEnumOption[];
+}
+
+interface AsanaCustomFieldSetting {
+  custom_field: AsanaCustomField | null;
+}
+
+interface AsanaMembership {
+  user: AsanaUser | null;
+}
+
+interface AsanaApi {
+  getMe: () => Promise<AsanaUser>;
+  getWorkspaces: () => Promise<AsanaWorkspace[]>;
+  getProjects: (workspaceGid: string) => Promise<AsanaProject[]>;
+  getSections: (projectGid: string) => Promise<AsanaSection[]>;
+  getCustomFields: (projectGid: string) => Promise<AsanaCustomFieldSetting[]>;
+  getMembers: (projectGid: string) => Promise<AsanaMembership[]>;
+}
+
+// ---------------------------------------------------------------------------
+// Config output types
+// ---------------------------------------------------------------------------
+
+interface MemberEntry {
+  id: string;
+  name: string;
+  alias: string;
+  email?: string;
+}
+
+interface SectionEntry {
+  projectAlias: string;
+  id: string;
+  name: string;
+  alias: string;
+}
+
+interface CustomFieldOption {
+  id: string;
+  name: string;
+  alias: string;
+}
+
+interface CustomFieldEntry {
+  projectAlias: string;
+  id: string;
+  name: string;
+  type: string;
+  alias: string;
+  options?: CustomFieldOption[];
+}
+
+interface ProjectEntry {
+  id: string;
+  name: string;
+  alias: string;
+}
+
+interface ConfigDefaults {
+  projectAlias?: string;
+  assigneeAlias?: string;
+  sectionAlias?: string;
+  closeSectionAlias?: string;
+  escalateToAlias?: string;
+}
+
+interface SubtaskDefaults {
+  inheritParentFields: string[];
+  inheritAssignee: boolean;
+}
+
+interface AutonomousConfig {
+  enabled: boolean;
+  allow: string[];
+  scope: { projects: string[]; sections: string[] };
+  rateLimit: { writesPerMinute: number; commentsPerMinute: number };
+  auditLog: string;
+}
+
+interface AsanaConfig {
+  $schema: string;
+  version: string;
+  locale: string;
+  workspace: { id: string; name: string };
+  projects: ProjectEntry[];
+  sections: SectionEntry[];
+  customFields: CustomFieldEntry[];
+  members: MemberEntry[];
+  defaults: ConfigDefaults;
+  subtaskDefaults?: SubtaskDefaults;
+  autonomous?: AutonomousConfig;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+async function asanaProbe(): Promise<AsanaApi> {
   // The MCP runs in a different process. To probe within this script, call the
   // Asana REST API directly with a Personal Access Token.
   // Used only to enumerate workspaces / projects / sections / custom fields / members.
   const TOKEN = process.env.LLODEV_PM_TASKS_ASANA_PAT;
   if (!TOKEN) throw new Error("auth: LLODEV_PM_TASKS_ASANA_PAT missing");
-  const j = async (p) => {
+  const j = async <T>(p: string): Promise<T> => {
     const r = await fetch(`https://app.asana.com/api/1.0${p}`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const body = await r.json();
+    const body = (await r.json()) as { data: T };
     return body.data;
   };
   return {
-    getMe: () => j("/users/me?opt_fields=gid,name,email"),
-    getWorkspaces: () => j("/workspaces?opt_fields=name"),
-    getProjects: (workspaceGid) =>
-      j(`/projects?workspace=${workspaceGid}&opt_fields=name&limit=100`),
-    getSections: (projectGid) => j(`/projects/${projectGid}/sections?opt_fields=name&limit=100`),
-    getCustomFields: (projectGid) =>
-      j(
+    getMe: () => j<AsanaUser>("/users/me?opt_fields=gid,name,email"),
+    getWorkspaces: () => j<AsanaWorkspace[]>("/workspaces?opt_fields=name"),
+    getProjects: (workspaceGid: string) =>
+      j<AsanaProject[]>(`/projects?workspace=${workspaceGid}&opt_fields=name&limit=100`),
+    getSections: (projectGid: string) =>
+      j<AsanaSection[]>(`/projects/${projectGid}/sections?opt_fields=name&limit=100`),
+    getCustomFields: (projectGid: string) =>
+      j<AsanaCustomFieldSetting[]>(
         `/projects/${projectGid}/custom_field_settings?opt_fields=custom_field.name,custom_field.gid,custom_field.resource_subtype,custom_field.enum_options.name,custom_field.enum_options.gid&limit=100`,
       ),
-    getMembers: (projectGid) =>
-      j(`/projects/${projectGid}/members?opt_fields=user.name,user.gid&limit=100`),
+    getMembers: (projectGid: string) =>
+      j<AsanaMembership[]>(
+        `/projects/${projectGid}/members?opt_fields=user.name,user.gid&limit=100`,
+      ),
   };
 }
 
-async function promptManualMember(asanaStrings) {
+async function promptManualMember(asanaStrings: StringsTable): Promise<MemberEntry | null> {
   const { createInterface } = await import("node:readline/promises");
   const { stdin: input, stdout: output } = await import("node:process");
   const r = createInterface({ input, output });
@@ -70,7 +206,10 @@ async function promptManualMember(asanaStrings) {
   }
 }
 
-async function collectEscalationMember(out, { coreStrings, asanaStrings }) {
+async function collectEscalationMember(
+  out: AsanaConfig,
+  { coreStrings, asanaStrings }: { coreStrings: StringsTable; asanaStrings: StringsTable },
+): Promise<void> {
   const candidates = out.members.filter((m) => m.alias !== "me");
   if (candidates.length) {
     const choices = candidates.map((m) => ({ label: `${m.name} (${m.alias})`, value: m }));
@@ -95,7 +234,7 @@ async function collectEscalationMember(out, { coreStrings, asanaStrings }) {
   out.defaults.escalateToAlias = manual.alias;
 }
 
-function mapResourceType(subtype) {
+function mapResourceType(subtype: string): string {
   switch (subtype) {
     case "enum":
       return "enum";
@@ -112,7 +251,11 @@ function mapResourceType(subtype) {
   }
 }
 
-async function run() {
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+async function run(): Promise<void> {
   registerI18nRoot("asana", path.join(ROOT, "i18n"));
   const locale = await promptLocale("core", { defaultLocale: "en-US" });
   const coreStrings = await loadStrings("core", locale);
@@ -140,7 +283,7 @@ async function run() {
     return;
   }
 
-  const api = probe.result;
+  const api = probe.result as AsanaApi;
   const me = await api.getMe();
   const workspaces = await api.getWorkspaces();
 
@@ -166,7 +309,7 @@ async function run() {
     process.exit(1);
   }
 
-  const out = {
+  const out: AsanaConfig = {
     $schema: "https://llodev.github.io/skills/schemas/pm-tasks-asana.json",
     version: "1",
     locale,
@@ -178,7 +321,7 @@ async function run() {
     defaults: {},
   };
 
-  const inheritFieldIds = new Set();
+  const inheritFieldIds = new Set<string>();
 
   for (const p of pickedProjects) {
     const alias = aliasOf(p.name);
@@ -200,7 +343,9 @@ async function run() {
     }
 
     const cfSettings = await api.getCustomFields(p.gid);
-    const fields = cfSettings.map((cs) => cs.custom_field).filter(Boolean);
+    const fields = cfSettings
+      .map((cs) => cs.custom_field)
+      .filter((f): f is AsanaCustomField => f !== null);
     if (fields.length) {
       const pickedFields = await multiSelect(
         interpolate(asanaStrings.customFieldsPrompt, { project: p.name }),
@@ -208,7 +353,7 @@ async function run() {
         { strings: coreStrings },
       );
       for (const f of pickedFields) {
-        const entry = {
+        const entry: CustomFieldEntry = {
           projectAlias: alias,
           id: f.gid,
           name: f.name,
@@ -237,13 +382,13 @@ async function run() {
 
     try {
       const memberships = await api.getMembers(p.gid);
-      const users = memberships.map((m) => m.user).filter(Boolean);
+      const users = memberships.map((m) => m.user).filter((u): u is AsanaUser => u !== null);
       for (const u of users) {
         if (u.gid === me.gid) continue;
         if (out.members.find((m) => m.id === u.gid)) continue;
         out.members.push({ id: u.gid, name: u.name, alias: aliasOf(u.name) });
       }
-    } catch (e) {
+    } catch (_e) {
       // Project membership listing may require additional scopes; skip silently.
     }
   }
