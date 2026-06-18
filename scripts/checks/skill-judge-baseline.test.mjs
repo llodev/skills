@@ -6,7 +6,10 @@ import path from "node:path";
 const REPO = path.resolve(import.meta.dirname, "../..");
 
 test("baseline file is valid JSON keyed by relative SKILL.md path", async () => {
-  const raw = await readFile(path.join(REPO, "scripts/snapshots/skill-judge-baseline.json"), "utf8");
+  const raw = await readFile(
+    path.join(REPO, "scripts/snapshots/skill-judge-baseline.json"),
+    "utf8",
+  );
   const data = JSON.parse(raw);
   for (const [key, entry] of Object.entries(data)) {
     assert.match(key, /^pm-tasks\/[a-z0-9-]+\/SKILL\.md$/);
@@ -42,7 +45,7 @@ test("golden: path parity with baseline — same keys, no extras", async () => {
   assert.deepEqual(
     goldenKeys,
     baselineKeys,
-    "golden.json and baseline.json must have identical path keys"
+    "golden.json and baseline.json must have identical path keys",
   );
 });
 
@@ -57,7 +60,7 @@ test("golden: totalRaw matches baseline score for every path", async () => {
     assert.equal(
       entry.totalRaw,
       baseline[key].score,
-      `${key}: score in golden doesn't match baseline; one of them needs updating`
+      `${key}: score in golden doesn't match baseline; one of them needs updating`,
     );
   }
 });
@@ -70,7 +73,7 @@ test("golden: rubricVersion matches ^v\\d+(\\.\\d+)?$", async () => {
     assert.match(
       entry.rubricVersion,
       RE,
-      `${key}: rubricVersion "${entry.rubricVersion}" is not in vN or vN.N format`
+      `${key}: rubricVersion "${entry.rubricVersion}" is not in vN or vN.N format`,
     );
   }
 });
@@ -83,7 +86,7 @@ test("golden: rubricChecksum is non-empty and either sha256:<hex> or 'manual'", 
     assert.match(
       entry.rubricChecksum,
       RE,
-      `${key}: rubricChecksum "${entry.rubricChecksum}" must be sha256:<hex> or "manual"`
+      `${key}: rubricChecksum "${entry.rubricChecksum}" must be sha256:<hex> or "manual"`,
     );
   }
 });

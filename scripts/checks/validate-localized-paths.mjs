@@ -46,10 +46,12 @@ function extractLinks(src) {
     pos += line.length + 1;
   }
   const posToLine = (p) => {
-    let lo = 0, hi = offsets.length - 1;
+    let lo = 0,
+      hi = offsets.length - 1;
     while (lo < hi) {
       const mid = (lo + hi + 1) >> 1;
-      if (offsets[mid] <= p) lo = mid; else hi = mid - 1;
+      if (offsets[mid] <= p) lo = mid;
+      else hi = mid - 1;
     }
     return lo + 1; // 1-based
   };
@@ -74,13 +76,22 @@ function isRelative(p) {
 }
 
 async function fileExists(p) {
-  try { await access(p); return true; } catch { return false; }
+  try {
+    await access(p);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function walk(dir, depth = 0, acc = []) {
   if (depth > MAX_DEPTH) return acc;
   let entries;
-  try { entries = await readdir(dir, { withFileTypes: true }); } catch { return acc; }
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return acc;
+  }
   for (const entry of entries) {
     if (entry.isDirectory()) {
       if (SKIP.has(entry.name) || entry.name.startsWith(".")) continue;
@@ -104,7 +115,11 @@ for (const full of files) {
   const lang = langMatch ? langMatch[1] : null;
 
   let src;
-  try { src = await readFile(full, "utf8"); } catch { continue; }
+  try {
+    src = await readFile(full, "utf8");
+  } catch {
+    continue;
+  }
 
   const links = extractLinks(src);
   const fileDir = path.dirname(full);
@@ -143,6 +158,8 @@ const fileCount = files.length;
 if (failCount === 0) {
   console.log(`ok ${fileCount} files checked, ${warnCount} warns`);
 } else {
-  console.error(`FAIL ${failCount} broken links across ${failedFiles.size} files (${fileCount} files checked, ${warnCount} warns)`);
+  console.error(
+    `FAIL ${failCount} broken links across ${failedFiles.size} files (${fileCount} files checked, ${warnCount} warns)`,
+  );
 }
 process.exit(failCount > 0 ? 1 : 0);

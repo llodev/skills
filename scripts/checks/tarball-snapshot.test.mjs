@@ -8,14 +8,12 @@ const PACKAGES = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-task
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 const golden = JSON.parse(
-  readFileSync(join(ROOT, "scripts/snapshots/tarball-snapshot.json"), "utf8")
+  readFileSync(join(ROOT, "scripts/snapshots/tarball-snapshot.json"), "utf8"),
 );
 
 for (const pkg of PACKAGES) {
   test(`${pkg} tarball contents match golden`, () => {
-    const pkgJson = JSON.parse(
-      readFileSync(join(ROOT, "pm-tasks", pkg, "package.json"), "utf8")
-    );
+    const pkgJson = JSON.parse(readFileSync(join(ROOT, "pm-tasks", pkg, "package.json"), "utf8"));
     const version = pkgJson.version;
     // pnpm flattens @llodev/<pkg> → llodev-<pkg>-<version>.tgz
     const tarball = `/tmp/llodev-${pkg}-${version}.tgz`;
@@ -25,10 +23,7 @@ for (const pkg of PACKAGES) {
       encoding: "utf8",
     });
 
-    const list = execSync(`tar -tzf ${tarball}`, { encoding: "utf8" })
-      .trim()
-      .split("\n")
-      .sort();
+    const list = execSync(`tar -tzf ${tarball}`, { encoding: "utf8" }).trim().split("\n").sort();
 
     assert.deepEqual(list, golden[pkg].sort(), `tarball drift in ${pkg}`);
   });

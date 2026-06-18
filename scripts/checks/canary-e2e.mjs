@@ -117,8 +117,6 @@ if (failures === 0) {
   console.log("\nE2E canary OK");
   process.exit(0);
 } else {
-  console.error(
-    `\nE2E canary FAILED (${failures} issue(s); sandbox preserved at ${sandbox})`,
-  );
+  console.error(`\nE2E canary FAILED (${failures} issue(s); sandbox preserved at ${sandbox})`);
   process.exit(1);
 }

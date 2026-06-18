@@ -16,7 +16,7 @@ for (const plugin of marketplace.plugins) {
 
   if (!existsSync(pkgPath)) {
     process.stderr.write(
-      `FAIL ${plugin.name}: no package.json found at pm-tasks/${plugin.name}/package.json\n`
+      `FAIL ${plugin.name}: no package.json found at pm-tasks/${plugin.name}/package.json\n`,
     );
     failed = true;
     continue;
@@ -30,7 +30,7 @@ for (const plugin of marketplace.plugins) {
     process.stdout.write(`ok   ${plugin.name}@${pkgVersion}\n`);
   } else {
     process.stderr.write(
-      `FAIL ${plugin.name}: marketplace=${marketplaceVersion} package=${pkgVersion}\n`
+      `FAIL ${plugin.name}: marketplace=${marketplaceVersion} package=${pkgVersion}\n`,
     );
     failed = true;
   }

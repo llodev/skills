@@ -28,19 +28,19 @@ test("valid state — versions in sync → exit 0", () => {
   assert.equal(
     result.code,
     0,
-    `Expected exit 0, got ${result.code}. stderr: ${result.stderr} stdout: ${result.stdout}`
+    `Expected exit 0, got ${result.code}. stderr: ${result.stderr} stdout: ${result.stdout}`,
   );
   assert.ok(
     result.stdout.includes("ok   pm-tasks-core"),
-    `Missing pm-tasks-core ok line. stdout: ${result.stdout}`
+    `Missing pm-tasks-core ok line. stdout: ${result.stdout}`,
   );
   assert.ok(
     result.stdout.includes("ok   pm-tasks-asana"),
-    `Missing pm-tasks-asana ok line. stdout: ${result.stdout}`
+    `Missing pm-tasks-asana ok line. stdout: ${result.stdout}`,
   );
   assert.ok(
     result.stdout.includes("ok   pm-tasks-trello"),
-    `Missing pm-tasks-trello ok line. stdout: ${result.stdout}`
+    `Missing pm-tasks-trello ok line. stdout: ${result.stdout}`,
   );
 });
 
@@ -55,13 +55,10 @@ test("forced drift in marketplace.json → exit 1", () => {
     assert.equal(
       result.code,
       1,
-      `Expected exit 1, got ${result.code}. stderr: ${result.stderr} stdout: ${result.stdout}`
+      `Expected exit 1, got ${result.code}. stderr: ${result.stderr} stdout: ${result.stdout}`,
     );
     const combined = result.stdout + result.stderr;
-    assert.ok(
-      combined.includes("999.0.0"),
-      `Expected '999.0.0' in output. Got: ${combined}`
-    );
+    assert.ok(combined.includes("999.0.0"), `Expected '999.0.0' in output. Got: ${combined}`);
   } finally {
     writeFileSync(MARKETPLACE_PATH, original);
   }
@@ -73,7 +70,11 @@ test("plugin missing from pm-tasks/ → exit 1", () => {
   data.plugins.push({
     name: "pm-tasks-ghost",
     version: "1.0.0",
-    source: { source: "git-subdir", url: "https://github.com/llodev/skills.git", path: "pm-tasks/pm-tasks-ghost" },
+    source: {
+      source: "git-subdir",
+      url: "https://github.com/llodev/skills.git",
+      path: "pm-tasks/pm-tasks-ghost",
+    },
     description: "Ghost plugin for testing.",
     author: { name: "llodev" },
   });
@@ -83,12 +84,12 @@ test("plugin missing from pm-tasks/ → exit 1", () => {
     assert.equal(
       result.code,
       1,
-      `Expected exit 1, got ${result.code}. stderr: ${result.stderr} stdout: ${result.stdout}`
+      `Expected exit 1, got ${result.code}. stderr: ${result.stderr} stdout: ${result.stdout}`,
     );
     const combined = result.stdout + result.stderr;
     assert.ok(
       combined.includes("pm-tasks-ghost"),
-      `Expected 'pm-tasks-ghost' in output. Got: ${combined}`
+      `Expected 'pm-tasks-ghost' in output. Got: ${combined}`,
     );
   } finally {
     writeFileSync(MARKETPLACE_PATH, original);
