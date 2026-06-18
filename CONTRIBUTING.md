@@ -90,14 +90,7 @@ Reserved scaffolds exist for Jira, Linear, Notion, ClickUp, Monday, Bitrix24, an
 
 2. **Copy from an existing adapter** — Start with the Asana or Trello folder. Copy the TypeScript setup, `tsconfig.json`, `vitest.config.ts`, and `package.json` structure.
 
-3. **Implement the 7 canonical verbs** — See [`pm-tasks/pm-tasks-core/references/contract.md`](pm-tasks/pm-tasks-core/references/contract.md) for the full spec:
-   - `task.create`
-   - `task.read`
-   - `task.update`
-   - `task.delete`
-   - `task.label.add`
-   - `task.label.remove`
-   - `task.assign` (or equivalent for your tool)
+3. **Implement the 7 canonical verbs** — `task.create` · `task.move` · `checklist.check` · `task.close` · `task.due-date.set` · `task.assignee.add` · `task.comment.add`. The authoritative spec lives in [`pm-tasks/pm-tasks-core/references/contract.md`](pm-tasks/pm-tasks-core/references/contract.md) — defer to it for argument shapes, sentinels, and the autonomous-mode contract; do not duplicate the list here.
 
 4. **Add config schema** — Create `.asana.json` or equivalent at the repo root (or per-package) to document auth/setup.
 
