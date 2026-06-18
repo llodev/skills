@@ -31,8 +31,3 @@
 ## Out of scope
 
 <what this PR explicitly does NOT change>
-
-## Related
-
-- Roadmap row: <e.g., §2.3 H1>
-- Trello card: <link or N/A>
