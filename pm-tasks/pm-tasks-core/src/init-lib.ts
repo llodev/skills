@@ -2,7 +2,7 @@
 // Shared init primitives. Node 20+ built-ins + Ajv for schema validation.
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { mkdir, writeFile, access, readFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { homedir, platform } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -238,12 +238,13 @@ export function aliasOf(name: unknown): string {
 export async function writeConfig(targetPath: string, data: unknown): Promise<void> {
   await mkdir(path.dirname(targetPath), { recursive: true });
   try {
-    await access(targetPath);
-    throw new Error(`config already exists at ${targetPath}, aborting`);
+    await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n", { flag: "wx" });
   } catch (e) {
-    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    if ((e as NodeJS.ErrnoException).code === "EEXIST") {
+      throw new Error(`config already exists at ${targetPath}, aborting`);
+    }
+    throw e;
   }
-  await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n");
 }
 
 // Schemas in this list are pre-registered on the Ajv instance before any

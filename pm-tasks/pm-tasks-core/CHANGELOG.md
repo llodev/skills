@@ -1,5 +1,13 @@
 # @llodev/pm-tasks-core
 
+## 1.6.1
+
+### Patch Changes
+
+- v1.6.1 — Security hotfix. Close CodeQL `js/file-system-race` (high) in `writeConfig` (`pm-tasks-core/src/init-lib.ts`). The original sequence used `access()` followed by `writeFile()`, leaving a race window where a parallel process could create the target between the check and the write and bypass the "already exists, aborting" guard. Switched to a single `writeFile()` with `{ flag: "wx" }` — the OS performs check-and-create atomically and the EEXIST error is translated to the same user-facing message. Public API unchanged.
+
+  _Skill-judge gate bypassed via `SKIP_SKILL_JUDGE_GATE=1` per NOISE_BAND policy — only SKILL.md change in this release is the automatic `metadata.version` bump (1.6.0 → 1.6.1) by `sync-version.mjs`; no content drift, so the rubric score does not move._
+
 ## 1.6.0
 
 ### Minor Changes

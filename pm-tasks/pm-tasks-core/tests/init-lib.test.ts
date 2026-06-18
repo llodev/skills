@@ -1,9 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { spawn } from "node:child_process";
-import { writeFileSync, unlinkSync } from "node:fs";
+import { writeFileSync, unlinkSync, readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { loadStrings, interpolate, listLocales, getAttribution } from "../src/init-lib.js";
+import {
+  loadStrings,
+  interpolate,
+  listLocales,
+  getAttribution,
+  writeConfig,
+} from "../src/init-lib.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -98,6 +105,49 @@ describe("getAttribution", () => {
       config: { attribution: { enabled: true, autonomousOnly: true } },
     });
     expect(att.commentPrefix).toBeNull();
+  });
+});
+
+describe("writeConfig", () => {
+  it("writes the file when target does not exist", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "fresh.json");
+    try {
+      await writeConfig(target, { hello: "world" });
+      expect(existsSync(target)).toBe(true);
+      expect(JSON.parse(readFileSync(target, "utf8"))).toEqual({ hello: "world" });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("throws 'config already exists' when target exists and does NOT overwrite", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "existing.json");
+    try {
+      writeFileSync(target, '{"original":true}\n');
+      const before = readFileSync(target, "utf8");
+
+      await expect(writeConfig(target, { overwrite: "should not happen" })).rejects.toThrow(
+        /config already exists at .*existing\.json, aborting/,
+      );
+
+      const after = readFileSync(target, "utf8");
+      expect(after).toBe(before);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("creates the parent directory if it does not exist", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "nested", "deep", "config.json");
+    try {
+      await writeConfig(target, { nested: true });
+      expect(existsSync(target)).toBe(true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 
