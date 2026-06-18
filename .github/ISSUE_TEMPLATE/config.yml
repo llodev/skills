@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and discussions
+    url: https://github.com/llodev/skills/discussions
+    about: Use Discussions for usage questions, "is this skill right for me", or design proposals not yet in the roadmap.
+  - name: Roadmap
+    url: https://github.com/llodev/skills/blob/main/docs/roadmap.md
+    about: Check the roadmap before opening a feature request — many proposals are already queued.

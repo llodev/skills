@@ -1,0 +1,44 @@
+name: Feature request
+description: Propose a new feature, adapter, verb, or DX improvement
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Target area
+      options:
+        - New adapter (Jira / Linear / Notion / ClickUp / Monday / Todoist / Bitrix24 / GitHub Projects / Other)
+        - New canonical verb
+        - Developer experience (DX)
+        - Observability
+        - Library / SDK mode (F14)
+        - Reverse sync (F1)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you're trying to do and why the current behavior doesn't fit
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Sketch of the API, command, or workflow you'd like
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds tried, prior art, related issues
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to contribute a PR for this
+        - label: I can help test a draft PR
