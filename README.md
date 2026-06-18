@@ -106,23 +106,28 @@ Releases follow the [Changesets](https://github.com/changesets/changesets) workf
 
 Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool adapters. Full detail with priorities and rationale in [`docs/roadmap.md`](docs/roadmap.md).
 
-**Next up — `pm-tasks-*` foundation (`v1.3.1` → `v1.4.0`):**
+**Next up — quality bundle before more adapters (`v1.6.0` → `v1.8.0`):**
 
-- `v1.3.1` (patch) — close test gaps: i18n adapter-scoped tests, localized-path validator, `NOISE_BAND` inline doc, skill-judge golden master.
-- `v1.4.0` (minor) — DX foundation: handcrafted `.d.ts` for `init-lib` exports, E2E canary (PR runs `pnpm pack` + `npx <pkg>` in a clean sandbox), `@llodev/pm-tasks-testkit` (in-memory fakes for the 6 canonical verbs).
+- `v1.6.0` (minor) — **Public hardening**: `CONTRIBUTING.md` · `SECURITY.md` · `CODE_OF_CONDUCT.md` · `.github/ISSUE_TEMPLATE/` + PR template · `CODEOWNERS` · `marketplace.json` parity test · CodeQL workflow · Dependabot.
+- `v1.7.0` (minor) — **Quality gates**: skill-judge rubric golden master (snapshot the rubric, not just the score) · coverage gate (c8) wired into `pnpm validate` · `size-limit` package-size budget.
+- `v1.8.0` (minor) — **Observability v1**: smart `audit.log` rotation (size-aware + idempotent) · `pm-tasks doctor` command (validates config + MCP + allowlist + audit writable).
 
-**After foundation — first adapter expansion (`v1.5.x`):**
+**After the quality trio — adapter expansion (`v1.9.0+`):**
 
-- `pm-tasks-jira` — Atlassian Remote MCP. Largest dev/agile market share.
-- `pm-tasks-linear` — Linear MCP. Premium dev mindshare; `Cycle` aligns natively with our verb model.
-- 7th canonical verb `task.sprint.set` (required by Jira / Linear / ClickUp).
-- Parent/child hierarchy (epic → story → task) for Jira / Linear / Asana.
+- `pm-tasks-jira` (S1) — Atlassian Remote MCP. Largest dev/agile market share.
+- `pm-tasks-linear` (S2) — Linear MCP. Premium dev mindshare; `Cycle` aligns natively with our verb model.
+- `pm-tasks-github-projects` (S8) — `github-mcp-server` native PM on GitHub; high value, low cost.
+- `pm-tasks-clickup` (S3) · `pm-tasks-notion` (S4) · `pm-tasks-monday` (S5) · `pm-tasks-todoist` (S6) · `pm-tasks-bitrix24` (S7).
 
-**Mid-term (`v1.6+`):**
+**Across the adapter wave — new canonical verbs (additive minors):**
 
-- More adapters: `pm-tasks-clickup`, `pm-tasks-notion`, `pm-tasks-github-projects`, `pm-tasks-monday`, `pm-tasks-todoist`, `pm-tasks-bitrix24`.
-- More verbs: `task.time.log`, `task.estimate.set`, dependency graph (`task.blocks.add`).
-- Bidirectional sync (read-back from PM tool → plan).
+- 8th `task.sprint.set` · 9th `task.parent.set` (Jira/Linear) · 10th `task.time.log` · 11th `task.estimate.set` · 12th `task.blocks.add` · 13th `task.wip-limit.check`.
+
+**Mid-term — library/SDK and reverse sync:**
+
+- F14 — runtime adapter as library (headless mode for skill-free callers).
+- F15 — bridge `superpowers:subagent-driven-development` to pm-tasks autonomous mode.
+- F1 — bidirectional sync (read-back PM tool → plan) once ≥4 adapters land.
 
 **Future families:**
 

@@ -106,23 +106,28 @@ Las releases siguen el workflow [Changesets](https://github.com/changesets/chang
 
 Foco actual: consolidar la base del `pm-tasks-*` antes de lanzar nuevos adaptadores. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](../../docs/roadmap.md).
 
-**Próximos lanzamientos — base del `pm-tasks-*` (`v1.3.1` → `v1.4.0`):**
+**Próximos lanzamientos — paquete de calidad antes de más adaptadores (`v1.6.0` → `v1.8.0`):**
 
-- `v1.3.1` (patch) — cerrar brechas de tests: tests i18n adapter-scoped, validador de rutas localizadas, documentación inline de `NOISE_BAND`, golden master del skill-judge.
-- `v1.4.0` (minor) — base de DX: `.d.ts` artesanales para los exports de `init-lib`, canary E2E (PR ejecuta `pnpm pack` + `npx <pkg>` en un sandbox limpio), `@llodev/pm-tasks-testkit` (fakes en memoria para los 6 verbos canónicos).
+- `v1.6.0` (minor) — **Public hardening**: `CONTRIBUTING.md` · `SECURITY.md` · `CODE_OF_CONDUCT.md` · `.github/ISSUE_TEMPLATE/` + plantilla de PR · `CODEOWNERS` · test de paridad de `marketplace.json` · workflow CodeQL · Dependabot.
+- `v1.7.0` (minor) — **Quality gates**: golden master del rubric del skill-judge (snapshot del rubric, no solo del score) · gate de cobertura (c8) conectado a `pnpm validate` · presupuesto de tamaño de paquete (`size-limit`).
+- `v1.8.0` (minor) — **Observability v1**: rotación inteligente del `audit.log` (size-aware + idempotente) · comando `pm-tasks doctor` (valida config + MCP + allowlist + audit writable).
 
-**Tras la base — primera expansión de adapters (`v1.5.x`):**
+**Tras el trío de calidad — expansión de adaptadores (`v1.9.0+`):**
 
-- `pm-tasks-jira` — Atlassian Remote MCP. Mayor cuota de mercado dev/agile.
-- `pm-tasks-linear` — Linear MCP. Gran presencia en el ecosistema dev; `Cycle` se alinea de forma nativa con nuestro modelo de verbos.
-- 7.º verbo canónico `task.sprint.set` (necesario para Jira / Linear / ClickUp).
-- Jerarquía parent/child (epic → story → task) para Jira / Linear / Asana.
+- `pm-tasks-jira` (S1) — Atlassian Remote MCP. Mayor cuota de mercado dev/agile.
+- `pm-tasks-linear` (S2) — Linear MCP. Gran presencia en el ecosistema dev; `Cycle` se alinea de forma nativa con nuestro modelo de verbos.
+- `pm-tasks-github-projects` (S8) — `github-mcp-server`, PM nativo en GitHub; alto valor, bajo coste.
+- `pm-tasks-clickup` (S3) · `pm-tasks-notion` (S4) · `pm-tasks-monday` (S5) · `pm-tasks-todoist` (S6) · `pm-tasks-bitrix24` (S7).
 
-**Mediano plazo (`v1.6+`):**
+**Durante la ola de adaptadores — nuevos verbos canónicos (minors aditivos):**
 
-- Más adaptadores: `pm-tasks-clickup`, `pm-tasks-notion`, `pm-tasks-github-projects`, `pm-tasks-monday`, `pm-tasks-todoist`, `pm-tasks-bitrix24`.
-- Más verbos: `task.time.log`, `task.estimate.set`, grafo de dependencias (`task.blocks.add`).
-- Sincronización bidireccional (read-back desde la herramienta PM → plan).
+- 8.º `task.sprint.set` · 9.º `task.parent.set` (Jira/Linear) · 10.º `task.time.log` · 11.º `task.estimate.set` · 12.º `task.blocks.add` · 13.º `task.wip-limit.check`.
+
+**Mediano plazo — biblioteca/SDK y reverse sync:**
+
+- F14 — runtime adapter como library (modo headless para callers sin skill).
+- F15 — puente entre `superpowers:subagent-driven-development` y el modo autonomous de pm-tasks.
+- F1 — sincronización bidireccional (read-back desde la herramienta PM → plan) tras ≥4 adaptadores.
 
 **Familias futuras:**
 
