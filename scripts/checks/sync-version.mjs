@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-// After `changeset version` bumps package.json, mirror new versions into SKILL.md frontmatter
+// After `changeset version` bumps package.json, mirror new versions into:
+//   - SKILL.md frontmatter (every package)
+//   - .claude-plugin/marketplace.json plugin entries (only packages listed there)
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -29,10 +31,12 @@ async function walk(dir, depth = 0, acc = []) {
 }
 
 const pkgFiles = (await walk(ROOT)).filter((rel) => rel !== "package.json");
+const pkgVersions = new Map();
 
 for (const rel of pkgFiles) {
   const dir = path.dirname(path.join(ROOT, rel));
   const pkg = JSON.parse(await readFile(path.join(ROOT, rel), "utf8"));
+  pkgVersions.set(path.basename(dir), pkg.version);
   const skillPath = path.join(dir, "SKILL.md");
   let src;
   try {
@@ -46,4 +50,23 @@ for (const rel of pkgFiles) {
   parsed.data.metadata.version = pkg.version;
   await writeFile(skillPath, matter.stringify(parsed.content, parsed.data));
   console.log(`synced ${path.relative(ROOT, skillPath)} -> ${pkg.version}`);
+}
+
+const marketplacePath = path.join(ROOT, ".claude-plugin/marketplace.json");
+try {
+  const marketplace = JSON.parse(await readFile(marketplacePath, "utf8"));
+  let changed = false;
+  for (const plugin of marketplace.plugins ?? []) {
+    const current = pkgVersions.get(plugin.name);
+    if (current && plugin.version !== current) {
+      console.log(`synced marketplace.json/${plugin.name} -> ${current}`);
+      plugin.version = current;
+      changed = true;
+    }
+  }
+  if (changed) {
+    await writeFile(marketplacePath, JSON.stringify(marketplace, null, 2) + "\n");
+  }
+} catch (err) {
+  if (err.code !== "ENOENT") throw err;
 }
