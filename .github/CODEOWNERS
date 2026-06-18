@@ -1,0 +1,21 @@
+# GitHub CODEOWNERS — see https://docs.github.com/en/repositories/managing-your-repositories-settings-and-security/customizing-your-repository/about-code-owners
+#
+# Order matters: later patterns take precedence over earlier ones.
+# Each line: a glob, followed by one or more GitHub usernames or team names.
+
+# Default — every file is owned by the repo maintainer unless overridden below.
+*                                          @lloliveiradev
+
+# Per-package overrides (placeholders — uncomment as future adapter maintainers join).
+# /pm-tasks/pm-tasks-jira/                 @<future-jira-maintainer>
+# /pm-tasks/pm-tasks-linear/               @<future-linear-maintainer>
+# /pm-tasks/pm-tasks-notion/               @<future-notion-maintainer>
+# /pm-tasks/pm-tasks-clickup/              @<future-clickup-maintainer>
+# /pm-tasks/pm-tasks-monday/               @<future-monday-maintainer>
+# /pm-tasks/pm-tasks-bitrix24/             @<future-bitrix24-maintainer>
+# /pm-tasks/pm-tasks-todoist/              @<future-todoist-maintainer>
+
+# Cross-cutting infra — keep with default owner unless explicitly delegated.
+# /.github/                                @lloliveiradev
+# /scripts/                                @lloliveiradev
+# /Makefile                                @lloliveiradev

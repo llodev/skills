@@ -33,7 +33,7 @@ if (!changed.includes(CONTRACT)) {
     const [insertions, deletions] = numstat.split(/\s+/);
     if (Number(deletions) === 0 && Number(insertions) > 0) {
       console.log(
-        `ok   contract.md additive-only (${insertions} insertions, 0 deletions) — minor permitted`
+        `ok   contract.md additive-only (${insertions} insertions, 0 deletions) — minor permitted`,
       );
       phaseADone = true;
     }
@@ -108,7 +108,7 @@ for (const entry of entries) {
 
   if (!validate(manifest)) {
     console.error(
-      `FAIL ${entry.name}: manifest schema violations: ${JSON.stringify(validate.errors)}`
+      `FAIL ${entry.name}: manifest schema violations: ${JSON.stringify(validate.errors)}`,
     );
     failed = true;
     continue;
@@ -121,7 +121,7 @@ for (const entry of entries) {
     const namespace = verb.split(".")[0];
     if (namespace !== manifest.tool) {
       console.error(
-        `FAIL ${entry.name}: custom verb '${verb}' must start with namespace '${manifest.tool}.' (manifest.tool = '${manifest.tool}')`
+        `FAIL ${entry.name}: custom verb '${verb}' must start with namespace '${manifest.tool}.' (manifest.tool = '${manifest.tool}')`,
       );
       failed = true;
       adapterFailed = true;
@@ -139,7 +139,7 @@ for (const entry of entries) {
     for (const verb of manifest.verbs) {
       if (!skillContent.includes(verb)) {
         console.error(
-          `FAIL ${entry.name}: verb '${verb}' declared in manifest but not mentioned in SKILL.md`
+          `FAIL ${entry.name}: verb '${verb}' declared in manifest but not mentioned in SKILL.md`,
         );
         failed = true;
         adapterFailed = true;

@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a bug in a @llodev/pm-tasks-* package
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - "@llodev/pm-tasks-core"
+        - "@llodev/pm-tasks-asana"
+        - "@llodev/pm-tasks-trello"
+        - "@llodev/pm-tasks-testkit"
+        - "@llodev/pm-tasks (meta)"
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      description: e.g., 1.5.0 — run `npm ls @llodev/<pkg>` if unsure
+      placeholder: "1.5.0"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal sequence that triggers the bug
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual behavior
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node version
+      placeholder: "v20.10.0"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "macOS 14.5 / Ubuntu 22.04 / Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent (if applicable)
+      options:
+        - Claude Code
+        - Cursor
+        - Codex
+        - Windsurf
+        - Cline
+        - Roo Code
+        - Other
+        - N/A (using as a plain Node lib)
+    validations:
+      required: false
