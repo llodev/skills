@@ -18,7 +18,7 @@ For the exact versions, see the [Catalog](README.md#catalog).
 
 **Preferred:** Report via [GitHub Security Advisory](https://github.com/llodev/skills/security/advisories/new) (private channel).
 
-**Fallback email:** `<TBD-email>`
+**Fallback email:** [support@lloliveira.dev](mailto:support@lloliveira.dev)
 
 Do not file security issues in the public Issues tab — we'll redirect them to the private advisory process.
 
