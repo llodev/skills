@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-core
 
+## 1.6.0
+
+### Minor Changes
+
+- v1.6.0 — Public hardening. Adds `CONTRIBUTING.md` / `SECURITY.md` / `CODE_OF_CONDUCT.md` / `.github/ISSUE_TEMPLATE/` (bug + feature + config) / `.github/PULL_REQUEST_TEMPLATE.md` / `.github/CODEOWNERS` / `.github/dependabot.yml` (npm + github-actions, weekly grouped) / `.github/workflows/codeql.yml` (security-and-quality, weekly). New `marketplace.json` parity gate wired into `pnpm validate` (with regression test). Closes §2.3 H1–H6 + §2.2 R6.
+
 ## 1.5.0
 
 ### Minor Changes
