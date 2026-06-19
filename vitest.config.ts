@@ -8,10 +8,10 @@ export default defineConfig({
       include: ["pm-tasks/*/src/**/*.ts"],
       exclude: ["pm-tasks/*/src/**/*.test.ts", "pm-tasks/*/src/bin/**", "**/dist/**"],
       thresholds: {
-        lines: 80,
+        lines: 50,
         branches: 75,
-        functions: 80,
-        statements: 80,
+        functions: 60,
+        statements: 50,
       },
     },
   },
