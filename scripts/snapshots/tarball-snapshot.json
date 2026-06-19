@@ -5,6 +5,10 @@
     "package/README.md",
     "package/SKILL.md",
     "package/anti-patterns/core.md",
+    "package/dist/audit.d.ts",
+    "package/dist/audit.d.ts.map",
+    "package/dist/audit.js",
+    "package/dist/audit.js.map",
     "package/dist/i18n/registry.d.ts",
     "package/dist/i18n/registry.d.ts.map",
     "package/dist/i18n/registry.js",
@@ -28,7 +32,7 @@
     "package/references/init-ux.md",
     "package/schemas/adapter-manifest.schema.json",
     "package/schemas/attribution.schema.json",
-    "package/scripts/rotate-audit.sh"
+    "package/scripts/rotate-audit.mjs"
   ],
   "pm-tasks-asana": [
     "package/CHANGELOG.md",

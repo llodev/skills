@@ -37,12 +37,12 @@ The Claude Code marketplace bundle installs the cascade automatically — see th
 
 ## Optional — rotate the autonomous-mode audit log
 
-When you enable `autonomous` for an adapter, every write-through call appends a JSONL line to `~/.local/share/llodev/pm-tasks/<tool>/audit.log`. The bundled `rotate-audit.sh` keeps the log small.
+When you enable `autonomous` for an adapter, every write-through call appends a JSONL line to `~/.local/share/llodev/pm-tasks/<tool>/audit.log`. The bundled `rotate-audit.mjs` keeps the log small and emits a JSON status object on each run.
 
 ```cron
-# Daily at 04:00, keep 90 days of audit log for Trello + Asana
-0 4 * * * /path/to/pm-tasks-core/scripts/rotate-audit.sh trello
-0 4 * * * /path/to/pm-tasks-core/scripts/rotate-audit.sh asana
+# Daily at 04:00, rotate audit log for Trello + Asana (10 MB limit, keep 12 archives)
+0 4 * * * node /path/to/pm-tasks-core/scripts/rotate-audit.mjs --tool trello
+0 4 * * * node /path/to/pm-tasks-core/scripts/rotate-audit.mjs --tool asana
 ```
 
 > [!TIP]
