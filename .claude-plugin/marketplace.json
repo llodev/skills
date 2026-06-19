@@ -13,7 +13,7 @@
         "path": "pm-tasks/pm-tasks-core"
       },
       "description": "Core extraction + CRUD vocabulary for the pm-tasks-* family.",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "author": {
         "name": "llodev"
       }
@@ -26,7 +26,7 @@
         "path": "pm-tasks/pm-tasks-trello"
       },
       "description": "Trello adapter — paste, publish via MCP, autonomous mode.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "llodev"
       }
@@ -39,7 +39,7 @@
         "path": "pm-tasks/pm-tasks-asana"
       },
       "description": "Asana adapter — paste, publish via MCP, autonomous mode.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "llodev"
       }
