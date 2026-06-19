@@ -32,7 +32,7 @@ version-sync: ## sync package.json versions across workspace
 changeset: ## record a new changeset (interactive)
 	pnpm changeset
 
-pre-release: ## quality gate before release-version (skill-judge ratchet check)
+pre-release: build ## quality gate before release-version (builds first, then runs skill-judge / rubric / doctor gates)
 	@bash scripts/shell/pre-release-check.sh
 
 release-version: pre-release ## apply changesets + bump versions (runs pre-release first)
