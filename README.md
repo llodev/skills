@@ -106,11 +106,15 @@ Releases follow the [Changesets](https://github.com/changesets/changesets) workf
 
 Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool adapters. Full detail with priorities and rationale in [`docs/roadmap.md`](docs/roadmap.md).
 
-**Next up — quality bundle before more adapters (`v1.6.0` → `v1.8.0`):**
+**Recently delivered (`v1.6.0` → `v1.8.0`):**
 
-- `v1.6.0` (minor) — **Public hardening**: `CONTRIBUTING.md` · `SECURITY.md` · `CODE_OF_CONDUCT.md` · `.github/ISSUE_TEMPLATE/` + PR template · `CODEOWNERS` · `marketplace.json` parity test · CodeQL workflow · Dependabot.
-- `v1.7.0` (minor) — **Quality gates**: skill-judge rubric golden master (snapshot the rubric, not just the score) · coverage gate (c8) wired into `pnpm validate` · `size-limit` package-size budget.
-- `v1.8.0` (minor) — **Observability v1**: smart `audit.log` rotation (size-aware + idempotent) · `pm-tasks doctor` command (validates config + MCP + allowlist + audit writable).
+- `v1.6.0` (minor) — **Public hardening**: shipped `CONTRIBUTING.md` · `SECURITY.md` · `CODE_OF_CONDUCT.md` · `.github/ISSUE_TEMPLATE/` + PR template · `CODEOWNERS` · `marketplace.json` parity test · CodeQL workflow · Dependabot.
+- `v1.7.0` (minor) — **Quality gates**: shipped skill-judge rubric golden master · coverage gate (c8) wired into `pnpm validate` · `size-limit` package-size budget.
+- `v1.8.0` (minor) — **Observability v1**: shipped smart `audit.log` rotation (size + age + multi-tool, atomic, idempotent) · `pm-tasks-core-doctor` CLI (validates config + autonomous allowlist + audit writability) · adapter `--doctor` flags.
+
+**What's next:**
+
+- Decision pending — adapter expansion (`pm-tasks-jira`) vs SDD hooks (F14 + F15). See [docs/roadmap.md](docs/roadmap.md).
 
 **After the quality trio — adapter expansion (`v1.9.0+`):**
 
