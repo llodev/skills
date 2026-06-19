@@ -32,7 +32,7 @@ const C_TRL_1: DoctorCheck = {
   id: "C-TRL-1",
   label: "Trello REST members/me returns 200",
   severity: "error",
-  async run(ctx) {
+  async run(_ctx) {
     const key = process.env.TRELLO_API_KEY;
     const token = process.env.TRELLO_TOKEN;
     if (!key || !token) {

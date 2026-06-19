@@ -10,7 +10,6 @@ import {
   rename,
   rm,
   stat,
-  truncate,
   unlink,
   writeFile,
 } from "node:fs/promises";

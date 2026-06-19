@@ -16,6 +16,10 @@ pre-commit:
         pnpm exec prettier --write --ignore-unknown {staged_files}
         git add {staged_files}
 
+    lint:
+      glob: "pm-tasks/**/*.ts"
+      run: pnpm run lint
+
     gitleaks:
       run: |
         if ! command -v gitleaks >/dev/null 2>&1; then

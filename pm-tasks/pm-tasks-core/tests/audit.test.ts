@@ -1,10 +1,10 @@
-import { createReadStream, mkdtempSync, rmSync, writeFileSync, statSync } from "node:fs";
-import { mkdir, readFile, stat, utimes, writeFile } from "node:fs/promises";
+import { mkdtempSync, rmSync } from "node:fs";
+import { readFile, utimes } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { createGzip } from "node:zlib";
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { appendAuditEntry, queryAuditLog, resolveDataDir, rotateAuditLog } from "../src/audit.js";
 import type { AuditEntry } from "../src/audit.js";
 
