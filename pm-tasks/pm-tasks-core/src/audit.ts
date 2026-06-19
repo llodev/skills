@@ -201,7 +201,17 @@ export async function rotateAuditLog(opts: RotateOpts): Promise<RotationResult> 
   result.archive = gzPath;
 
   // ---- Step 4: Touch fresh empty log ------------------------------------
-  await writeFile(logPath, "", "utf8");
+  // Atomic create-if-absent: between Step 3's rename and this touch, a
+  // concurrent appendAuditEntry may race in and create logPath with new
+  // entries. `flag: "wx"` fails fast with EEXIST in that case; we accept
+  // the loss of "empty" semantics — the file exists with the racer's
+  // content, which is exactly what we want preserved. Closes CodeQL
+  // `js/file-system-race`.
+  try {
+    await writeFile(logPath, "", { encoding: "utf8", flag: "wx" });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+  }
 
   // ---- Step 5: Prune oldest archives ------------------------------------
   result.prunedArchives = await pruneArchives(logDir, keep);
