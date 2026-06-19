@@ -256,6 +256,13 @@ function mapResourceType(subtype: string): string {
 // ---------------------------------------------------------------------------
 
 async function run(): Promise<void> {
+  const argv = process.argv.slice(2);
+  if (argv.includes("--doctor")) {
+    const { runDoctor } = await import("../doctor-cli.js");
+    await runDoctor({ tool: "asana", argv });
+    return;
+  }
+
   registerI18nRoot("asana", path.join(ROOT, "i18n"));
   const locale = await promptLocale("core", { defaultLocale: "en-US" });
   const coreStrings = await loadStrings("core", locale);

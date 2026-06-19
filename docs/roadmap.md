@@ -13,11 +13,11 @@ Date: 2026-06-17. Baseline: `main` at commit `8046c39` (v1.5.0 merged via PR #8)
 
 Last 3 releases.
 
-| Release        | Theme                                                                                  | Outcome                                                                                                              |
-| -------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| v1.5.0 (PR #8) | Adapters TS + `@llodev/pm-tasks-testkit` + 7th canonical verb `task.move` + E2E canary | `@llodev/pm-tasks-core@1.5.0` · `@llodev/pm-tasks-{asana,trello}@1.4.0` · `@llodev/pm-tasks-testkit@0.1.0`           |
-| v1.4.0 (PR #7) | `pm-tasks-core` TypeScript migration                                                   | `@llodev/pm-tasks-core@1.4.0` — `src/init-lib.ts` + `src/i18n/registry.ts` + Vitest 2.x + `dist/` with `.d.ts` types |
-| v1.3.2 (PR #6) | Repo organization                                                                      | `scripts/` reorganized · SKILL.md translations dropped · localized READMEs → `docs/i18n/`                            |
+| Release        | Theme                                                                                  | Outcome                                                                                                                                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.8.0         | Observability v1                                                                       | `@llodev/pm-tasks-core@1.8.0` · `@llodev/pm-tasks-{asana,trello}@1.5.0` — smart audit-log rotation (size + age + multi-tool, atomic, idempotent) · `pm-tasks-core-doctor` CLI · adapter `--doctor` flags |
+| v1.5.0 (PR #8) | Adapters TS + `@llodev/pm-tasks-testkit` + 7th canonical verb `task.move` + E2E canary | `@llodev/pm-tasks-core@1.5.0` · `@llodev/pm-tasks-{asana,trello}@1.4.0` · `@llodev/pm-tasks-testkit@0.1.0`                                                                                               |
+| v1.4.0 (PR #7) | `pm-tasks-core` TypeScript migration                                                   | `@llodev/pm-tasks-core@1.4.0` — `src/init-lib.ts` + `src/i18n/registry.ts` + Vitest 2.x + `dist/` with `.d.ts` types                                                                                     |
 
 ---
 
@@ -52,11 +52,9 @@ Last 3 releases.
 
 ### 2.4 Observability
 
-| #   | Gap                                                                                                                                   | Why                                                      | Effort |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------ |
-| O1  | **Smart audit-log rotation** — replace `pm-tasks-core/scripts/rotate-audit.sh` (rudimentary shell) with size-aware + idempotent logic | Real autonomous use grows the log fast                   | S      |
-| O2  | **Opt-in telemetry** (which verbs / which adapters / failure rates)                                                                   | Data-driven roadmap decisions                            | M      |
-| O3  | **`pm-tasks doctor` command** — validates config + MCP reachable + allowlist sound + audit writable                                   | Today users only discover MCP is offline at publish time | S      |
+| #   | Gap                                                                 | Why                           | Effort |
+| --- | ------------------------------------------------------------------- | ----------------------------- | ------ |
+| O2  | **Opt-in telemetry** (which verbs / which adapters / failure rates) | Data-driven roadmap decisions | M      |
 
 ---
 
@@ -68,10 +66,9 @@ Quality / DX bundles before more adapters — same principle that drove v1.3.x �
 | ---------------------------------- | ---------------------------------------- | -------------------------------------------------------------------------- | ----------------- |
 | **A — Public hardening**           | §2.3 H1-H6 + §2.2 R6 + a CodeQL workflow | Repo is publicly visible; community files are table stakes                 | v1.6.0            |
 | **B — Quality gates**              | §2.1 E2 + E4 + §2.2 R5                   | Golden master + coverage floor + size budget — catches regressions earlier | v1.6.0            |
-| **C — Observability v1**           | §2.4 O1 + O3                             | Smart rotation + doctor command. Pairs with autonomous mode usage growing  | v1.6.0            |
 | **D — F15 (SDD ↔ pm-tasks hooks)** | F15 + F14 (see §5)                       | Closes the gap surfaced running v1.3.2/v1.4.0/v1.5.0 autonomously          | v1.6.0            |
 
-Once one of A–D lands, adapter expansion (§4) starts from the next minor.
+Once one of A, B, or D lands, adapter expansion (§4) starts from the next minor.
 
 ---
 

@@ -37,7 +37,33 @@ Single-line JSON writes < 4KB are atomic at OS level on Linux/macOS. Multiple ag
 
 ## Rotation
 
-`pm-tasks/pm-tasks-core/scripts/rotate-audit.sh` purges entries older than 90 days. Suggested cron entry in this file's README.
+`scripts/rotate-audit.mjs` is the Node ESM replacement for the old shell script. It wraps `rotateAuditLog` from `dist/audit.js` and emits a JSON status object to stdout.
+
+**Flags**
+
+| Flag                 | Default                    | Description                                                               |
+| -------------------- | -------------------------- | ------------------------------------------------------------------------- |
+| `--tool <name>`      | _(required)_               | Adapter name (`trello`, `asana`, …). Resolves the log path automatically. |
+| `--max-size <bytes>` | `10485760` (10 MB)         | Rotate when the live log exceeds this size.                               |
+| `--max-age <days>`   | _(none)_                   | If set, prune entries older than N days before the size check.            |
+| `--keep <n>`         | `12`                       | Maximum number of gzipped archives to keep. Oldest are deleted first.     |
+| `--log-path <path>`  | _(resolved from `--tool`)_ | Override the log file path.                                               |
+
+**Exit codes**: `0` success (rotated or not); `2` usage error (missing `--tool`); `1` filesystem error.
+
+**JSON status output** (written to stdout on success):
+
+```json
+{
+  "tool": "trello",
+  "logPath": "/home/user/.local/share/llodev/pm-tasks/trello/audit.log",
+  "rotated": true,
+  "archive": "/home/user/.local/share/llodev/pm-tasks/trello/audit.log.2026-06-18-1.jsonl.gz",
+  "prunedArchives": []
+}
+```
+
+Suggested cron entry — see the package README.
 
 ## Lookup usage
 

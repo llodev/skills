@@ -153,7 +153,7 @@ export async function promptScope(
 
 export async function promptYesNo(
   question: string,
-  { defaultNo = true, strings }: PromptYesNoOptions = {},
+  { defaultNo: _defaultNo = true, strings }: PromptYesNoOptions = {},
 ): Promise<boolean> {
   const s = strings ?? (await loadStrings("core", "en-US"));
   const r = rl();

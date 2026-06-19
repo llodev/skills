@@ -14,7 +14,7 @@ description: >-
   installed.
 license: MIT
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   tags:
     - agent-skill
     - trello
@@ -85,3 +85,11 @@ npx @llodev/pm-tasks-trello init
 ```
 
 See [`pm-tasks/pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-ux.md) for the shared flow.
+
+Pass `--doctor` to run workspace health checks before prompting:
+
+```sh
+npx @llodev/pm-tasks-trello init --doctor
+```
+
+Runs core checks (C-FS-1..3, C-CFG-1..4) plus Trello-specific probes (C-TRL-1..3, gated on `TRELLO_API_KEY`/`TRELLO_TOKEN`). Full check matrix in [`pm-tasks/pm-tasks-core/references/doctor.md`](../pm-tasks-core/references/doctor.md).

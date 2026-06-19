@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks-core",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Core skill for the pm-tasks-* family: extracts implementation plans into structured task content, defines the CRUD vocabulary (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add), specifies the autonomous-mode contract, and provides the shared init UX library for tool adapters. Use when an adapter (pm-tasks-trello, pm-tasks-asana, etc.) needs the canonical generic-card structure or when running the init helper for any tool.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/pm-tasks/pm-tasks-core",
@@ -35,10 +35,13 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/doctor.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "pnpm build && vitest run --passWithNoTests",
     "prepublishOnly": "pnpm build"
+  },
+  "bin": {
+    "pm-tasks-core-doctor": "./dist/bin/doctor.js"
   },
   "exports": {
     ".": {
@@ -48,6 +51,18 @@
     "./init-lib": {
       "types": "./dist/init-lib.d.ts",
       "import": "./dist/init-lib.js"
+    },
+    "./audit": {
+      "types": "./dist/audit.d.ts",
+      "import": "./dist/audit.js"
+    },
+    "./doctor": {
+      "types": "./dist/doctor.d.ts",
+      "import": "./dist/doctor.js"
+    },
+    "./bin/doctor": {
+      "types": "./dist/bin/doctor.d.ts",
+      "import": "./dist/bin/doctor.js"
     },
     "./i18n": {
       "types": "./dist/i18n/registry.d.ts",
