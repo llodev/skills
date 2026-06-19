@@ -179,3 +179,11 @@ npx @llodev/pm-tasks-asana init
 ```
 
 See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-ux.md) for the shared flow. Asana init reads workspaces / projects / sections / custom fields via the Asana REST API using a Personal Access Token (env `LLODEV_PM_TASKS_ASANA_PAT`).
+
+Pass `--doctor` to run workspace health checks before prompting:
+
+```sh
+npx @llodev/pm-tasks-asana init --doctor
+```
+
+Runs core checks (C-FS-1..3, C-CFG-1..4) plus Asana-specific probes (C-ASN-1..3, gated on `LLODEV_PM_TASKS_ASANA_PAT`). Full check matrix in [`pm-tasks/pm-tasks-core/references/doctor.md`](../pm-tasks-core/references/doctor.md).

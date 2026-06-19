@@ -69,3 +69,20 @@ if ! node scripts/checks/skill-judge-rubric-check.mjs; then
   exit 1
 fi
 echo "─────────────────────────────────────────────────────────────────────"
+
+echo "─── doctor gate ───────────────────────────────────────────────────────────────────"
+shopt -s nullglob
+configs=( .trello.json .asana.json )
+found=()
+for c in "${configs[@]}"; do
+  if [ -f "$c" ]; then found+=("$c"); fi
+done
+if [ ${#found[@]} -eq 0 ]; then
+  echo "doctor: no .tool.json found in workspace — skipping"
+else
+  if ! node pm-tasks/pm-tasks-core/dist/bin/doctor.js; then
+    echo "abort: doctor reported errors; resolve or run \`pnpm --filter @llodev/pm-tasks-<tool> init --doctor --fix-hints-only\`"
+    exit 1
+  fi
+fi
+echo "─────────────────────────────────────────────────────────────────────"

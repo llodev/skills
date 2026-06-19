@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge skill-judge-rubric-snapshot skill-judge-rubric-check test typecheck build coverage size clean e2e
+.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello doctor skill-judge skill-judge-rubric-snapshot skill-judge-rubric-check test typecheck build coverage size clean e2e
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -46,6 +46,9 @@ init-asana: ## run pm-tasks-asana init (needs LLODEV_PM_TASKS_ASANA_PAT)
 
 init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 	node pm-tasks/pm-tasks-trello/dist/bin/init.js
+
+doctor: ## run pm-tasks-core-doctor against workspace .tool.json files
+	node pm-tasks/pm-tasks-core/dist/bin/doctor.js $(ARGS)
 
 skill-judge: ## skill-judge:check — reads scores from stdin as JSON {path: score}
 	pnpm skill-judge:check

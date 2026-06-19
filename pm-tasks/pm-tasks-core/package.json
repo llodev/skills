@@ -35,10 +35,13 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/doctor.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "pnpm build && vitest run --passWithNoTests",
     "prepublishOnly": "pnpm build"
+  },
+  "bin": {
+    "pm-tasks-core-doctor": "./dist/bin/doctor.js"
   },
   "exports": {
     ".": {
@@ -48,6 +51,18 @@
     "./init-lib": {
       "types": "./dist/init-lib.d.ts",
       "import": "./dist/init-lib.js"
+    },
+    "./audit": {
+      "types": "./dist/audit.d.ts",
+      "import": "./dist/audit.js"
+    },
+    "./doctor": {
+      "types": "./dist/doctor.d.ts",
+      "import": "./dist/doctor.js"
+    },
+    "./bin/doctor": {
+      "types": "./dist/bin/doctor.d.ts",
+      "import": "./dist/bin/doctor.js"
     },
     "./i18n": {
       "types": "./dist/i18n/registry.d.ts",

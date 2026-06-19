@@ -212,6 +212,13 @@ async function collectEscalationMember(
 // ---------------------------------------------------------------------------
 
 async function run(): Promise<void> {
+  const argv = process.argv.slice(2);
+  if (argv.includes("--doctor")) {
+    const { runDoctor } = await import("../doctor-cli.js");
+    await runDoctor({ tool: "trello", argv });
+    return;
+  }
+
   registerI18nRoot("trello", path.join(ROOT, "i18n"));
   const locale = await promptLocale("core", { defaultLocale: "en-US" });
   const coreStrings = await loadStrings("core", locale);

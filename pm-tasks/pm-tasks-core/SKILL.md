@@ -68,6 +68,10 @@ Append-only JSONL at `~/.local/share/llodev/pm-tasks/<tool>/audit.log`. Schema i
 
 Adapters expose `npx @llodev/pm-tasks-<tool> init`. Shared UX in [`references/init-ux.md`](references/init-ux.md). Implementation library at `@llodev/pm-tasks-core/init-lib` (TypeScript source under `./src/init-lib.ts`; compiled to `./dist/init-lib.js`).
 
+## Health check (doctor)
+
+`pm-tasks-core-doctor` validates a workspace config, autonomous allowlist, audit writability, and network reach. Check matrix and exit codes in [`references/doctor.md`](references/doctor.md) — `pm-tasks-core-doctor` check catalog + exit codes.
+
 ## Standalone fallback
 
 This skill is not useful without an adapter. If activated alone, tell the user to install at least one `pm-tasks-<tool>` package.
