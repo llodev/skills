@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge test typecheck build clean e2e
+.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge skill-judge-rubric-snapshot skill-judge-rubric-check test typecheck build coverage size clean e2e
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -50,6 +50,12 @@ init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 skill-judge: ## skill-judge:check — reads scores from stdin as JSON {path: score}
 	pnpm skill-judge:check
 
+skill-judge-rubric-snapshot: ## regenerate skill-judge rubric golden master
+	node scripts/checks/skill-judge-rubric-snapshot.mjs --write
+
+skill-judge-rubric-check: ## verify skill-judge rubric has not drifted
+	node scripts/checks/skill-judge-rubric-check.mjs
+
 build: ## typescript build (tsc -b with project references)
 	pnpm build
 
@@ -58,6 +64,12 @@ typecheck: ## typescript type check only (no emit)
 
 test: ## run vitest suite
 	pnpm test
+
+coverage: ## vitest coverage with v8 provider (current floor 50/75/60/50)
+	pnpm run coverage
+
+size: ## size-limit per-package gzipped budgets
+	pnpm run size
 
 clean: ## remove build artefacts and pnpm caches in node_modules
 	rm -rf node_modules pm-tasks/*/node_modules

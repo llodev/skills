@@ -1,0 +1,22 @@
+[
+  {
+    "name": "@llodev/pm-tasks-core (tarball)",
+    "path": "pm-tasks/pm-tasks-core/dist/**/*.js",
+    "limit": "12 kB"
+  },
+  {
+    "name": "@llodev/pm-tasks-asana (tarball)",
+    "path": "pm-tasks/pm-tasks-asana/dist/**/*.js",
+    "limit": "10 kB"
+  },
+  {
+    "name": "@llodev/pm-tasks-trello (tarball)",
+    "path": "pm-tasks/pm-tasks-trello/dist/**/*.js",
+    "limit": "10 kB"
+  },
+  {
+    "name": "@llodev/pm-tasks-testkit (tarball)",
+    "path": "pm-tasks/pm-tasks-testkit/dist/**/*.js",
+    "limit": "6 kB"
+  }
+]

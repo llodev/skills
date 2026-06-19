@@ -1,0 +1,38 @@
+{
+  "shaHash": "33d5cbcf719d0f3d4d0bfd08a5a136a6901951a39c42ada565352f90cf93ae68",
+  "dimensions": [
+    {
+      "name": "D1: Knowledge Delta",
+      "maxScore": 20
+    },
+    {
+      "name": "D2: Mindset + Appropriate Procedures",
+      "maxScore": 15
+    },
+    {
+      "name": "D3: Anti-Pattern Quality",
+      "maxScore": 15
+    },
+    {
+      "name": "D4: Specification Compliance — Especially Description",
+      "maxScore": 15
+    },
+    {
+      "name": "D5: Progressive Disclosure",
+      "maxScore": 15
+    },
+    {
+      "name": "D6: Freedom Calibration",
+      "maxScore": 15
+    },
+    {
+      "name": "D7: Pattern Recognition",
+      "maxScore": 10
+    },
+    {
+      "name": "D8: Practical Usability",
+      "maxScore": 15
+    }
+  ],
+  "capturedAt": "2026-06-19T00:38:43.603Z"
+}

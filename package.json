@@ -9,7 +9,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node --test scripts/checks/tarball-snapshot.test.mjs && node scripts/checks/marketplace-parity.mjs && node --test scripts/checks/marketplace-parity.test.mjs",
+    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node --test scripts/checks/tarball-snapshot.test.mjs && node scripts/checks/marketplace-parity.mjs && node --test scripts/checks/marketplace-parity.test.mjs && pnpm run coverage && pnpm run size",
     "contract:check": "node scripts/checks/contract-check.mjs",
     "skill-judge:check": "node scripts/checks/skill-judge-check.mjs",
     "version:sync": "node scripts/checks/sync-version.mjs",
@@ -21,19 +21,23 @@
     "build": "tsc -b",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r build && vitest run --passWithNoTests",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "coverage": "pnpm -r build && vitest run --coverage --passWithNoTests",
+    "size": "size-limit"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.27.0",
+    "@size-limit/file": "^12.1.0",
     "@types/node": "^25.9.3",
-    "@vitest/coverage-v8": "^2.1.9",
+    "@vitest/coverage-v8": "^3.2.6",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "gray-matter": "^4.0.3",
     "prettier": "^3.3.0",
+    "size-limit": "^12.1.0",
     "tsx": "^4.22.4",
     "typescript": "^5.9.3",
-    "vitest": "^2.1.9"
+    "vitest": "^3.2.6"
   }
 }
