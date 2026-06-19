@@ -81,7 +81,16 @@ interface DiscoveredConfig {
   configPath: string;
 }
 
-async function discoverConfigs(toolFlag?: string): Promise<DiscoveredConfig[]> {
+async function discoverConfigs(
+  toolFlag?: string,
+  configOverride?: string,
+): Promise<DiscoveredConfig[]> {
+  if (toolFlag && configOverride) {
+    // --config supplied explicitly: trust the caller, skip file-existence check here.
+    // (The file-not-found error surfaces naturally when we try to readFile it later.)
+    return [{ tool: toolFlag, configPath: path.resolve(configOverride) }];
+  }
+
   if (toolFlag) {
     // Try cwd first, then global config dir
     const cwd = path.resolve(process.cwd(), `.${toolFlag}.json`);
@@ -199,7 +208,7 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const flags = parseFlags(argv);
 
-  const discovered = await discoverConfigs(flags.tool);
+  const discovered = await discoverConfigs(flags.tool, flags.configOverride);
 
   if (flags.tool && discovered.length === 0) {
     console.error(
