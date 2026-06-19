@@ -65,7 +65,7 @@ typecheck: ## typescript type check only (no emit)
 test: ## run vitest suite
 	pnpm test
 
-coverage: ## vitest coverage with v8 provider (80% threshold)
+coverage: ## vitest coverage with v8 provider (current floor 50/75/60/50)
 	pnpm run coverage
 
 size: ## size-limit per-package gzipped budgets

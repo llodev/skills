@@ -22,7 +22,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r build && vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage --passWithNoTests",
+    "coverage": "pnpm -r build && vitest run --coverage --passWithNoTests",
     "size": "size-limit"
   },
   "devDependencies": {
