@@ -25,16 +25,12 @@ BASELINE_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'scripts/snapshot
 
 if [ -z "$SKILL_CHANGES" ]; then
   echo "pre-release: no SKILL.md changes vs $BASE_REF — skill-judge gate skipped."
-  exit 0
-fi
-
-if [ -n "$BASELINE_CHANGES" ]; then
-  echo "pre-release: SKILL.md changes detected and scripts/snapshots/skill-judge-baseline.json"
-  echo "             was updated in the same range. Assuming the gate was run."
-  exit 0
-fi
-
-cat <<EOF
+else
+  if [ -n "$BASELINE_CHANGES" ]; then
+    echo "pre-release: SKILL.md changes detected and scripts/snapshots/skill-judge-baseline.json"
+    echo "             was updated in the same range. Assuming the gate was run."
+  else
+    cat <<EOF
 ─── skill-judge gate ───────────────────────────────────────────────────────
 SKILL.md files were modified on this branch but scripts/snapshots/skill-judge-baseline.json
 has NOT been updated. The skill-judge contract says the baseline should be
@@ -59,9 +55,17 @@ Required action — one of:
 ────────────────────────────────────────────────────────────────────────────
 EOF
 
-if [ "${SKIP_SKILL_JUDGE_GATE:-0}" = "1" ]; then
-  echo "pre-release: SKIP_SKILL_JUDGE_GATE=1 — gate bypassed by maintainer."
-  exit 0
+    if [ "${SKIP_SKILL_JUDGE_GATE:-0}" = "1" ]; then
+      echo "pre-release: SKIP_SKILL_JUDGE_GATE=1 — gate bypassed by maintainer."
+    else
+      exit 1
+    fi
+  fi
 fi
 
-exit 1
+echo "─── rubric drift gate ─────────────────────────────────────────────────"
+if ! node scripts/checks/skill-judge-rubric-check.mjs; then
+  echo "abort: skill-judge rubric changed; ratchet snapshot or revert"
+  exit 1
+fi
+echo "─────────────────────────────────────────────────────────────────────"

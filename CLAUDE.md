@@ -14,6 +14,7 @@
 - `make help` lists everything else. Prefer the Makefile over remembering `pnpm` script names.
 - Releases: `make changeset` → `make release-version` → `make release-publish` (only when consciously shipping). Each adapter's `bin` MUST equal the package name and its entry script MUST run unconditionally — lesson from v1.0.1.
 - `make release-version` is now gated by `make pre-release`. If any `SKILL.md` was modified vs `origin/main` and `scripts/skill-judge-baseline.json` was NOT updated, the gate blocks. To proceed: run `make skill-judge` with current scores, ratchet the baseline if scores improved (Δ ≥ +3), OR bypass with `SKIP_SKILL_JUDGE_GATE=1 make release-version` when drift is within the noise band ([-2, +2]) — annotate that decision in the changeset summary.
+- `make pre-release` also runs the **rubric drift gate** (unconditionally). This checks that `scripts/snapshots/skill-judge-rubric.json` still matches the installed `~/.claude/skills/skill-judge/SKILL.md`. If it drifts (new dimension, weight change, content edit), the gate blocks. To ratchet: run `make skill-judge-rubric-snapshot`, review the diff, commit the updated snapshot. The gate is silently skipped when the rubric SKILL.md is not installed (clean clones, CI).
 
 ## Release convention
 
