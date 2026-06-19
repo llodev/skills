@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge test typecheck build coverage clean e2e
+.PHONY: help install hooks fmt fmt-check validate contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello skill-judge test typecheck build coverage size clean e2e
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -61,6 +61,9 @@ test: ## run vitest suite
 
 coverage: ## vitest coverage with v8 provider (80% threshold)
 	pnpm run coverage
+
+size: ## size-limit per-package gzipped budgets
+	pnpm run size
 
 clean: ## remove build artefacts and pnpm caches in node_modules
 	rm -rf node_modules pm-tasks/*/node_modules
