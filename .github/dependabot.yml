@@ -36,6 +36,13 @@ updates:
       minor-and-patch:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ajv"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/pm-tasks/pm-tasks-asana"
@@ -50,6 +57,13 @@ updates:
       minor-and-patch:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ajv"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/pm-tasks/pm-tasks-trello"
@@ -64,6 +78,13 @@ updates:
       minor-and-patch:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ajv"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/pm-tasks/pm-tasks-testkit"
@@ -78,6 +99,13 @@ updates:
       minor-and-patch:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ajv"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/pm-tasks/pm-tasks"
@@ -92,6 +120,13 @@ updates:
       minor-and-patch:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ajv"
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
