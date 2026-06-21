@@ -9,7 +9,7 @@ describe("createCoreRuntime", () => {
   let tmpDir: string;
   let configPath: string;
 
-  // No-op Transport stub — all methods return failure envelopes; never called by stub verbs.
+  // No-op Transport stub — all methods return failure envelopes.
   const stubTransport: Transport = {
     taskCreate: async () => ({ ok: false, code: "INVALID_REQUEST" }),
     taskMove: async () => ({ ok: false, code: "INVALID_REQUEST" }),
@@ -53,12 +53,5 @@ describe("createCoreRuntime", () => {
     await expect(
       createCoreRuntime({ tool: "trello", configPath, transport: stubTransport }),
     ).rejects.toThrow(/invalid JSON in config at/);
-  });
-
-  it("stub verb methods throw with dotted canonical name in the message", async () => {
-    const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
-    await expect(rt.taskCommentAdd({ taskId: "c1", text: "hello" })).rejects.toThrow(
-      /task\.comment\.add stub.*Phase 2/,
-    );
   });
 });

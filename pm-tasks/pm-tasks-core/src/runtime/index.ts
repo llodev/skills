@@ -25,6 +25,7 @@ import { checklistCheckHandler } from "./handlers/checklist-check.js";
 import { taskCloseHandler } from "./handlers/task-close.js";
 import { taskDueDateSetHandler } from "./handlers/task-due-date-set.js";
 import { taskAssigneeAddHandler } from "./handlers/task-assignee-add.js";
+import { taskCommentAddHandler } from "./handlers/task-comment-add.js";
 
 export interface CreateRuntimeOptions {
   /** Tool name — used for audit-log path and error messages. e.g. "trello", "asana". */
@@ -98,11 +99,7 @@ export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Run
   // Internal context — verb handlers close over this.
   const ctx: RuntimeContext = { config, transport, session, auditLogPath, tool, language };
 
-  // 4. Return Runtime — taskCreate is wired; remaining verbs are stubs until Phase 2.2-2.7.
-  const notImpl = (verb: string): never => {
-    throw new Error(`pm-tasks-core runtime: ${verb} stub — Phase 2 handler not yet wired`);
-  };
-
+  // 4. Return Runtime — all 7 verb handlers wired (Phase 2 complete).
   return {
     taskCreate: (req) => taskCreateHandler(req, ctx),
     taskMove: (req) => taskMoveHandler(req, ctx),
@@ -110,6 +107,6 @@ export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Run
     taskClose: (req) => taskCloseHandler(req, ctx),
     taskDueDateSet: (req) => taskDueDateSetHandler(req, ctx),
     taskAssigneeAdd: (req) => taskAssigneeAddHandler(req, ctx),
-    taskCommentAdd: async () => notImpl("task.comment.add"),
+    taskCommentAdd: (req) => taskCommentAddHandler(req, ctx),
   };
 }
