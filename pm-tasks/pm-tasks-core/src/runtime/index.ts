@@ -24,6 +24,7 @@ import { taskMoveHandler } from "./handlers/task-move.js";
 import { checklistCheckHandler } from "./handlers/checklist-check.js";
 import { taskCloseHandler } from "./handlers/task-close.js";
 import { taskDueDateSetHandler } from "./handlers/task-due-date-set.js";
+import { taskAssigneeAddHandler } from "./handlers/task-assignee-add.js";
 
 export interface CreateRuntimeOptions {
   /** Tool name — used for audit-log path and error messages. e.g. "trello", "asana". */
@@ -108,7 +109,7 @@ export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Run
     checklistCheck: (req) => checklistCheckHandler(req, ctx),
     taskClose: (req) => taskCloseHandler(req, ctx),
     taskDueDateSet: (req) => taskDueDateSetHandler(req, ctx),
-    taskAssigneeAdd: async () => notImpl("task.assignee.add"),
+    taskAssigneeAdd: (req) => taskAssigneeAddHandler(req, ctx),
     taskCommentAdd: async () => notImpl("task.comment.add"),
   };
 }
