@@ -64,6 +64,10 @@
       "types": "./dist/bin/doctor.d.ts",
       "import": "./dist/bin/doctor.js"
     },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    },
     "./i18n": {
       "types": "./dist/i18n/registry.d.ts",
       "import": "./dist/i18n/registry.js"
