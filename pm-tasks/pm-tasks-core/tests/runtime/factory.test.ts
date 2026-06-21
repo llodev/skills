@@ -57,8 +57,8 @@ describe("createCoreRuntime", () => {
 
   it("stub verb methods throw with dotted canonical name in the message", async () => {
     const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
-    await expect(
-      rt.taskDueDateSet({ taskId: "c1", dueAt: "2026-07-01T00:00:00Z" }),
-    ).rejects.toThrow(/task\.due-date\.set stub.*Phase 2/);
+    await expect(rt.taskAssigneeAdd({ taskId: "c1", userId: "u1" })).rejects.toThrow(
+      /task\.assignee\.add stub.*Phase 2/,
+    );
   });
 });
