@@ -58,9 +58,6 @@ describe("createCoreRuntime", () => {
   it("stub verb methods throw with dotted canonical name in the message", async () => {
     const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
     await expect(
-      rt.taskCreate({ boardOrProjectId: "b1", listOrSectionId: "l1", name: "x" }),
-    ).rejects.toThrow(/task\.create stub.*Phase 2/);
-    await expect(
       rt.checklistCheck({
         taskId: "c1",
         checklistId: "cl1",

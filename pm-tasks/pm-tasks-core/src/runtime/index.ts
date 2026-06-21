@@ -19,6 +19,7 @@ import type {
   TaskCommentAddRequest,
   TaskCommentAddResponse,
 } from "./transport.js";
+import { taskCreateHandler } from "./handlers/task-create.js";
 
 export interface CreateRuntimeOptions {
   /** Tool name — used for audit-log path and error messages. e.g. "trello", "asana". */
@@ -31,6 +32,26 @@ export interface CreateRuntimeOptions {
   session?: string;
   /** Optional locale hint (forwarded from .<tool>.json locale field for narration). */
   language?: string;
+}
+
+/**
+ * Internal context handed to each verb handler. Holds the resolved
+ * runtime state so handlers can dispatch via transport, append audit
+ * entries, and reference config + locale.
+ */
+export interface RuntimeContext {
+  /** Tool name (e.g. "trello", "asana") — written into audit entries' `tool` field. */
+  tool: string;
+  /** Parsed config from .<tool>.json (typed `unknown` here; Phase 4.1 may narrow via generic). */
+  config: unknown;
+  /** Transport implementation for the bound adapter. */
+  transport: Transport;
+  /** Session id for audit-log correlation. */
+  session: string;
+  /** Absolute path to audit log file. */
+  auditLogPath: string;
+  /** Optional locale hint from .<tool>.json. */
+  language: string | undefined;
 }
 
 export interface Runtime {
@@ -69,18 +90,16 @@ export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Run
   // 3. Resolve audit log path via resolveDataDir(tool) + "/audit.log"
   const auditLogPath = resolveDataDir(tool) + "/audit.log";
 
-  // Internal context — Phase 2 verb handlers will close over this.
-  // Kept here so Phase 2 readers see exactly what's available.
-  const _ctx = { config, transport, session, auditLogPath, tool, language };
-  void _ctx; // suppress unused-variable warnings until Phase 2 wires handlers
+  // Internal context — verb handlers close over this.
+  const ctx: RuntimeContext = { config, transport, session, auditLogPath, tool, language };
 
-  // 4. Return Runtime with stub verb methods — each THROWS until Phase 2 wires a real handler.
+  // 4. Return Runtime — taskCreate is wired; remaining verbs are stubs until Phase 2.2-2.7.
   const notImpl = (verb: string): never => {
     throw new Error(`pm-tasks-core runtime: ${verb} stub — Phase 2 handler not yet wired`);
   };
 
   return {
-    taskCreate: async () => notImpl("task.create"),
+    taskCreate: (req) => taskCreateHandler(req, ctx),
     taskMove: async () => notImpl("task.move"),
     checklistCheck: async () => notImpl("checklist.check"),
     taskClose: async () => notImpl("task.close"),
