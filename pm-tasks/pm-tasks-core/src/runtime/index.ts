@@ -19,6 +19,29 @@ import type {
   TaskCommentAddRequest,
   TaskCommentAddResponse,
 } from "./transport.js";
+// Re-export transport types so adapters can import everything they need
+// from the single `@llodev/pm-tasks-core/runtime` subpath (no transport subpath).
+export type {
+  Transport,
+  TransportResult,
+  TransportErrorCode,
+  TaskCreateRequest,
+  TaskCreateResponse,
+  TaskMoveRequest,
+  TaskMoveResponse,
+  ChecklistCheckRequest,
+  ChecklistCheckResponse,
+  TaskCloseRequest,
+  TaskCloseResponse,
+  TaskDueDateSetRequest,
+  TaskDueDateSetResponse,
+  TaskAssigneeAddRequest,
+  TaskAssigneeAddResponse,
+  TaskCommentAddRequest,
+  TaskCommentAddResponse,
+  TaskSnapshot,
+  CommentSnapshot,
+} from "./transport.js";
 import { taskCreateHandler } from "./handlers/task-create.js";
 import { taskMoveHandler } from "./handlers/task-move.js";
 import { checklistCheckHandler } from "./handlers/checklist-check.js";
