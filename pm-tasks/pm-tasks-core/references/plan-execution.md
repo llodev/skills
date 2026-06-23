@@ -195,6 +195,62 @@ const triage = await discoverPlanTasks({
 // triage.missing and triage.ambiguous are empty arrays (no expected-titles loop runs)
 ```
 
+## Hooks
+
+The plan-execution module exposes two callable hooks for the calling agent
+to invoke at task boundaries:
+
+- `onTaskStart({ adapter, task, auditLogPath?, tool?, session? })` — moves
+  the task's card to the configured "work in progress" list. If
+  `task.listsWipId` is absent, returns a no-op and (when audit context is
+  fully provided) appends one WARN audit entry. Always returns
+  `{ ok, performed, skipped }`. Never throws.
+
+- `onTaskComplete({ adapter, task, commitSha, branch? })` — runs the
+  task-completion 4-verb sequence: optional `checklist.check` → `task.move`
+  to the done list → `task.comment.add` (with `clientToken: commitSha` so
+  the transport prepends the persistent `[ct:<commitSha>]` dedup marker) →
+  `task.close`. Always returns `{ ok, performed, skipped }`. Never throws.
+
+### Result classification
+
+For each verb call, the result is classified into `performed` or `skipped`:
+
+| Transport result                                 | Classification         | Effect on overall `ok` |
+| ------------------------------------------------ | ---------------------- | ---------------------- |
+| `{ ok: true, data }`                             | `performed.push(verb)` | unchanged              |
+| `{ ok: false, code: "ALREADY_IN_STATE" }`        | `skipped.push(verb)`   | unchanged              |
+| `{ ok: false, code: other }` or thrown exception | `skipped.push(verb)`   | flips to `false`       |
+
+Best-effort dispatch: a failed verb does NOT abort the remaining sequence.
+The caller reads `ok` first; `performed` and `skipped` distinguish the
+outcome of each individual verb.
+
+### Idempotency
+
+`onTaskComplete` is idempotent within a single process. A repeat call with
+the SAME `task.id` AND SAME `commitSha` short-circuits and returns:
+
+```
+{ ok: true, performed: [], skipped: ["checklist.check", "task.move",
+  "task.comment.add", "task.close"] }
+```
+
+The short-circuit is gated by a process-local memo that records only
+successful completions (`ok === true`). A prior call that hard-failed (any
+verb returned a code other than `ALREADY_IN_STATE`, or threw) leaves the
+memo unset, so the next call re-attempts the full sequence.
+
+The cross-process / cross-session trail is the `[ct:<commitSha>]` marker
+the transport prepends to the comment body. A future enhancement may
+layer a transport-level `listComments` lookup on top of this marker to
+extend the dedup guarantee beyond a single process; that is out of scope
+for v1.9.0.
+
+For tests, the memo can be reset via the exported
+`__resetHookCacheForTests()` escape hatch. Production code should never
+call it.
+
 ## See also
 
 - `pm-tasks/pm-tasks-core/references/contract.md` — verb-level contract

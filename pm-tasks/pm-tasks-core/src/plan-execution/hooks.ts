@@ -7,6 +7,23 @@ import { appendAuditEntry } from "../audit.js";
 export type HookVerb = "task.move" | "checklist.check" | "task.comment.add" | "task.close";
 
 /**
+ * Process-local memo: records successful onTaskComplete calls to prevent
+ * re-posting comments in the same Node process.
+ * Key is `${taskId}|${commitSha}`. The memo survives across multiple calls in
+ * the same process; a new agent session starts with a fresh memo automatically.
+ */
+const COMPLETION_MEMO = new Map<string, true>();
+
+/**
+ * Constructs the memo key for a task completion.
+ * The pipe separator is safe because neither taskId (Trello hex, Asana numeric gid)
+ * nor commitSha (hex) contain literal '|' characters.
+ */
+function memoKey(taskId: string, commitSha: string): string {
+  return `${taskId}|${commitSha}`;
+}
+
+/**
  * Task reference for onTaskStart.
  * The adapter-native task id and optional target list/section id for work-in-progress state.
  */
@@ -104,6 +121,17 @@ export interface HookResult {
    * (those verbs also land here; check `ok` to distinguish).
    */
   skipped: HookVerb[];
+}
+
+/**
+ * Reset the process-local completion memo. Intended for tests only —
+ * production callers should never need this. The memo's lifetime is one
+ * Node process; a new agent session starts with a fresh memo automatically.
+ * Test files use this escape hatch to reset between test cases and ensure
+ * no cross-test contamination.
+ */
+export function __resetHookCacheForTests(): void {
+  COMPLETION_MEMO.clear();
 }
 
 /**
@@ -205,12 +233,39 @@ export async function onTaskStart(opts: OnTaskStartOptions): Promise<HookResult>
  * Continues dispatching even after a verb fails (best-effort; the calling agent
  * reads ok/performed/skipped to decide). Never throws; all errors are converted
  * to { ok: false, performed, skipped }.
+ *
+ * ### Idempotency
+ *
+ * A repeat call with the SAME task.id AND SAME commitSha short-circuits and
+ * returns `{ ok: true, performed: [], skipped: [all four verbs] }` without
+ * dispatching any transport call. This is backed by a process-local memo
+ * (Map<string, true>) that records only SUCCESSFUL completions (ok === true).
+ *
+ * A prior call that hard-failed (any verb returned a code other than
+ * ALREADY_IN_STATE) leaves the memo unset, so the next call re-attempts the
+ * full sequence.
+ *
+ * The cross-process / cross-session dedup trail is the `[ct:<commitSha>]`
+ * marker the transport prepends to the comment body. A future v1.x enhancement
+ * may layer a transport-level `listComments` lookup on top without breaking
+ * this contract. For now, test files reset the memo via
+ * `__resetHookCacheForTests()` to ensure clean state between cases.
  */
 export async function onTaskComplete(opts: OnTaskCompleteOptions): Promise<HookResult> {
   const { adapter, task, commitSha, branch } = opts;
   const performed: HookVerb[] = [];
   const skipped: HookVerb[] = [];
   let ok = true;
+
+  // Short-circuit on process-local memo hit (same task, same commitSha completed before).
+  const key = memoKey(task.id, commitSha);
+  if (COMPLETION_MEMO.has(key)) {
+    return {
+      ok: true,
+      performed: [],
+      skipped: ["checklist.check", "task.move", "task.comment.add", "task.close"],
+    };
+  }
 
   // 1. optional checklist.check
   if (task.checklistId && task.checklistItemId) {
@@ -258,6 +313,11 @@ export async function onTaskComplete(opts: OnTaskCompleteOptions): Promise<HookR
   if (!classifyResult(closeResult, "task.close", performed, skipped)) {
     ok = false;
   }
+
+  // Record the completion in the process-local memo ONLY if the full sequence succeeded.
+  // If any verb hard-failed (non-ALREADY_IN_STATE), leave the memo unset so retries
+  // re-attempt the full sequence.
+  if (ok) COMPLETION_MEMO.set(key, true);
 
   return { ok, performed, skipped };
 }
