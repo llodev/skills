@@ -151,7 +151,7 @@ The Phase 5 hook contract:
 
 Hooks are caller-invoked — this skill does not auto-fire them. The calling agent decides when each hook runs (typically at the start/end of each plan task it executes).
 
-Full hook contract: see `pm-tasks/pm-tasks-core/references/plan-execution-hooks.md` (added in v1.9.0 by Phase 5).
+Full hook contract: see [§ Hooks](#hooks) below — implemented in v1.9.0 by Phase 5.
 
 ## Examples
 

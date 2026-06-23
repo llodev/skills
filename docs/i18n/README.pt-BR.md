@@ -58,7 +58,7 @@ const r = await adapter.taskMove({ taskId: "card-1", targetListOrSectionId: "wip
 if (!r.ok) throw new Error(`task.move falhou: ${r.code}`);
 ```
 
-`mcp: (toolName, args) => Promise<unknown>` é um callback fornecido pelo chamador que faz proxy para as tools `mcp__*` do runtime do agent. Mesma forma para `@llodev/pm-tasks-asana/adapter`. Contrato completo em [pm-tasks-core/references/runtime.md](../../pm-tasks/pm-tasks-core/references/) e nos SKILL.md por adapter.
+`mcp: (toolName, args) => Promise<unknown>` é um callback fornecido pelo chamador que faz proxy para as tools `mcp__*` do runtime do agent. Mesma forma para `@llodev/pm-tasks-asana/adapter`. Contrato completo em [publishing-guide § 11 — Headless runtime](../../docs/publishing-guide.md#11-headless-runtime-pm-tasks-v19) e nos SKILL.md por adapter.
 
 | Pacote                      | Status      | Fonte                                                            | npm                                 | Vercel CLI                                              |
 | --------------------------- | ----------- | ---------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------- |

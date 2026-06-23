@@ -68,6 +68,10 @@
       "types": "./dist/runtime/index.d.ts",
       "import": "./dist/runtime/index.js"
     },
+    "./plan-execution": {
+      "types": "./dist/plan-execution/index.d.ts",
+      "import": "./dist/plan-execution/index.js"
+    },
     "./i18n": {
       "types": "./dist/i18n/registry.d.ts",
       "import": "./dist/i18n/registry.js"
