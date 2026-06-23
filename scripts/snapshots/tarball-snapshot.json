@@ -79,6 +79,7 @@
     "package/i18n/es-ES.json",
     "package/i18n/pt-BR.json",
     "package/package.json",
+    "package/references/agent-agnostic-lint.md",
     "package/references/attribution.md",
     "package/references/audit-log-format.md",
     "package/references/autonomous-mode.md",
