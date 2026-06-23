@@ -106,6 +106,7 @@
           "items": {
             "enum": [
               "task.create",
+              "task.move",
               "checklist.check",
               "task.close",
               "task.due-date.set",
