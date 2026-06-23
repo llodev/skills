@@ -48,6 +48,18 @@ See the [publishing guide](docs/publishing-guide.md) for how the three channels 
 
 Turn implementation plans into PM tasks (Trello, Asana, …) and operate them via paste, MCP publish, or autonomous write-through. Plus `@llodev/pm-tasks-testkit` — in-memory fakes for the 7 canonical verbs, for testing custom skills.
 
+**New in v1.9 — headless runtime (`/adapter` subpath):** import `createAdapter` from either adapter to drive the 7 canonical verbs from your own scripts/agents without invoking the skill:
+
+```ts
+import { createAdapter } from "@llodev/pm-tasks-trello/adapter";
+
+const adapter = await createAdapter({ configPath: ".trello.json", mcp });
+const r = await adapter.taskMove({ taskId: "card-1", targetListOrSectionId: "wip-list" });
+if (!r.ok) throw new Error(`task.move failed: ${r.code}`);
+```
+
+`mcp: (toolName, args) => Promise<unknown>` is a caller-supplied callback that proxies to the agent runtime's `mcp__*` tools. Same shape for `@llodev/pm-tasks-asana/adapter`. Full contract in [pm-tasks-core/references/runtime.md](pm-tasks/pm-tasks-core/references/) and per-adapter SKILL.md.
+
 | Package                     | Status      | Source                                                     | npm                                 | Vercel CLI                                              |
 | --------------------------- | ----------- | ---------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------- |
 | `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [pm-tasks/pm-tasks/](pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`            | —                                                       |
