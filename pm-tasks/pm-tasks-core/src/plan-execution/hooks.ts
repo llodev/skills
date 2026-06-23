@@ -99,9 +99,27 @@ export interface HookResult {
   /**
    * Verbs short-circuited because their target state already held
    * (transport returned ok:false, code "ALREADY_IN_STATE"), OR because
-   * inputs to that step were absent (e.g. checklist not configured).
+   * inputs to that step were absent (e.g. checklist not configured),
+   * OR the transport returned ok:false with a code other than ALREADY_IN_STATE
+   * (those verbs also land here; check `ok` to distinguish).
    */
   skipped: HookVerb[];
+}
+
+/**
+ * Wraps an adapter call to catch transport errors and convert them into a synthetic
+ * TransportResult with ok:false code "MCP_ERROR", so the caller never receives a thrown exception.
+ */
+async function safeCall<T>(fn: () => Promise<TransportResult<T>>): Promise<TransportResult<T>> {
+  try {
+    return await fn();
+  } catch (err) {
+    return {
+      ok: false,
+      code: "MCP_ERROR" as const,
+      details: { thrown: String(err) },
+    } as TransportResult<T>;
+  }
 }
 
 /**
@@ -161,10 +179,12 @@ export async function onTaskStart(opts: OnTaskStartOptions): Promise<HookResult>
   }
 
   // Call taskMove.
-  const result = await adapter.taskMove({
-    taskId: task.id,
-    targetListOrSectionId: task.listsWipId,
-  });
+  const result = await safeCall(() =>
+    adapter.taskMove({
+      taskId: task.id,
+      targetListOrSectionId: task.listsWipId!,
+    }),
+  );
 
   let ok = true;
   if (!classifyResult(result, "task.move", performed, skipped)) {
@@ -194,12 +214,14 @@ export async function onTaskComplete(opts: OnTaskCompleteOptions): Promise<HookR
 
   // 1. optional checklist.check
   if (task.checklistId && task.checklistItemId) {
-    const result = await adapter.checklistCheck({
-      taskId: task.id,
-      checklistId: task.checklistId,
-      itemId: task.checklistItemId,
-      targetState: "complete",
-    });
+    const result = await safeCall(() =>
+      adapter.checklistCheck({
+        taskId: task.id,
+        checklistId: task.checklistId!,
+        itemId: task.checklistItemId!,
+        targetState: "complete",
+      }),
+    );
     if (!classifyResult(result, "checklist.check", performed, skipped)) {
       ok = false;
     }
@@ -208,27 +230,31 @@ export async function onTaskComplete(opts: OnTaskCompleteOptions): Promise<HookR
   }
 
   // 2. task.move
-  const moveResult = await adapter.taskMove({
-    taskId: task.id,
-    targetListOrSectionId: task.listsDoneId,
-  });
+  const moveResult = await safeCall(() =>
+    adapter.taskMove({
+      taskId: task.id,
+      targetListOrSectionId: task.listsDoneId,
+    }),
+  );
   if (!classifyResult(moveResult, "task.move", performed, skipped)) {
     ok = false;
   }
 
   // 3. task.comment.add
   const text = branch ? `Completed at ${commitSha} on ${branch}` : `Completed at ${commitSha}`;
-  const commentResult = await adapter.taskCommentAdd({
-    taskId: task.id,
-    text,
-    clientToken: commitSha,
-  });
+  const commentResult = await safeCall(() =>
+    adapter.taskCommentAdd({
+      taskId: task.id,
+      text,
+      clientToken: commitSha,
+    }),
+  );
   if (!classifyResult(commentResult, "task.comment.add", performed, skipped)) {
     ok = false;
   }
 
   // 4. task.close
-  const closeResult = await adapter.taskClose({ taskId: task.id });
+  const closeResult = await safeCall(() => adapter.taskClose({ taskId: task.id }));
   if (!classifyResult(closeResult, "task.close", performed, skipped)) {
     ok = false;
   }
