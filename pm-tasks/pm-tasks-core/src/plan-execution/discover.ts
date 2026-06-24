@@ -97,8 +97,11 @@ export async function resolvePlanRef(
 export function parseH3Titles(markdown: string): string[] {
   const titles: string[] = [];
   for (const line of markdown.split(/\r?\n/)) {
-    const m = line.match(/^###\s+(.+?)\s*$/);
-    if (m) titles.push(m[1]!);
+    // Greedy `.+` + post-match trim avoids the polynomial backtracking that
+    // CodeQL js/redos flagged on the prior `.+?\s*$` form. `.` excludes
+    // newlines and the loop already split on them, so `.+$` is O(n).
+    const m = line.match(/^###\s+(.+)$/);
+    if (m) titles.push(m[1]!.trim());
   }
   return titles;
 }
