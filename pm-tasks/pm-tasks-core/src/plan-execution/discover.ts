@@ -97,11 +97,16 @@ export async function resolvePlanRef(
 export function parseH3Titles(markdown: string): string[] {
   const titles: string[] = [];
   for (const line of markdown.split(/\r?\n/)) {
-    // Greedy `.+` + post-match trim avoids the polynomial backtracking that
-    // CodeQL js/redos flagged on the prior `.+?\s*$` form. `.` excludes
-    // newlines and the loop already split on them, so `.+$` is O(n).
-    const m = line.match(/^###\s+(.+)$/);
-    if (m) titles.push(m[1]!.trim());
+    // Pure string ops — no regex on user-controlled input. Earlier regex
+    // forms (`.+?\s*$` then `.+$`) both tripped CodeQL js/redos because
+    // `\s+` and `.+` overlap on space chars, opening backtracking paths.
+    // Hardcoded "### " prefix + optional tab covers CommonMark H3; trim()
+    // handles arbitrary trailing whitespace in O(n).
+    if (!line.startsWith("###")) continue;
+    const sep = line.charCodeAt(3);
+    if (sep !== 0x20 && sep !== 0x09) continue;
+    const title = line.slice(4).trim();
+    if (title) titles.push(title);
   }
   return titles;
 }
