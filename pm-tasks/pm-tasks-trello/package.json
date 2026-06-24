@@ -43,6 +43,10 @@
       "types": "./dist/bin/init.d.ts",
       "import": "./dist/bin/init.js"
     },
+    "./adapter": {
+      "types": "./dist/adapter.d.ts",
+      "import": "./dist/adapter.js"
+    },
     "./i18n/*.json": "./i18n/*.json",
     "./schemas/*.json": "./schemas/*.json",
     "./manifest.json": "./manifest.json"

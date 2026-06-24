@@ -40,12 +40,13 @@ Adapter for Asana within the `@llodev/pm-tasks-*` family. Use the core skill's e
 
 ## Routing
 
-| Mode        | Trigger                                                                                    | Path                                                                     |
-| ----------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Paste-only  | "format as Asana task" without MCP intent                                                  | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks |
-| MCP publish | "publish to Asana", "create on Asana", "--publish-asana"                                   | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                            |
-| Autonomous  | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`                     | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                 |
-| CRUD ops    | "check subtask N on task X", "close task Y", "assign Alice to task Z", "comment on task X" | Phase 6 (operations, direct verb dispatch)                               |
+| Mode           | Trigger                                                                                                          | Path                                                                                                                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Paste-only     | "format as Asana task" without MCP intent                                                                        | Phase 3 (core) → Phase 4 (this skill, format only) → output paste blocks                                              |
+| MCP publish    | "publish to Asana", "create on Asana", "--publish-asana"                                                         | Phase 3 → Phase 4 → Phase 5 (publish via MCP)                                                                         |
+| Autonomous     | `[autonomous]` or `--auto` in prompt OR `LLODEV_PM_TASKS_AUTONOMOUS=1`                                           | Phase 3 → Phase 4 → Phase 5b (write-through, no preview)                                                              |
+| CRUD ops       | "check subtask N on task X", "close task Y", "assign Alice to task Z", "comment on task X"                       | Phase 6 (operations, direct verb dispatch)                                                                            |
+| Plan-execution | Plan file path in prompt (`docs/plans/*.md`), OR `--plan-exec` flag, OR plan reference paired with `.asana.json` | Phase 7 (discover existing cards via `discoverPlanTasks`; calling agent dispatches per-task verbs at task boundaries) |
 
 ## Asana model
 
@@ -129,6 +130,14 @@ For verbs other than `task.create`, jump directly to the operation. Verb → MCP
 | `task.comment.add`  | `add_comment` (story)          | adds a comment story to the task; apply attribution prefix if enabled                                                                                                                                                                   |
 
 `<task-ref>` resolution: accept Asana permalinks (`https://app.asana.com/0/<project>/<task>`), bare GIDs, or aliases from `.asana.json` `taskAliases[]`.
+
+## Phase 7 — Plan-execution mode
+
+When the calling agent passes a plan reference (a path to a markdown plan file, a plan slug, or an explicit list of expected task titles), this skill loads `.asana.json` via `requireConfig` and uses `discoverPlanTasks` (from `@llodev/pm-tasks-core`) to triage which tasks in the plan already exist as cards in scope. The skill returns the triage report `{ found, missing, ambiguous }` — the **calling agent** decides how to act on each bucket (create missing cards via Phase 4 + 5; disambiguate by picking the right ambiguous card; proceed with existing).
+
+The skill does **not** assume any particular implementation strategy. It does not drive the calling agent's task loop, does not depend on any specific orchestration framework, and does not require any markup beyond what is already documented for `task.create` and the autonomous-mode contract. When the calling agent finishes a task and asks the skill to record progress, it invokes the standard verbs (`task.move`, `checklist.check`, `task.comment.add`, `task.close`) directly — the same path used by Phase 5b autonomous mode.
+
+Full contract: triggers, discovery semantics, `ConfigRequiredError` handling, failure modes table, and the hook contract for Phase 5 are documented in [`pm-tasks/pm-tasks-core/references/plan-execution.md`](../pm-tasks-core/references/plan-execution.md) (added in v1.9.0).
 
 ## Result envelope
 

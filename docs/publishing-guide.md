@@ -326,3 +326,84 @@ Use the `skill-judge` skill (already installed in this agent) to audit:
 - [skillpm — npm-native package manager](https://github.com/sbroenne/skillpm)
 - [antfu/skills-npm — install via npm](https://github.com/antfu/skills-npm)
 - [skills (CLI on npm)](https://www.npmjs.com/package/skills)
+
+---
+
+## 11. Headless runtime (pm-tasks v1.9+)
+
+Starting in `@llodev/pm-tasks-trello@1.6.0` and `@llodev/pm-tasks-asana@1.6.0`, both adapters expose a programmatic entry point via the `/adapter` subpath. The runtime is **agent-agnostic**: it has zero coupling to any particular skill orchestration framework; the calling code supplies an MCP-call callback and the adapter handles everything else.
+
+### Import
+
+```ts
+// Trello
+import { createAdapter } from "@llodev/pm-tasks-trello/adapter";
+
+// Asana — same shape
+import { createAdapter } from "@llodev/pm-tasks-asana/adapter";
+```
+
+### `createAdapter` signature
+
+```ts
+function createAdapter(opts: {
+  configPath: string; // path to .trello.json or .asana.json
+  mcp: (toolName: string, args: Record<string, unknown>) => Promise<unknown>; // McpCaller
+  session?: string; // audit-log correlation; auto-generated if omitted
+  language?: string; // locale hint
+}): Promise<Runtime>;
+```
+
+The returned `Runtime` exposes the 7 canonical verbs (`taskCreate`, `taskMove`, `checklistCheck`, `taskClose`, `taskDueDateSet`, `taskAssigneeAdd`, `taskCommentAdd`). Each returns `Promise<TransportResult<T>>` — a discriminated union `{ ok: true, data } | { ok: false, code, details? }`. Codes: `NOT_FOUND`, `ALREADY_IN_STATE`, `RATE_LIMITED`, `AUTH_ERROR`, `MCP_ERROR`, `INVALID_REQUEST`.
+
+### McpCaller contract
+
+The `mcp` callback is the caller's only obligation. It receives a fully-qualified tool name (e.g. `"mcp__trello__trello_get_card"` for Trello, `"mcp__claude_ai_Asana__get_task"` for Asana) and an args object, and must return the MCP server's raw JSON response. Inside the calling agent's runtime this typically wraps the underlying `mcp__*` tool:
+
+```ts
+const mcp: McpCaller = async (toolName, args) => {
+  // Forward to the agent-runtime tool of the same name
+  return await invokeMcpTool(toolName, args);
+};
+```
+
+If your runtime doesn't expose MCP, you can stub `mcp` with an in-memory fake for tests — see `@llodev/pm-tasks-testkit` (the testkit `createTestRuntime` plugs a fake McpCaller automatically).
+
+### Minimal CI example
+
+A GitHub Actions step that moves a Trello card to the WIP list when a PR opens:
+
+```yaml
+- name: Mark plan card in-progress
+  env:
+    TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+    TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+  run: |
+    node -e "
+      import('@llodev/pm-tasks-trello/adapter').then(async ({ createAdapter }) => {
+        const mcp = async (tool, args) => {
+          // CI: forward via @atlassian/trello-mcp-cli or your preferred bridge
+          return await callTrelloMcp(tool, args);
+        };
+        const a = await createAdapter({ configPath: '.trello.json', mcp });
+        const r = await a.taskMove({
+          taskId: process.env.CARD_ID,
+          targetListOrSectionId: process.env.WIP_LIST_ID,
+        });
+        if (!r.ok && r.code !== 'ALREADY_IN_STATE') {
+          console.error('task.move failed:', r.code, r.details);
+          process.exit(1);
+        }
+      });
+    "
+```
+
+`ALREADY_IN_STATE` is treated as a success here because the workflow may re-run on the same card.
+
+### Plan-execution mode
+
+If the calling agent passes a plan-file reference (`docs/plans/*.md` or a slug or an explicit title list), the adapter can also run discovery via `discoverPlanTasks` and the per-task hooks `onTaskStart` / `onTaskComplete`. Full contract: [`pm-tasks-core/references/plan-execution.md`](../pm-tasks/pm-tasks-core/references/plan-execution.md).
+
+### When NOT to use the headless runtime
+
+If the agent is already running the `pm-tasks-trello` or `pm-tasks-asana` skill via your platform's skill mechanism (`/plugin install ...`, Claude Code skill activation, Cursor MCP, etc.), prefer the skill path — it handles config loading, error narration, and locale routing for you. The headless runtime is for cases where the calling code needs direct programmatic access (CI scripts, custom orchestrators, bots, the `pm-tasks-testkit` test harness).
