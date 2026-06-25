@@ -161,3 +161,13 @@ jobs:
           name: canary-pr-${{ github.event.pull_request.number }}
           path: ${{ runner.temp }}/*.tgz
           if-no-files-found: error
+
+      - name: E2E smoke — canary packages from registry
+        if: steps.guard.outputs.should_publish == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${HEAD_SHA:0:7}"
+          node scripts/checks/canary-e2e.mjs --from-canary --pr "$PR_NUMBER" --sha "$SHORT_SHA"
