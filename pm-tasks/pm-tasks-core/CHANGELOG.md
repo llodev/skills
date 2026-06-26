@@ -1,5 +1,39 @@
 # @llodev/pm-tasks-core
 
+## 1.10.0
+
+### Minor Changes
+
+- [#22](https://github.com/llodev/skills/pull/22) [`30c3713`](https://github.com/llodev/skills/commit/30c3713d0d7a1196557f398818b60825b69bafa4) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - pm-tasks v1.10.0 — Canary publish infrastructure (Option F)
+
+  CI-only infra that publishes a canary dist-tag for every PR; catches publish-time
+  regressions (bin wiring, dist-tag routing, registry access) before they reach `latest`.
+  The v1.0.1 lesson showed that local `pnpm pack` + `node -e` tests miss publish-path bugs
+  because the local tree is always intact — only a full `npm publish` → fresh-install cycle
+  can catch them.
+
+  **`@llodev/pm-tasks-core@1.9.0 → 1.10.0`** (minor)
+
+  - New: doctor probe `C-VER-1` (`label: "Released build (not a canary)"`) emits a **warn**
+    when the running package version matches the `0.0.0-pr-*` canary pattern, so operators
+    know the build is ephemeral and not production-safe.
+
+  Repo-level additions (no source bump in adapters):
+
+  - New: `.github/workflows/canary-publish.yml` — on PR `opened`/`synchronize`, stamps all
+    publishable packages to `0.0.0-pr-<N>-<short-sha>`, publishes under dist-tag `pr-<N>`,
+    then runs a `--from-canary` E2E smoke from the registry.
+  - New: `.github/workflows/canary-cleanup.yml` — on PR close, unpublishes every canary
+    version for that PR (best-effort; stale versions are harmless).
+  - New: `scripts/checks/canary-version.mjs` — derives the canary version string and
+    enumerates publishable packages from the workspace catalog (data-driven).
+  - New: `--from-canary` flag in `scripts/checks/canary-e2e.mjs` — installs each package at
+    its exact `0.0.0-pr-<N>-<sha>` version from the registry and runs the smoke flow,
+    validating the published tarball rather than the local workspace.
+  - Gate: `scripts/shell/pre-release-check.sh` now hard-aborts (`exit 1`) if any
+    `pm-tasks/*/package.json` carries a `-pr-` version, preventing a leftover canary stamp
+    from reaching a real release.
+
 ## 1.9.0
 
 ### Minor Changes
