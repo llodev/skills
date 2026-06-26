@@ -92,21 +92,12 @@ jobs:
               continue
             }
 
-            # Filter to versions matching this PR's canary prefix. The trailing
-            # dash anchors the number so PR 42 never matches PR 421's versions
-            # (0.0.0-pr-421-... does NOT start with 0.0.0-pr-42-).
-            # npm view returns a JSON array (multiple versions) or a JSON string
-            # (exactly one version); the inline script normalises both.
-            # PREFIX is passed as process.argv[2] — not interpolated into source.
-            matched="$(echo "$versions" | node -e "
-              let d = '';
-              process.stdin.on('data', c => (d += c));
-              process.stdin.on('end', () => {
-                const arr = JSON.parse(d);
-                const list = Array.isArray(arr) ? arr : [arr];
-                list.filter(v => v.startsWith(process.argv[2])).forEach(v => console.log(v));
-              });
-            " -- "$PREFIX")" || {
+            # Filter to versions matching this PR's canary prefix via a real
+            # script file (unit-tested in scripts/checks/canary-cleanup-filter.test.mjs).
+            # The trailing dash anchors the number so PR 42 never matches PR 421.
+            # PR_NUMBER is a normal script arg (argv[2] of a script file is correct,
+            # unlike `node -e` where the first arg lands at argv[1]).
+            matched="$(echo "$versions" | node scripts/checks/canary-cleanup-filter.mjs "$PR_NUMBER")" || {
               echo "::warning::canary-cleanup: failed to filter versions for $name; skipping"
               WARNED=$((WARNED + 1))
               continue
