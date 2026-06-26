@@ -434,11 +434,13 @@ Fork PRs are skipped automatically (no `NPM_TOKEN`). Add `[skip canary]` anywher
 
 ### Installing a canary build
 
+> **Caution:** always install core alongside the adapter in the same project. A published adapter pins core as `^0.0.0-pr-<N>-<sha>`; that prerelease caret range is not PR-scoped, so installing the adapter alone can resolve a different PR's core canary. Installing both together lets npm dedupe core to this PR's exact canary.
+
 ```bash
-# Install a specific adapter from a PR
-npm install @llodev/pm-tasks-trello@pr-42
-npm install @llodev/pm-tasks-asana@pr-42
-npm install @llodev/pm-tasks-core@pr-42
+# Install adapter + core together so npm dedupes to this PR's canary
+npm install @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
+# Other adapters:
+npm install @llodev/pm-tasks-asana@pr-42 @llodev/pm-tasks-core@pr-42
 ```
 
 All packages in a PR share the same `pr-<N>` tag.

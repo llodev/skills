@@ -87,8 +87,9 @@ Tests live in `<package>/__tests__/` and use [Vitest](https://vitest.dev/).
 Every PR automatically publishes a canary build to npm under the dist-tag `pr-<N>`. To test the published packages for PR #42:
 
 ```bash
-npm install @llodev/pm-tasks-core@pr-42
-npm install @llodev/pm-tasks-trello@pr-42    # or -asana, -testkit
+# Install adapter + core together — always pair them so npm dedupes core to this PR's canary
+npm install @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
+# Other adapters: @llodev/pm-tasks-asana@pr-42, @llodev/pm-tasks-testkit@pr-42
 ```
 
 All packages in a PR share the same tag. Canary versions use the `0.0.0-pr-<N>-<sha>` scheme and are unpublished automatically when the PR closes. See [`docs/publishing-guide.md` § 12](docs/publishing-guide.md#12-canary-publish-lifecycle-pm-tasks-v110) for the full lifecycle.

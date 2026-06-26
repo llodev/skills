@@ -141,6 +141,33 @@ jobs:
               *) echo "refusing: version $VERSION is not a canary"; exit 1 ;;
             esac
 
+            # Guard 5 — tarball manifest: verify that every @llodev/pm-tasks-*
+            # dep in the packed manifest was rewritten to a canary version range.
+            # The --from-canary E2E pins exact versions and cannot detect a bad
+            # workspace:^→canary rewrite; only inspecting the packed manifest
+            # catches that regression before the tarball reaches the registry.
+            tar -xzO -f "$tarball" package/package.json | node -e "
+              let d = '';
+              process.stdin.on('data', c => (d += c));
+              process.stdin.on('end', () => {
+                const pkg = JSON.parse(d);
+                const scopes = ['dependencies', 'peerDependencies', 'optionalDependencies'];
+                let failed = false;
+                for (const scope of scopes) {
+                  const deps = pkg[scope] || {};
+                  for (const [dep, range] of Object.entries(deps)) {
+                    if (dep.startsWith('@llodev/pm-tasks-') && !range.includes('0.0.0-pr-')) {
+                      process.stderr.write(
+                        'TARBALL GUARD FAILED: ' + pkg.name + ' ' + scope + '.' + dep + ' = \"' + range + '\" (expected 0.0.0-pr- canary rewrite)\n'
+                      );
+                      failed = true;
+                    }
+                  }
+                }
+                if (failed) process.exit(1);
+              });
+            " || { echo "refusing: tarball manifest guard failed for $name"; exit 1; }
+
             npm publish "$tarball" --tag "$TAG" --access public
 
             echo "- \`$name@$VERSION\` → \`npm install $name@$TAG\`" >> "$SUMMARY_LINES"

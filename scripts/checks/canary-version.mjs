@@ -18,25 +18,19 @@ export function canaryVersion(prNumber, shortSha) {
   let n;
   if (typeof prNumber === "number") {
     if (isNaN(prNumber) || !Number.isInteger(prNumber) || prNumber <= 0) {
-      throw new RangeError(
-        `prNumber must be a positive integer, got: ${prNumber}`,
-      );
+      throw new RangeError(`prNumber must be a positive integer, got: ${prNumber}`);
     }
     n = prNumber;
   } else if (typeof prNumber === "string") {
     if (!/^\d+$/.test(prNumber)) {
-      throw new TypeError(
-        `prNumber must be an all-digit string, got: "${prNumber}"`,
-      );
+      throw new TypeError(`prNumber must be an all-digit string, got: "${prNumber}"`);
     }
     n = parseInt(prNumber, 10);
     if (n <= 0) {
       throw new RangeError(`prNumber must be positive, got: ${n}`);
     }
   } else {
-    throw new TypeError(
-      `prNumber must be a number or string, got: ${typeof prNumber}`,
-    );
+    throw new TypeError(`prNumber must be a number or string, got: ${typeof prNumber}`);
   }
 
   // Validate shortSha — normalize to lowercase first, then check
@@ -45,18 +39,15 @@ export function canaryVersion(prNumber, shortSha) {
   }
   const sha = shortSha.toLowerCase();
   if (!/^[0-9a-f]{7,40}$/.test(sha)) {
-    throw new TypeError(
-      `shortSha must be a hex string of length 7–40, got: "${shortSha}"`,
-    );
+    throw new TypeError(`shortSha must be a hex string of length 7–40, got: "${shortSha}"`);
   }
 
+  // Shape also detected (not generated) in: canary-cleanup.yml (startsWith prefix), doctor.ts (/-pr-(\d+)-/), pre-release-version.mjs — edit the prefix in all sites if it changes.
   const version = `0.0.0-pr-${n}-${sha}`;
 
   // Defensive: verify the produced string is a valid semver pre-release
   if (!SEMVER_PRERELEASE_RE.test(version)) {
-    throw new Error(
-      `Produced version "${version}" is not a valid semver pre-release`,
-    );
+    throw new Error(`Produced version "${version}" is not a valid semver pre-release`);
   }
 
   return version;
@@ -115,9 +106,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
       process.exit(1);
     }
   } else {
-    process.stderr.write(
-      "Usage: canary-version.mjs <prNumber> <shortSha> | --list\n",
-    );
+    process.stderr.write("Usage: canary-version.mjs <prNumber> <shortSha> | --list\n");
     process.exit(1);
   }
 }

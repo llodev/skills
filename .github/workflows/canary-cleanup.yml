@@ -97,15 +97,16 @@ jobs:
             # (0.0.0-pr-421-... does NOT start with 0.0.0-pr-42-).
             # npm view returns a JSON array (multiple versions) or a JSON string
             # (exactly one version); the inline script normalises both.
+            # PREFIX is passed as process.argv[2] — not interpolated into source.
             matched="$(echo "$versions" | node -e "
               let d = '';
               process.stdin.on('data', c => (d += c));
               process.stdin.on('end', () => {
                 const arr = JSON.parse(d);
                 const list = Array.isArray(arr) ? arr : [arr];
-                list.filter(v => v.startsWith('$PREFIX')).forEach(v => console.log(v));
+                list.filter(v => v.startsWith(process.argv[2])).forEach(v => console.log(v));
               });
-            ")" || {
+            " -- "$PREFIX")" || {
               echo "::warning::canary-cleanup: failed to filter versions for $name; skipping"
               WARNED=$((WARNED + 1))
               continue
