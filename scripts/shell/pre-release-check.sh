@@ -86,3 +86,10 @@ else
   fi
 fi
 echo "─────────────────────────────────────────────────────────────────────"
+
+echo "─── pre-release version gate ─────────────────────────────────────────"
+if ! node scripts/checks/pre-release-version.mjs; then
+  echo "abort: canary -pr- version must not reach a release"
+  exit 1
+fi
+echo "─────────────────────────────────────────────────────────────────────"

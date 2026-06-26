@@ -407,3 +407,74 @@ If the calling agent passes a plan-file reference (`docs/plans/*.md` or a slug o
 ### When NOT to use the headless runtime
 
 If the agent is already running the `pm-tasks-trello` or `pm-tasks-asana` skill via your platform's skill mechanism (`/plugin install ...`, Claude Code skill activation, Cursor MCP, etc.), prefer the skill path — it handles config loading, error narration, and locale routing for you. The headless runtime is for cases where the calling code needs direct programmatic access (CI scripts, custom orchestrators, bots, the `pm-tasks-testkit` test harness).
+
+---
+
+## 12. Canary publish lifecycle (pm-tasks v1.10+)
+
+### What & why
+
+The v1.0.1 lesson: a bin wiring bug only manifested at publish time — `pnpm pack` + local `node -e` tests passed clean because the local tree has the right files in place. A **canary publish** catches those regressions _before merge_ by exercising the full publish path (dist-tag, `npm publish`, binary invocation from a fresh install) on every PR, in CI.
+
+### Version shape and dist-tag
+
+Every publishable pm-tasks package on a PR is stamped to:
+
+```
+0.0.0-pr-<N>-<short-sha>
+```
+
+and published under the dist-tag `pr-<N>`. The `0.0.0` prefix puts canary versions below every real release, so they never accidentally satisfy a `^` semver range in production.
+
+### What auto-publishes
+
+The `canary-publish.yml` workflow fires on PR `opened` and `synchronize`. It derives the publishable package list from the workspace catalog at run time (data-driven — today: `pm-tasks-core`, `pm-tasks-asana`, `pm-tasks-trello`, `pm-tasks-testkit`). All packages in a PR share the same dist-tag.
+
+Fork PRs are skipped automatically (no `NPM_TOKEN`). Add `[skip canary]` anywhere in the PR title or latest commit message to opt out.
+
+### Installing a canary build
+
+> **Caution:** always install core alongside the adapter in the same project. A published adapter pins core as `^0.0.0-pr-<N>-<sha>`; that prerelease caret range is not PR-scoped, so installing the adapter alone can resolve a different PR's core canary. Installing both together lets npm dedupe core to this PR's exact canary.
+
+```bash
+# Install adapter + core together so npm dedupes to this PR's canary
+npm install --legacy-peer-deps @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
+# Other adapters:
+npm install --legacy-peer-deps @llodev/pm-tasks-asana@pr-42 @llodev/pm-tasks-core@pr-42
+```
+
+All packages in a PR share the same `pr-<N>` tag. `--legacy-peer-deps` is needed because npm 7+'s strict peer resolver errors `ERESOLVE` on the prerelease caret peer ranges (`^0.0.0-pr-<N>-<sha>`) that canary tarballs carry — even when the exact version is requested. Real released versions don't need the flag.
+
+### CI verification
+
+After publishing, the workflow runs:
+
+```
+node scripts/checks/canary-e2e.mjs --from-canary --pr <N> --sha <short-sha>
+```
+
+The `--from-canary` mode installs each package from the registry at its exact `0.0.0-pr-<N>-<sha>` version and exercises the smoke flow. This validates the published tarball, not the local workspace.
+
+### Cleanup
+
+When a PR is closed (merged or abandoned), `canary-cleanup.yml` auto-unpublishes every canary version under `pr-<N>`. Cleanup is best-effort — stale canary versions are harmless (they never match a `^` range) and expire from npm after 72 hours if unpublish fails.
+
+### Doctor probe
+
+`pm-tasks-core-doctor` emits:
+
+```
+C-VER-1  WARN  running canary build from PR #<N> — do not use in production
+```
+
+when the running package version matches the `0.0.0-pr-*` pattern. This is surfaced as a **warn** (not an error) so the build is still usable in a review context.
+
+### Release safeguard
+
+`scripts/shell/pre-release-check.sh` (run by `make pre-release`) hard-aborts if any `pm-tasks/*/package.json` still carries a `-pr-` version:
+
+```
+ABORT: canary version found in pm-tasks/pm-tasks-core/package.json — revert before release
+```
+
+This prevents a leftover canary stamp from reaching a real release via an accidental `make release-version` run on a checked-out PR branch.

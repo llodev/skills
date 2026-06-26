@@ -10,7 +10,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node --test scripts/checks/tarball-snapshot.test.mjs && node scripts/checks/marketplace-parity.mjs && node --test scripts/checks/marketplace-parity.test.mjs && pnpm run lint && pnpm run coverage && pnpm run size",
+    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node --test scripts/checks/tarball-snapshot.test.mjs && node scripts/checks/marketplace-parity.mjs && node --test scripts/checks/marketplace-parity.test.mjs && node --test scripts/checks/canary-version.test.mjs && node --test scripts/checks/canary-e2e.test.mjs && node --test scripts/checks/pre-release-version.test.mjs && pnpm run lint && pnpm run coverage && pnpm run size",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "contract:check": "node scripts/checks/contract-check.mjs",

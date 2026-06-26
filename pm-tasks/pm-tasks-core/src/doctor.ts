@@ -19,6 +19,7 @@ export interface DoctorContext {
   schema: unknown; // loaded from package's schemas/config.json
   auditLogPath: string; // resolved via audit.ts resolveDataDir
   auditRotationMaxBytes: number; // default 10 * 1024 * 1024
+  coreVersion?: string; // running @llodev/pm-tasks-core version; absent ⇒ treated as released
 }
 
 export interface DoctorResult {
@@ -38,6 +39,20 @@ export interface RunReport {
   tool: string;
   configPath: string;
   results: Array<{ check: DoctorCheck; result: DoctorResult }>;
+}
+
+// ---------------------------------------------------------------------------
+// Pure canary detector — exported for direct unit testing
+// ---------------------------------------------------------------------------
+
+export function detectCanary(version: string | undefined): {
+  isCanary: boolean;
+  pr: string | null;
+} {
+  if (!version) return { isCanary: false, pr: null };
+  const m = version.match(/-pr-(\d+)-/);
+  if (!m) return { isCanary: false, pr: null };
+  return { isCanary: true, pr: m[1] };
 }
 
 // ---------------------------------------------------------------------------
@@ -62,6 +77,23 @@ function asString(v: unknown): string {
 // ---------------------------------------------------------------------------
 // Core check catalog
 // ---------------------------------------------------------------------------
+
+const C_VER_1: DoctorCheck = {
+  id: "C-VER-1",
+  label: "Released build (not a canary)",
+  severity: "warn",
+  async run(ctx) {
+    const { isCanary, pr } = detectCanary(ctx.coreVersion);
+    if (isCanary) {
+      return {
+        ok: false,
+        message: `running canary build from PR #${pr} — do not use in production`,
+        fixHint: "Install a released build: npm install @llodev/pm-tasks-core@latest",
+      };
+    }
+    return { ok: true, message: `${ctx.coreVersion ?? "unknown"} is a released build` };
+  },
+};
 
 const C_FS_1: DoctorCheck = {
   id: "C-FS-1",
@@ -295,6 +327,7 @@ const C_CFG_4: DoctorCheck = {
 };
 
 export const CORE_CHECKS: DoctorCheck[] = [
+  C_VER_1,
   C_FS_1,
   C_FS_2,
   C_FS_3,

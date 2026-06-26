@@ -1,0 +1,200 @@
+name: canary-publish
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+# Publishing needs no write access to the repo — every input comes from the
+# event payload (or the checked-out git history), never the PR API.
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      # Single source of the publish/skip decision. Writes `should_publish` to
+      # $GITHUB_OUTPUT; every later step is gated on it. A skip exits 0 (green)
+      # with a human note in the step summary — never a red ❌ on the PR.
+      - name: Decide whether to publish a canary
+        id: guard
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+
+          skip() {
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Canary publish skipped"
+              echo
+              echo "$1"
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::canary-publish skipped: $1"
+          }
+
+          # Guard 1 — fork PRs cannot read NPM_TOKEN, so a publish is impossible.
+          if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+            skip "PR is from a fork (\`$HEAD_REPO\`); no registry token access."
+            exit 0
+          fi
+
+          # Guard 2 — explicit opt-out via [skip canary] in the PR title or the
+          # HEAD commit message (HEAD is the PR head sha checked out above).
+          HEAD_MSG="$(git log -1 --format=%B 2>/dev/null || true)"
+          case "${PR_TITLE}${HEAD_MSG}" in
+            *"[skip canary]"*)
+              skip "\`[skip canary]\` found in the PR title or HEAD commit message."
+              exit 0
+              ;;
+          esac
+
+          echo "should_publish=true" >> "$GITHUB_OUTPUT"
+
+      - uses: pnpm/action-setup@v6
+        if: steps.guard.outputs.should_publish == 'true'
+
+      - uses: actions/setup-node@v6
+        if: steps.guard.outputs.should_publish == 'true'
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        if: steps.guard.outputs.should_publish == 'true'
+        run: pnpm install --frozen-lockfile
+
+      # dist/ MUST exist before packing — a tarball built without compiled
+      # output is the v1.0.1-class bug this whole feature exists to catch.
+      - name: Build all packages
+        if: steps.guard.outputs.should_publish == 'true'
+        run: pnpm -r build
+
+      - name: Pack and publish each canary package
+        if: steps.guard.outputs.should_publish == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          SHORT_SHA="${HEAD_SHA:0:7}"
+          # Task 1 is the single source of truth for the version string.
+          VERSION="$(node scripts/checks/canary-version.mjs "$PR_NUMBER" "$SHORT_SHA")"
+          TAG="pr-${PR_NUMBER}"
+
+          # Guard 3 — never publish to `latest`: the dist-tag must be non-empty.
+          [ -n "$TAG" ] || { echo "refusing: empty dist-tag"; exit 1; }
+          # Guard 4 — refuse anything that is not a canary version.
+          case "$VERSION" in
+            *-pr-*) ;;
+            *) echo "refusing: version $VERSION is not a canary"; exit 1 ;;
+          esac
+
+          echo "Publishing canary $VERSION under dist-tag $TAG"
+
+          # Task 1 is the single source of truth for the publishable set.
+          PKGS="$(node scripts/checks/canary-version.mjs --list)"
+          [ -n "$PKGS" ] || { echo "refusing: no publishable packages"; exit 1; }
+
+          # Pass 1 — stamp the canary version on EVERY package first. Adapters
+          # depend on @llodev/pm-tasks-core via `workspace:^`; pnpm rewrites the
+          # `workspace:` protocol to the dep's current package.json version at
+          # pack time, so core must be versioned before any adapter is packed or
+          # the adapter would pin the last real release instead of the canary.
+          while IFS= read -r name; do
+            [ -n "$name" ] || continue
+            dir="pm-tasks/${name##*/}"
+            [ -d "$dir" ] || { echo "refusing: directory $dir for $name not found"; exit 1; }
+            (cd "$dir" && npm version "$VERSION" --no-git-tag-version --allow-same-version)
+          done <<< "$PKGS"
+
+          # Pass 2 — pack and publish each package.
+          SUMMARY_LINES="$RUNNER_TEMP/canary-summary.md"
+          : > "$SUMMARY_LINES"
+
+          while IFS= read -r name; do
+            [ -n "$name" ] || continue
+            dir="pm-tasks/${name##*/}"
+
+            packout="$(cd "$dir" && pnpm pack --pack-destination "$RUNNER_TEMP" | tail -n 1)"
+            case "$packout" in
+              /*) tarball="$packout" ;;
+              *) tarball="$RUNNER_TEMP/$packout" ;;
+            esac
+            [ -f "$tarball" ] || { echo "refusing: tarball not found for $name ($tarball)"; exit 1; }
+
+            # Guards 3 & 4 re-asserted immediately before each publish. There is
+            # no publish path that omits `--tag pr-<N>`.
+            [ -n "$TAG" ] || { echo "refusing: empty dist-tag"; exit 1; }
+            case "$VERSION" in
+              *-pr-*) ;;
+              *) echo "refusing: version $VERSION is not a canary"; exit 1 ;;
+            esac
+
+            # Guard 5 — tarball manifest: verify that every @llodev/pm-tasks-*
+            # dep in the packed manifest was rewritten to a canary version range.
+            # The --from-canary E2E pins exact versions and cannot detect a bad
+            # workspace:^→canary rewrite; only inspecting the packed manifest
+            # catches that regression before the tarball reaches the registry.
+            tar -xzO -f "$tarball" package/package.json | node -e "
+              let d = '';
+              process.stdin.on('data', c => (d += c));
+              process.stdin.on('end', () => {
+                const pkg = JSON.parse(d);
+                const scopes = ['dependencies', 'peerDependencies', 'optionalDependencies'];
+                let failed = false;
+                for (const scope of scopes) {
+                  const deps = pkg[scope] || {};
+                  for (const [dep, range] of Object.entries(deps)) {
+                    if (dep.startsWith('@llodev/pm-tasks-') && !range.includes('0.0.0-pr-')) {
+                      process.stderr.write(
+                        'TARBALL GUARD FAILED: ' + pkg.name + ' ' + scope + '.' + dep + ' = \"' + range + '\" (expected 0.0.0-pr- canary rewrite)\n'
+                      );
+                      failed = true;
+                    }
+                  }
+                }
+                if (failed) process.exit(1);
+              });
+            " || { echo "refusing: tarball manifest guard failed for $name"; exit 1; }
+
+            npm publish "$tarball" --tag "$TAG" --access public
+
+            echo "- \`$name@$VERSION\` → \`npm install $name@$TAG\`" >> "$SUMMARY_LINES"
+          done <<< "$PKGS"
+
+          {
+            echo "### Canary published — PR #${PR_NUMBER}"
+            echo
+            echo "Version \`$VERSION\` under dist-tag \`$TAG\`:"
+            echo
+            cat "$SUMMARY_LINES"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload canary tarballs
+        if: steps.guard.outputs.should_publish == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: canary-pr-${{ github.event.pull_request.number }}
+          path: ${{ runner.temp }}/*.tgz
+          if-no-files-found: error
+
+      - name: E2E smoke — canary packages from registry
+        if: steps.guard.outputs.should_publish == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${HEAD_SHA:0:7}"
+          node scripts/checks/canary-e2e.mjs --from-canary --pr "$PR_NUMBER" --sha "$SHORT_SHA"

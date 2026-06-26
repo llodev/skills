@@ -1,0 +1,139 @@
+name: canary-cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+# Cleanup reads only the event payload and the checked-out script — no repo
+# write access required.
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      # Mirror canary-publish's fork guard: a fork PR never had canaries published
+      # (publish skips on forks) and has no NPM_TOKEN access anyway.
+      - name: Skip if fork
+        id: guard
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+            {
+              echo "### Canary cleanup skipped"
+              echo
+              echo "PR is from a fork (\`$HEAD_REPO\`); canaries were never published."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::canary-cleanup skipped: PR is from a fork ($HEAD_REPO)"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.guard.outputs.should_run == 'true'
+
+      - uses: actions/setup-node@v6
+        if: steps.guard.outputs.should_run == 'true'
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      # Best-effort at two levels:
+      #   1. Step level — continue-on-error: true so a cleanup failure never
+      #      red-fails the PR-close event.
+      #   2. Shell level — each npm view / npm unpublish is wrapped with || so
+      #      a failure on one package/version does NOT abort the loop; the loop
+      #      completes for ALL packages even on partial failure.
+      #
+      # npm allows unpublish of a non-latest version within 72 h; this runs
+      # synchronously on close, well inside that window. Stale canaries are
+      # harmless (npm garbage-collects), which is why failures only warn.
+      # No [skip canary] check: if publish was skipped there are simply no
+      # matching versions and the loop is a no-op.
+      - name: Unpublish canary versions
+        if: steps.guard.outputs.should_run == 'true'
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Intentionally omit -e: each npm call must be best-effort so the
+          # loop completes for all packages even when individual unpublishes fail.
+          set -uo pipefail
+
+          PREFIX="0.0.0-pr-${PR_NUMBER}-"
+
+          # Data-driven package set — single source of truth (Task 1).
+          PKGS="$(node scripts/checks/canary-version.mjs --list)" || {
+            echo "::warning::canary-cleanup: failed to enumerate packages; nothing unpublished"
+            {
+              echo "### Canary cleanup — PR #${PR_NUMBER}"
+              echo
+              echo "> **Warning:** failed to enumerate packages — see step log."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          }
+
+          UNPUBLISHED=0
+          WARNED=0
+
+          while IFS= read -r name; do
+            [ -n "$name" ] || continue
+
+            # Enumerate all published versions; treat registry errors as no-op.
+            versions="$(npm view "$name" versions --json 2>/dev/null)" || {
+              echo "::warning::canary-cleanup: npm view $name failed; skipping"
+              WARNED=$((WARNED + 1))
+              continue
+            }
+
+            # Filter to versions matching this PR's canary prefix. The trailing
+            # dash anchors the number so PR 42 never matches PR 421's versions
+            # (0.0.0-pr-421-... does NOT start with 0.0.0-pr-42-).
+            # npm view returns a JSON array (multiple versions) or a JSON string
+            # (exactly one version); the inline script normalises both.
+            # PREFIX is passed as process.argv[2] — not interpolated into source.
+            matched="$(echo "$versions" | node -e "
+              let d = '';
+              process.stdin.on('data', c => (d += c));
+              process.stdin.on('end', () => {
+                const arr = JSON.parse(d);
+                const list = Array.isArray(arr) ? arr : [arr];
+                list.filter(v => v.startsWith(process.argv[2])).forEach(v => console.log(v));
+              });
+            " -- "$PREFIX")" || {
+              echo "::warning::canary-cleanup: failed to filter versions for $name; skipping"
+              WARNED=$((WARNED + 1))
+              continue
+            }
+
+            while IFS= read -r ver; do
+              [ -n "$ver" ] || continue
+              npm unpublish "${name}@${ver}" 2>&1 || {
+                echo "::warning::canary-cleanup: npm unpublish ${name}@${ver} failed"
+                WARNED=$((WARNED + 1))
+                continue
+              }
+              echo "unpublished ${name}@${ver}"
+              UNPUBLISHED=$((UNPUBLISHED + 1))
+            done <<< "$matched"
+          done <<< "$PKGS"
+
+          {
+            echo "### Canary cleanup — PR #${PR_NUMBER}"
+            echo
+            if [ "$UNPUBLISHED" -gt 0 ]; then
+              echo "Unpublished **${UNPUBLISHED}** canary version(s) with prefix \`${PREFIX}\`."
+            else
+              echo "No matching canary versions found (prefix \`${PREFIX}\`) — nothing to unpublish."
+            fi
+            if [ "$WARNED" -gt 0 ]; then
+              echo
+              echo "> **${WARNED}** warning(s) — see step log for details."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
