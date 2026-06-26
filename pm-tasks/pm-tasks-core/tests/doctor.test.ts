@@ -11,7 +11,13 @@ const TEST_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = path.resolve(TEST_DIR, "..");
 // Workspace root is 2 levels above pm-tasks-core (pm-tasks/pm-tasks-core → pm-tasks → root)
 const WORKSPACE_ROOT = path.resolve(PKG_ROOT, "../..");
-import { CORE_CHECKS, runChecks, type DoctorContext, type DoctorCheck } from "../src/doctor.js";
+import {
+  CORE_CHECKS,
+  runChecks,
+  detectCanary,
+  type DoctorContext,
+  type DoctorCheck,
+} from "../src/doctor.js";
 import { renderReport } from "../src/bin/doctor.js";
 
 // ---------------------------------------------------------------------------
@@ -393,5 +399,55 @@ describe("runChecks — branch coverage", () => {
     const thrown = report.results.find((r) => r.check.id === "C-THROW-1");
     expect(thrown!.result.ok).toBe(false);
     expect(thrown!.result.message).toContain("threw");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Test: detectCanary — pure detector
+// ---------------------------------------------------------------------------
+
+describe("detectCanary — pure detector", () => {
+  it("detects a canary version and extracts the PR number", () => {
+    const result = detectCanary("0.0.0-pr-42-abc1234");
+    expect(result).toEqual({ isCanary: true, pr: "42" });
+  });
+
+  it("returns not-canary for a released version", () => {
+    const result = detectCanary("1.10.0");
+    expect(result).toEqual({ isCanary: false, pr: null });
+  });
+
+  it("returns not-canary for undefined", () => {
+    const result = detectCanary(undefined);
+    expect(result).toEqual({ isCanary: false, pr: null });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Test: C-VER-1 — canary probe
+// ---------------------------------------------------------------------------
+
+describe("C-VER-1 — canary probe", () => {
+  it("is present in CORE_CHECKS with severity === 'warn'", () => {
+    const check = CORE_CHECKS.find((c) => c.id === "C-VER-1");
+    expect(check).toBeDefined();
+    expect(check!.severity).toBe("warn");
+  });
+
+  it("returns ok=false with PR number in message for a canary version", async () => {
+    const tmp = tmpDir();
+    const ctx = makeCtx(tmp, { coreVersion: "0.0.0-pr-42-abc1234" });
+    const report = await runChecks(ctx);
+    const ver1 = report.results.find((r) => r.check.id === "C-VER-1");
+    expect(ver1!.result.ok).toBe(false);
+    expect(ver1!.result.message).toContain("PR #42");
+  });
+
+  it("returns ok=true for a released version", async () => {
+    const tmp = tmpDir();
+    const ctx = makeCtx(tmp, { coreVersion: "1.10.0" });
+    const report = await runChecks(ctx);
+    const ver1 = report.results.find((r) => r.check.id === "C-VER-1");
+    expect(ver1!.result.ok).toBe(true);
   });
 });

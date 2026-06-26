@@ -208,6 +208,15 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const flags = parseFlags(argv);
 
+  // Read running core package version (bin is at dist/bin/doctor.js → ../../package.json)
+  let coreVersion: string | undefined;
+  try {
+    const pkgRaw = await readFile(new URL("../../package.json", import.meta.url), "utf8");
+    coreVersion = (JSON.parse(pkgRaw) as { version?: string }).version;
+  } catch {
+    // never crash the doctor over a missing version
+  }
+
   const discovered = await discoverConfigs(flags.tool, flags.configOverride);
 
   if (flags.tool && discovered.length === 0) {
@@ -255,6 +264,7 @@ async function main(): Promise<void> {
       schema: assets?.schema ?? {},
       auditLogPath: path.join(resolveDataDir(tool), "audit.log"),
       auditRotationMaxBytes: 10 * 1024 * 1024,
+      coreVersion,
     };
 
     // If no adapter assets, skip C-CFG-* checks by passing degraded extras
