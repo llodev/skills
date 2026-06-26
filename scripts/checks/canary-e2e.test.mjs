@@ -40,12 +40,15 @@ test("canaryInstallSpecs: superset of 4 packages, each at exact canary version",
 
 // ── 1b. canaryInstallCommand ─────────────────────────────────────────────────
 
-test("canaryInstallCommand: carries --legacy-peer-deps and every exact spec", () => {
+test("canaryInstallCommand: carries propagation/peer flags and every exact spec", () => {
   const specs = canaryInstallSpecs(42, "abc1234");
   const cmd = canaryInstallCommand(specs);
   // Regression guard: npm 7+ strict peer resolver errors ERESOLVE on the
   // prerelease caret peer range (e.g. testkit's peer on core) without this flag.
   assert.ok(cmd.includes("--legacy-peer-deps"), `missing --legacy-peer-deps: ${cmd}`);
+  // Regression guard: a just-published canary ETARGETs until the packument
+  // propagates; --prefer-online forces revalidation instead of stale cache.
+  assert.ok(cmd.includes("--prefer-online"), `missing --prefer-online: ${cmd}`);
   assert.ok(cmd.includes("--no-save"), `missing --no-save: ${cmd}`);
   for (const spec of specs) {
     assert.ok(cmd.includes(spec), `command missing spec: ${spec}`);

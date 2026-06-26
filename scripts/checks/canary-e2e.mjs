@@ -45,11 +45,17 @@ export function canaryInstallSpecs(pr, sha) {
  * does not mask any real-consumer issue: real (non-prerelease) semver peer
  * ranges resolve fine without this flag. (npm itself suggests --legacy-peer-deps.)
  *
+ * WHY --prefer-online: a just-published canary version can ETARGET because the
+ * registry packument (CDN-cached) lags the publish. --prefer-online forces npm
+ * to revalidate the cached metadata against the registry on every (retried)
+ * attempt instead of trusting stale local cache, so once propagation completes
+ * the retry sees the new version. (The retry loop in main() supplies the wait.)
+ *
  * @param {string[]} specs - exact-pinned install specs from canaryInstallSpecs()
  * @returns {string}
  */
 export function canaryInstallCommand(specs) {
-  return `npm install --no-save --no-audit --no-fund --legacy-peer-deps ${specs.join(" ")}`;
+  return `npm install --no-save --no-audit --no-fund --legacy-peer-deps --prefer-online ${specs.join(" ")}`;
 }
 
 /**
@@ -197,24 +203,33 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
 
     // Install ALL packages at their EXACT canary version in one command.
     // WHY exact pins: see canaryInstallSpecs() docstring above.
-    // Retry up to 3 times to tolerate registry propagation lag after a fresh publish.
+    // Retry with a long backoff to tolerate registry/CDN packument propagation
+    // lag after a fresh publish: the --from-canary step runs seconds after the
+    // publish step in the same job, and a just-published version routinely
+    // ETARGETs for tens of seconds until the packument propagates. Backoff
+    // delays (seconds) between attempts; total wait budget ≈ 2 min.
     const installCmd = canaryInstallCommand(specs);
-    const MAX_RETRIES = 3;
+    const BACKOFFS_SEC = [10, 15, 20, 30, 45];
+    const MAX_ATTEMPTS = BACKOFFS_SEC.length + 1;
     let installOk = false;
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
         run(installCmd, { cwd: sandbox });
         installOk = true;
         break;
       } catch {
-        if (attempt < MAX_RETRIES) {
-          console.error(`npm install attempt ${attempt}/${MAX_RETRIES} failed; retrying in 5s...`);
-          execSync("sleep 5");
+        if (attempt < MAX_ATTEMPTS) {
+          const wait = BACKOFFS_SEC[attempt - 1];
+          console.error(
+            `npm install attempt ${attempt}/${MAX_ATTEMPTS} failed ` +
+              `(canary may still be propagating); retrying in ${wait}s...`,
+          );
+          execSync(`sleep ${wait}`);
         }
       }
     }
     if (!installOk) {
-      console.error(`npm install failed after ${MAX_RETRIES} attempts`);
+      console.error(`npm install failed after ${MAX_ATTEMPTS} attempts`);
       process.exit(1);
     }
 
