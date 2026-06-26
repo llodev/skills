@@ -46,16 +46,20 @@ jobs:
       # Best-effort at two levels:
       #   1. Step level — continue-on-error: true so a cleanup failure never
       #      red-fails the PR-close event.
-      #   2. Shell level — each npm view / npm unpublish is wrapped with || so
-      #      a failure on one package/version does NOT abort the loop; the loop
-      #      completes for ALL packages even on partial failure.
+      #   2. Shell level — each npm call is wrapped so a failure on one
+      #      package/version does NOT abort the loop; it completes for ALL
+      #      packages even on partial failure.
       #
-      # npm allows unpublish of a non-latest version within 72 h; this runs
-      # synchronously on close, well inside that window. Stale canaries are
-      # harmless (npm garbage-collects), which is why failures only warn.
+      # npm unpublish only works for a leaf package within npm's 72 h window; it is
+      # REFUSED (E405 "has dependent packages") for any version with dependents —
+      # e.g. core, which every adapter depends on. So each version tries unpublish
+      # first and falls back to `npm deprecate` (npm's recommended retirement path:
+      # the version persists, marked do-not-use — npm does NOT garbage-collect it).
+      # The PR-scoped dist-tag is stripped regardless so it leaves the tag list.
+      # Stale canaries are harmless (never the `latest` tag, never match a `^` range).
       # No [skip canary] check: if publish was skipped there are simply no
       # matching versions and the loop is a no-op.
-      - name: Unpublish canary versions
+      - name: Clean up canary versions (untag + unpublish/deprecate)
         if: steps.guard.outputs.should_run == 'true'
         continue-on-error: true
         env:
@@ -79,8 +83,10 @@ jobs:
             exit 0
           }
 
-          UNPUBLISHED=0
+          REMOVED=0
+          DEPRECATED=0
           WARNED=0
+          DEPMSG="orphaned canary for closed PR #${PR_NUMBER} — do not use"
 
           while IFS= read -r name; do
             [ -n "$name" ] || continue
@@ -92,37 +98,47 @@ jobs:
               continue
             }
 
-            # Filter to versions matching this PR's canary prefix via a real
-            # script file (unit-tested in scripts/checks/canary-cleanup-filter.test.mjs).
-            # The trailing dash anchors the number so PR 42 never matches PR 421.
-            # PR_NUMBER is a normal script arg (argv[2] of a script file is correct,
-            # unlike `node -e` where the first arg lands at argv[1]).
+            # Filter to this PR's canaries via a unit-tested script module
+            # (scripts/checks/canary-cleanup-filter.test.mjs). The trailing dash
+            # anchors the number so PR 42 never matches PR 421. PR_NUMBER is a normal
+            # script arg (argv[2] of a script file — unlike `node -e`, where the
+            # first arg lands at argv[1], which silently broke the filter before).
             matched="$(echo "$versions" | node scripts/checks/canary-cleanup-filter.mjs "$PR_NUMBER")" || {
               echo "::warning::canary-cleanup: failed to filter versions for $name; skipping"
               WARNED=$((WARNED + 1))
               continue
             }
 
+            # Per version: try unpublish first (full removal — works only for leaf
+            # packages within npm's 72h window), else deprecate. npm refuses to
+            # unpublish a version that has dependents (E405) — e.g. core, which every
+            # adapter depends on — so deprecate is the reliable retirement path npm
+            # itself recommends. Either way the version stops being advertised.
             while IFS= read -r ver; do
               [ -n "$ver" ] || continue
-              npm unpublish "${name}@${ver}" 2>&1 || {
-                echo "::warning::canary-cleanup: npm unpublish ${name}@${ver} failed"
+              if npm unpublish "${name}@${ver}" >/dev/null 2>&1; then
+                echo "unpublished ${name}@${ver}"
+                REMOVED=$((REMOVED + 1))
+              elif npm deprecate -f "${name}@${ver}" "$DEPMSG" >/dev/null 2>&1; then
+                echo "deprecated ${name}@${ver}"
+                DEPRECATED=$((DEPRECATED + 1))
+              else
+                echo "::warning::canary-cleanup: could not unpublish or deprecate ${name}@${ver}"
                 WARNED=$((WARNED + 1))
-                continue
-              }
-              echo "unpublished ${name}@${ver}"
-              UNPUBLISHED=$((UNPUBLISHED + 1))
+              fi
             done <<< "$matched"
+
+            # Strip the PR-scoped dist-tag so it no longer clutters `npm dist-tags`
+            # (a tag can dangle after unpublish; removal always works and is harmless
+            # if the tag is already gone).
+            npm dist-tag rm "$name" "pr-${PR_NUMBER}" >/dev/null 2>&1 \
+              && echo "removed dist-tag pr-${PR_NUMBER} from ${name}" || true
           done <<< "$PKGS"
 
           {
             echo "### Canary cleanup — PR #${PR_NUMBER}"
             echo
-            if [ "$UNPUBLISHED" -gt 0 ]; then
-              echo "Unpublished **${UNPUBLISHED}** canary version(s) with prefix \`${PREFIX}\`."
-            else
-              echo "No matching canary versions found (prefix \`${PREFIX}\`) — nothing to unpublish."
-            fi
+            echo "Prefix \`${PREFIX}\`: removed **${REMOVED}**, deprecated **${DEPRECATED}**; dist-tag \`pr-${PR_NUMBER}\` stripped from each package."
             if [ "$WARNED" -gt 0 ]; then
               echo
               echo "> **${WARNED}** warning(s) — see step log for details."

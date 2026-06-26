@@ -457,7 +457,7 @@ The `--from-canary` mode installs each package from the registry at its exact `0
 
 ### Cleanup
 
-When a PR is closed (merged or abandoned), `canary-cleanup.yml` auto-unpublishes every canary version under `pr-<N>`. Cleanup is best-effort — stale canary versions are harmless (they never match a `^` range) and expire from npm after 72 hours if unpublish fails.
+When a PR is closed (merged or abandoned), `canary-cleanup.yml` retires that PR's canaries: it strips the `pr-<N>` dist-tag, then for each `0.0.0-pr-<N>-*` version tries `npm unpublish` and falls back to `npm deprecate`. npm only allows unpublishing a leaf package within a 72-hour window and refuses any version that has dependents (`E405` — e.g. `core`, which every adapter depends on), so depended-upon canaries are deprecated rather than removed (npm does not garbage-collect them). Cleanup is best-effort and never blocks the PR-close event; any leftover canary versions are harmless — they are never the `latest` tag and never satisfy a `^` range.
 
 ### Doctor probe
 
