@@ -88,11 +88,11 @@ Every PR automatically publishes a canary build to npm under the dist-tag `pr-<N
 
 ```bash
 # Install adapter + core together — always pair them so npm dedupes core to this PR's canary
-npm install @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
+npm install --legacy-peer-deps @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
 # Other adapters: @llodev/pm-tasks-asana@pr-42, @llodev/pm-tasks-testkit@pr-42
 ```
 
-All packages in a PR share the same tag. Canary versions use the `0.0.0-pr-<N>-<sha>` scheme and are unpublished automatically when the PR closes. See [`docs/publishing-guide.md` § 12](docs/publishing-guide.md#12-canary-publish-lifecycle-pm-tasks-v110) for the full lifecycle.
+All packages in a PR share the same tag. `--legacy-peer-deps` is required: npm 7+ errors `ERESOLVE` on the prerelease caret peer ranges canary tarballs carry, even with the exact version present. Canary versions use the `0.0.0-pr-<N>-<sha>` scheme and are unpublished automatically when the PR closes. See [`docs/publishing-guide.md` § 12](docs/publishing-guide.md#12-canary-publish-lifecycle-pm-tasks-v110) for the full lifecycle.
 
 ## Adding a new adapter
 

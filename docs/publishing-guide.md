@@ -438,12 +438,12 @@ Fork PRs are skipped automatically (no `NPM_TOKEN`). Add `[skip canary]` anywher
 
 ```bash
 # Install adapter + core together so npm dedupes to this PR's canary
-npm install @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
+npm install --legacy-peer-deps @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-core@pr-42
 # Other adapters:
-npm install @llodev/pm-tasks-asana@pr-42 @llodev/pm-tasks-core@pr-42
+npm install --legacy-peer-deps @llodev/pm-tasks-asana@pr-42 @llodev/pm-tasks-core@pr-42
 ```
 
-All packages in a PR share the same `pr-<N>` tag.
+All packages in a PR share the same `pr-<N>` tag. `--legacy-peer-deps` is needed because npm 7+'s strict peer resolver errors `ERESOLVE` on the prerelease caret peer ranges (`^0.0.0-pr-<N>-<sha>`) that canary tarballs carry — even when the exact version is requested. Real released versions don't need the flag.
 
 ### CI verification
 

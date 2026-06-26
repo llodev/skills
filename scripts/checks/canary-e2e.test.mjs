@@ -9,7 +9,12 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { canaryInstallSpecs, resolveCanaryInputs, runSmoke } from "./canary-e2e.mjs";
+import {
+  canaryInstallSpecs,
+  canaryInstallCommand,
+  resolveCanaryInputs,
+  runSmoke,
+} from "./canary-e2e.mjs";
 
 // ── 1. canaryInstallSpecs ────────────────────────────────────────────────────
 
@@ -30,6 +35,20 @@ test("canaryInstallSpecs: superset of 4 packages, each at exact canary version",
     assert.ok(!spec.includes("~"), `range prefix ~ in spec: ${spec}`);
     // Every spec must be pinned to this exact version
     assert.ok(spec.includes("@0.0.0-pr-42-abc1234"), `version mismatch in spec: ${spec}`);
+  }
+});
+
+// ── 1b. canaryInstallCommand ─────────────────────────────────────────────────
+
+test("canaryInstallCommand: carries --legacy-peer-deps and every exact spec", () => {
+  const specs = canaryInstallSpecs(42, "abc1234");
+  const cmd = canaryInstallCommand(specs);
+  // Regression guard: npm 7+ strict peer resolver errors ERESOLVE on the
+  // prerelease caret peer range (e.g. testkit's peer on core) without this flag.
+  assert.ok(cmd.includes("--legacy-peer-deps"), `missing --legacy-peer-deps: ${cmd}`);
+  assert.ok(cmd.includes("--no-save"), `missing --no-save: ${cmd}`);
+  for (const spec of specs) {
+    assert.ok(cmd.includes(spec), `command missing spec: ${spec}`);
   }
 });
 
@@ -57,17 +76,11 @@ test("resolveCanaryInputs: argv takes precedence over env", () => {
 });
 
 test("resolveCanaryInputs: throws when --pr / CANARY_PR_NUMBER is missing", () => {
-  assert.throws(
-    () => resolveCanaryInputs(["--sha", "abc1234"], {}),
-    /CANARY_PR_NUMBER/,
-  );
+  assert.throws(() => resolveCanaryInputs(["--sha", "abc1234"], {}), /CANARY_PR_NUMBER/);
 });
 
 test("resolveCanaryInputs: throws when --sha / CANARY_SHA is missing", () => {
-  assert.throws(
-    () => resolveCanaryInputs(["--pr", "42"], {}),
-    /CANARY_SHA/,
-  );
+  assert.throws(() => resolveCanaryInputs(["--pr", "42"], {}), /CANARY_SHA/);
 });
 
 test("resolveCanaryInputs: throws when both inputs are missing", () => {
@@ -100,10 +113,7 @@ function plantGoodFixture(sandbox) {
       2,
     ),
   );
-  writeFileSync(
-    path.join(coreDir, "init-lib.js"),
-    "export const interpolate = (s, v) => s;\n",
-  );
+  writeFileSync(path.join(coreDir, "init-lib.js"), "export const interpolate = (s, v) => s;\n");
 
   // pm-tasks-asana: dist/bin/init.js with shebang
   const asanaBinDir = path.join(

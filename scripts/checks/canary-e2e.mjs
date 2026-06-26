@@ -34,6 +34,25 @@ export function canaryInstallSpecs(pr, sha) {
 }
 
 /**
+ * Build the npm install command for --from-canary mode.
+ *
+ * WHY --legacy-peer-deps: a published package's workspace:^ deps are rewritten
+ * to the prerelease caret `^0.0.0-pr-<N>-<sha>` at pack time. npm 7+'s strict
+ * peer resolver cannot satisfy a prerelease caret peer range (e.g. testkit's
+ * peer on core) even when the EXACT matching version is requested in the same
+ * install — it errors ERESOLVE. We already pin every package to its exact
+ * canary version (so core IS on disk), so relaxing peer validation is safe and
+ * does not mask any real-consumer issue: real (non-prerelease) semver peer
+ * ranges resolve fine without this flag. (npm itself suggests --legacy-peer-deps.)
+ *
+ * @param {string[]} specs - exact-pinned install specs from canaryInstallSpecs()
+ * @returns {string}
+ */
+export function canaryInstallCommand(specs) {
+  return `npm install --no-save --no-audit --no-fund --legacy-peer-deps ${specs.join(" ")}`;
+}
+
+/**
  * Parse PR number and SHA from argv or env.
  * Returns { pr, sha } strings, or throws with a descriptive message.
  *
@@ -179,7 +198,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
     // Install ALL packages at their EXACT canary version in one command.
     // WHY exact pins: see canaryInstallSpecs() docstring above.
     // Retry up to 3 times to tolerate registry propagation lag after a fresh publish.
-    const installCmd = `npm install --no-save --no-audit --no-fund ${specs.join(" ")}`;
+    const installCmd = canaryInstallCommand(specs);
     const MAX_RETRIES = 3;
     let installOk = false;
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
