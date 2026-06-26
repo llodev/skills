@@ -118,17 +118,17 @@ Releases follow the [Changesets](https://github.com/changesets/changesets) workf
 
 Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool adapters. Full detail with priorities and rationale in [`docs/roadmap.md`](docs/roadmap.md).
 
-**Recently delivered (`v1.6.0` → `v1.8.0`):**
+**Recently delivered (`v1.8.0` → `v1.10.0`):**
 
-- `v1.6.0` (minor) — **Public hardening**: shipped `CONTRIBUTING.md` · `SECURITY.md` · `CODE_OF_CONDUCT.md` · `.github/ISSUE_TEMPLATE/` + PR template · `CODEOWNERS` · `marketplace.json` parity test · CodeQL workflow · Dependabot.
-- `v1.7.0` (minor) — **Quality gates**: shipped skill-judge rubric golden master · coverage gate (c8) wired into `pnpm validate` · `size-limit` package-size budget.
-- `v1.8.0` (minor) — **Observability v1**: shipped smart `audit.log` rotation (size + age + multi-tool, atomic, idempotent) · `pm-tasks-core-doctor` CLI (validates config + autonomous allowlist + audit writability) · adapter `--doctor` flags.
+- `v1.8.0` (minor) — **Observability v1**: smart `audit.log` rotation (size + age + multi-tool, atomic, idempotent) · `pm-tasks-core-doctor` CLI · adapter `--doctor` flags.
+- `v1.9.0` (minor) — **Headless runtime + plan-execution**: `/adapter` subpath (`createAdapter`, 7 verbs, stubbable `McpCaller`) · agent-agnostic `/plan-execution` mode (config gate, plan-task discovery, `onTaskStart`/`onTaskComplete` boundary hooks).
+- `v1.10.0` (minor) — **Canary publish**: per-PR `0.0.0-pr-<N>-<sha>` under dist-tag `pr-<N>` · `--from-canary` E2E (installs from real npm) · auto-cleanup on close (untag + unpublish/deprecate) · doctor `C-VER-1` probe + pre-release `-pr-` guard.
 
 **What's next:**
 
-- Decision pending — adapter expansion (`pm-tasks-jira`) vs SDD hooks (F14 + F15). See [docs/roadmap.md](docs/roadmap.md).
+- **`pm-tasks-jira` (S1, `v1.11.0`)** — the first new adapter now that platform hardening (headless runtime, plan-execution, canary publish) is done. See [docs/roadmap.md](docs/roadmap.md).
 
-**After the quality trio — adapter expansion (`v1.9.0+`):**
+**Adapter expansion (`v1.11.0+`):**
 
 - `pm-tasks-jira` (S1) — Atlassian Remote MCP. Largest dev/agile market share.
 - `pm-tasks-linear` (S2) — Linear MCP. Premium dev mindshare; `Cycle` aligns natively with our verb model.
@@ -141,8 +141,8 @@ Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool 
 
 **Mid-term — library/SDK and reverse sync:**
 
-- F14 — runtime adapter as library (headless mode for skill-free callers).
-- F15 — bridge `superpowers:subagent-driven-development` to pm-tasks autonomous mode.
+- P2 — `@llodev/pm-tasks-cli` standalone CLI over the F14 headless `/adapter` subpath.
+- P4 — Plugin SDK (`npx pm-tasks-contract-tests`) for out-of-tree adapters.
 - F1 — bidirectional sync (read-back PM tool → plan) once ≥4 adapters land.
 
 **Future families:**
