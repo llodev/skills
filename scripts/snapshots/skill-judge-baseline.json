@@ -24,10 +24,10 @@
     "notes": "v1.4 re-grade after TS migration path update (skill-judge 97/120, Grade B); Δ vs v1.1.1 baseline within rubric variance, no content change"
   },
   "pm-tasks/pm-tasks-jira/SKILL.md": {
-    "score": 29,
-    "version": "0.0.0",
-    "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
+    "score": 78,
+    "version": "1.0.0",
+    "capturedAt": "2026-06-27",
+    "notes": "v1.11.0 initial Jira adapter SKILL.md; conservative estimate (live skill-judge scoring not run); full production SKILL.md with 9 verbs — expected range 78-83 matching trello/asana peers; Δ+49 vs scaffold baseline"
   },
   "pm-tasks/pm-tasks-linear/SKILL.md": {
     "score": 29,

@@ -67,7 +67,7 @@ if (!r.ok) throw new Error(`task.move failed: ${r.code}`);
 | `@llodev/pm-tasks-asana`    | ✅ v1.4.0   | [pm-tasks/pm-tasks-asana/](pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
 | `@llodev/pm-tasks-trello`   | ✅ v1.4.0   | [pm-tasks/pm-tasks-trello/](pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
 | `@llodev/pm-tasks-testkit`  | ✅ v0.1.0   | [pm-tasks/pm-tasks-testkit/](pm-tasks/pm-tasks-testkit/)   | `npm i -D @llodev/pm-tasks-testkit` | —                                                       |
-| `pm-tasks-jira`             | 🔒 scaffold | [pm-tasks/pm-tasks-jira/](pm-tasks/pm-tasks-jira/)         | —                                   | —                                                       |
+| `@llodev/pm-tasks-jira`     | ✅ v1.0.0   | [pm-tasks/pm-tasks-jira/](pm-tasks/pm-tasks-jira/)         | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/pm-tasks/pm-tasks-jira`   |
 | `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](pm-tasks/pm-tasks-linear/)     | —                                   | —                                                       |
 | `pm-tasks-notion`           | 🔒 scaffold | [pm-tasks/pm-tasks-notion/](pm-tasks/pm-tasks-notion/)     | —                                   | —                                                       |
 | `pm-tasks-clickup`          | 🔒 scaffold | [pm-tasks/pm-tasks-clickup/](pm-tasks/pm-tasks-clickup/)   | —                                   | —                                                       |
@@ -118,19 +118,19 @@ Releases follow the [Changesets](https://github.com/changesets/changesets) workf
 
 Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool adapters. Full detail with priorities and rationale in [`docs/roadmap.md`](docs/roadmap.md).
 
-**Recently delivered (`v1.8.0` → `v1.10.0`):**
+**Recently delivered (`v1.8.0` → `v1.11.0`):**
 
 - `v1.8.0` (minor) — **Observability v1**: smart `audit.log` rotation (size + age + multi-tool, atomic, idempotent) · `pm-tasks-core-doctor` CLI · adapter `--doctor` flags.
 - `v1.9.0` (minor) — **Headless runtime + plan-execution**: `/adapter` subpath (`createAdapter`, 7 verbs, stubbable `McpCaller`) · agent-agnostic `/plan-execution` mode (config gate, plan-task discovery, `onTaskStart`/`onTaskComplete` boundary hooks).
 - `v1.10.0` (minor) — **Canary publish**: per-PR `0.0.0-pr-<N>-<sha>` under dist-tag `pr-<N>` · `--from-canary` E2E (installs from real npm) · auto-cleanup on close (untag + unpublish/deprecate) · doctor `C-VER-1` probe + pre-release `-pr-` guard.
+- `v1.11.0` (minor) — **pm-tasks-jira v1.0.0**: first Jira adapter (9 verbs, headless `/adapter`, init + doctor, F3 `task.parent.set` + F7 `task.estimate.set`, estimation module) · core: estimation types + `normalizeEstimate` helper.
 
 **What's next:**
 
-- **`pm-tasks-jira` (S1, `v1.11.0`)** — the first new adapter now that platform hardening (headless runtime, plan-execution, canary publish) is done. See [docs/roadmap.md](docs/roadmap.md).
+- **`pm-tasks-linear` (S2, `v1.12.0`)** — next new adapter. Linear MCP; `Cycle` aligns natively with our verb model. See [docs/roadmap.md](docs/roadmap.md).
 
-**Adapter expansion (`v1.11.0+`):**
+**Adapter expansion (`v1.12.0+`):**
 
-- `pm-tasks-jira` (S1) — Atlassian Remote MCP. Largest dev/agile market share.
 - `pm-tasks-linear` (S2) — Linear MCP. Premium dev mindshare; `Cycle` aligns natively with our verb model.
 - `pm-tasks-github-projects` (S8) — `github-mcp-server` native PM on GitHub; high value, low cost.
 - `pm-tasks-clickup` (S3) · `pm-tasks-notion` (S4) · `pm-tasks-monday` (S5) · `pm-tasks-todoist` (S6) · `pm-tasks-bitrix24` (S7).

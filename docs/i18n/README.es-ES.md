@@ -67,7 +67,7 @@ if (!r.ok) throw new Error(`task.move falló: ${r.code}`);
 | `@llodev/pm-tasks-asana`    | ✅ v1.4.0   | [pm-tasks/pm-tasks-asana/](../../pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
 | `@llodev/pm-tasks-trello`   | ✅ v1.4.0   | [pm-tasks/pm-tasks-trello/](../../pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
 | `@llodev/pm-tasks-testkit`  | ✅ v0.1.0   | [pm-tasks/pm-tasks-testkit/](../../pm-tasks/pm-tasks-testkit/)   | `npm i -D @llodev/pm-tasks-testkit` | —                                                       |
-| `pm-tasks-jira`             | 🔒 scaffold | [pm-tasks/pm-tasks-jira/](../../pm-tasks/pm-tasks-jira/)         | —                                   | —                                                       |
+| `@llodev/pm-tasks-jira`     | ✅ v1.0.0   | [pm-tasks/pm-tasks-jira/](../../pm-tasks/pm-tasks-jira/)         | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/pm-tasks/pm-tasks-jira`   |
 | `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](../../pm-tasks/pm-tasks-linear/)     | —                                   | —                                                       |
 | `pm-tasks-notion`           | 🔒 scaffold | [pm-tasks/pm-tasks-notion/](../../pm-tasks/pm-tasks-notion/)     | —                                   | —                                                       |
 | `pm-tasks-clickup`          | 🔒 scaffold | [pm-tasks/pm-tasks-clickup/](../../pm-tasks/pm-tasks-clickup/)   | —                                   | —                                                       |
@@ -118,19 +118,19 @@ Las releases siguen el workflow [Changesets](https://github.com/changesets/chang
 
 Foco actual: consolidar la base del `pm-tasks-*` antes de lanzar nuevos adaptadores. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](../../docs/roadmap.md).
 
-**Lanzamientos recientes (`v1.6.0` → `v1.8.0`):**
+**Lanzamientos recientes (`v1.8.0` → `v1.11.0`):**
 
-- `v1.6.0` (minor) — **Public hardening**: entregado `CONTRIBUTING.md` · `SECURITY.md` · `CODE_OF_CONDUCT.md` · `.github/ISSUE_TEMPLATE/` + plantilla de PR · `CODEOWNERS` · test de paridad de `marketplace.json` · workflow CodeQL · Dependabot.
-- `v1.7.0` (minor) — **Quality gates**: entregado golden master del rubric del skill-judge · gate de cobertura (c8) conectado a `pnpm validate` · presupuesto de tamaño de paquete (`size-limit`).
-- `v1.8.0` (minor) — **Observability v1**: entregada rotación inteligente del `audit.log` (tamaño + edad + multi-tool, atómica, idempotente) · CLI `pm-tasks-core-doctor` (valida config + allowlist autónoma + audit writability) · flags `--doctor` en los adaptadores.
+- `v1.8.0` (minor) — **Observability v1**: rotación inteligente del `audit.log` (tamaño + edad + multi-tool, atómica, idempotente) · CLI `pm-tasks-core-doctor` · flags `--doctor` en los adaptadores.
+- `v1.9.0` (minor) — **Headless runtime + plan-execution**: subpath `/adapter` (`createAdapter`, 7 verbos, `McpCaller` stubbable) · modo `/plan-execution` agnóstico de agent.
+- `v1.10.0` (minor) — **Canary publish**: `0.0.0-pr-<N>-<sha>` por PR · E2E `--from-canary` · auto-cleanup al cerrar · guard `-pr-` en pre-release.
+- `v1.11.0` (minor) — **pm-tasks-jira v1.0.0**: primer adaptador Jira (9 verbos, `/adapter` headless, init + doctor, F3 `task.parent.set` + F7 `task.estimate.set`, módulo de estimación) · core: tipos de estimación + helper `normalizeEstimate`.
 
 **Qué sigue:**
 
-- Decisión pendiente — expansión de adaptadores (`pm-tasks-jira`) vs SDD hooks (F14 + F15). Ver [docs/roadmap.md](../../docs/roadmap.md).
+- **`pm-tasks-linear` (S2, `v1.12.0`)** — próximo adaptador. Linear MCP; `Cycle` se alinea de forma nativa con nuestro modelo de verbos. Ver [docs/roadmap.md](../../docs/roadmap.md).
 
-**Tras el trío de calidad — expansión de adaptadores (`v1.9.0+`):**
+**Expansión de adaptadores (`v1.12.0+`):**
 
-- `pm-tasks-jira` (S1) — Atlassian Remote MCP. Mayor cuota de mercado dev/agile.
 - `pm-tasks-linear` (S2) — Linear MCP. Gran presencia en el ecosistema dev; `Cycle` se alinea de forma nativa con nuestro modelo de verbos.
 - `pm-tasks-github-projects` (S8) — `github-mcp-server`, PM nativo en GitHub; alto valor, bajo coste.
 - `pm-tasks-clickup` (S3) · `pm-tasks-notion` (S4) · `pm-tasks-monday` (S5) · `pm-tasks-todoist` (S6) · `pm-tasks-bitrix24` (S7).

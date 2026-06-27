@@ -43,6 +43,19 @@
       "author": {
         "name": "llodev"
       }
+    },
+    {
+      "name": "pm-tasks-jira",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "pm-tasks/pm-tasks-jira"
+      },
+      "description": "Jira adapter — paste, publish via Atlassian MCP, autonomous mode.",
+      "version": "1.0.0",
+      "author": {
+        "name": "llodev"
+      }
     }
   ]
 }
