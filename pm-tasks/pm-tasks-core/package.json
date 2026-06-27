@@ -76,6 +76,10 @@
       "types": "./dist/i18n/registry.d.ts",
       "import": "./dist/i18n/registry.js"
     },
+    "./estimation": {
+      "types": "./dist/estimation.d.ts",
+      "import": "./dist/estimation.js"
+    },
     "./schemas/*.json": "./schemas/*.json",
     "./i18n/*.json": "./i18n/*.json"
   },

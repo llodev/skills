@@ -2,7 +2,7 @@
   {
     "name": "@llodev/pm-tasks-core (tarball)",
     "path": "pm-tasks/pm-tasks-core/dist/**/*.js",
-    "limit": "19 kB"
+    "limit": "21 kB"
   },
   {
     "name": "@llodev/pm-tasks-asana (tarball)",
