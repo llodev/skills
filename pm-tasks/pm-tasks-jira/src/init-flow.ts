@@ -7,11 +7,14 @@ import {
   promptPick,
   promptYesNo,
   promptLocale,
+  loadStrings,
+  registerI18nRoot,
   writeConfig,
   validateConfig,
   printInstructions,
   type Choice,
   type PromptPickOptions,
+  type StringsTable,
   type ValidationResult,
 } from "@llodev/pm-tasks-core/init-lib";
 
@@ -278,6 +281,14 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   }
 
   // -------------------------------------------------------------------------
+  // Step 0: Locale FIRST — every subsequent prompt renders in this language.
+  // -------------------------------------------------------------------------
+  registerI18nRoot("jira", path.join(ROOT, "i18n"));
+  const locale = deps.locale ?? (await promptLocale("core", { defaultLocale: "en-US" }));
+  const strings: StringsTable = await loadStrings("jira", locale);
+  console.log(`\n${strings.header}\n`);
+
+  // -------------------------------------------------------------------------
   // Step 1: Discover cloudId
   // -------------------------------------------------------------------------
   const resources = await api.getResources();
@@ -295,11 +306,11 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
     resource = resources[0];
   } else {
     const picked = await doPick(
-      "Select Atlassian site:",
+      strings.sitePrompt,
       resources.map((r) => ({ label: `${r.name} (${r.url})`, value: r })),
     );
     if (!picked) {
-      process.stderr.write("No site selected. Exiting.\n");
+      process.stderr.write(`${strings.noSite}\n`);
       process.exit(1);
     }
     resource = picked;
@@ -324,12 +335,12 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   // -------------------------------------------------------------------------
   const projects = await api.getProjects(cloudId);
   const pickedProject = await doPick(
-    "Select Jira project:",
+    strings.projectPrompt,
     projects.map((p) => ({ label: `${p.key} — ${p.name}`, value: p })),
     { defaultIndex: 0 },
   );
   if (!pickedProject) {
-    process.stderr.write("No project selected. Exiting.\n");
+    process.stderr.write(`${strings.noProject}\n`);
     process.exit(1);
   }
   const projectKey = pickedProject.key;
@@ -398,8 +409,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   // strategy never targets time and a time-based strategy never targets points)
   // -------------------------------------------------------------------------
   const strategy =
-    (await doPick("Select estimation strategy:", STRATEGY_CHOICES, { defaultIndex: 0 })) ??
-    "fibonacci";
+    (await doPick(strings.strategyPrompt, STRATEGY_CHOICES, { defaultIndex: 0 })) ?? "fibonacci";
 
   const usesFibonacciScale = ["fibonacci", "story_points", "planning_poker"].includes(strategy);
   const scale = usesFibonacciScale ? DEFAULT_FIBONACCI_SCALE : undefined;
@@ -412,29 +422,26 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
     if (hasTimeTracking) {
       jiraTarget =
         (await doPick(
-          "Time tracking field detected. Jira write target:",
+          strings.targetPromptTime,
           [
-            { label: "time (recommended)", value: "time" },
-            { label: "none — skip writing estimates to Jira", value: "none" },
+            { label: strings.targetTime, value: "time" },
+            { label: strings.targetNone, value: "none" },
           ],
           { defaultIndex: 0 },
         )) ?? "time";
     } else {
       jiraTarget = "none";
-      process.stderr.write(
-        "Time tracking is not enabled for this project — time estimates will be stored " +
-          "as an est: label only. Enable Time tracking in Project Settings, then re-run init.\n",
-      );
+      process.stderr.write(`${strings.noTimeTracking}\n`);
     }
   } else {
     // Point-based strategy.
     if (hasStoryPoints) {
       jiraTarget =
         (await doPick(
-          "Story Points field detected. Jira write target:",
+          strings.targetPromptStoryPoints,
           [
-            { label: "story_points (recommended)", value: "story_points" },
-            { label: "none — skip writing estimates to Jira", value: "none" },
+            { label: strings.targetStoryPoints, value: "story_points" },
+            { label: strings.targetNone, value: "none" },
           ],
           { defaultIndex: 0 },
         )) ?? "story_points";
@@ -443,11 +450,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
       }
     } else {
       jiraTarget = "none";
-      process.stderr.write(
-        "Story Points field not found in this project — point estimates will be stored as an " +
-          "est: label only. To write a native field, enable Story Points: Project Settings → " +
-          "Issue types → [type] → drag 'Story points' from Available fields, then re-run init.\n",
-      );
+      process.stderr.write(`${strings.noStoryPoints}\n`);
     }
   }
 
@@ -457,13 +460,9 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   if (strategy === "t_shirt") estimation.sizeMap = { ...DEFAULT_SIZE_MAP };
 
   // -------------------------------------------------------------------------
-  // Step 6: Locale + autonomous block
+  // Step 6: Autonomous block
   // -------------------------------------------------------------------------
-  const locale = deps.locale ?? (await promptLocale("core", { defaultLocale: "en-US" }));
-
-  const wantAuto = await doYesNo(
-    "Enable autonomous mode? (agent can write to Jira without per-action confirmation)",
-  );
+  const wantAuto = await doYesNo(strings.autonomousPrompt);
 
   let autonomous: Record<string, unknown> | undefined;
   if (wantAuto) {
@@ -505,7 +504,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   await doWrite(outPath, out);
   printInstructions([
     `Config written to ${outPath}`,
-    "Next: pm-tasks-jira init --doctor",
+    strings.nextDoctor,
     "Atlassian MCP endpoint: https://mcp.atlassian.com/v1/mcp",
   ]);
 

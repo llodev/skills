@@ -17,6 +17,7 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
+    "i18n",
     "schemas",
     "manifest.json",
     "dist"
