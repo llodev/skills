@@ -56,6 +56,7 @@ El script `init` enumera tu site de Atlassian, project, issue types y campo de S
 ```bash
 export ATLASSIAN_API_TOKEN=...
 export ATLASSIAN_EMAIL=you@example.com
+export ATLASSIAN_SITE=your-team.atlassian.net
 npx @llodev/pm-tasks-jira init
 ```
 

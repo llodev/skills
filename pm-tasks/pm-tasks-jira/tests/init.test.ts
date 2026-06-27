@@ -45,11 +45,11 @@ function makeApiWithSP(): JiraInitApi {
     getProjects: async () => [PROJECT],
     getIssueTypes: async () => ISSUE_TYPES,
     getFieldMeta: async () => ({
-      fields: {
-        customfield_10016: { name: "Story Points" },
-        summary: { name: "Summary" },
-        description: { name: "Description" },
-      },
+      fields: [
+        { key: "customfield_10016", name: "Story Points" },
+        { key: "summary", name: "Summary" },
+        { key: "description", name: "Description" },
+      ],
     }),
     getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
@@ -62,11 +62,27 @@ function makeApiNoSP(): JiraInitApi {
     getProjects: async () => [PROJECT],
     getIssueTypes: async () => ISSUE_TYPES,
     getFieldMeta: async () => ({
-      fields: {
-        summary: { name: "Summary" },
-        description: { name: "Description" },
-        assignee: { name: "Assignee" },
-      },
+      fields: [
+        { key: "summary", name: "Summary" },
+        { key: "description", name: "Description" },
+        { key: "assignee", name: "Assignee" },
+      ],
+    }),
+    getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
+  };
+}
+
+/** Stub API with time tracking but no Story Points (basic team-managed board) */
+function makeApiTimeTracking(): JiraInitApi {
+  return {
+    getResources: async () => [RESOURCE_A],
+    getProjects: async () => [PROJECT],
+    getIssueTypes: async () => ISSUE_TYPES,
+    getFieldMeta: async () => ({
+      fields: [
+        { key: "summary", name: "Summary" },
+        { key: "timetracking", name: "Time tracking" },
+      ],
     }),
     getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
@@ -128,6 +144,19 @@ describe("runFlow — happy path (Story Points present)", () => {
     expect(it_["story"]).toBe("Story");
     expect(it_["epic"]).toBe("Epic");
     expect(it_["bug"]).toBe("Bug");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Test (a2): time tracking present, no Story Points → jiraTarget=time
+// ---------------------------------------------------------------------------
+
+describe("runFlow — time tracking present (no Story Points)", () => {
+  it("sets jiraTarget=time and omits fieldId", async () => {
+    const out = await runFlow(baseDeps(makeApiTimeTracking()));
+    const est = out["estimation"] as Record<string, unknown>;
+    expect(est["jiraTarget"]).toBe("time");
+    expect(est["fieldId"]).toBeUndefined();
   });
 });
 

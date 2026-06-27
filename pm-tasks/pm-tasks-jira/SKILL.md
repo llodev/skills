@@ -220,7 +220,7 @@ See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-
 - `atlassianUserInfo` — verify MCP connection and get user email.
 - `getAccessibleAtlassianResources` — list sites; select `cloudId`.
 - `getVisibleJiraProjects` — select project by key.
-- `getJiraIssueTypeMetaWithFields` — discover issue types (builds `issueTypes{}`) and detect `customfield_10016` for Story Points estimation (`fieldId`).
+- `getJiraIssueTypeMetaWithFields` — discover issue types (builds `issueTypes{}`) and detect the Story Points field for estimation (`fieldId`, matched by name; default `customfield_10016`). Absent on basic boards → time tracking is used instead.
 
 Writes all resolved values (including `fieldId` if found) to `.jira.json`.
 

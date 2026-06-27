@@ -44,7 +44,7 @@ export interface JiraIssueType {
 }
 
 export interface JiraFieldMeta {
-  fields: Record<string, unknown>;
+  fields: Array<{ key: string; name: string }>;
 }
 
 // ---------------------------------------------------------------------------
@@ -111,8 +111,10 @@ const STRATEGY_CHOICES: Choice<string>[] = [
 // Production REST API (ATLASSIAN_API_TOKEN + ATLASSIAN_EMAIL env vars)
 // ---------------------------------------------------------------------------
 
-function createRestApi(token: string, email: string): JiraInitApi {
+function createRestApi(token: string, email: string, site: string): JiraInitApi {
   const auth = `Basic ${Buffer.from(`${email}:${token}`).toString("base64")}`;
+  // Accept a full URL or a bare host (e.g. "team.atlassian.net").
+  const siteHost = site.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
 
   async function atlFetch<T>(url: string): Promise<T> {
     const res = await globalThis.fetch(url, {
@@ -123,10 +125,12 @@ function createRestApi(token: string, email: string): JiraInitApi {
   }
 
   return {
+    // Scoped API tokens (Basic auth) cannot call the OAuth-only
+    // accessible-resources endpoint, so resolve the cloudId from the site's
+    // public tenant_info instead. Returns the single given site.
     getResources: async () => {
-      return atlFetch<AtlassianResource[]>(
-        "https://api.atlassian.com/oauth/token/accessible-resources",
-      );
+      const info = await atlFetch<{ cloudId: string }>(`https://${siteHost}/_edge/tenant_info`);
+      return [{ id: info.cloudId, name: siteHost, url: `https://${siteHost}` }];
     },
     getProjects: async (cloudId) => {
       const data = await atlFetch<{ values: JiraProject[] }>(
@@ -134,10 +138,13 @@ function createRestApi(token: string, email: string): JiraInitApi {
       );
       return data.values;
     },
+    // Use the createmeta issue-types endpoint (projectKey-based, array under
+    // `issueTypes`). The /issuetype/project endpoint needs a numeric projectId.
     getIssueTypes: async (cloudId, projectKey) => {
-      return atlFetch<JiraIssueType[]>(
-        `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issuetype/project?projectKey=${encodeURIComponent(projectKey)}`,
+      const data = await atlFetch<{ issueTypes: JiraIssueType[] }>(
+        `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issue/createmeta/${encodeURIComponent(projectKey)}/issuetypes`,
       );
+      return data.issueTypes;
     },
     getFieldMeta: async (cloudId, projectKey, issueTypeId) => {
       return atlFetch<JiraFieldMeta>(
@@ -171,16 +178,18 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   } else {
     const token = process.env.ATLASSIAN_API_TOKEN;
     const email = process.env.ATLASSIAN_EMAIL;
-    if (!token || !email) {
+    const site = process.env.ATLASSIAN_SITE;
+    if (!token || !email || !site) {
       printInstructions([
         "pm-tasks-jira init requires Atlassian credentials.",
-        "Set ATLASSIAN_API_TOKEN and ATLASSIAN_EMAIL environment variables,",
+        "Set ATLASSIAN_API_TOKEN, ATLASSIAN_EMAIL and ATLASSIAN_SITE environment variables",
+        "(ATLASSIAN_SITE = your Jira host, e.g. your-team.atlassian.net),",
         "or run this init from within a Claude Code session with the Atlassian MCP configured.",
         "Atlassian MCP endpoint: https://mcp.atlassian.com/v1/mcp",
       ]);
       process.exit(1);
     }
-    api = createRestApi(token, email);
+    api = createRestApi(token, email, site);
   }
 
   // -------------------------------------------------------------------------
@@ -258,6 +267,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   // -------------------------------------------------------------------------
   let hasStoryPoints = false;
   let hasTimeTracking = false;
+  let storyPointsFieldId: string | undefined;
 
   const taskLocalName = issueTypeMap["task"];
   const taskIssueType = issueTypesList.find((t) => t.name === taskLocalName) ?? issueTypesList[0];
@@ -265,9 +275,15 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   if (taskIssueType) {
     try {
       const meta = await api.getFieldMeta(cloudId, projectKey, taskIssueType.id);
-      const fieldKeys = Object.keys(meta.fields ?? {});
-      hasStoryPoints = fieldKeys.includes("customfield_10016");
-      hasTimeTracking = fieldKeys.includes("timetracking");
+      const fields = meta.fields ?? [];
+      // Story Points field id varies by site (default customfield_10016; team-
+      // managed boards differ). Match the known id OR the field name (locale-aware).
+      const spField = fields.find(
+        (f) => f.key === "customfield_10016" || /story\s*point|pontos?\s+de\s+hist/i.test(f.name),
+      );
+      hasStoryPoints = Boolean(spField);
+      storyPointsFieldId = spField?.key;
+      hasTimeTracking = fields.some((f) => f.key === "timetracking");
     } catch {
       // Field detection failed; proceed without SP detection
     }
@@ -297,7 +313,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
         { defaultIndex: 0 },
       )) ?? "story_points";
     if (jiraTarget === "story_points") {
-      fieldId = "customfield_10016";
+      fieldId = storyPointsFieldId ?? "customfield_10016";
     }
   } else if (hasTimeTracking) {
     jiraTarget =
