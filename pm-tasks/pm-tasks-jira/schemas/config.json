@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llodev.github.io/skills/schemas/pm-tasks-jira.json",
+  "title": "pm-tasks-jira config",
+  "type": "object",
+  "required": ["version", "site", "project", "issueTypes"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "enum": ["1"] },
+    "locale": { "type": "string" },
+    "site": {
+      "type": "object",
+      "required": ["cloudId", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "cloudId": { "type": "string" },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": ["key"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" },
+        "style": { "type": "string", "enum": ["team-managed", "company-managed"] }
+      }
+    },
+    "issueTypes": {
+      "type": "object",
+      "required": ["epic", "story", "task", "subtask", "bug"],
+      "additionalProperties": false,
+      "properties": {
+        "epic": { "type": "string" },
+        "story": { "type": "string" },
+        "task": { "type": "string" },
+        "subtask": { "type": "string" },
+        "bug": { "type": "string" }
+      }
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["accountId", "displayName", "alias"],
+        "additionalProperties": false,
+        "properties": {
+          "accountId": { "type": "string" },
+          "displayName": { "type": "string" },
+          "alias": { "type": "string" }
+        }
+      }
+    },
+    "estimation": {
+      "type": "object",
+      "required": ["strategy", "jiraTarget"],
+      "additionalProperties": false,
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": [
+            "story_points",
+            "fibonacci",
+            "planning_poker",
+            "affinity",
+            "t_shirt",
+            "ideal_days",
+            "ideal_hours",
+            "three_point"
+          ]
+        },
+        "scale": { "type": "array", "items": { "type": "number" } },
+        "jiraTarget": { "type": "string", "enum": ["story_points", "time", "none"] },
+        "fieldId": { "type": "string" },
+        "sizeMap": { "type": "object", "additionalProperties": { "type": "number" } }
+      }
+    },
+    "autonomous": {
+      "type": "object",
+      "required": ["enabled", "allow"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "allow": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "task.create",
+              "task.move",
+              "checklist.check",
+              "task.close",
+              "task.due-date.set",
+              "task.assignee.add",
+              "task.comment.add",
+              "task.parent.set",
+              "task.estimate.set"
+            ]
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "projects": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "rateLimit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "writesPerMinute": { "type": "number" },
+            "commentsPerMinute": { "type": "number" }
+          }
+        },
+        "auditLog": { "type": "string" }
+      }
+    }
+  }
+}

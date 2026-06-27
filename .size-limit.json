@@ -18,5 +18,10 @@
     "name": "@llodev/pm-tasks-testkit (tarball)",
     "path": "pm-tasks/pm-tasks-testkit/dist/**/*.js",
     "limit": "6 kB"
+  },
+  {
+    "name": "@llodev/pm-tasks-jira (tarball)",
+    "path": "pm-tasks/pm-tasks-jira/dist/**/*.js",
+    "limit": "10 kB"
   }
 ]

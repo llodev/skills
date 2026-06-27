@@ -1,7 +1,64 @@
 {
   "name": "@llodev/pm-tasks-jira",
-  "version": "0.0.0",
-  "private": true,
-  "description": "[SCAFFOLD — NOT IMPLEMENTED] Future Jira adapter for @llodev/pm-tasks-*.",
-  "license": "MIT"
+  "version": "1.0.0",
+  "private": false,
+  "description": "Jira adapter for the @llodev/pm-tasks-* family. Use when the user mentions Jira or Atlassian, asks to create a Jira issue, publish to Jira, post to Jira, transition a ticket, add a comment in Jira, or uses --publish-jira; OR for CRUD on existing issues (check sub-task, close issue, change due-date, assign person, comment); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Implements 9 CRUD verbs via the Atlassian MCP server. Requires @llodev/pm-tasks-core installed.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/pm-tasks/pm-tasks-jira",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "pm-tasks/pm-tasks-jira"
+  },
+  "main": "./dist/bin/init.js",
+  "types": "./dist/bin/init.d.ts",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "schemas",
+    "manifest.json",
+    "dist"
+  ],
+  "keywords": [
+    "agent-skill",
+    "jira",
+    "plan-to-tasks",
+    "pm-tools",
+    "atlassian-mcp"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/init.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/bin/init.d.ts",
+      "import": "./dist/bin/init.js"
+    },
+    "./adapter": {
+      "types": "./dist/adapter.d.ts",
+      "import": "./dist/adapter.js"
+    },
+    "./schemas/*.json": "./schemas/*.json",
+    "./manifest.json": "./manifest.json"
+  },
+  "bin": {
+    "pm-tasks-jira": "./dist/bin/init.js"
+  },
+  "dependencies": {
+    "@llodev/pm-tasks-core": "workspace:^",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
