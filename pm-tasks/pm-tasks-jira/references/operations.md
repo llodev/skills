@@ -69,10 +69,10 @@ Accept, in order:
 ## Result envelope — Jira-specific `details`
 
 | Verb                     | `details` fields                                                                          |
-| ------------------------ | ----------------------------------------------------------------------------------------- | -------------------------------- | --------------- |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
 | `task.create`            | `{ id: "<key>", url?: string }`                                                           |
 | `task.move`              | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }`                     |
-| `checklist.check`        | `{ previousState: "incomplete"                                                            | "complete", newState: "complete" | "incomplete" }` |
+| `checklist.check`        | `{ previousState: "incomplete" or "complete", newState: "complete" or "incomplete" }`     |
 | `task.close`             | `{ closed: true, movedToListOrSectionId: "<statusId>" }`                                  |
 | `task.due-date.set`      | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }`                                         |
 | `task.assignee.add`      | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                                    |

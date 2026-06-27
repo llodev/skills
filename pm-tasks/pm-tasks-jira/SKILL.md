@@ -183,17 +183,17 @@ Every verb returns the core contract shape (see [`../pm-tasks-core/references/co
 
 Jira-specific `details` per verb:
 
-| Verb                     | `details` fields                                                                   |
-| ------------------------ | ---------------------------------------------------------------------------------- | ---------------- | -------- |
-| `task.create`            | `{ id: "KAN-42", url?: string }` (url present when MCP returns it)                 |
-| `task.move`              | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }`              |
-| `checklist.check`        | `{ previousState, newState }` (`"complete"` / `"incomplete"`)                      |
-| `task.close`             | `{ closed: true, movedToListOrSectionId: "<statusId>" }`                           |
-| `task.due-date.set`      | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }` — or `NOT_APPLICABLE` on Subtask |
-| `task.assignee.add`      | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                             |
-| `task.comment.add`       | `{ commentId: "<id>", postedAt: "<ISO8601>" }`                                     |
-| `task.parent.set` (F3)   | `{ previousParentId: null, newParentId: "<issueKey>" }`                            |
-| `task.estimate.set` (F7) | `{ normalized: NormalizedEstimate, fieldWritten: "<fieldId>                        | \"timetracking\" | null" }` |
+| Verb                     | `details` fields                                                                        |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| `task.create`            | `{ id: "KAN-42", url?: string }` (url present when MCP returns it)                      |
+| `task.move`              | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }`                   |
+| `checklist.check`        | `{ previousState, newState }` (`"complete"` / `"incomplete"`)                           |
+| `task.close`             | `{ closed: true, movedToListOrSectionId: "<statusId>" }`                                |
+| `task.due-date.set`      | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }` — or `NOT_APPLICABLE` on Subtask      |
+| `task.assignee.add`      | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                                  |
+| `task.comment.add`       | `{ commentId: "<id>", postedAt: "<ISO8601>" }`                                          |
+| `task.parent.set` (F3)   | `{ previousParentId: null, newParentId: "<issueKey>" }`                                 |
+| `task.estimate.set` (F7) | `{ normalized: NormalizedEstimate, fieldWritten: <fieldId> or "timetracking" or null }` |
 
 On failure: `{ ok: false, code: "<CODE>", details: { message, ... } }`. Stable error codes: `UNSUPPORTED_VERB`, `INVALID_REQUEST`, `NOT_APPLICABLE`, `NOT_FOUND`, `AUTH_ERROR`, `RATE_LIMITED`, `MCP_ERROR`. `UNSUPPORTED_VERB` is returned by the core factory for verbs not in the adapter's manifest (e.g. `task.sprint.set`).
 

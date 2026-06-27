@@ -58,6 +58,9 @@ init-asana: ## run pm-tasks-asana init (needs LLODEV_PM_TASKS_ASANA_PAT)
 init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 	node pm-tasks/pm-tasks-trello/dist/bin/init.js
 
+init-jira: ## run pm-tasks-jira init
+	node pm-tasks/pm-tasks-jira/dist/bin/init.js
+
 doctor: ## run pm-tasks-core-doctor against workspace .tool.json files
 	node pm-tasks/pm-tasks-core/dist/bin/doctor.js $(ARGS)
 
