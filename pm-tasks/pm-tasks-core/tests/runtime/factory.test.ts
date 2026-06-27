@@ -41,6 +41,71 @@ describe("createCoreRuntime", () => {
     expect(typeof rt.taskCommentAdd).toBe("function");
   });
 
+  it("returns a Runtime with taskParentSet and taskEstimateSet methods", async () => {
+    const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
+    expect(typeof rt.taskParentSet).toBe("function");
+    expect(typeof rt.taskEstimateSet).toBe("function");
+  });
+
+  it("taskParentSet → UNSUPPORTED_VERB when transport omits the method", async () => {
+    const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
+    const result = await rt.taskParentSet({ taskId: "t1", parentId: "p1" });
+    expect(result).toEqual({ ok: false, code: "UNSUPPORTED_VERB" });
+  });
+
+  it("taskEstimateSet → UNSUPPORTED_VERB when transport omits the method", async () => {
+    const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
+    const result = await rt.taskEstimateSet({
+      taskId: "t1",
+      input: 5,
+      config: { strategy: "story_points", jiraTarget: "story_points" },
+    });
+    expect(result).toEqual({ ok: false, code: "UNSUPPORTED_VERB" });
+  });
+
+  it("taskParentSet → reaches stub when transport provides the method", async () => {
+    const parentSetResult = {
+      ok: true as const,
+      data: { previousParentId: null, newParentId: "p1" },
+    };
+    const transportWithParentSet = {
+      ...stubTransport,
+      taskParentSet: async () => parentSetResult,
+    };
+    const rt = await createCoreRuntime({
+      tool: "trello",
+      configPath,
+      transport: transportWithParentSet,
+    });
+    const result = await rt.taskParentSet({ taskId: "t1", parentId: "p1" });
+    expect(result).toEqual(parentSetResult);
+  });
+
+  it("taskEstimateSet → reaches stub when transport provides the method", async () => {
+    const estimateResult = {
+      ok: true as const,
+      data: {
+        normalized: { points: 5, humanReadable: "5", jiraTarget: "story_points" as const },
+        fieldWritten: "story_points",
+      },
+    };
+    const transportWithEstimate = {
+      ...stubTransport,
+      taskEstimateSet: async () => estimateResult,
+    };
+    const rt = await createCoreRuntime({
+      tool: "trello",
+      configPath,
+      transport: transportWithEstimate,
+    });
+    const result = await rt.taskEstimateSet({
+      taskId: "t1",
+      input: 5,
+      config: { strategy: "story_points", jiraTarget: "story_points" },
+    });
+    expect(result).toEqual(estimateResult);
+  });
+
   it("throws a clear error when configPath does not exist", async () => {
     const missing = join(tmpDir, "missing.json");
     await expect(

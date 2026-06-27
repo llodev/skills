@@ -10,6 +10,8 @@
  * alongside each method below.
  */
 
+import type { EstimateInput, EstimationConfig, NormalizedEstimate } from "../estimation.js";
+
 // ---------------------------------------------------------------------------
 // Result envelope
 // ---------------------------------------------------------------------------
@@ -20,7 +22,9 @@ export type TransportErrorCode =
   | "RATE_LIMITED" // MCP returned 429; details may include retryAfterSeconds
   | "AUTH_ERROR" // missing/invalid token
   | "MCP_ERROR" // generic MCP failure; details should carry message
-  | "INVALID_REQUEST"; // shape-level validation failure
+  | "INVALID_REQUEST" // shape-level validation failure
+  | "UNSUPPORTED_VERB" // transport does not implement this verb (factory guard short-circuit)
+  | "NOT_APPLICABLE"; // operation not applicable in this context (reserved for Phase 3)
 
 export type TransportResult<T> =
   | { ok: true; data: T }
@@ -131,6 +135,35 @@ export interface TaskCommentAddResponse {
 }
 
 // ---------------------------------------------------------------------------
+// 8. taskParentSet  (canonical: task.parent.set)
+// ---------------------------------------------------------------------------
+
+// F3  task.parent.set
+export interface TaskParentSetRequest {
+  taskId: string;
+  parentId: string;
+}
+export interface TaskParentSetResponse {
+  previousParentId: string | null;
+  newParentId: string;
+}
+
+// ---------------------------------------------------------------------------
+// 9. taskEstimateSet  (canonical: task.estimate.set)
+// ---------------------------------------------------------------------------
+
+// F7  task.estimate.set
+export interface TaskEstimateSetRequest {
+  taskId: string;
+  input: EstimateInput;
+  config: EstimationConfig;
+}
+export interface TaskEstimateSetResponse {
+  normalized: NormalizedEstimate;
+  fieldWritten: string | null; // Jira fieldId written, or null when jiraTarget="none"
+}
+
+// ---------------------------------------------------------------------------
 // Transport interface
 // ---------------------------------------------------------------------------
 
@@ -155,6 +188,12 @@ export interface Transport {
 
   /** task.comment.add — post a comment on a task */
   taskCommentAdd(req: TaskCommentAddRequest): Promise<TransportResult<TaskCommentAddResponse>>;
+
+  /** task.parent.set — set or update the parent task/epic (adapter-optional; Jira only in Phase 4) */
+  taskParentSet?(req: TaskParentSetRequest): Promise<TransportResult<TaskParentSetResponse>>;
+
+  /** task.estimate.set — write a normalised story-point/time estimate (adapter-optional; Jira only in Phase 4) */
+  taskEstimateSet?(req: TaskEstimateSetRequest): Promise<TransportResult<TaskEstimateSetResponse>>;
 }
 
 // ---------------------------------------------------------------------------

@@ -95,6 +95,38 @@ test("manifest with only task.create and task.move validates without errors", ()
   }
 });
 
+test("task.parent.set accepted as canonical verb — no namespace prefix required", () => {
+  const manifestPath = `${ROOT}/pm-tasks/pm-tasks-asana/manifest.json`;
+  const original = readFileSync(manifestPath, "utf8");
+  const patched = JSON.parse(original);
+  // Add task.parent.set to verify it is accepted as canonical (no namespace error)
+  if (!patched.verbs.includes("task.parent.set")) {
+    patched.verbs.push("task.parent.set");
+  }
+  // Also mention the verb in SKILL.md check — we patch the manifest temporarily and
+  // rely on asana SKILL.md already mentioning "task.parent.set" OR skip by using a
+  // minimal manifest that only has canonical verbs (SKILL.md grep skips canonical verbs
+  // that appear in the manifest — wait, actually it greps ALL declared verbs).
+  // Use a minimal manifest with just the new verb to isolate the namespace check.
+  const minimalPatched = { tool: "asana", verbs: ["task.parent.set"] };
+  writeFileSync(manifestPath, JSON.stringify(minimalPatched, null, 2));
+  // Also temporarily patch SKILL.md to mention the verb
+  const skillMdPath = `${ROOT}/pm-tasks/pm-tasks-asana/SKILL.md`;
+  const originalSkill = readFileSync(skillMdPath, "utf8");
+  writeFileSync(skillMdPath, originalSkill + "\ntask.parent.set\n");
+  try {
+    const result = runScript();
+    assert.equal(
+      result.code,
+      0,
+      `task.parent.set should be accepted as canonical (no namespace error). stderr: ${result.stderr} stdout: ${result.stdout}`,
+    );
+  } finally {
+    writeFileSync(manifestPath, original);
+    writeFileSync(skillMdPath, originalSkill);
+  }
+});
+
 test("custom verb with wrong namespace → exit 1", () => {
   const manifestPath = `${ROOT}/pm-tasks/pm-tasks-asana/manifest.json`;
   const original = readFileSync(manifestPath, "utf8");
