@@ -733,3 +733,311 @@ describe("createJiraTransport — taskParentSet", () => {
     if (!r.ok) expect(r.code).toBe("AUTH_ERROR");
   });
 });
+
+// ---------------------------------------------------------------------------
+// T8 — taskEstimateSet
+// ---------------------------------------------------------------------------
+
+/** Minimal getJiraIssue response with given labels */
+function makeIssueLabels(labels: string[] = []) {
+  return { fields: { labels } };
+}
+
+const FIELD_ID = "customfield_10016";
+
+describe("createJiraTransport — taskEstimateSet", () => {
+  // ── Happy-path: story_points strategies ─────────────────────────────────
+
+  it("fibonacci 5 → story_points field write + est:5 label; 2 calls in order (getJiraIssue → editJiraIssue)", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels([])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+
+    expect(calls).toHaveLength(2);
+    expect(calls[0].tool).toBe("getJiraIssue");
+    expect(calls[0].args).toMatchObject({ cloudId: "cloud-abc", issueKey: "KAN-1" });
+    expect(calls[1].tool).toBe("editJiraIssue");
+    expect(calls[1].args).toMatchObject({
+      cloudId: "cloud-abc",
+      issueKey: "KAN-1",
+      fields: { [FIELD_ID]: 5, labels: ["est:5"] },
+    });
+
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.data.fieldWritten).toBe(FIELD_ID);
+      expect(r.data.normalized.points).toBe(5);
+      expect(r.data.normalized.jiraTarget).toBe("story_points");
+    }
+  });
+
+  it("three_point {o:2, m:5, p:8} → PERT=5 written to field; label est:o-2-m-5-p-8", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels([])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: { optimistic: 2, likely: 5, pessimistic: 8 },
+      config: { strategy: "three_point", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+
+    // PERT = (2 + 4*5 + 8) / 6 = 30/6 = 5
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.data.normalized.points).toBe(5);
+      expect(r.data.fieldWritten).toBe(FIELD_ID);
+    }
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    expect(editCall?.args).toMatchObject({
+      fields: { [FIELD_ID]: 5, labels: ["est:o-2-m-5-p-8"] },
+    });
+  });
+
+  it("t_shirt 'M' + sizeMap{M:3} → field write 3 + label est:m", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels([])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: "M",
+      config: {
+        strategy: "t_shirt",
+        jiraTarget: "story_points",
+        fieldId: FIELD_ID,
+        sizeMap: { M: 3 },
+      },
+    });
+
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.data.normalized.points).toBe(3);
+      expect(r.data.fieldWritten).toBe(FIELD_ID);
+    }
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    expect(editCall?.args).toMatchObject({
+      fields: { [FIELD_ID]: 3, labels: ["est:m"] },
+    });
+  });
+
+  // ── Happy-path: time-based strategy ─────────────────────────────────────
+
+  it("ideal_days 3 → timetracking.originalEstimate '3d' + label est:3-ideal-days; fieldWritten 'timetracking'", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels([])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 3,
+      config: { strategy: "ideal_days", jiraTarget: "time" },
+    });
+
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.data.fieldWritten).toBe("timetracking");
+      expect(r.data.normalized.timeString).toBe("3d");
+    }
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    expect(editCall?.args).toMatchObject({
+      fields: {
+        timetracking: { originalEstimate: "3d" },
+        labels: ["est:3-ideal-days"],
+      },
+    });
+  });
+
+  // ── jiraTarget "none" ────────────────────────────────────────────────────
+
+  it("jiraTarget 'none' → NO native field; label written; fieldWritten null", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels([])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "none" },
+    });
+
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.data.fieldWritten).toBeNull();
+    }
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    // Must NOT write story_points field or timetracking
+    const fields = editCall?.args?.fields as Record<string, unknown> | undefined;
+    expect(fields).toBeDefined();
+    expect(fields?.[FIELD_ID]).toBeUndefined();
+    expect(fields?.["timetracking"]).toBeUndefined();
+    expect(fields?.["labels"]).toEqual(["est:5"]);
+  });
+
+  // ── Guard: story_points without fieldId ─────────────────────────────────
+
+  it("story_points without fieldId → INVALID_REQUEST + hint contains 'Story Points'; NO MCP calls", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points" }, // no fieldId
+    });
+
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.code).toBe("INVALID_REQUEST");
+      expect(String((r.details as Record<string, unknown>)?.hint ?? "")).toContain("Story Points");
+    }
+  });
+
+  it("story_points with empty string fieldId → INVALID_REQUEST; NO MCP calls", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: "" },
+    });
+
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("INVALID_REQUEST");
+  });
+
+  // ── Label idempotency ────────────────────────────────────────────────────
+
+  it("label idempotency: getJiraIssue returns ['keep','est:3'] → editJiraIssue labels=['keep','est:5'] (prior est: stripped)", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels(["keep", "est:3"])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    const fields = editCall?.args?.fields as Record<string, unknown>;
+    expect(fields?.labels).toEqual(["keep", "est:5"]);
+  });
+
+  it("label idempotency: re-run with same value strips old est: and appends new one (single est: in result)", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels(["est:5", "other"])],
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    const labels = (editCall?.args?.fields as Record<string, unknown>)?.labels as string[];
+    const estLabels = labels.filter((l) => l.startsWith("est:"));
+    expect(estLabels).toHaveLength(1);
+    expect(estLabels[0]).toBe("est:5");
+    expect(labels).toContain("other");
+  });
+
+  // ── normalizeEstimate validation error ──────────────────────────────────
+
+  it("invalid input for strategy (string for fibonacci) → INVALID_REQUEST from normalizeEstimate; NO MCP calls", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: "not-a-number" as unknown as number,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("INVALID_REQUEST");
+  });
+
+  // ── Error propagation ────────────────────────────────────────────────────
+
+  it("getJiraIssue throws 401 → AUTH_ERROR", async () => {
+    const { mcp } = makeMcp(new Map([["getJiraIssue", new Error("401 Unauthorized")]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("AUTH_ERROR");
+  });
+
+  it("editJiraIssue throws 429 → RATE_LIMITED", async () => {
+    const { mcp } = makeMcp(
+      new Map([
+        ["getJiraIssue", makeIssueLabels([])],
+        ["editJiraIssue", new Error("429 Too Many Requests")],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("RATE_LIMITED");
+  });
+
+  // ── Defensive label read: alternate shape (root-level labels) ───────────
+
+  it("getJiraIssue returns root-level labels (not nested under fields) → still read correctly", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["getJiraIssue", { labels: ["root-label"] }], // no .fields wrapper
+        ["editJiraIssue", {}],
+      ]),
+    );
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: FIELD_ID },
+    });
+
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    const labels = (editCall?.args?.fields as Record<string, unknown>)?.labels as string[];
+    expect(labels).toContain("root-label");
+    expect(labels).toContain("est:5");
+    expect(labels.filter((l) => l.startsWith("est:"))).toHaveLength(1);
+  });
+});

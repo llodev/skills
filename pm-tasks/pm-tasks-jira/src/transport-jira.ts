@@ -29,7 +29,9 @@
  *   - F3 (`task.parent.set`) sets `fields.parent.key` via editJiraIssue
  *     (team-managed flat parent). previousParentId is always null — no
  *     pre-read getJiraIssue, same trade-off as taskMove's previousListOrSectionId.
- *   - F7 (`task.estimate.set`) is NOT implemented here — Phase 4 only.
+ *   - F7 (`task.estimate.set`) normalises via core's `normalizeEstimate`,
+ *     writes the native field (story_points or timetracking) + an idempotent
+ *     `est:<slug>` label in a single editJiraIssue call.
  */
 
 import type {
@@ -52,7 +54,10 @@ import type {
   TaskCommentAddResponse,
   TaskParentSetRequest,
   TaskParentSetResponse,
+  TaskEstimateSetRequest,
+  TaskEstimateSetResponse,
 } from "@llodev/pm-tasks-core/runtime";
+import { normalizeEstimate } from "@llodev/pm-tasks-core/estimation";
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -176,6 +181,17 @@ async function resolveTransition(
 
 /** Atlassian accountId fast-path — covers both legacy and modern UUID formats. */
 const ACCOUNT_ID_RE = /^[0-9a-f]{24}:|^[0-9]+:[0-9a-f-]{36}/i;
+
+/**
+ * Produce a label-safe slug: lowercase, runs of non-[a-z0-9] → "-",
+ * strip leading/trailing "-". Used to build idempotent `est:<slug>` labels.
+ */
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 // ---------------------------------------------------------------------------
 // Factory
@@ -494,6 +510,99 @@ export function createJiraTransport(opts: CreateJiraTransportOptions): Transport
           fields: { parent: { key: req.parentId } },
         });
         return { ok: true, data: { previousParentId: null, newParentId: req.parentId } };
+      } catch (e) {
+        const { code, details } = classifyError(e);
+        return { ok: false, code, details };
+      }
+    },
+
+    // -------------------------------------------------------------------
+    // 9. task.estimate.set → normalizeEstimate + getJiraIssue (labels) +
+    //    editJiraIssue (native field + est: label in one call)
+    //
+    // Effort-only: records estimated work, NOT a calendar date. No date
+    // fields are read or written. Any date in EstimateInput is ignored.
+    //
+    // Label strategy (NOT description footer — Jira descriptions are ADF,
+    // fragile). Labels are plain strings → robust, idempotent, searchable.
+    //   est:<slug>  where slug = slugify(normalized.humanReadable)
+    // Prior est: labels are stripped on each write → re-run safe.
+    //
+    // story_points guard: requires req.config.fieldId (non-empty). If
+    // absent → INVALID_REQUEST + actionable hint; NO MCP calls made.
+    //
+    // jiraTarget "none" → no native field write; labels still written.
+    // -------------------------------------------------------------------
+    async taskEstimateSet(
+      req: TaskEstimateSetRequest,
+    ): Promise<TransportResult<TaskEstimateSetResponse>> {
+      // Step 1 — normalize via core (never throws; returns Result)
+      const r = normalizeEstimate(req.input, req.config);
+      if (!r.ok) {
+        return { ok: false, code: "INVALID_REQUEST", details: { message: r.error } };
+      }
+      const n = r.value;
+
+      // Step 2 — guard: story_points requires fieldId
+      if (n.jiraTarget === "story_points" && !req.config.fieldId) {
+        return {
+          ok: false,
+          code: "INVALID_REQUEST",
+          details: {
+            message: "estimation.fieldId is not set — cannot write story points",
+            hint: 'estimation.fieldId not set — enable "Story Points" (Board → ⋯ → Board settings → Estimation → Story points) then re-run pm-tasks-jira init',
+          },
+        };
+      }
+
+      try {
+        // Step 3a — read current labels (defensive: both field shapes)
+        const issueResult = await mcp("getJiraIssue", {
+          cloudId,
+          issueKey: req.taskId,
+          fields: ["labels"],
+        });
+        const raw = issueResult as Record<string, unknown>;
+        const rawLabels =
+          (isObjectWith(raw, "fields") &&
+          isObjectWith(raw.fields as Record<string, unknown>, "labels")
+            ? (raw.fields as Record<string, unknown>).labels
+            : null) ??
+          (isObjectWith(raw, "labels") ? raw.labels : null) ??
+          [];
+        const currentLabels: string[] = Array.isArray(rawLabels)
+          ? (rawLabels as unknown[]).filter((l): l is string => typeof l === "string")
+          : [];
+
+        // Step 3b — idempotent est: label
+        const slug = slugify(n.humanReadable);
+        const newLabels = currentLabels.filter((l) => !l.startsWith("est:")).concat(`est:${slug}`);
+
+        // Step 3c — build native field patch (if any)
+        const nativeFieldPart: Record<string, unknown> = {};
+        if (n.jiraTarget === "story_points" && req.config.fieldId) {
+          nativeFieldPart[req.config.fieldId] = n.points;
+        } else if (n.jiraTarget === "time") {
+          nativeFieldPart["timetracking"] = { originalEstimate: n.timeString };
+        }
+        // jiraTarget "none" → nativeFieldPart stays empty
+
+        // ONE editJiraIssue: native field + labels together
+        await mcp("editJiraIssue", {
+          cloudId,
+          issueKey: req.taskId,
+          fields: { ...nativeFieldPart, labels: newLabels },
+        });
+
+        // Step 5 — return
+        const fieldWritten: string | null =
+          n.jiraTarget === "story_points"
+            ? (req.config.fieldId ?? null)
+            : n.jiraTarget === "time"
+              ? "timetracking"
+              : null;
+
+        return { ok: true, data: { normalized: n, fieldWritten } };
       } catch (e) {
         const { code, details } = classifyError(e);
         return { ok: false, code, details };

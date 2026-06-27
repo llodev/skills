@@ -55,6 +55,8 @@ function makeOmnibusMcp(): McpCaller {
         return {};
       case "addCommentToJiraIssue":
         return { id: "comment-1", created: "2026-06-27T00:00:00.000Z" };
+      case "getJiraIssue":
+        return { fields: { labels: [] } };
       default:
         throw new Error(`Unexpected MCP call: ${tool}`);
     }
@@ -198,10 +200,10 @@ describe("createAdapter (jira) — verb dispatch: ok:true", () => {
 });
 
 // ---------------------------------------------------------------------------
-// 3. F3 (implemented in Phase 4) + F7 UNSUPPORTED_VERB
+// 3. F3 + F7 — both dispatch to real transport handlers
 // ---------------------------------------------------------------------------
 
-describe("createAdapter (jira) — F3/F7 UNSUPPORTED_VERB", () => {
+describe("createAdapter (jira) — F3 taskParentSet + F7 taskEstimateSet dispatch real", () => {
   it("taskParentSet dispatches editJiraIssue with fields.parent.key → ok:true", async () => {
     const runtime = await createAdapter({ configPath, mcp: makeOmnibusMcp() });
     const result = await runtime.taskParentSet({ taskId: "KAN-5", parentId: "KAN-1" });
@@ -217,10 +219,23 @@ describe("createAdapter (jira) — F3/F7 UNSUPPORTED_VERB", () => {
     }
   });
 
-  it("taskEstimateSet returns UNSUPPORTED_VERB (Phase 4)", async () => {
+  it("taskEstimateSet (jiraTarget:none) dispatches getJiraIssue + editJiraIssue → ok:true with fieldWritten:null", async () => {
     const runtime = await createAdapter({ configPath, mcp: makeOmnibusMcp() });
-    const result = await runtime.taskEstimateSet({ taskId: "KAN-1", estimate: "3h" });
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.code).toBe("UNSUPPORTED_VERB");
+    const result = await runtime.taskEstimateSet({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "none" },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.fieldWritten).toBeNull();
+      expect(result.data.normalized.jiraTarget).toBe("none");
+    }
+    const getCall = calls.find((c) => c.tool === "getJiraIssue");
+    expect(getCall).toBeDefined();
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    expect(editCall).toBeDefined();
+    const labels = (editCall?.args?.fields as Record<string, unknown>)?.labels as string[];
+    expect(labels).toContain("est:5");
   });
 });
