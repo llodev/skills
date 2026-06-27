@@ -74,7 +74,7 @@ export function renderReport(report: RunReport, opts: RenderOpts): string {
 // Config discovery
 // ---------------------------------------------------------------------------
 
-const KNOWN_TOOLS = ["trello", "asana"] as const;
+const KNOWN_TOOLS = ["trello", "asana", "jira"] as const;
 
 interface DiscoveredConfig {
   tool: string;
