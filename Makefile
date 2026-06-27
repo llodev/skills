@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install hooks fmt fmt-check validate lint contract-check version-sync changeset pre-release release-version release-publish init-asana init-trello doctor skill-judge skill-judge-rubric-snapshot skill-judge-rubric-check test typecheck build coverage size clean e2e
+.PHONY: help install hooks fmt fmt-check validate lint contract-check version-sync changeset preflight pre-release release-version release-publish init-asana init-trello doctor skill-judge skill-judge-rubric-snapshot skill-judge-rubric-check test typecheck build coverage size clean e2e
 
 help:
 	@awk 'BEGIN{FS=":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -34,6 +34,14 @@ version-sync: ## sync package.json versions across workspace
 
 changeset: ## record a new changeset (interactive)
 	pnpm changeset
+
+preflight: build ## full release rehearsal — runs everything release.yml does EXCEPT publish (run before pushing)
+	pnpm run typecheck
+	node scripts/checks/canary-e2e.mjs
+	pnpm run validate
+	pnpm run contract:check
+	@bash scripts/shell/pre-release-check.sh
+	pnpm changeset status --verbose
 
 pre-release: build ## quality gate before release-version (builds first, then runs skill-judge / rubric / doctor gates)
 	@bash scripts/shell/pre-release-check.sh

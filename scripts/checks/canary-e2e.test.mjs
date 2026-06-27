@@ -1,9 +1,10 @@
 // canary-e2e.test.mjs — hermetic unit tests for canary-e2e.mjs exports.
 // Uses node:test + node:assert/strict. No live registry. No new dependencies.
 // "fixture registry" = manually planted node_modules in a tmp sandbox.
-// Scope note: runSmoke test covers all 4 checks on the good path and the
-// shebang (file-read) check on the broken path. Dynamic-import checks (core,
-// testkit) are covered on the good path via real ESM fixture modules.
+// Scope note: runSmoke test covers all 5 checks (core, asana, trello, jira,
+// testkit) on the good path and the shebang (file-read) check on the broken
+// path. Dynamic-import checks (core, testkit) are covered on the good path via
+// real ESM fixture modules.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
@@ -141,6 +142,11 @@ function plantGoodFixture(sandbox) {
   );
   mkdirSync(trelloBinDir, { recursive: true });
   writeFileSync(path.join(trelloBinDir, "init.js"), "#!/usr/bin/env node\n// stub\n");
+
+  // pm-tasks-jira: dist/bin/init.js with shebang
+  const jiraBinDir = path.join(sandbox, "node_modules", "@llodev", "pm-tasks-jira", "dist", "bin");
+  mkdirSync(jiraBinDir, { recursive: true });
+  writeFileSync(path.join(jiraBinDir, "init.js"), "#!/usr/bin/env node\n// stub\n");
 
   // pm-tasks-testkit: ESM module exporting `createFakeAdapter`
   const testkitDir = path.join(sandbox, "node_modules", "@llodev", "pm-tasks-testkit");
