@@ -354,7 +354,7 @@ import { createAdapter } from "@llodev/pm-tasks-jira/adapter";
 
 ```ts
 function createAdapter(opts: {
-  configPath: string; // path to .trello.json or .asana.json
+  configPath: string; // path to .trello.json, .asana.json, or .jira.json
   mcp: (toolName: string, args: Record<string, unknown>) => Promise<unknown>; // McpCaller
   session?: string; // audit-log correlation; auto-generated if omitted
   language?: string; // locale hint

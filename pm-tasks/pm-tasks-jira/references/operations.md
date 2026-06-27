@@ -16,6 +16,8 @@ Verb → MCP tool mapping for `@llodev/pm-tasks-jira`. All verbs return the core
 | `task.parent.set` (F3)   | `editJiraIssue`                                                 | `req.parentId` (issue key, e.g. `KAN-12`) → `fields.parent.key`                             | Team-managed flat parent; `parentId` validated as `/^[A-Z][A-Z0-9]+-\d+$/`; `INVALID_REQUEST` if invalid; `previousParentId` always `null` |
 | `task.estimate.set` (F7) | `getJiraIssue` (labels read) + `editJiraIssue` (labels + field) | `req.input: EstimateInput`, `req.config: EstimationConfig`                                  | Two-call sequence; `est:<slug>` label + optional native field; see [`estimation.md`](estimation.md)                                        |
 
+**F2 (`task.sprint.set`) — unsupported.** The Atlassian MCP exposes no agile/sprint API, so the core factory returns `UNSUPPORTED_VERB` for this verb (parity with SKILL.md § F2 sprint).
+
 ## `task.move` — transition engine
 
 Schema: `{ taskId: string, targetListOrSectionId: "new" | "indeterminate" | "done" }`
@@ -66,14 +68,14 @@ Accept, in order:
 
 ## Result envelope — Jira-specific `details`
 
-| Verb                     | `details` fields                                                      |
-| ------------------------ | --------------------------------------------------------------------- | -------------------------------- | --------------- |
-| `task.create`            | `{ id: "<key>", url?: string }`                                       |
-| `task.move`              | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }` |
-| `checklist.check`        | `{ previousState: "incomplete"                                        | "complete", newState: "complete" | "incomplete" }` |
-| `task.close`             | `{ closed: true, movedToListOrSectionId: "<statusId>" }`              |
-| `task.due-date.set`      | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }`                     |
-| `task.assignee.add`      | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                |
-| `task.comment.add`       | `{ commentId: "<id>", postedAt: "<ISO8601>" }`                        |
-| `task.parent.set` (F3)   | `{ previousParentId: null, newParentId: "<issueKey>" }`               |
-| `task.estimate.set` (F7) | `{ normalized: NormalizedEstimate, fieldWritten: "<fieldId>           | \"timetracking\"                 | null" }`        |
+| Verb                     | `details` fields                                                                          |
+| ------------------------ | ----------------------------------------------------------------------------------------- | -------------------------------- | --------------- |
+| `task.create`            | `{ id: "<key>", url?: string }`                                                           |
+| `task.move`              | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }`                     |
+| `checklist.check`        | `{ previousState: "incomplete"                                                            | "complete", newState: "complete" | "incomplete" }` |
+| `task.close`             | `{ closed: true, movedToListOrSectionId: "<statusId>" }`                                  |
+| `task.due-date.set`      | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }`                                         |
+| `task.assignee.add`      | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                                    |
+| `task.comment.add`       | `{ commentId: "<id>", postedAt: "<ISO8601>" }`                                            |
+| `task.parent.set` (F3)   | `{ previousParentId: null, newParentId: "<issueKey>" }`                                   |
+| `task.estimate.set` (F7) | `{ normalized: NormalizedEstimate, fieldWritten: "<fieldId>" \| "timetracking" \| null }` |

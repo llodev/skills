@@ -6,7 +6,7 @@ import {
   type AtlassianResource,
   type JiraProject,
   type JiraIssueType,
-} from "../src/bin/init.js";
+} from "../src/init-flow.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures

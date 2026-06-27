@@ -77,7 +77,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - Labels → `labels[]` array. Resolve from `.jira.json` `labels[]` or pass through raw.
 - Due date → `duedate` (YYYY-MM-DD; sliced from ISO 8601). **Not applicable for Subtasks** — omit silently.
 - Assignee → `lookupJiraAccountId` by display name or email; `editJiraIssue { assignee: { accountId } }`.
-- Issue type → `issueTypes[task]` from `.jira.json` (default); override per card if card specifies type.
+- Issue type → v1 maps all created cards to the configured `issueTypes.task` (Subtasks use `issueTypes.subtask`). Per-type override is not yet supported — `TaskCreateRequest` carries no type field.
 
 ## Phase 5 — MCP publish
 
@@ -230,4 +230,4 @@ Pass `--doctor` to run workspace health checks:
 npx @llodev/pm-tasks-jira init --doctor
 ```
 
-Runs core checks (C-FS-1..3, C-CFG-1..4) plus Jira-specific probes (C-JRA-1..N, gated on MCP connectivity). Full check matrix: [`pm-tasks/pm-tasks-core/references/doctor.md`](../pm-tasks-core/references/doctor.md).
+Runs core checks (C-FS-1..3, C-CFG-1..4) plus Jira-specific probes (C-JIR-1, C-JIR-2, gated on MCP connectivity). Full check matrix: [`pm-tasks/pm-tasks-core/references/doctor.md`](../pm-tasks-core/references/doctor.md).

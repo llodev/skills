@@ -11,11 +11,11 @@ The `strategy` field in `EstimationConfig` (`.jira.json` `estimation.strategy`) 
 | `fibonacci`      | Fibonacci sequence (1, 2, 3, 5, 8, 13, 21, ...)         | `story_points`        |
 | `story_points`   | Raw numeric story points                                | `story_points`        |
 | `planning_poker` | Planning poker deck (½, 1, 2, 3, 5, 8, 13, 20, 40, 100) | `story_points`        |
-| `affinity`       | Relative affinity (XS/S/M/L/XL mapped via `sizeMap`)    | `story_points`        |
+| `affinity`       | Relative affinity sizing (numeric points)               | `story_points`        |
 | `t_shirt`        | T-shirt sizes (XS/S/M/L/XL mapped via `sizeMap`)        | `story_points`        |
 | `ideal_days`     | Ideal working days (numeric)                            | `time`                |
 | `ideal_hours`    | Ideal working hours (numeric)                           | `time`                |
-| `three_point`    | PERT formula: `(O + 4M + P) / 6`                        | `time`                |
+| `three_point`    | PERT formula: `(O + 4M + P) / 6`                        | `story_points`        |
 
 ## `jiraTarget` values
 
@@ -51,9 +51,9 @@ interface NormalizedEstimate {
 
 Returns `{ ok: false, error: string }` on invalid input (e.g. unrecognized size label, negative number). The transport converts this to `INVALID_REQUEST`.
 
-## `sizeMap` — T-shirt / affinity → points
+## `sizeMap` — T-shirt → points
 
-Default conversion used by `t_shirt` and `affinity` strategies:
+Default conversion used by the `t_shirt` strategy:
 
 | Size | Points |
 | ---- | ------ |

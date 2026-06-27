@@ -572,6 +572,17 @@ describe("createJiraTransport — taskAssigneeAdd", () => {
     expect(calls).toHaveLength(1);
   });
 
+  it("by accountId (bare 24-char alphanumeric, no colon): ONE call only (editJiraIssue), lookup skipped", async () => {
+    const accountId = "557058a1b2c3d4e5f6a7b8c9"; // 24 alphanumeric chars, no colon
+    const { mcp, calls } = makeMcp(new Map([["editJiraIssue", {}]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskAssigneeAdd({ taskId: "KAN-1", userId: accountId });
+    expect(calls.filter((c) => c.tool === "lookupJiraAccountId")).toHaveLength(0);
+    expect(calls).toHaveLength(1);
+    expect(calls[0].tool).toBe("editJiraIssue");
+    expect(r).toEqual({ ok: true, data: { added: true, currentAssigneeIds: [accountId] } });
+  });
+
   it("lookup shape error (no accountId in result) → MCP_ERROR with verb", async () => {
     const { mcp } = makeMcp(new Map([["lookupJiraAccountId", { userId: "wrong-key" }]]));
     const t = createJiraTransport({ mcp, config: TEST_CONFIG });
@@ -921,6 +932,36 @@ describe("createJiraTransport — taskEstimateSet", () => {
       taskId: "KAN-1",
       input: 5,
       config: { strategy: "fibonacci", jiraTarget: "story_points", fieldId: "" },
+    });
+
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("INVALID_REQUEST");
+  });
+
+  // ── Guard: strategy / jiraTarget mismatch (silent no-op prevention) ──────
+
+  it("strategy/jiraTarget mismatch: fibonacci + jiraTarget 'time' → INVALID_REQUEST; NO MCP calls", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 5,
+      config: { strategy: "fibonacci", jiraTarget: "time" },
+    });
+
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("INVALID_REQUEST");
+  });
+
+  it("strategy/jiraTarget mismatch: ideal_days + jiraTarget 'story_points' → INVALID_REQUEST; NO MCP calls", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskEstimateSet!({
+      taskId: "KAN-1",
+      input: 3,
+      config: { strategy: "ideal_days", jiraTarget: "story_points", fieldId: "customfield_10016" },
     });
 
     expect(calls).toHaveLength(0);

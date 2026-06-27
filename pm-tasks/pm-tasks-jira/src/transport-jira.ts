@@ -180,7 +180,7 @@ async function resolveTransition(
 }
 
 /** Atlassian accountId fast-path — covers both legacy and modern UUID formats. */
-const ACCOUNT_ID_RE = /^[0-9a-f]{24}:|^[0-9]+:[0-9a-f-]{36}/i;
+const ACCOUNT_ID_RE = /^[a-z0-9]{24}$|^[0-9a-f]{24}:|^[0-9]+:[0-9a-f-]{36}/i;
 
 /**
  * Produce a label-safe slug: lowercase, runs of non-[a-z0-9] → "-",
@@ -551,6 +551,29 @@ export function createJiraTransport(opts: CreateJiraTransportOptions): Transport
           details: {
             message: "estimation.fieldId is not set — cannot write story points",
             hint: 'estimation.fieldId not set — enable "Story Points" (Board → ⋯ → Board settings → Estimation → Story points) then re-run pm-tasks-jira init',
+          },
+        };
+      }
+
+      // Guard: jiraTarget must match what the strategy produced — otherwise we'd write
+      // an undefined native field and report success (silent no-op). Spec §9.
+      if (n.jiraTarget === "story_points" && n.points == null) {
+        return {
+          ok: false,
+          code: "INVALID_REQUEST",
+          details: {
+            message: `estimation.strategy "${req.config.strategy}" does not produce story points, but estimation.jiraTarget is "story_points"`,
+            hint: 'Set estimation.jiraTarget to "time" or "none", or pick a point-based strategy (fibonacci, story_points, planning_poker, affinity, t_shirt, three_point), then re-run pm-tasks-jira init',
+          },
+        };
+      }
+      if (n.jiraTarget === "time" && !n.timeString) {
+        return {
+          ok: false,
+          code: "INVALID_REQUEST",
+          details: {
+            message: `estimation.strategy "${req.config.strategy}" does not produce a time estimate, but estimation.jiraTarget is "time"`,
+            hint: 'Set estimation.jiraTarget to "story_points" or "none", or pick a time strategy (ideal_days, ideal_hours), then re-run pm-tasks-jira init',
           },
         };
       }
