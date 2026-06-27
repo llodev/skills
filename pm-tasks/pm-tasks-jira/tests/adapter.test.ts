@@ -117,7 +117,11 @@ describe("createAdapter (jira) — wiring", () => {
 describe("createAdapter (jira) — verb dispatch: ok:true", () => {
   it("taskCreate dispatches to createJiraIssue → ok:true", async () => {
     const runtime = await createAdapter({ configPath, mcp: makeOmnibusMcp() });
-    const result = await runtime.taskCreate({ name: "Test issue", listOrSectionId: null });
+    const result = await runtime.taskCreate({
+      boardOrProjectId: "KAN", // ignored by Jira transport; identity from config
+      listOrSectionId: "", // ignored by Jira transport; status via transitions
+      name: "Test issue",
+    });
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.data.id).toBe("KAN-42");
     const created = calls.filter((c) => c.tool === "createJiraIssue");
