@@ -55,6 +55,7 @@ export interface JiraInitApi {
   getProjects(cloudId: string): Promise<JiraProject[]>;
   getIssueTypes(cloudId: string, projectKey: string): Promise<JiraIssueType[]>;
   getFieldMeta(cloudId: string, projectKey: string, issueTypeId: string): Promise<JiraFieldMeta>;
+  getMe(cloudId: string): Promise<{ accountId: string; displayName: string }>;
 }
 
 export type PickFn = <T>(
@@ -142,6 +143,11 @@ function createRestApi(token: string, email: string): JiraInitApi {
         `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issue/createmeta/${encodeURIComponent(projectKey)}/issuetypes/${encodeURIComponent(issueTypeId)}`,
       );
     },
+    getMe: async (cloudId) => {
+      return atlFetch<{ accountId: string; displayName: string }>(
+        `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/myself`,
+      );
+    },
   };
 }
 
@@ -205,6 +211,18 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   }
   const cloudId = resource.id;
   const siteUrl = resource.url;
+
+  // -------------------------------------------------------------------------
+  // Step 1b: Resolve authenticated user → seed members
+  // -------------------------------------------------------------------------
+  let members: Array<{ accountId: string; displayName: string; alias: string }> = [];
+  try {
+    const me = await api.getMe(cloudId);
+    members = [{ accountId: me.accountId, displayName: me.displayName, alias: "me" }];
+  } catch {
+    // User-info unavailable; leave members empty rather than failing init
+    members = [];
+  }
 
   // -------------------------------------------------------------------------
   // Step 2: Pick project
@@ -332,6 +350,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
     site: { cloudId, url: siteUrl },
     project: { key: projectKey, style },
     issueTypes: issueTypeMap,
+    members,
     estimation,
   };
   if (autonomous !== undefined) out.autonomous = autonomous;
@@ -349,7 +368,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   await doWrite(outPath, out);
   printInstructions([
     `Config written to ${outPath}`,
-    "Next: pm-tasks-core-doctor --tool jira",
+    "Next: pm-tasks-jira init --doctor",
     "Atlassian MCP endpoint: https://mcp.atlassian.com/v1/mcp",
   ]);
 
@@ -361,6 +380,13 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
 // ---------------------------------------------------------------------------
 
 async function run(): Promise<void> {
+  const argv = process.argv.slice(2);
+  if (argv.includes("--doctor")) {
+    const { runDoctor } = await import("../doctor-cli.js");
+    await runDoctor({ tool: "jira", argv });
+    return;
+  }
+
   const outputIdx = process.argv.indexOf("--output");
   const outPath =
     outputIdx !== -1 && process.argv[outputIdx + 1]

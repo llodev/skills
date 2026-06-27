@@ -51,6 +51,7 @@ function makeApiWithSP(): JiraInitApi {
         description: { name: "Description" },
       },
     }),
+    getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
 }
 
@@ -67,6 +68,7 @@ function makeApiNoSP(): JiraInitApi {
         assignee: { name: "Assignee" },
       },
     }),
+    getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
 }
 
@@ -182,5 +184,34 @@ describe("runFlow — multiple Atlassian resources", () => {
 
     const siteCalls = pick.mock.calls.filter(([label]) => String(label).includes("Atlassian site"));
     expect(siteCalls.length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Test (d): members — authenticated user populated from getMe
+// ---------------------------------------------------------------------------
+
+describe("runFlow — members block", () => {
+  it("populates members[0] with alias=me from getMe", async () => {
+    const out = await runFlow(baseDeps(makeApiWithSP()));
+    const members = out["members"] as Array<Record<string, unknown>>;
+    expect(Array.isArray(members)).toBe(true);
+    expect(members.length).toBeGreaterThanOrEqual(1);
+    expect(members[0]["alias"]).toBe("me");
+    expect(members[0]["accountId"]).toBe("user-123");
+    expect(members[0]["displayName"]).toBe("Alice Acme");
+  });
+
+  it("falls back to members=[] when getMe throws", async () => {
+    const apiFailing: JiraInitApi = {
+      ...makeApiWithSP(),
+      getMe: async () => {
+        throw new Error("unauthorized");
+      },
+    };
+    const out = await runFlow(baseDeps(apiFailing));
+    const members = out["members"] as Array<Record<string, unknown>>;
+    expect(Array.isArray(members)).toBe(true);
+    expect(members.length).toBe(0);
   });
 });

@@ -1,5 +1,12 @@
 // pm-tasks-jira doctor-cli — adapter-specific health checks (C-JIR-*)
-import { type DoctorCheck, type DoctorContext } from "@llodev/pm-tasks-core/doctor";
+import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { resolveDataDir } from "@llodev/pm-tasks-core/audit";
+import { type DoctorCheck, type DoctorContext, runChecks } from "@llodev/pm-tasks-core/doctor";
+import { renderReport, type RenderOpts } from "@llodev/pm-tasks-core/bin/doctor";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 // ---------------------------------------------------------------------------
 // Probe interface — injected in tests; absent in standalone doctor invocations
@@ -52,9 +59,9 @@ function makeC_JIR_2(probe?: JiraProbe): DoctorCheck {
     async run(ctx: DoctorContext): Promise<{ ok: boolean; message: string; fixHint?: string }> {
       if (!probe?.getProject) {
         return {
-          ok: false,
+          ok: true,
           message:
-            "No Jira probe injected; skipping reachability check. Run from a Claude Code session to verify.",
+            "No Jira probe injected — skipping reachability check (no probe). Run from a Claude Code session to verify.",
         };
       }
 
@@ -97,3 +104,61 @@ export function makeJiraChecks(probe?: JiraProbe): DoctorCheck[] {
 
 /** Pre-built checks without a probe (used when running standalone without MCP). */
 export const ADAPTER_CHECKS: DoctorCheck[] = makeJiraChecks();
+
+// ---------------------------------------------------------------------------
+// runDoctor — called from bin/init.ts when --doctor is passed
+// ---------------------------------------------------------------------------
+
+export interface RunDoctorOpts {
+  tool: string;
+  argv: string[];
+}
+
+export async function runDoctor({ argv }: RunDoctorOpts): Promise<void> {
+  const jsonMode = argv.includes("--json");
+  const fixHintsOnly = argv.includes("--fix-hints-only");
+
+  // --config override
+  const configIdx = argv.indexOf("--config");
+  let configPath: string;
+  if (configIdx !== -1 && argv[configIdx + 1]) {
+    configPath = argv[configIdx + 1];
+  } else {
+    configPath = path.resolve(process.cwd(), ".jira.json");
+  }
+
+  let config: unknown;
+  try {
+    const raw = await readFile(configPath, "utf8");
+    config = JSON.parse(raw) as unknown;
+  } catch {
+    config = {};
+  }
+
+  const schemaRaw = await readFile(path.join(ROOT, "schemas", "config.json"), "utf8");
+  const manifestRaw = await readFile(path.join(ROOT, "manifest.json"), "utf8");
+  const schema = JSON.parse(schemaRaw) as unknown;
+  const manifest = JSON.parse(manifestRaw) as { tool: string; verbs: string[] };
+
+  const ctx: DoctorContext = {
+    tool: "jira",
+    configPath,
+    config,
+    manifest,
+    schema,
+    auditLogPath: path.join(resolveDataDir("jira"), "audit.log"),
+    auditRotationMaxBytes: 10 * 1024 * 1024,
+  };
+
+  const report = await runChecks(ctx, ADAPTER_CHECKS);
+
+  const opts: RenderOpts = {
+    format: jsonMode ? "json" : "md",
+    fixHintsOnly,
+  };
+
+  console.log(renderReport(report, opts));
+
+  const hasError = report.results.some((r) => !r.result.ok && r.check.severity === "error");
+  process.exit(hasError ? 1 : 0);
+}

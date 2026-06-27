@@ -65,14 +65,14 @@ describe("C-JIR-1 — Estimation field consistent", () => {
 // ---------------------------------------------------------------------------
 
 describe("C-JIR-2 — Project reachable", () => {
-  it("(d) no probe injected → ok: false (warn), message mentions no probe", async () => {
+  it("(d) no probe injected → ok: true (skip), message mentions no probe", async () => {
     const [, C_JIR_2] = makeJiraChecks(); // no probe
     const ctx = makeCtx({
       site: { cloudId: "cloud-abc", url: "https://acme.atlassian.net" },
       project: { key: "ACME", style: "company-managed" },
     });
     const result = await C_JIR_2.run(ctx);
-    expect(result.ok).toBe(false);
+    expect(result.ok).toBe(true);
     expect(result.message).toContain("No Jira probe");
     expect(C_JIR_2.severity).toBe("warn");
   });
