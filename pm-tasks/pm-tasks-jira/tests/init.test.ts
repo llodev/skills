@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import {
   runFlow,
+  mapIssueTypes,
   type InitDeps,
   type JiraInitApi,
   type AtlassianResource,
@@ -26,16 +27,22 @@ const RESOURCE_B: AtlassianResource = {
 
 const PROJECT: JiraProject = {
   key: "ACME",
+  id: "10000",
   name: "Acme Project",
   simplified: false,
 };
 
 const ISSUE_TYPES: JiraIssueType[] = [
-  { id: "10001", name: "Epic" },
-  { id: "10002", name: "Story" },
-  { id: "10003", name: "Task" },
-  { id: "10004", name: "Subtask" },
-  { id: "10005", name: "Bug" },
+  { id: "10001", name: "Epic", hierarchyLevel: 1 },
+  { id: "10002", name: "Story", hierarchyLevel: 0 },
+  { id: "10003", name: "Task", hierarchyLevel: 0 },
+  { id: "10004", name: "Subtask", subtask: true, hierarchyLevel: -1 },
+  { id: "10005", name: "Bug", hierarchyLevel: 0 },
+];
+
+const STATUSES = [
+  { id: "1", name: "To Do", category: "new" as const },
+  { id: "2", name: "Done", category: "done" as const },
 ];
 
 /** Stub API with Story Points present */
@@ -51,6 +58,7 @@ function makeApiWithSP(): JiraInitApi {
         { key: "description", name: "Description" },
       ],
     }),
+    getStatuses: async () => STATUSES,
     getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
 }
@@ -68,6 +76,7 @@ function makeApiNoSP(): JiraInitApi {
         { key: "assignee", name: "Assignee" },
       ],
     }),
+    getStatuses: async () => STATUSES,
     getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
 }
@@ -84,6 +93,7 @@ function makeApiTimeTracking(): JiraInitApi {
         { key: "timetracking", name: "Time tracking" },
       ],
     }),
+    getStatuses: async () => STATUSES,
     getMe: async () => ({ accountId: "user-123", displayName: "Alice Acme" }),
   };
 }
@@ -95,12 +105,27 @@ function makePick() {
   );
 }
 
+/**
+ * Pick stub that selects a TIME strategy (ideal_days) for the strategy prompt
+ * and the first option for every other prompt (e.g. the write-target prompt).
+ */
+function makeTimeStrategyPick() {
+  return vi.fn(async <T>(label: string, choices: Array<{ label: string; value: T }>) => {
+    if (label.includes("estimation strategy")) {
+      const idealDays = choices.find((c) => (c.value as unknown) === "ideal_days");
+      return (idealDays ?? choices[0]).value;
+    }
+    return choices[0].value;
+  });
+}
+
 /** Minimal deps for a non-writing test run */
 function baseDeps(api: JiraInitApi, pick = makePick()): InitDeps {
   return {
     api,
     pick,
     yesNo: async () => false,
+    locale: "en-US",
     doWrite: async () => undefined,
     doValidate: async () => ({ ok: true }),
     doLoadSchema: async () => ({}),
@@ -125,7 +150,16 @@ describe("runFlow — happy path (Story Points present)", () => {
   it("writes site + project block correctly", async () => {
     const out = await runFlow(baseDeps(makeApiWithSP()));
     expect(out["site"]).toEqual({ cloudId: "cloud-aaa", url: "https://acme.atlassian.net" });
-    expect(out["project"]).toEqual({ key: "ACME", style: "company-managed" });
+    expect(out["project"]).toEqual({ key: "ACME", id: "10000", style: "company-managed" });
+  });
+
+  it("captures locale, statuses, and fieldsByType in the config", async () => {
+    const out = await runFlow(baseDeps(makeApiWithSP()));
+    expect(out["locale"]).toBe("en-US");
+    expect(out["statuses"]).toEqual(STATUSES);
+    const fbt = out["fieldsByType"] as Record<string, string[]>;
+    expect(fbt["task"]).toEqual(["customfield_10016", "description", "summary"]);
+    expect(Object.keys(fbt).sort()).toEqual(["bug", "epic", "story", "subtask", "task"]);
   });
 
   it("simplified=true → team-managed style", async () => {
@@ -137,13 +171,35 @@ describe("runFlow — happy path (Story Points present)", () => {
     expect((out["project"] as Record<string, unknown>)["style"]).toBe("team-managed");
   });
 
-  it("builds issueTypes map from returned types", async () => {
+  it("builds issueTypes map ({id,name}) from returned types", async () => {
     const out = await runFlow(baseDeps(makeApiWithSP()));
-    const it_ = out["issueTypes"] as Record<string, string>;
-    expect(it_["task"]).toBe("Task");
-    expect(it_["story"]).toBe("Story");
-    expect(it_["epic"]).toBe("Epic");
-    expect(it_["bug"]).toBe("Bug");
+    const it_ = out["issueTypes"] as Record<string, { id: string; name: string }>;
+    expect(it_["task"]).toEqual({ id: "10003", name: "Task" });
+    expect(it_["story"]).toEqual({ id: "10002", name: "Story" });
+    expect(it_["epic"]).toEqual({ id: "10001", name: "Epic" });
+    expect(it_["subtask"]).toEqual({ id: "10004", name: "Subtask" });
+    expect(it_["bug"]).toEqual({ id: "10005", name: "Bug" });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// mapIssueTypes — pt-BR localized inputs (flags + aliases, not substring)
+// ---------------------------------------------------------------------------
+
+describe("mapIssueTypes — pt-BR localized types", () => {
+  it("maps task→Tarefa and story→História (never Subtask) via flags + aliases", () => {
+    const m = mapIssueTypes([
+      { id: "10001", name: "Epic", hierarchyLevel: 1 },
+      { id: "10002", name: "Subtask", subtask: true, hierarchyLevel: -1 },
+      { id: "10003", name: "Tarefa", hierarchyLevel: 0 },
+      { id: "10005", name: "Bug", hierarchyLevel: 0 },
+      { id: "10034", name: "História", hierarchyLevel: 0 },
+    ]);
+    expect(m["task"]).toEqual({ id: "10003", name: "Tarefa" });
+    expect(m["story"]).toEqual({ id: "10034", name: "História" });
+    expect(m["subtask"]).toEqual({ id: "10002", name: "Subtask" });
+    expect(m["epic"]).toEqual({ id: "10001", name: "Epic" });
+    expect(m["bug"]).toEqual({ id: "10005", name: "Bug" });
   });
 });
 
@@ -152,11 +208,20 @@ describe("runFlow — happy path (Story Points present)", () => {
 // ---------------------------------------------------------------------------
 
 describe("runFlow — time tracking present (no Story Points)", () => {
-  it("sets jiraTarget=time and omits fieldId", async () => {
-    const out = await runFlow(baseDeps(makeApiTimeTracking()));
+  it("time strategy + time tracking → jiraTarget=time and omits fieldId", async () => {
+    const out = await runFlow(baseDeps(makeApiTimeTracking(), makeTimeStrategyPick()));
     const est = out["estimation"] as Record<string, unknown>;
+    expect(est["strategy"]).toBe("ideal_days");
     expect(est["jiraTarget"]).toBe("time");
     expect(est["fieldId"]).toBeUndefined();
+  });
+
+  it("point strategy + time tracking only → jiraTarget=none (coherence)", async () => {
+    // fibonacci (point-based) with no Story Points field → none, never time.
+    const out = await runFlow(baseDeps(makeApiTimeTracking()));
+    const est = out["estimation"] as Record<string, unknown>;
+    expect(est["strategy"]).toBe("fibonacci");
+    expect(est["jiraTarget"]).toBe("none");
   });
 });
 

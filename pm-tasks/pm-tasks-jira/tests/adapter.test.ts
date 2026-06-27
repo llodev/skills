@@ -20,8 +20,14 @@ let calls: CallRecord[];
 const TEST_CONFIG = {
   tool: "jira",
   site: { cloudId: "cloud-abc" },
-  project: { key: "KAN" },
-  issueTypes: { task: "Task", subtask: "Subtask" },
+  project: { key: "KAN", id: "10000" },
+  issueTypes: {
+    epic: { id: "10001", name: "Epic" },
+    story: { id: "10034", name: "Story" },
+    task: { id: "10003", name: "Task" },
+    subtask: { id: "10002", name: "Subtask" },
+    bug: { id: "10005", name: "Bug" },
+  },
 };
 
 /**

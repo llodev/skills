@@ -33,7 +33,10 @@ function makeMcp(responses: Map<string, unknown>): { mcp: McpCaller; calls: Call
 const TEST_CONFIG = {
   site: { cloudId: "cloud-abc" },
   project: { key: "KAN" },
-  issueTypes: { task: "Task", subtask: "Subtask" },
+  issueTypes: {
+    task: { id: "10003", name: "Task" },
+    subtask: { id: "10002", name: "Subtask" },
+  },
 };
 
 /** A minimal valid transition response for category "done" */

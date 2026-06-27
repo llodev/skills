@@ -19,10 +19,11 @@
     },
     "project": {
       "type": "object",
-      "required": ["key"],
+      "required": ["key", "id"],
       "additionalProperties": false,
       "properties": {
         "key": { "type": "string" },
+        "id": { "type": "string" },
         "style": { "type": "string", "enum": ["team-managed", "company-managed"] }
       }
     },
@@ -31,11 +32,35 @@
       "required": ["epic", "story", "task", "subtask", "bug"],
       "additionalProperties": false,
       "properties": {
-        "epic": { "type": "string" },
-        "story": { "type": "string" },
-        "task": { "type": "string" },
-        "subtask": { "type": "string" },
-        "bug": { "type": "string" }
+        "epic": { "$ref": "#/$defs/issueType" },
+        "story": { "$ref": "#/$defs/issueType" },
+        "task": { "$ref": "#/$defs/issueType" },
+        "subtask": { "$ref": "#/$defs/issueType" },
+        "bug": { "$ref": "#/$defs/issueType" }
+      }
+    },
+    "statuses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "category": { "type": "string", "enum": ["new", "indeterminate", "done"] }
+        }
+      }
+    },
+    "fieldsByType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "epic": { "type": "array", "items": { "type": "string" } },
+        "story": { "type": "array", "items": { "type": "string" } },
+        "task": { "type": "array", "items": { "type": "string" } },
+        "subtask": { "type": "array", "items": { "type": "string" } },
+        "bug": { "type": "array", "items": { "type": "string" } }
       }
     },
     "members": {
@@ -114,6 +139,17 @@
           }
         },
         "auditLog": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "issueType": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" }
       }
     }
   }

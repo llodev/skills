@@ -68,6 +68,8 @@ Walk through the prompts. Pick where the config should live:
   - Windows: `%APPDATA%\llodev\pm-tasks\jira.json`.
   - Override on any OS with `LLODEV_PM_TASKS_CONFIG_HOME=/your/path` — the file lands at `$LLODEV_PM_TASKS_CONFIG_HOME/jira.json`.
 
+The generated `.jira.json` captures your issue types (id + name), board statuses (move/close targets, with category), and the valid fields per type — so the agent never writes an unsupported field.
+
 The `init` prompt prints the absolute path it will write to, so you always see exactly where the file goes. Run workspace health checks anytime with:
 
 ```bash

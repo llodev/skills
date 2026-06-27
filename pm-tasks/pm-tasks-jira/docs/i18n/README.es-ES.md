@@ -68,6 +68,8 @@ Sigue los prompts. Elige dónde debe vivir la config:
   - Windows: `%APPDATA%\llodev\pm-tasks\jira.json`.
   - Sobrescribe en cualquier OS con `LLODEV_PM_TASKS_CONFIG_HOME=/your/path` — el archivo acaba en `$LLODEV_PM_TASKS_CONFIG_HOME/jira.json`.
 
+El `.jira.json` generado captura tus issue types (id + nombre), los statuses del board (objetivos de move/close, con category) y los campos válidos por tipo — así el agente nunca escribe un campo no soportado.
+
 El prompt de `init` imprime la ruta absoluta donde va a escribir, así siempre ves exactamente adónde va el archivo. Ejecuta health checks del workspace cuando quieras con:
 
 ```bash

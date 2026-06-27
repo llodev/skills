@@ -57,7 +57,7 @@ Jira issues have:
 
 - **Summary** (title, ≤255 chars; aim for ≤80 for board readability).
 - **Description** (Atlassian Document Format / ADF; transport sends markdown with `markdown: true`; do NOT attempt raw ADF construction).
-- **Issue type** — resolved from `.jira.json` `issueTypes{}`. Keys are canonical (`task`, `story`, `bug`, `epic`, `subtask`); values are locale-specific names (e.g. `"Tarefa"`, `"Subtarefa"` in pt-BR workspaces). **NEVER hard-code type names** — always read from config.
+- **Issue type** — resolved from `.jira.json` `issueTypes{}`. Keys are canonical (`task`, `story`, `bug`, `epic`, `subtask`); each value is `{ id, name }` where `name` is the locale-specific type name verbatim (e.g. `{ id: "10003", name: "Tarefa" }` in pt-BR workspaces) and `id` is the stable reference. **NEVER hard-code type names** — always read from config.
 - **Subtasks** — one level deep. A Subtask **requires** a `parent` issue key at create time. Subtasks have **reduced fields**: `duedate` and `priority` are NOT applicable; `task.due-date.set` returns `NOT_APPLICABLE` on Subtasks.
 - **Transitions** — resolved at runtime via `getTransitionsForJiraIssue`, matched by `to.statusCategory.key` (`"new"` / `"indeterminate"` / `"done"`). **NEVER match by transition name** — names are locale-dependent and change with workflow customization.
 - **Labels** — plain strings; robust and searchable. Used to preserve human-readable estimates as `est:<slug>`.
@@ -209,6 +209,14 @@ If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (tit
 
 Lookup order: `<git-root>/.jira.json` → `~/.config/llodev/pm-tasks/jira.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — Atlassian MCP holds OAuth; `init` uses `mcp__atlassian__atlassianUserInfo` to discover the site and project via MCP.
 
+Key fields written by `init`:
+
+- `project` — `{ key, id, style }` (`id` is the numeric project id; `style` is `team-managed` / `company-managed`).
+- `issueTypes` — `{ id, name }` per canonical key (`epic`, `story`, `task`, `subtask`, `bug`); `name` is the account-localized type name verbatim.
+- `statuses` — board statuses (≈ move/close targets), each `{ id, name, category }` with `category` ∈ `new` / `indeterminate` / `done`.
+- `fieldsByType` — valid field keys per canonical type (lets the agent avoid writing unsupported fields).
+- `locale` — chosen at init (prompted); used for narration.
+
 ## Init
 
 ```
@@ -219,8 +227,10 @@ See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-
 
 - `atlassianUserInfo` — verify MCP connection and get user email.
 - `getAccessibleAtlassianResources` — list sites; select `cloudId`.
-- `getVisibleJiraProjects` — select project by key.
-- `getJiraIssueTypeMetaWithFields` — discover issue types (builds `issueTypes{}`) and detect the Story Points field for estimation (`fieldId`, matched by name; default `customfield_10016`). Absent on basic boards → time tracking is used instead.
+- `getVisibleJiraProjects` — select project by key + `id`.
+- `getJiraIssueTypeMetaWithFields` — discover issue types (builds `issueTypes{}` as `{id,name}` via structural flags + locale aliases), the valid fields per type (`fieldsByType`), and the Story Points field for estimation (`fieldId`, matched by name; default `customfield_10016`). Absent on basic boards → time tracking is used instead.
+- project `statuses` — discover board statuses (move/close targets) with their stable `category`.
+- locale is prompted; estimation strategy + write target stay coherent (point strategies never target time, time strategies never target story points).
 
 Writes all resolved values (including `fieldId` if found) to `.jira.json`.
 

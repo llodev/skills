@@ -78,8 +78,8 @@ export type McpCaller = (toolName: string, args: Record<string, unknown>) => Pro
 interface JiraConfig {
   site: { cloudId: string };
   project: { key: string };
-  /** canonical key → locale name, e.g. { task: "Tarefa", subtask: "Subtarefa" } */
-  issueTypes: Record<string, string>;
+  /** canonical key → { id, name }, e.g. { task: { id: "10003", name: "Tarefa" } } */
+  issueTypes: Record<string, { id: string; name: string }>;
 }
 
 export interface CreateJiraTransportOptions {
@@ -211,7 +211,7 @@ export function createJiraTransport(opts: CreateJiraTransportOptions): Transport
     // (cloudId + projectKey). These fields exist only for Transport compat.
     // -------------------------------------------------------------------
     async taskCreate(req: TaskCreateRequest): Promise<TransportResult<TaskCreateResponse>> {
-      const issueTypeName = config.issueTypes["task"] ?? "Task";
+      const issueTypeName = config.issueTypes["task"]?.name ?? "Task";
       const description = req.clientToken
         ? `${req.description ?? ""}\n\n[ct:${req.clientToken}]`.trimStart()
         : (req.description ?? "");
@@ -292,7 +292,7 @@ export function createJiraTransport(opts: CreateJiraTransportOptions): Transport
       try {
         if (req.targetState === "complete") {
           // Create Subtask then transition it to done
-          const issueTypeName = config.issueTypes["subtask"] ?? "Subtask";
+          const issueTypeName = config.issueTypes["subtask"]?.name ?? "Subtask";
           const created = await mcp("createJiraIssue", {
             cloudId,
             projectKey,

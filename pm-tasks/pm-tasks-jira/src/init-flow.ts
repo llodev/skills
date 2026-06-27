@@ -6,6 +6,7 @@ import path from "node:path";
 import {
   promptPick,
   promptYesNo,
+  promptLocale,
   writeConfig,
   validateConfig,
   printInstructions,
@@ -34,6 +35,7 @@ export interface AtlassianResource {
 
 export interface JiraProject {
   key: string;
+  id: string;
   name: string;
   simplified?: boolean;
 }
@@ -41,10 +43,19 @@ export interface JiraProject {
 export interface JiraIssueType {
   id: string;
   name: string;
+  /** createmeta flags: subtask=true and hierarchyLevel (1=Epic, 0=std, -1=Subtask). */
+  subtask?: boolean;
+  hierarchyLevel?: number;
 }
 
 export interface JiraFieldMeta {
   fields: Array<{ key: string; name: string }>;
+}
+
+export interface JiraStatus {
+  id: string;
+  name: string;
+  category: "new" | "indeterminate" | "done";
 }
 
 // ---------------------------------------------------------------------------
@@ -56,6 +67,7 @@ export interface JiraInitApi {
   getProjects(cloudId: string): Promise<JiraProject[]>;
   getIssueTypes(cloudId: string, projectKey: string): Promise<JiraIssueType[]>;
   getFieldMeta(cloudId: string, projectKey: string, issueTypeId: string): Promise<JiraFieldMeta>;
+  getStatuses(cloudId: string, projectKey: string): Promise<JiraStatus[]>;
   getMe(cloudId: string): Promise<{ accountId: string; displayName: string }>;
 }
 
@@ -70,6 +82,8 @@ export interface InitDeps {
   api?: JiraInitApi;
   pick?: PickFn;
   yesNo?: (question: string) => Promise<boolean>;
+  /** Pre-resolved locale (tests pass this to avoid the interactive promptLocale stdin read). */
+  locale?: string;
   doWrite?: (targetPath: string, data: unknown) => Promise<void>;
   doValidate?: (data: unknown, schema: unknown) => Promise<ValidationResult>;
   doLoadSchema?: () => Promise<unknown>;
@@ -95,6 +109,8 @@ const JIRA_9_VERBS = [
 ] as const;
 
 const DEFAULT_FIBONACCI_SCALE = [1, 2, 3, 5, 8, 13];
+
+const DEFAULT_SIZE_MAP = { XS: 1, S: 2, M: 3, L: 5, XL: 8 };
 
 const STRATEGY_CHOICES: Choice<string>[] = [
   { label: "fibonacci (default)", value: "fibonacci" },
@@ -151,11 +167,80 @@ function createRestApi(token: string, email: string, site: string): JiraInitApi 
         `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issue/createmeta/${encodeURIComponent(projectKey)}/issuetypes/${encodeURIComponent(issueTypeId)}`,
       );
     },
+    // Board statuses ≈ move/close targets. project/statuses returns one entry
+    // per issue type; dedupe by status id into a flat list.
+    getStatuses: async (cloudId, projectKey) => {
+      const data = await atlFetch<
+        Array<{
+          statuses: Array<{ id: string; name: string; statusCategory: { key: string } }>;
+        }>
+      >(
+        `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/project/${encodeURIComponent(projectKey)}/statuses`,
+      );
+      const seen = new Set<string>();
+      const out: JiraStatus[] = [];
+      for (const type of data) {
+        for (const s of type.statuses ?? []) {
+          if (seen.has(s.id)) continue;
+          seen.add(s.id);
+          out.push({
+            id: s.id,
+            name: s.name,
+            category: s.statusCategory.key as JiraStatus["category"],
+          });
+        }
+      }
+      return out;
+    },
     getMe: async (cloudId) => {
       return atlFetch<{ accountId: string; displayName: string }>(
         `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/myself`,
       );
     },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Issue-type mapping (exported for testing)
+// ---------------------------------------------------------------------------
+
+/**
+ * Map localized issue types onto the 5 canonical keys via structural flags +
+ * locale aliases (never substring matching). Subtask/epic resolve by flag;
+ * task/story/bug by alias from the standard pool. Unmatched keys fall back to
+ * the task type (schema requires all 5). Values are `{ id, name }` verbatim.
+ */
+export function mapIssueTypes(
+  types: JiraIssueType[],
+): Record<string, { id: string; name: string }> {
+  const val = (t: JiraIssueType) => ({ id: t.id, name: t.name });
+
+  const subtaskType =
+    types.find((t) => t.subtask === true || t.hierarchyLevel === -1) ??
+    types.find((t) => /sub-?task|subtarefa|subtarea/i.test(t.name));
+
+  const epicType =
+    types.find((t) => t.hierarchyLevel === 1) ??
+    types.find((t) => /^(epic|épico|epico)$/i.test(t.name));
+
+  const standardPool = types.filter((t) => t !== subtaskType && t !== epicType);
+
+  const taskAlias = standardPool.find((t) => /^(task|tarefa|tarea|tâche|aufgabe)$/i.test(t.name));
+  const storyAlias = standardPool.find((t) =>
+    /^(story|user story|história|historia|historia de usuario)$/i.test(t.name),
+  );
+  const bugAlias = standardPool.find((t) =>
+    /^(bug|erro|error|defect|defeito|fehler)$/i.test(t.name),
+  );
+
+  const taskType = taskAlias ?? standardPool[0] ?? types[0];
+
+  return {
+    epic: epicType ? val(epicType) : val(taskType),
+    story: storyAlias ? val(storyAlias) : val(taskType),
+    task: val(taskType),
+    subtask: subtaskType ? val(subtaskType) : val(taskType),
+    bug: bugAlias ? val(bugAlias) : val(taskType),
   };
 }
 
@@ -248,19 +333,15 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
     process.exit(1);
   }
   const projectKey = pickedProject.key;
+  const projectId = pickedProject.id;
   const style: "team-managed" | "company-managed" =
     pickedProject.simplified === true ? "team-managed" : "company-managed";
 
   // -------------------------------------------------------------------------
-  // Step 3: Resolve local issue-type names
+  // Step 3: Map localized issue types onto canonical keys (flags + aliases)
   // -------------------------------------------------------------------------
   const issueTypesList = await api.getIssueTypes(cloudId, projectKey);
-  const issueTypeMap: Record<string, string> = {};
-  for (const canonical of CANONICAL_ISSUE_TYPES) {
-    const exactMatch = issueTypesList.find((t) => t.name.toLowerCase() === canonical);
-    const fuzzyMatch = issueTypesList.find((t) => t.name.toLowerCase().includes(canonical));
-    issueTypeMap[canonical] = exactMatch?.name ?? fuzzyMatch?.name ?? canonical;
-  }
+  const issueTypeMap = mapIssueTypes(issueTypesList);
 
   // -------------------------------------------------------------------------
   // Step 4: Detect Story Points / time-tracking fields
@@ -269,7 +350,7 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   let hasTimeTracking = false;
   let storyPointsFieldId: string | undefined;
 
-  const taskLocalName = issueTypeMap["task"];
+  const taskLocalName = issueTypeMap["task"]?.name;
   const taskIssueType = issueTypesList.find((t) => t.name === taskLocalName) ?? issueTypesList[0];
 
   if (taskIssueType) {
@@ -290,7 +371,31 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
   }
 
   // -------------------------------------------------------------------------
-  // Step 5: Prompt estimation strategy + jiraTarget
+  // Step 4b: Board statuses (move/close targets) + valid fields per type
+  // -------------------------------------------------------------------------
+  let statuses: JiraStatus[] = [];
+  try {
+    statuses = await api.getStatuses(cloudId, projectKey);
+  } catch {
+    // Statuses endpoint unavailable; leave empty rather than failing init.
+    statuses = [];
+  }
+
+  const fieldsByType: Record<string, string[]> = {};
+  for (const canonical of CANONICAL_ISSUE_TYPES) {
+    const mapped = issueTypeMap[canonical];
+    if (!mapped) continue;
+    try {
+      const meta = await api.getFieldMeta(cloudId, projectKey, mapped.id);
+      fieldsByType[canonical] = (meta.fields ?? []).map((f) => f.key).sort();
+    } catch {
+      // Field meta unavailable for this type; omit it.
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Step 5: Prompt estimation strategy + jiraTarget (coherent: a point-based
+  // strategy never targets time and a time-based strategy never targets points)
   // -------------------------------------------------------------------------
   const strategy =
     (await doPick("Select estimation strategy:", STRATEGY_CHOICES, { defaultIndex: 0 })) ??
@@ -298,50 +403,63 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
 
   const usesFibonacciScale = ["fibonacci", "story_points", "planning_poker"].includes(strategy);
   const scale = usesFibonacciScale ? DEFAULT_FIBONACCI_SCALE : undefined;
+  const timeStrategy = strategy === "ideal_days" || strategy === "ideal_hours";
 
   let jiraTarget: string;
   let fieldId: string | undefined;
 
-  if (hasStoryPoints) {
-    jiraTarget =
-      (await doPick(
-        "Story Points field detected. Jira write target:",
-        [
-          { label: "story_points (recommended)", value: "story_points" },
-          { label: "none — skip writing estimates to Jira", value: "none" },
-        ],
-        { defaultIndex: 0 },
-      )) ?? "story_points";
-    if (jiraTarget === "story_points") {
-      fieldId = storyPointsFieldId ?? "customfield_10016";
+  if (timeStrategy) {
+    if (hasTimeTracking) {
+      jiraTarget =
+        (await doPick(
+          "Time tracking field detected. Jira write target:",
+          [
+            { label: "time (recommended)", value: "time" },
+            { label: "none — skip writing estimates to Jira", value: "none" },
+          ],
+          { defaultIndex: 0 },
+        )) ?? "time";
+    } else {
+      jiraTarget = "none";
+      process.stderr.write(
+        "Time tracking is not enabled for this project — time estimates will be stored " +
+          "as an est: label only. Enable Time tracking in Project Settings, then re-run init.\n",
+      );
     }
-  } else if (hasTimeTracking) {
-    jiraTarget =
-      (await doPick(
-        "Time tracking field detected. Jira write target:",
-        [
-          { label: "time", value: "time" },
-          { label: "none — skip writing estimates to Jira", value: "none" },
-        ],
-        { defaultIndex: 0 },
-      )) ?? "time";
   } else {
-    jiraTarget = "none";
-    process.stderr.write(
-      "Story Points field not found in this project. To enable: " +
-        "Project Settings → Issue types → [type] → drag 'Story points' from Available fields. " +
-        "Re-run init after enabling.\n",
-    );
+    // Point-based strategy.
+    if (hasStoryPoints) {
+      jiraTarget =
+        (await doPick(
+          "Story Points field detected. Jira write target:",
+          [
+            { label: "story_points (recommended)", value: "story_points" },
+            { label: "none — skip writing estimates to Jira", value: "none" },
+          ],
+          { defaultIndex: 0 },
+        )) ?? "story_points";
+      if (jiraTarget === "story_points") {
+        fieldId = storyPointsFieldId ?? "customfield_10016";
+      }
+    } else {
+      jiraTarget = "none";
+      process.stderr.write(
+        "Story Points field not found in this project — point estimates will be stored as an " +
+          "est: label only. To write a native field, enable Story Points: Project Settings → " +
+          "Issue types → [type] → drag 'Story points' from Available fields, then re-run init.\n",
+      );
+    }
   }
 
   const estimation: Record<string, unknown> = { strategy, jiraTarget };
   if (scale) estimation.scale = scale;
   if (fieldId) estimation.fieldId = fieldId;
+  if (strategy === "t_shirt") estimation.sizeMap = { ...DEFAULT_SIZE_MAP };
 
   // -------------------------------------------------------------------------
-  // Step 6: Autonomous block
+  // Step 6: Locale + autonomous block
   // -------------------------------------------------------------------------
-  const locale = (process.env.LANG ?? "").split(".")[0].replace(/_/g, "-") || "en-US";
+  const locale = deps.locale ?? (await promptLocale("core", { defaultLocale: "en-US" }));
 
   const wantAuto = await doYesNo(
     "Enable autonomous mode? (agent can write to Jira without per-action confirmation)",
@@ -365,11 +483,13 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
     version: "1",
     locale,
     site: { cloudId, url: siteUrl },
-    project: { key: projectKey, style },
+    project: { key: projectKey, id: projectId, style },
     issueTypes: issueTypeMap,
     members,
     estimation,
   };
+  if (statuses.length > 0) out.statuses = statuses;
+  if (Object.keys(fieldsByType).length > 0) out.fieldsByType = fieldsByType;
   if (autonomous !== undefined) out.autonomous = autonomous;
 
   const schema = await doLoadSchema();
