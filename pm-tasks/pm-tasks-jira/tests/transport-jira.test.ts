@@ -671,3 +671,65 @@ describe("createJiraTransport — taskCommentAdd", () => {
     expect(r.ok).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// T7 — taskParentSet
+// ---------------------------------------------------------------------------
+
+describe("createJiraTransport — taskParentSet", () => {
+  it("success: dispatches editJiraIssue with fields.parent.key; returns ok + newParentId + null previousParentId", async () => {
+    const { mcp, calls } = makeMcp(new Map([["editJiraIssue", {}]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskParentSet!({ taskId: "KAN-5", parentId: "KAN-7" });
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0].tool).toBe("editJiraIssue");
+    expect(calls[0].args).toEqual({
+      cloudId: "cloud-abc",
+      issueKey: "KAN-5",
+      fields: { parent: { key: "KAN-7" } },
+    });
+    expect(r).toEqual({
+      ok: true,
+      data: { previousParentId: null, newParentId: "KAN-7" },
+    });
+  });
+
+  it("invalid parentId 'not-a-key' → INVALID_REQUEST before MCP call", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskParentSet!({ taskId: "KAN-5", parentId: "not-a-key" });
+
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.code).toBe("INVALID_REQUEST");
+      expect(r.details).toMatchObject({ hint: "parentId must be a Jira issue key, e.g. KAN-12" });
+    }
+  });
+
+  it("invalid parentId (lowercase) → INVALID_REQUEST before MCP call", async () => {
+    const { mcp, calls } = makeMcp(new Map());
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskParentSet!({ taskId: "KAN-5", parentId: "kan-7" });
+    expect(calls).toHaveLength(0);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("INVALID_REQUEST");
+  });
+
+  it("MCP throws 404 'not found' → NOT_FOUND", async () => {
+    const { mcp } = makeMcp(new Map([["editJiraIssue", new Error("Issue not found 404")]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskParentSet!({ taskId: "KAN-5", parentId: "KAN-7" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("NOT_FOUND");
+  });
+
+  it("MCP throws 401 → AUTH_ERROR", async () => {
+    const { mcp } = makeMcp(new Map([["editJiraIssue", new Error("401 Unauthorized")]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    const r = await t.taskParentSet!({ taskId: "KAN-5", parentId: "KAN-7" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("AUTH_ERROR");
+  });
+});

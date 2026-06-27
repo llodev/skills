@@ -198,15 +198,23 @@ describe("createAdapter (jira) — verb dispatch: ok:true", () => {
 });
 
 // ---------------------------------------------------------------------------
-// 3. F3 / F7 — UNSUPPORTED_VERB (transport does not implement them yet)
+// 3. F3 (implemented in Phase 4) + F7 UNSUPPORTED_VERB
 // ---------------------------------------------------------------------------
 
 describe("createAdapter (jira) — F3/F7 UNSUPPORTED_VERB", () => {
-  it("taskParentSet returns UNSUPPORTED_VERB (Phase 4)", async () => {
+  it("taskParentSet dispatches editJiraIssue with fields.parent.key → ok:true", async () => {
     const runtime = await createAdapter({ configPath, mcp: makeOmnibusMcp() });
-    const result = await runtime.taskParentSet({ taskId: "KAN-1", parentTaskId: "KAN-0" });
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.code).toBe("UNSUPPORTED_VERB");
+    const result = await runtime.taskParentSet({ taskId: "KAN-5", parentId: "KAN-1" });
+    expect(result.ok).toBe(true);
+    const editCall = calls.find((c) => c.tool === "editJiraIssue");
+    expect(editCall).toBeDefined();
+    expect(editCall?.args).toMatchObject({
+      issueKey: "KAN-5",
+      fields: { parent: { key: "KAN-1" } },
+    });
+    if (result.ok) {
+      expect(result.data).toEqual({ previousParentId: null, newParentId: "KAN-1" });
+    }
   });
 
   it("taskEstimateSet returns UNSUPPORTED_VERB (Phase 4)", async () => {

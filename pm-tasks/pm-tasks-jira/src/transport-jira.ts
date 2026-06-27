@@ -26,8 +26,10 @@
  *     looks like an Atlassian accountId it skips the lookup call.
  *   - `taskCommentAdd` always passes `markdown: true` — load-bearing;
  *     Atlassian MCP renders body as ADF when false.
- *   - F3 (`task.parent.set`) and F7 (`task.estimate.set`) are NOT
- *     implemented here — Phase 4 only.
+ *   - F3 (`task.parent.set`) sets `fields.parent.key` via editJiraIssue
+ *     (team-managed flat parent). previousParentId is always null — no
+ *     pre-read getJiraIssue, same trade-off as taskMove's previousListOrSectionId.
+ *   - F7 (`task.estimate.set`) is NOT implemented here — Phase 4 only.
  */
 
 import type {
@@ -48,6 +50,8 @@ import type {
   TaskAssigneeAddResponse,
   TaskCommentAddRequest,
   TaskCommentAddResponse,
+  TaskParentSetRequest,
+  TaskParentSetResponse,
 } from "@llodev/pm-tasks-core/runtime";
 
 // ---------------------------------------------------------------------------
@@ -450,6 +454,46 @@ export function createJiraTransport(opts: CreateJiraTransportOptions): Transport
         }
 
         return { ok: true, data: { commentId: resp.id, postedAt: resp.created } };
+      } catch (e) {
+        const { code, details } = classifyError(e);
+        return { ok: false, code, details };
+      }
+    },
+
+    // -------------------------------------------------------------------
+    // 8. task.parent.set → editJiraIssue { parent: { key } }
+    //
+    // Uses the team-managed "flat parent" model: Jira accepts
+    // `fields.parent.key` on editJiraIssue for any issue type.
+    //
+    // previousParentId is always null — no pre-read getJiraIssue in
+    // Phase 4, same trade-off as taskMove's previousListOrSectionId.
+    //
+    // parentId must be a Jira issue key (e.g. "KAN-12"). Validated
+    // before the MCP call so callers get a clear INVALID_REQUEST.
+    // -------------------------------------------------------------------
+    async taskParentSet(
+      req: TaskParentSetRequest,
+    ): Promise<TransportResult<TaskParentSetResponse>> {
+      const ISSUE_KEY_RE = /^[A-Z][A-Z0-9]+-\d+$/;
+      if (!ISSUE_KEY_RE.test(req.parentId)) {
+        return {
+          ok: false,
+          code: "INVALID_REQUEST",
+          details: {
+            message: `Invalid parentId: "${req.parentId}"`,
+            hint: "parentId must be a Jira issue key, e.g. KAN-12",
+          },
+        };
+      }
+
+      try {
+        await mcp("editJiraIssue", {
+          cloudId,
+          issueKey: req.taskId,
+          fields: { parent: { key: req.parentId } },
+        });
+        return { ok: true, data: { previousParentId: null, newParentId: req.parentId } };
       } catch (e) {
         const { code, details } = classifyError(e);
         return { ok: false, code, details };
