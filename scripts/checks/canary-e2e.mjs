@@ -7,7 +7,13 @@ import { fileURLToPath } from "node:url";
 import { canaryVersion, listCanaryPackages } from "./canary-version.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const PACKAGES = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-testkit"];
+const PACKAGES = [
+  "pm-tasks-core",
+  "pm-tasks-asana",
+  "pm-tasks-trello",
+  "pm-tasks-testkit",
+  "pm-tasks-jira",
+];
 
 function run(cmd, opts = {}) {
   console.log(`$ ${cmd}`);
@@ -150,7 +156,25 @@ export function runSmoke(sandbox) {
     console.log("trello bin: shebang ok");
   }
 
-  // Smoke 4: pm-tasks-testkit — createFakeAdapter + task.create
+  // Smoke 4: pm-tasks-jira bin shebang (catches the v1.0.1 conditional-entry footgun)
+  const jiraBinPath = path.join(
+    sandbox,
+    "node_modules",
+    "@llodev",
+    "pm-tasks-jira",
+    "dist",
+    "bin",
+    "init.js",
+  );
+  const jiraHead = readFileSync(jiraBinPath, "utf8").slice(0, 20);
+  if (!jiraHead.startsWith("#!/usr/bin/env node")) {
+    console.error(`jira bin missing shebang: ${JSON.stringify(jiraHead)}`);
+    failures++;
+  } else {
+    console.log("jira bin: shebang ok");
+  }
+
+  // Smoke 5: pm-tasks-testkit — createFakeAdapter + task.create
   const testkitSmoke = spawnSync(
     process.execPath,
     [

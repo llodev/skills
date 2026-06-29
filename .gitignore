@@ -16,8 +16,15 @@ node_modules/
 .env.*.local
 
 # Per-tool local config overrides (must never be committed)
-.trello.json
 .asana.json
+.bitrix24.json
+.clickup.json
+.jira.json
+.linear.json
+.monday.json
+.notion.json
+.todoist.json
+.trello.json
 
 # skills
 .agents/

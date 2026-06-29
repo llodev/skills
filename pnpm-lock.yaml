@@ -94,7 +94,17 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
 
-  pm-tasks/pm-tasks-jira: {}
+  pm-tasks/pm-tasks-jira:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
 
   pm-tasks/pm-tasks-linear: {}
 

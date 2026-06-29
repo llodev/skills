@@ -4,7 +4,7 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const PACKAGES = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-testkit"];
+const PACKAGES = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-testkit", "pm-tasks-jira"];
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 const golden = JSON.parse(

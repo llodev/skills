@@ -9,11 +9,19 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 so pre-release-check.sh can diff HEAD against origin/main
+      # (the skill-judge ratchet gate). A shallow checkout makes that gate self-skip.
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r build
       - run: pnpm run typecheck
+      # Mirror release.yml's gates (minus the actual publish) so a PR fails HERE,
+      # not at merge-to-main. Order matches release.yml.
+      - run: node scripts/checks/canary-e2e.mjs
       - run: pnpm run validate
+      - run: pnpm run contract:check
+      - run: bash scripts/shell/pre-release-check.sh

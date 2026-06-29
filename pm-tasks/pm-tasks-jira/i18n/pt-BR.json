@@ -1,0 +1,17 @@
+{
+  "header": "pm-tasks-jira init",
+  "sitePrompt": "Selecione o site Atlassian:",
+  "noSite": "Nenhum site selecionado. Saindo.",
+  "projectPrompt": "Selecione o projeto Jira:",
+  "noProject": "Nenhum projeto selecionado. Saindo.",
+  "strategyPrompt": "Selecione a estratégia de estimativa:",
+  "targetPromptTime": "Campo de controle de tempo detectado. Destino de escrita no Jira:",
+  "targetPromptStoryPoints": "Campo de Story Points detectado. Destino de escrita no Jira:",
+  "targetTime": "time (recomendado)",
+  "targetStoryPoints": "story_points (recomendado)",
+  "targetNone": "none — não escrever estimativas no Jira",
+  "noTimeTracking": "Controle de tempo não está habilitado neste projeto — estimativas de tempo serão guardadas apenas como um label est:.",
+  "noStoryPoints": "Campo de Story Points não encontrado neste projeto — estimativas em pontos serão guardadas apenas como um label est:. Para escrever um campo nativo, habilite Story Points: Configurações do projeto → Tipos de item → [tipo] → arraste 'Story points' de Campos disponíveis, e rode o init de novo.",
+  "autonomousPrompt": "Habilitar modo autônomo? (o agente pode escrever no Jira sem confirmação por ação)",
+  "nextDoctor": "Próximo: pm-tasks-jira init --doctor"
+}

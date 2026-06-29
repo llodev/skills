@@ -341,13 +341,20 @@ import { createAdapter } from "@llodev/pm-tasks-trello/adapter";
 
 // Asana — same shape
 import { createAdapter } from "@llodev/pm-tasks-asana/adapter";
+
+// Jira — same shape
+import { createAdapter } from "@llodev/pm-tasks-jira/adapter";
 ```
+
+> **Atlassian MCP transport:** The SSE endpoint (`/events`) is retired as of 2026-06-30. All
+> `pm-tasks-jira` usage must configure the Streamable-HTTP endpoint:
+> `https://mcp.atlassian.com/v1/mcp`. The `mcp__atlassian__*` tools are unchanged.
 
 ### `createAdapter` signature
 
 ```ts
 function createAdapter(opts: {
-  configPath: string; // path to .trello.json or .asana.json
+  configPath: string; // path to .trello.json, .asana.json, or .jira.json
   mcp: (toolName: string, args: Record<string, unknown>) => Promise<unknown>; // McpCaller
   session?: string; // audit-log correlation; auto-generated if omitted
   language?: string; // locale hint

@@ -82,6 +82,10 @@ const CANONICAL_VERBS = new Set([
   "task.assignee.add",
   "task.comment.add",
   "checklist.check",
+  // F3 + F7 (v1.11.0): adapter-optional — existing adapters need not declare these verbs.
+  // Jira adapter (Phase 2) will declare them; adding here allows declaration without namespace error.
+  "task.parent.set",
+  "task.estimate.set",
 ]);
 
 const entries = await readdir("pm-tasks", { withFileTypes: true });

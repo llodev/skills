@@ -1,6 +1,6 @@
 # CRUD vocabulary (v1)
 
-Seven verbs. Each adapter maps every verb to one or more MCP tool calls.
+Nine verbs. Each adapter maps every verb to one or more MCP tool calls.
 
 ## task.create
 
@@ -58,6 +58,26 @@ Reposition a task/card to a different list/section without changing its completi
 - **MCP mappings:**
   - Trello → `mcp__trello__move_card({ cardId, idList })`. Resolve `targetList` alias to `idList` via `lists.wip` / `lists.done` / `lists.open` in `.trello.json`. Raw list IDs pass through. If the named alias is not configured, skip silently and emit `WARN: task.move skipped — <alias> not in lists config` to the audit log.
   - Asana → `mcp__claude_ai_Asana__update_tasks` with `memberships.section`. Resolve `"wip"` / `"done"` / `"open"` via `defaults.wipSectionAlias` / `defaults.doneSectionAlias` / `defaults.openSectionAlias` in `.asana.json`. Raw section IDs pass through.
+
+## task.parent.set
+
+Establish the child→parent link in the adapter's task hierarchy. Adapter-optional.
+
+- **Inputs:** `taskId` (native task/issue ID), `parentId` (native parent task/issue ID).
+- **Schema:** `{ taskId: string, parentId: string }`.
+- **Idempotency:** no-op when `parentId` is already set.
+- **Adapter-optional:** Adapters that do not support hierarchical task relationships MUST omit this verb from their manifest.
+- **Added:** v1.11.0.
+
+## task.estimate.set
+
+Records effort in the configured scale, normalized to the adapter-native field; the human-readable original is preserved by the adapter. Adapter-optional.
+
+- **Inputs:** `taskId` (native task/issue ID), `input` (`EstimateInput` — the raw effort value in the user's notation), `config` (`EstimationConfig` — scale and adapter-field mapping).
+- **Schema:** `{ taskId: string, input: EstimateInput, config: EstimationConfig }`.
+- **Idempotency:** last write wins.
+- **Adapter-optional:** Adapters that do not support native estimation fields MUST omit this verb from their manifest.
+- **Added:** v1.11.0.
 
 ## Verbs forbidden in autonomous mode (v1, hard-coded)
 

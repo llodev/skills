@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFile, access, readdir } from "node:fs/promises";
+import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -30,8 +31,22 @@ async function walk(dir, depth = 0, acc = []) {
 
 const files = await walk(ROOT);
 
+// Only check git-tracked files. CI runs on a fresh clone with no gitignored
+// scratch (e.g. sandbox/), so checking untracked/ignored markdown here produces
+// local-only false positives that CI never sees. Filtering to `git ls-files`
+// keeps this checker in lockstep with CI. (Outside a git repo: check everything.)
+let tracked = null;
+try {
+  tracked = new Set(
+    execSync("git ls-files", { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean),
+  );
+} catch {
+  tracked = null;
+}
+const checked = tracked ? files.filter((rel) => tracked.has(rel)) : files;
+
 let failed = false;
-for (const rel of files) {
+for (const rel of checked) {
   const full = path.join(ROOT, rel);
   const src = await readFile(full, "utf8");
   for (const m of src.matchAll(LINK_RE)) {
@@ -46,5 +61,5 @@ for (const rel of files) {
     }
   }
 }
-if (!failed) console.log(`ok   ${files.length} files checked`);
+if (!failed) console.log(`ok   ${checked.length} files checked`);
 process.exit(failed ? 1 : 0);

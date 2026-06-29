@@ -1,0 +1,17 @@
+{
+  "header": "pm-tasks-jira init",
+  "sitePrompt": "Select Atlassian site:",
+  "noSite": "No site selected. Exiting.",
+  "projectPrompt": "Select Jira project:",
+  "noProject": "No project selected. Exiting.",
+  "strategyPrompt": "Select estimation strategy:",
+  "targetPromptTime": "Time tracking field detected. Jira write target:",
+  "targetPromptStoryPoints": "Story Points field detected. Jira write target:",
+  "targetTime": "time (recommended)",
+  "targetStoryPoints": "story_points (recommended)",
+  "targetNone": "none — skip writing estimates to Jira",
+  "noTimeTracking": "Time tracking is not enabled for this project — time estimates will be stored as an est: label only.",
+  "noStoryPoints": "Story Points field not found in this project — point estimates will be stored as an est: label only. To write a native field, enable Story Points: Project Settings → Issue types → [type] → drag 'Story points' from Available fields, then re-run init.",
+  "autonomousPrompt": "Enable autonomous mode? (agent can write to Jira without per-action confirmation)",
+  "nextDoctor": "Next: pm-tasks-jira init --doctor"
+}

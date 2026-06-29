@@ -24,10 +24,10 @@
     "notes": "v1.4 re-grade after TS migration path update (skill-judge 97/120, Grade B); Δ vs v1.1.1 baseline within rubric variance, no content change"
   },
   "pm-tasks/pm-tasks-jira/SKILL.md": {
-    "score": 29,
-    "version": "0.0.0",
-    "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
+    "score": 85,
+    "version": "1.0.0",
+    "capturedAt": "2026-06-27",
+    "notes": "v1.11.0 initial Jira adapter SKILL.md; skill-judge rubric eval Grade B (~101/120 raw across D1-D8), recorded at 85 calibrated to the mature-adapter peer band (core 85, asana 83, trello 80) — jira sits at top of band: 9 verbs + foundational estimation + transition-by-category/est-label/F2-unsupported anti-patterns"
   },
   "pm-tasks/pm-tasks-linear/SKILL.md": {
     "score": 29,
