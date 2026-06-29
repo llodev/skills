@@ -20,7 +20,32 @@ if ! git rev-parse --verify --quiet "$BASE_REF" >/dev/null; then
   fi
 fi
 
-SKILL_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'pm-tasks/*/SKILL.md' || true)"
+RAW_SKILL_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'pm-tasks/*/SKILL.md' || true)"
+
+# Drop files whose ONLY change is the frontmatter `version:` field. `version:sync`
+# (run by `changeset version`) bumps that field on every release; counting it would
+# wedge the skill-judge ratchet on every auto-generated "Version Packages" PR even
+# though no skill content — and therefore no skill quality — actually changed.
+SKILL_CHANGES=""
+for f in $RAW_SKILL_CHANGES; do
+  # Count changed (+/-) content lines that are NOT the frontmatter `version:` field
+  # (diff headers +++/--- excluded). >0 means a real, quality-bearing change. Uses
+  # `grep -c` rather than `grep -q` on purpose: under `set -o pipefail`, a `-q` early
+  # exit would SIGPIPE the upstream greps and wrongly mark the pipeline as failed.
+  nonversion="$(git diff "$BASE_REF"...HEAD -- "$f" \
+    | grep -E '^[+-]' \
+    | grep -vE '^(\+\+\+|---) ' \
+    | grep -cvE '^[+-][[:space:]]+version:[[:space:]]' || true)"
+  if [ "${nonversion:-0}" -gt 0 ]; then
+    if [ -n "$SKILL_CHANGES" ]; then
+      SKILL_CHANGES="$SKILL_CHANGES
+$f"
+    else
+      SKILL_CHANGES="$f"
+    fi
+  fi
+done
+
 BASELINE_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'scripts/snapshots/skill-judge-baseline.json' || true)"
 
 if [ -z "$SKILL_CHANGES" ]; then
