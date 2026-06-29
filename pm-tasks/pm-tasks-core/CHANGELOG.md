@@ -1,5 +1,13 @@
 # @llodev/pm-tasks-core
 
+## 1.11.0
+
+### Minor Changes
+
+- [#27](https://github.com/llodev/skills/pull/27) [`9fa2217`](https://github.com/llodev/skills/commit/9fa2217b45d4f4519045a515f10a67f643f0941e) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - feat(pm-tasks-jira): v1.0.0 — first Jira adapter (9 verbs, headless /adapter, init, doctor, estimation); core: F3 task.parent.set + F7 task.estimate.set + estimation module
+
+  skill-judge: pm-tasks-jira/SKILL.md baseline recorded at 85 (rubric Grade B, ~101/120 raw), calibrated to the mature-adapter peer band (core 85, asana 83, trello 80). New skill → fresh baseline; no gate bypass used.
+
 ## 1.10.0
 
 ### Minor Changes
