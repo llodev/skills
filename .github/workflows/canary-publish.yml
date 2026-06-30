@@ -27,6 +27,7 @@ jobs:
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           BASE_REPO: ${{ github.repository }}
           PR_TITLE: ${{ github.event.pull_request.title }}
+          ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
 
@@ -39,6 +40,13 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
             echo "::notice::canary-publish skipped: $1"
           }
+
+          # Guard 0 — Dependabot PRs run with a restricted token from the Dependabot
+          # secret store, so NPM_TOKEN is unreadable and a publish is impossible.
+          if [ "$ACTOR" = "dependabot[bot]" ]; then
+            skip "PR is from Dependabot (\`$ACTOR\`); no registry token access."
+            exit 0
+          fi
 
           # Guard 1 — fork PRs cannot read NPM_TOKEN, so a publish is impossible.
           if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
