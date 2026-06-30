@@ -191,7 +191,7 @@ jobs:
 
       - name: Upload canary tarballs
         if: steps.guard.outputs.should_publish == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: canary-pr-${{ github.event.pull_request.number }}
           path: ${{ runner.temp }}/*.tgz
