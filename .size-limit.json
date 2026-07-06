@@ -22,6 +22,6 @@
   {
     "name": "@llodev/pm-tasks-jira (tarball)",
     "path": "pm-tasks/pm-tasks-jira/dist/**/*.js",
-    "limit": "12 kB"
+    "limit": "13 kB"
   }
 ]

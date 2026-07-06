@@ -247,6 +247,47 @@ export function mapIssueTypes(
   };
 }
 
+// Persisted-config sanitization (defense-in-depth for network-derived data).
+
+const MAX_CONFIG_STRING_LEN = 1024;
+
+function hasControlChar(s: string): boolean {
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code < 0x20 || code === 0x7f) return true;
+  }
+  return false;
+}
+
+/**
+ * Reject network-derived config strings carrying control characters or an
+ * unbounded length before they are persisted, and rebuild from guard-checked
+ * primitives — severing the network→file flow (CodeQL js/http-to-file-access).
+ */
+export function sanitizePersistedConfig<T>(value: T): T {
+  if (typeof value === "string") {
+    if (value.length > MAX_CONFIG_STRING_LEN || hasControlChar(value)) {
+      throw new Error(
+        `pm-tasks-jira init: refusing to persist unsafe config value ${JSON.stringify(
+          value.slice(0, 40),
+        )}`,
+      );
+    }
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizePersistedConfig(item)) as T;
+  }
+  if (value !== null && typeof value === "object") {
+    const clean: Record<string, unknown> = {};
+    for (const [key, item] of Object.entries(value)) {
+      clean[key] = sanitizePersistedConfig(item);
+    }
+    return clean as T;
+  }
+  return value;
+}
+
 // ---------------------------------------------------------------------------
 // Main init flow (exported for testing)
 // ---------------------------------------------------------------------------
@@ -501,12 +542,14 @@ export async function runFlow(deps: InitDeps = {}): Promise<Record<string, unkno
     process.exit(1);
   }
 
-  await doWrite(outPath, out);
+  // Sanitize the network-derived metadata before it reaches the filesystem.
+  const safeConfig = sanitizePersistedConfig(out);
+  await doWrite(outPath, safeConfig);
   printInstructions([
     `Config written to ${outPath}`,
     strings.nextDoctor,
     "Atlassian MCP endpoint: https://mcp.atlassian.com/v1/mcp",
   ]);
 
-  return out;
+  return safeConfig;
 }

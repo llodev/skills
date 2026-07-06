@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import {
   runFlow,
   mapIssueTypes,
+  sanitizePersistedConfig,
   type InitDeps,
   type JiraInitApi,
   type AtlassianResource,
@@ -307,5 +308,52 @@ describe("runFlow — members block", () => {
     const members = out["members"] as Array<Record<string, unknown>>;
     expect(Array.isArray(members)).toBe(true);
     expect(members.length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// sanitizePersistedConfig — reject hostile/malformed network-derived metadata
+// before it is written to the on-disk config (CodeQL js/http-to-file-access).
+// ---------------------------------------------------------------------------
+
+describe("sanitizePersistedConfig", () => {
+  it("returns a structurally identical copy of a clean nested config", () => {
+    const cfg = {
+      version: "1",
+      site: { cloudId: "cloud-aaa", url: "https://acme.atlassian.net" },
+      issueTypes: { task: { id: "10003", name: "Task" } },
+      statuses: [{ id: "1", name: "To Do", category: "new" }],
+      estimation: { strategy: "fibonacci", scale: [1, 2, 3, 5, 8] },
+    };
+    const safe = sanitizePersistedConfig(cfg);
+    expect(safe).toEqual(cfg);
+    // Nested containers are rebuilt (guard-checked primitives), not aliased.
+    expect(safe.site).not.toBe(cfg.site);
+    expect(safe.statuses).not.toBe(cfg.statuses);
+  });
+
+  it("preserves non-string leaves (numbers, booleans, null)", () => {
+    const cfg = { a: 1, b: true, c: null, d: [0, false] };
+    expect(sanitizePersistedConfig(cfg)).toEqual(cfg);
+  });
+
+  it("throws when a string contains an ASCII control character", () => {
+    const evil = { name: `Task${String.fromCharCode(0)}injected` };
+    expect(() => sanitizePersistedConfig(evil)).toThrow(/unsafe config value/);
+  });
+
+  it("throws on a control character nested inside an array", () => {
+    const evil = { statuses: [{ name: `Done${String.fromCharCode(0x1f)}` }] };
+    expect(() => sanitizePersistedConfig(evil)).toThrow(/unsafe config value/);
+  });
+
+  it("throws when a string exceeds the length bound", () => {
+    const evil = { blob: "x".repeat(1025) };
+    expect(() => sanitizePersistedConfig(evil)).toThrow(/unsafe config value/);
+  });
+
+  it("accepts a string exactly at the length bound", () => {
+    const cfg = { blob: "x".repeat(1024) };
+    expect(sanitizePersistedConfig(cfg)).toEqual(cfg);
   });
 });
