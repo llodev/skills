@@ -2,10 +2,10 @@
 name: pm-tasks-jira
 description: >-
   Jira adapter for the @llodev/pm-tasks-* family. Use when the user mentions
-  Jira, asks to "create Jira issue", "publish to Jira", "log to Jira",
-  "check subtask in Jira", or uses --publish-jira; OR for CRUD on existing
-  issues (check subtask, close issue, change due-date, assign person, comment,
-  set estimate, set parent); OR when invoked autonomously by another agent with
+  Jira, asks to "create Jira issue", "publish to Jira", "log to Jira", "check
+  subtask in Jira", or uses --publish-jira; OR for CRUD on existing issues
+  (check subtask, close issue, change due-date, assign person, comment, set
+  estimate, set parent); OR when invoked autonomously by another agent with
   [autonomous] / --auto sentinel. Jira model: team-managed, Kanban; issue →
   Subtask hierarchy (one level); transitions resolved at runtime by status
   category (locale-safe); estimate via story_points or timetracking field.
@@ -13,12 +13,12 @@ description: >-
   Streamable-HTTP transport), autonomous (write-through with allowlist).
   Implements 9 verbs (task.create, task.move, checklist.check, task.close,
   task.due-date.set, task.assignee.add, task.comment.add, task.parent.set,
-  task.estimate.set) from pm-tasks/pm-tasks-core/references/contract.md.
-  F2 task.sprint.set is NOT supported — Atlassian MCP exposes no sprint API.
+  task.estimate.set) from pm-tasks/pm-tasks-core/references/contract.md. F2
+  task.sprint.set is NOT supported — Atlassian MCP exposes no sprint API.
   Requires @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.0.0
+  version: 1.0.1
   tags:
     - agent-skill
     - jira
