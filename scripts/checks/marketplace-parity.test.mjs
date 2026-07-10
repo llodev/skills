@@ -64,7 +64,7 @@ test("forced drift in marketplace.json → exit 1", () => {
   }
 });
 
-test("plugin missing from pm-tasks/ → exit 1", () => {
+test("plugin missing from skills/ → exit 1", () => {
   const original = readFileSync(MARKETPLACE_PATH, "utf8");
   const data = JSON.parse(original);
   data.plugins.push({
@@ -73,7 +73,7 @@ test("plugin missing from pm-tasks/ → exit 1", () => {
     source: {
       source: "git-subdir",
       url: "https://github.com/llodev/skills.git",
-      path: "pm-tasks/pm-tasks-ghost",
+      path: "skills/pm-tasks-ghost",
     },
     description: "Ghost plugin for testing.",
     author: { name: "llodev" },

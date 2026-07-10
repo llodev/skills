@@ -98,11 +98,11 @@ All packages in a PR share the same tag. `--legacy-peer-deps` is required: npm 7
 
 Reserved scaffolds exist for Jira, Linear, Notion, ClickUp, Monday, Bitrix24, and Todoist. To implement one:
 
-1. **Claim the scaffold** — e.g., `pm-tasks/pm-tasks-jira/`. Update the `SKILL.md` frontmatter to mark it active (remove the "scaffold" note).
+1. **Claim the scaffold** — e.g., `skills/pm-tasks-jira/`. Update the `SKILL.md` frontmatter to mark it active (remove the "scaffold" note).
 
 2. **Copy from an existing adapter** — Start with the Asana or Trello folder. Copy the TypeScript setup, `tsconfig.json`, `vitest.config.ts`, and `package.json` structure.
 
-3. **Implement the 7 canonical verbs** — `task.create` · `task.move` · `checklist.check` · `task.close` · `task.due-date.set` · `task.assignee.add` · `task.comment.add`. The authoritative spec lives in [`pm-tasks/pm-tasks-core/references/contract.md`](pm-tasks/pm-tasks-core/references/contract.md) — defer to it for argument shapes, sentinels, and the autonomous-mode contract; do not duplicate the list here.
+3. **Implement the 7 canonical verbs** — `task.create` · `task.move` · `checklist.check` · `task.close` · `task.due-date.set` · `task.assignee.add` · `task.comment.add`. The authoritative spec lives in [`skills/pm-tasks-core/references/contract.md`](skills/pm-tasks-core/references/contract.md) — defer to it for argument shapes, sentinels, and the autonomous-mode contract; do not duplicate the list here.
 
 4. **Add config schema** — Create `.asana.json` or equivalent at the repo root (or per-package) to document auth/setup.
 
@@ -114,13 +114,13 @@ For the full guide on SDK architecture, library headless mode, and autonomous MC
 
 ## SKILL.md edits & the skill-judge gate
 
-Every `SKILL.md` in `pm-tasks/*/` is scored by the skill-judge rubric — a dimensioned quality assessment (tone, scope clarity, example completeness, etc.).
+Every `SKILL.md` in `skills/*/` is scored by the skill-judge rubric — a dimensioned quality assessment (tone, scope clarity, example completeness, etc.).
 
 ### When you modify a SKILL.md
 
 `make release-version` is gated by `make pre-release`, which enforces the **skill-judge ratchet**:
 
-- If any `pm-tasks/*/SKILL.md` changed on this branch vs `origin/main` AND `scripts/snapshots/skill-judge-baseline.json` was NOT updated, the gate blocks.
+- If any `skills/*/SKILL.md` changed on this branch vs `origin/main` AND `scripts/snapshots/skill-judge-baseline.json` was NOT updated, the gate blocks.
 
 ### The NOISE_BAND policy
 

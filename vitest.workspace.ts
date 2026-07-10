@@ -1,3 +1,3 @@
 import { defineWorkspace } from "vitest/config";
 
-export default defineWorkspace(["pm-tasks/*"]);
+export default defineWorkspace(["skills/*", "packages/*"]);

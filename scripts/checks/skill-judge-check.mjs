@@ -32,7 +32,7 @@ export async function loadBaseline() {
 
 export async function listSkillFiles() {
   const out = [];
-  const root = path.join(REPO, "pm-tasks");
+  const root = path.join(REPO, "skills");
   for (const entry of await readdir(root, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
     const skillPath = path.join(root, entry.name, "SKILL.md");

@@ -9,7 +9,7 @@ const REQUIRED_LOCALES = ["en-US", "pt-BR", "es-ES"];
 const ADAPTERS = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-jira"];
 
 async function checkAdapter(adapter) {
-  const root = path.join(REPO, "pm-tasks", adapter, "i18n");
+  const root = path.join(REPO, "skills", adapter, "i18n");
   const files = await readdir(root);
   const tables = {};
   for (const loc of REQUIRED_LOCALES) {

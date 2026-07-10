@@ -1,10 +1,16 @@
-// Flat config — ESLint 9+. Scoped to TS source and tests under pm-tasks/*/src and pm-tasks/*/tests.
+// Flat config — ESLint 9+. Scoped to TS source and tests under skills/*/src, skills/*/tests,
+// and packages/*/src, packages/*/tests.
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 export default [
   {
-    files: ["pm-tasks/*/src/**/*.ts", "pm-tasks/*/tests/**/*.ts"],
+    files: [
+      "skills/*/src/**/*.ts",
+      "skills/*/tests/**/*.ts",
+      "packages/*/src/**/*.ts",
+      "packages/*/tests/**/*.ts",
+    ],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -33,9 +39,10 @@ export default [
       "**/dist/**",
       "**/coverage/**",
       "**/node_modules/**",
-      "pm-tasks/*/scripts/**",
-      "pm-tasks/*/i18n/**",
-      "pm-tasks/*/schemas/**",
+      "skills/*/scripts/**",
+      "skills/*/i18n/**",
+      "skills/*/schemas/**",
+      "packages/*/scripts/**",
       "scripts/**",
       "**/*.mjs",
       "**/*.js",

@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "tsBuildInfoFile": "./.tsbuildinfo"
+  },
+  "include": ["src/**/*"],
+  "references": [{ "path": "../../skills/pm-tasks-core" }]
+}

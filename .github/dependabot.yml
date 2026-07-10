@@ -24,7 +24,7 @@ updates:
 
   # Per-package npm (TS adapters with their own package.json + deps)
   - package-ecosystem: "npm"
-    directory: "/pm-tasks/pm-tasks-core"
+    directory: "/skills/pm-tasks-core"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -45,7 +45,7 @@ updates:
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
-    directory: "/pm-tasks/pm-tasks-asana"
+    directory: "/skills/pm-tasks-asana"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -66,7 +66,7 @@ updates:
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
-    directory: "/pm-tasks/pm-tasks-trello"
+    directory: "/skills/pm-tasks-trello"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -87,7 +87,7 @@ updates:
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
-    directory: "/pm-tasks/pm-tasks-testkit"
+    directory: "/packages/pm-tasks-testkit"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -108,7 +108,7 @@ updates:
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
-    directory: "/pm-tasks/pm-tasks"
+    directory: "/packages/pm-tasks"
     schedule:
       interval: "weekly"
       day: "monday"

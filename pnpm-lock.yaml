@@ -60,76 +60,76 @@ importers:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@26.1.0)(lightningcss@1.32.0)(tsx@4.23.0)
 
-  django/django-schema-design: {}
-
-  pm-tasks/pm-tasks:
+  packages/pm-tasks:
     devDependencies:
       '@llodev/pm-tasks-asana':
         specifier: workspace:*
-        version: link:../pm-tasks-asana
+        version: link:../../skills/pm-tasks-asana
       '@llodev/pm-tasks-core':
         specifier: workspace:*
-        version: link:../pm-tasks-core
+        version: link:../../skills/pm-tasks-core
       '@llodev/pm-tasks-trello':
         specifier: workspace:*
-        version: link:../pm-tasks-trello
+        version: link:../../skills/pm-tasks-trello
 
-  pm-tasks/pm-tasks-asana:
+  packages/pm-tasks-testkit:
     dependencies:
       '@llodev/pm-tasks-core':
         specifier: workspace:^
-        version: link:../pm-tasks-core
-      ajv:
-        specifier: ^8.17.1
-        version: 8.20.0
-      ajv-formats:
-        specifier: ^3.0.1
-        version: 3.0.1(ajv@8.20.0)
-
-  pm-tasks/pm-tasks-bitrix24: {}
-
-  pm-tasks/pm-tasks-clickup: {}
-
-  pm-tasks/pm-tasks-core:
-    dependencies:
-      ajv:
-        specifier: ^8.17.1
-        version: 8.20.0
-      ajv-formats:
-        specifier: ^3.0.1
-        version: 3.0.1(ajv@8.20.0)
-
-  pm-tasks/pm-tasks-jira:
-    dependencies:
-      '@llodev/pm-tasks-core':
-        specifier: workspace:^
-        version: link:../pm-tasks-core
-      ajv:
-        specifier: ^8.17.1
-        version: 8.20.0
-      ajv-formats:
-        specifier: ^3.0.1
-        version: 3.0.1(ajv@8.20.0)
-
-  pm-tasks/pm-tasks-linear: {}
-
-  pm-tasks/pm-tasks-monday: {}
-
-  pm-tasks/pm-tasks-notion: {}
-
-  pm-tasks/pm-tasks-testkit:
-    dependencies:
-      '@llodev/pm-tasks-core':
-        specifier: workspace:^
-        version: link:../pm-tasks-core
+        version: link:../../skills/pm-tasks-core
     devDependencies:
       vitest:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@26.1.0)(lightningcss@1.32.0)(tsx@4.23.0)
 
-  pm-tasks/pm-tasks-todoist: {}
+  skills/django-schema-design: {}
 
-  pm-tasks/pm-tasks-trello:
+  skills/pm-tasks-asana:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
+
+  skills/pm-tasks-bitrix24: {}
+
+  skills/pm-tasks-clickup: {}
+
+  skills/pm-tasks-core:
+    dependencies:
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
+
+  skills/pm-tasks-jira:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
+
+  skills/pm-tasks-linear: {}
+
+  skills/pm-tasks-monday: {}
+
+  skills/pm-tasks-notion: {}
+
+  skills/pm-tasks-todoist: {}
+
+  skills/pm-tasks-trello:
     dependencies:
       '@llodev/pm-tasks-core':
         specifier: workspace:^

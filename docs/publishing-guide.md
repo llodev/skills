@@ -409,7 +409,7 @@ A GitHub Actions step that moves a Trello card to the WIP list when a PR opens:
 
 ### Plan-execution mode
 
-If the calling agent passes a plan-file reference (`docs/plans/*.md` or a slug or an explicit title list), the adapter can also run discovery via `discoverPlanTasks` and the per-task hooks `onTaskStart` / `onTaskComplete`. Full contract: [`pm-tasks-core/references/plan-execution.md`](../pm-tasks/pm-tasks-core/references/plan-execution.md).
+If the calling agent passes a plan-file reference (`docs/plans/*.md` or a slug or an explicit title list), the adapter can also run discovery via `discoverPlanTasks` and the per-task hooks `onTaskStart` / `onTaskComplete`. Full contract: [`pm-tasks-core/references/plan-execution.md`](../skills/pm-tasks-core/references/plan-execution.md).
 
 ### When NOT to use the headless runtime
 
@@ -478,10 +478,10 @@ when the running package version matches the `0.0.0-pr-*` pattern. This is surfa
 
 ### Release safeguard
 
-`scripts/shell/pre-release-check.sh` (run by `make pre-release`) hard-aborts if any `pm-tasks/*/package.json` still carries a `-pr-` version:
+`scripts/shell/pre-release-check.sh` (run by `make pre-release`) hard-aborts if any `skills/*/package.json` still carries a `-pr-` version:
 
 ```
-ABORT: canary version found in pm-tasks/pm-tasks-core/package.json — revert before release
+ABORT: canary version found in skills/pm-tasks-core/package.json — revert before release
 ```
 
 This prevents a leftover canary stamp from reaching a real release via an accidental `make release-version` run on a checked-out PR branch.

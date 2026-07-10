@@ -131,7 +131,7 @@ Heavy items that only make sense once ≥4 mature adapters exist. Holding pen.
 
 ## 9. Beyond pm-tasks — new skill families
 
-The repo is no longer single-family. `pm-tasks-*` stays the primary track; each new family lives in its own top-level folder (`django/`, …), versions independently (own `CHANGELOG.md`, own changeset, branch = version), and is registered in `pnpm-workspace.yaml` + `.claude-plugin/marketplace.json`. The `marketplace-parity` gate resolves each package dir from its `source.path`, so it's family-agnostic.
+The repo is no longer single-family. `pm-tasks-*` stays the primary track; new families ship as new skills under the flat `skills/` directory (one directory per skill, the convention skill indexers expect), with family membership carried by the name prefix and each skill's `metadata.family` field rather than by directory nesting. Each skill versions independently (own `CHANGELOG.md`, own changeset, branch = version) and is registered in `pnpm-workspace.yaml` + `.claude-plugin/marketplace.json`. The `marketplace-parity` gate resolves each package dir from its `source.path`, so it's layout-agnostic.
 
 ### `django-*` — Django design knowledge skills
 

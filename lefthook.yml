@@ -17,7 +17,7 @@ pre-commit:
         git add {staged_files}
 
     lint:
-      glob: "pm-tasks/**/*.ts"
+      glob: "{skills,packages}/**/*.ts"
       run: pnpm run lint
 
     gitleaks:

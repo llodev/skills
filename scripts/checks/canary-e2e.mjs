@@ -274,7 +274,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
     // 1. Pack each package into /tmp
     const tarballs = {};
     for (const pkg of PACKAGES) {
-      const dir = path.join(ROOT, "pm-tasks", pkg);
+      const base = pkg === "pm-tasks-testkit" ? "packages" : "skills";
+      const dir = path.join(ROOT, base, pkg);
       const pkgJson = JSON.parse(readFileSync(path.join(dir, "package.json"), "utf8"));
       const version = pkgJson.version;
       run("pnpm pack --pack-destination /tmp", { cwd: dir, stdio: "pipe" });

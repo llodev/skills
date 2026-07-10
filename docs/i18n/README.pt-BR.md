@@ -37,7 +37,7 @@ npm i @llodev/pm-tasks    # meta — instala a família toda via peerDeps
 **Vercel `skills add`:**
 
 ```bash
-npx skills add llodev/skills/pm-tasks/pm-tasks-trello
+npx skills add llodev/skills/skills/pm-tasks-trello
 ```
 
 Veja o [guia de publicação](../../docs/publishing-guide.md) para entender como os três canais se conectam.
@@ -60,20 +60,20 @@ if (!r.ok) throw new Error(`task.move falhou: ${r.code}`);
 
 `mcp: (toolName, args) => Promise<unknown>` é um callback fornecido pelo chamador que faz proxy para as tools `mcp__*` do runtime do agent. Mesma forma para `@llodev/pm-tasks-asana/adapter`. Contrato completo em [publishing-guide § 11 — Headless runtime](../../docs/publishing-guide.md#11-headless-runtime-pm-tasks-v19) e nos SKILL.md por adapter.
 
-| Pacote                      | Status      | Fonte                                                            | npm                                 | Vercel CLI                                              |
-| --------------------------- | ----------- | ---------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------- |
-| `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [pm-tasks/pm-tasks/](../../pm-tasks/pm-tasks/)                   | `npm i @llodev/pm-tasks`            | —                                                       |
-| `@llodev/pm-tasks-core`     | ✅ v1.4.0   | [pm-tasks/pm-tasks-core/](../../pm-tasks/pm-tasks-core/)         | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/pm-tasks/pm-tasks-core`   |
-| `@llodev/pm-tasks-asana`    | ✅ v1.4.0   | [pm-tasks/pm-tasks-asana/](../../pm-tasks/pm-tasks-asana/)       | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/pm-tasks/pm-tasks-asana`  |
-| `@llodev/pm-tasks-trello`   | ✅ v1.4.0   | [pm-tasks/pm-tasks-trello/](../../pm-tasks/pm-tasks-trello/)     | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/pm-tasks/pm-tasks-trello` |
-| `@llodev/pm-tasks-testkit`  | ✅ v0.1.0   | [pm-tasks/pm-tasks-testkit/](../../pm-tasks/pm-tasks-testkit/)   | `npm i -D @llodev/pm-tasks-testkit` | —                                                       |
-| `@llodev/pm-tasks-jira`     | ✅ v1.0.0   | [pm-tasks/pm-tasks-jira/](../../pm-tasks/pm-tasks-jira/)         | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/pm-tasks/pm-tasks-jira`   |
-| `pm-tasks-linear`           | 🔒 scaffold | [pm-tasks/pm-tasks-linear/](../../pm-tasks/pm-tasks-linear/)     | —                                   | —                                                       |
-| `pm-tasks-notion`           | 🔒 scaffold | [pm-tasks/pm-tasks-notion/](../../pm-tasks/pm-tasks-notion/)     | —                                   | —                                                       |
-| `pm-tasks-clickup`          | 🔒 scaffold | [pm-tasks/pm-tasks-clickup/](../../pm-tasks/pm-tasks-clickup/)   | —                                   | —                                                       |
-| `pm-tasks-monday`           | 🔒 scaffold | [pm-tasks/pm-tasks-monday/](../../pm-tasks/pm-tasks-monday/)     | —                                   | —                                                       |
-| `pm-tasks-bitrix24`         | 🔒 scaffold | [pm-tasks/pm-tasks-bitrix24/](../../pm-tasks/pm-tasks-bitrix24/) | —                                   | —                                                       |
-| `pm-tasks-todoist`          | 🔒 scaffold | [pm-tasks/pm-tasks-todoist/](../../pm-tasks/pm-tasks-todoist/)   | —                                   | —                                                       |
+| Pacote                      | Status      | Fonte                                                          | npm                                 | Vercel CLI                                            |
+| --------------------------- | ----------- | -------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------- |
+| `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [packages/pm-tasks/](../../packages/pm-tasks/)                 | `npm i @llodev/pm-tasks`            | —                                                     |
+| `@llodev/pm-tasks-core`     | ✅ v1.4.0   | [skills/pm-tasks-core/](../../skills/pm-tasks-core/)           | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/skills/pm-tasks-core`   |
+| `@llodev/pm-tasks-asana`    | ✅ v1.4.0   | [skills/pm-tasks-asana/](../../skills/pm-tasks-asana/)         | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/skills/pm-tasks-asana`  |
+| `@llodev/pm-tasks-trello`   | ✅ v1.4.0   | [skills/pm-tasks-trello/](../../skills/pm-tasks-trello/)       | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/skills/pm-tasks-trello` |
+| `@llodev/pm-tasks-testkit`  | ✅ v0.1.0   | [packages/pm-tasks-testkit/](../../packages/pm-tasks-testkit/) | `npm i -D @llodev/pm-tasks-testkit` | —                                                     |
+| `@llodev/pm-tasks-jira`     | ✅ v1.0.0   | [skills/pm-tasks-jira/](../../skills/pm-tasks-jira/)           | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/skills/pm-tasks-jira`   |
+| `pm-tasks-linear`           | 🔒 scaffold | [skills/pm-tasks-linear/](../../skills/pm-tasks-linear/)       | —                                   | —                                                     |
+| `pm-tasks-notion`           | 🔒 scaffold | [skills/pm-tasks-notion/](../../skills/pm-tasks-notion/)       | —                                   | —                                                     |
+| `pm-tasks-clickup`          | 🔒 scaffold | [skills/pm-tasks-clickup/](../../skills/pm-tasks-clickup/)     | —                                   | —                                                     |
+| `pm-tasks-monday`           | 🔒 scaffold | [skills/pm-tasks-monday/](../../skills/pm-tasks-monday/)       | —                                   | —                                                     |
+| `pm-tasks-bitrix24`         | 🔒 scaffold | [skills/pm-tasks-bitrix24/](../../skills/pm-tasks-bitrix24/)   | —                                   | —                                                     |
+| `pm-tasks-todoist`          | 🔒 scaffold | [skills/pm-tasks-todoist/](../../skills/pm-tasks-todoist/)     | —                                   | —                                                     |
 
 > [!NOTE]
 > Skills marcadas como `scaffold` são namespaces reservados com um `SKILL.md` placeholder. A descrição delas instrui os agentes a NÃO ativar até um adapter real chegar.
@@ -89,13 +89,23 @@ Toda skill publicada declara quais agentes ela suporta no campo `compatibility.a
 
 ## Layout do repositório
 
+As skills ficam achatadas em `skills/` (um diretório por skill, a convenção que
+os indexadores de skills esperam); a família é indicada pelo prefixo `pm-tasks-`
+no nome e pelo campo `metadata.family` de cada skill, não pelo aninhamento de
+diretórios. Pacotes que não são skills (meta-pacote, testkit) ficam em `packages/`.
+
 ```
 .
-├── pm-tasks/                  Pasta da família — um diretório por membro da família
-│   ├── pm-tasks-core/         Extração compartilhada + vocabulário CRUD
+├── skills/                    Todas as skills — achatadas, um diretório cada
+│   ├── pm-tasks-core/         Extração compartilhada + vocabulário CRUD (family: pm-tasks)
 │   ├── pm-tasks-asana/        Adapter Asana (parent + subtasks, custom fields, sections)
 │   ├── pm-tasks-trello/       Adapter Trello (boards, lists, labels, members)
-│   └── pm-tasks-<member>/     Scaffolds reservados (Jira, Linear, Notion, …)
+│   ├── pm-tasks-jira/         Adapter Jira (epics, estimativas, transições)
+│   ├── pm-tasks-<member>/     Scaffolds reservados (Linear, Notion, ClickUp, …)
+│   └── django-schema-design/  Design de schema: estratégia de PK, índices, constraints, migrations
+├── packages/                  Pacotes de workspace que não são skills (sem SKILL.md)
+│   ├── pm-tasks/              Meta-pacote — instala toda a família pm-tasks
+│   └── pm-tasks-testkit/      Fakes em memória para os verbos CRUD canônicos
 ├── scripts/                   Validadores, checks de contrato, gate de baseline do skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intenção de release (workflow Changesets)

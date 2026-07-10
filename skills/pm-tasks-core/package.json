@@ -1,0 +1,96 @@
+{
+  "name": "@llodev/pm-tasks-core",
+  "version": "1.11.0",
+  "description": "Core skill for the pm-tasks-* family: extracts implementation plans into structured task content, defines the CRUD vocabulary (task.create, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add, task.move, task.parent.set, task.estimate.set), specifies the autonomous-mode contract, and provides the shared init UX library for tool adapters. Use when an adapter (pm-tasks-trello, pm-tasks-asana, etc.) needs the canonical generic-card structure or when running the init helper for any tool.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/pm-tasks-core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "skills/pm-tasks-core"
+  },
+  "main": "./dist/init-lib.js",
+  "types": "./dist/init-lib.d.ts",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "docs",
+    "references",
+    "anti-patterns",
+    "scripts",
+    "schemas",
+    "i18n",
+    "dist"
+  ],
+  "keywords": [
+    "agent-skill",
+    "claude-code",
+    "cursor",
+    "codex",
+    "windsurf",
+    "plan-to-tasks",
+    "pm-tools"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/doctor.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "bin": {
+    "pm-tasks-core-doctor": "./dist/bin/doctor.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/init-lib.d.ts",
+      "import": "./dist/init-lib.js"
+    },
+    "./init-lib": {
+      "types": "./dist/init-lib.d.ts",
+      "import": "./dist/init-lib.js"
+    },
+    "./audit": {
+      "types": "./dist/audit.d.ts",
+      "import": "./dist/audit.js"
+    },
+    "./doctor": {
+      "types": "./dist/doctor.d.ts",
+      "import": "./dist/doctor.js"
+    },
+    "./bin/doctor": {
+      "types": "./dist/bin/doctor.d.ts",
+      "import": "./dist/bin/doctor.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    },
+    "./plan-execution": {
+      "types": "./dist/plan-execution/index.d.ts",
+      "import": "./dist/plan-execution/index.js"
+    },
+    "./i18n": {
+      "types": "./dist/i18n/registry.d.ts",
+      "import": "./dist/i18n/registry.js"
+    },
+    "./estimation": {
+      "types": "./dist/estimation.d.ts",
+      "import": "./dist/estimation.js"
+    },
+    "./schemas/*.json": "./schemas/*.json",
+    "./i18n/*.json": "./i18n/*.json"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

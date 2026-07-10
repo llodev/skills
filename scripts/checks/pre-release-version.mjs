@@ -15,23 +15,28 @@ export function findCanaryVersions(packages) {
 }
 
 /**
- * Scans every pm-tasks/<dir>/package.json under the repo root (all dirs,
+ * Scans every workspace package.json under skills/ and packages/ (all dirs,
  * including private ones — a -pr- version anywhere is a mistake).
  * @param {string} [root]
  * @returns {Array<{ name: string, version: string }>}
  */
-export function scanWorkspace(root = ROOT) {
-  const pmTasksDir = path.join(root, "pm-tasks");
-  const entries = readdirSync(pmTasksDir, { withFileTypes: true });
+const WORKSPACE_ROOTS = ["skills", "packages"];
 
+export function scanWorkspace(root = ROOT) {
   const packages = [];
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    const pkgPath = path.join(pmTasksDir, entry.name, "package.json");
-    if (!existsSync(pkgPath)) continue;
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
-    if (!pkg.name || !pkg.version) continue;
-    packages.push({ name: pkg.name, version: pkg.version });
+  for (const wsRoot of WORKSPACE_ROOTS) {
+    const baseDir = path.join(root, wsRoot);
+    if (!existsSync(baseDir)) continue;
+    const entries = readdirSync(baseDir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const pkgPath = path.join(baseDir, entry.name, "package.json");
+      if (!existsSync(pkgPath)) continue;
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+      if (!pkg.name || !pkg.version) continue;
+      packages.push({ name: pkg.name, version: pkg.version });
+    }
   }
 
   return findCanaryVersions(packages);

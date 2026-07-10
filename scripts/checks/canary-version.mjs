@@ -55,35 +55,41 @@ export function canaryVersion(prNumber, shortSha) {
 
 /**
  * Enumerates publishable pm-tasks packages from the workspace catalog.
- * Scans immediate subdirectories of <repoRoot>/pm-tasks/, reads each package.json,
- * and includes only entries where private !== true AND name starts with "@llodev/pm-tasks-".
+ * Scans immediate subdirectories of the workspace roots (skills/, packages/),
+ * reads each package.json, and includes only entries where private !== true AND
+ * name starts with "@llodev/pm-tasks-".
  *
- * This enumeration IS the auto-enrollment mechanism — a new pm-tasks/<adapter> with a
- * public package.json automatically joins the canary loop.
+ * This enumeration IS the auto-enrollment mechanism — a new skills/<adapter> (or
+ * packages/<tool>) with a public package.json automatically joins the canary loop.
  *
  * @returns {Array<{name: string, dir: string, packageJsonPath: string, version: string}>}
  */
+const WORKSPACE_ROOTS = ["skills", "packages"];
+
 export function listCanaryPackages() {
-  const pmTasksDir = path.join(ROOT, "pm-tasks");
-  const entries = readdirSync(pmTasksDir, { withFileTypes: true });
-
   const packages = [];
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    const dir = path.join(pmTasksDir, entry.name);
-    const packageJsonPath = path.join(dir, "package.json");
-    if (!existsSync(packageJsonPath)) continue;
+  for (const root of WORKSPACE_ROOTS) {
+    const baseDir = path.join(ROOT, root);
+    if (!existsSync(baseDir)) continue;
+    const entries = readdirSync(baseDir, { withFileTypes: true });
 
-    const pkg = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-    if (pkg.private === true) continue;
-    if (!pkg.name || !pkg.name.startsWith("@llodev/pm-tasks-")) continue;
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const dir = path.join(baseDir, entry.name);
+      const packageJsonPath = path.join(dir, "package.json");
+      if (!existsSync(packageJsonPath)) continue;
 
-    packages.push({
-      name: pkg.name,
-      dir,
-      packageJsonPath,
-      version: pkg.version,
-    });
+      const pkg = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+      if (pkg.private === true) continue;
+      if (!pkg.name || !pkg.name.startsWith("@llodev/pm-tasks-")) continue;
+
+      packages.push({
+        name: pkg.name,
+        dir,
+        packageJsonPath,
+        version: pkg.version,
+      });
+    }
   }
 
   // Deterministic order — sort by name

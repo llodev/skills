@@ -41,7 +41,7 @@ Publishes every workspace package whose `version` is ahead of what's on npm. Req
 
 ## Quality gate — skill-judge
 
-`make release-version` is prerequisite-chained to `make pre-release`, which enforces the [skill-judge](../scripts/skill-judge-check.mjs) ratchet: if any `pm-tasks/*/SKILL.md` was modified on this branch vs `origin/main` AND `scripts/skill-judge-baseline.json` was NOT updated in the same range, the gate blocks the release.
+`make release-version` is prerequisite-chained to `make pre-release`, which enforces the [skill-judge](../scripts/skill-judge-check.mjs) ratchet: if any `skills/*/SKILL.md` was modified on this branch vs `origin/main` AND `scripts/skill-judge-baseline.json` was NOT updated in the same range, the gate blocks the release.
 
 The flow when SKILL.md changed:
 
