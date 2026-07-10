@@ -60,6 +60,8 @@ importers:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@26.1.0)(lightningcss@1.32.0)(tsx@4.23.0)
 
+  django/django-schema-design: {}
+
   pm-tasks/pm-tasks:
     devDependencies:
       '@llodev/pm-tasks-asana':

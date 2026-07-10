@@ -81,6 +81,17 @@ if (!r.ok) throw new Error(`task.move failed: ${r.code}`);
 > [!NOTE]
 > `@llodev/pm-tasks` (meta) is versioned independently from the family via `onlyUpdatePeerDependentsWhenOutOfRange`. The family is at `v1.x`; meta jumped to `v3.0.0` before decoupling and will stay at `v3.x` until the family reaches `v2.0.0`.
 
+### `django-*` — Django design skills
+
+Pure **knowledge** skills for designing production-grade Django apps — no MCP, no config, no init. They activate on the prompt and inject expert decisions (trade-offs, anti-patterns, decision trees), not basic ORM syntax. First member ships schema design; more Django-context skills are planned (see [roadmap](docs/roadmap.md)).
+
+| Package                        | Status    | Source                                                       | npm                                  | Vercel CLI                                                 |
+| ------------------------------ | --------- | ------------------------------------------------------------ | ------------------------------------ | ---------------------------------------------------------- |
+| `@llodev/django-schema-design` | ✅ v0.1.0 | [django/django-schema-design/](django/django-schema-design/) | `npm i @llodev/django-schema-design` | `npx skills add llodev/skills/django/django-schema-design` |
+
+> [!NOTE]
+> `django-schema-design` covers the **database-schema** layer (PK strategy, indexes, constraints, migrations). A future `django-model-design` sibling is reserved for the **model layer** (relationships, managers, fat-vs-thin models).
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -96,6 +107,8 @@ Every published skill declares which agents it targets via the `compatibility.ag
 │   ├── pm-tasks-asana/        Asana adapter (parent + subtasks, custom fields, sections)
 │   ├── pm-tasks-trello/       Trello adapter (boards, lists, labels, members)
 │   └── pm-tasks-<member>/     Reserved scaffolds (Jira, Linear, Notion, …)
+├── django/                    Family folder — Django design knowledge skills
+│   └── django-schema-design/  Schema design: PK strategy, indexes, constraints, migrations
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
@@ -144,6 +157,10 @@ Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool 
 - P2 — `@llodev/pm-tasks-cli` standalone CLI over the F14 headless `/adapter` subpath.
 - P4 — Plugin SDK (`npx pm-tasks-contract-tests`) for out-of-tree adapters.
 - F1 — bidirectional sync (read-back PM tool → plan) once ≥4 adapters land.
+
+**New family — `django-*` (Django design skills):**
+
+- `django-schema-design` (`v0.1.0`) — **shipped**: PK strategy (incremental / UUIDv4 / UUIDv7 with insert-locality trade-offs), indexes, constraints, and safe migrations. First of several planned Django-context skills; `django-model-design` (model layer) is the natural next.
 
 **Future families:**
 

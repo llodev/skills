@@ -1,0 +1,36 @@
+{
+  "name": "@llodev/django-schema-design",
+  "version": "0.0.0",
+  "description": "Design robust Django database schemas: model conventions, primary-key strategy (incremental, UUIDv4, UUIDv7 with insert-locality trade-offs), indexes (composite/covering/partial), constraints (unique/check/exclusion), and safe migrations. A knowledge skill for designing new Django models, choosing PK types, tuning schema for reads, or reviewing an app's schema. Covers Django ORM + PostgreSQL and the security angle on exposed IDs.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/django/django-schema-design",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "django/django-schema-design"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "django",
+    "schema-design",
+    "orm",
+    "postgresql",
+    "primary-key",
+    "uuidv7"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
