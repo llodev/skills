@@ -1,0 +1,68 @@
+{
+  "name": "@llodev/pm-tasks-asana",
+  "version": "1.6.0",
+  "description": "Asana adapter for the @llodev/pm-tasks-* family. Use when the user mentions Asana (create Asana task, publish to Asana, post to Asana, add comment in Asana, --publish-asana, close task, check subtask) or wants to publish a plan as Asana tasks with subtasks. Modes: paste-ready (no MCP needed), MCP publish (via claude.ai Asana MCP), autonomous (sentinel [autonomous] / --auto). Implements 6 CRUD verbs from @llodev/pm-tasks-core/references/contract.md mapped to Asana (parent task + subtasks, custom fields, sections, multi-assignee). REQUIRES: @llodev/pm-tasks-core installed (skillpm / Claude Code marketplace cascade auto; Vercel CLI users install manually).",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/pm-tasks-asana",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "skills/pm-tasks-asana"
+  },
+  "main": "./dist/bin/init.js",
+  "types": "./dist/bin/init.d.ts",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "docs",
+    "anti-patterns",
+    "references",
+    "i18n",
+    "schemas",
+    "manifest.json",
+    "dist"
+  ],
+  "keywords": [
+    "agent-skill",
+    "asana",
+    "plan-to-tasks",
+    "pm-tools",
+    "asana-mcp"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/init.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/bin/init.d.ts",
+      "import": "./dist/bin/init.js"
+    },
+    "./adapter": {
+      "types": "./dist/adapter.d.ts",
+      "import": "./dist/adapter.js"
+    },
+    "./i18n/*.json": "./i18n/*.json",
+    "./schemas/*.json": "./schemas/*.json",
+    "./manifest.json": "./manifest.json"
+  },
+  "bin": {
+    "pm-tasks-asana": "./dist/bin/init.js"
+  },
+  "dependencies": {
+    "@llodev/pm-tasks-core": "workspace:^",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -5,11 +5,13 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov", "html"],
-      include: ["pm-tasks/*/src/**/*.ts"],
+      include: ["skills/*/src/**/*.ts", "packages/*/src/**/*.ts"],
       exclude: [
-        "pm-tasks/*/src/**/*.test.ts",
-        "pm-tasks/*/src/bin/**",
-        "pm-tasks/*/src/doctor-cli.ts",
+        "skills/*/src/**/*.test.ts",
+        "skills/*/src/bin/**",
+        "skills/*/src/doctor-cli.ts",
+        "packages/*/src/**/*.test.ts",
+        "packages/*/src/bin/**",
         "**/dist/**",
       ],
       thresholds: {

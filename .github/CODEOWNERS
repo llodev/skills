@@ -7,13 +7,13 @@
 *                                          @lloliveiradev
 
 # Per-package overrides (placeholders — uncomment as future adapter maintainers join).
-# /pm-tasks/pm-tasks-jira/                 @<future-jira-maintainer>
-# /pm-tasks/pm-tasks-linear/               @<future-linear-maintainer>
-# /pm-tasks/pm-tasks-notion/               @<future-notion-maintainer>
-# /pm-tasks/pm-tasks-clickup/              @<future-clickup-maintainer>
-# /pm-tasks/pm-tasks-monday/               @<future-monday-maintainer>
-# /pm-tasks/pm-tasks-bitrix24/             @<future-bitrix24-maintainer>
-# /pm-tasks/pm-tasks-todoist/              @<future-todoist-maintainer>
+# /skills/pm-tasks-jira/                 @<future-jira-maintainer>
+# /skills/pm-tasks-linear/               @<future-linear-maintainer>
+# /skills/pm-tasks-notion/               @<future-notion-maintainer>
+# /skills/pm-tasks-clickup/              @<future-clickup-maintainer>
+# /skills/pm-tasks-monday/               @<future-monday-maintainer>
+# /skills/pm-tasks-bitrix24/             @<future-bitrix24-maintainer>
+# /skills/pm-tasks-todoist/              @<future-todoist-maintainer>
 
 # Cross-cutting infra — keep with default owner unless explicitly delegated.
 # /.github/                                @lloliveiradev

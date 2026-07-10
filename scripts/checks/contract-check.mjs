@@ -12,7 +12,7 @@ const Ajv = require("ajv/dist/2020");
 // ── Phase A: contract.md change detection ────────────────────────────────────
 
 const BASE = process.env.GITHUB_BASE_REF || "main";
-const CONTRACT = "pm-tasks/pm-tasks-core/references/contract.md";
+const CONTRACT = "skills/pm-tasks-core/references/contract.md";
 
 let failed = false;
 
@@ -69,7 +69,7 @@ if (!changed.includes(CONTRACT)) {
 
 // ── Phase B: adapter manifest validation ─────────────────────────────────────
 
-const schemaPath = "pm-tasks/pm-tasks-core/schemas/adapter-manifest.schema.json";
+const schemaPath = "skills/pm-tasks-core/schemas/adapter-manifest.schema.json";
 const schema = JSON.parse(await readFile(schemaPath, "utf8"));
 const ajv = new Ajv({ strict: false });
 const validate = ajv.compile(schema);
@@ -88,20 +88,20 @@ const CANONICAL_VERBS = new Set([
   "task.estimate.set",
 ]);
 
-const entries = await readdir("pm-tasks", { withFileTypes: true });
+const entries = await readdir("skills", { withFileTypes: true });
 for (const entry of entries) {
   if (!entry.isDirectory()) continue;
   if (!entry.name.startsWith("pm-tasks-")) continue;
   if (entry.name === "pm-tasks-core") continue;
 
-  const pkgJsonPath = `pm-tasks/${entry.name}/package.json`;
+  const pkgJsonPath = `skills/${entry.name}/package.json`;
   if (!existsSync(pkgJsonPath)) continue;
   const pkgJson = JSON.parse(await readFile(pkgJsonPath, "utf8"));
 
   // Skip scaffolds: version starts with "0."
   if (pkgJson.version?.startsWith("0.")) continue;
 
-  const manifestPath = `pm-tasks/${entry.name}/manifest.json`;
+  const manifestPath = `skills/${entry.name}/manifest.json`;
   if (!existsSync(manifestPath)) {
     console.error(`FAIL ${entry.name}: missing manifest.json`);
     failed = true;
@@ -133,7 +133,7 @@ for (const entry of entries) {
   }
 
   // SKILL.md grep: every verb must appear in the adapter's SKILL.md
-  const skillMdPath = `pm-tasks/${entry.name}/SKILL.md`;
+  const skillMdPath = `skills/${entry.name}/SKILL.md`;
   if (!existsSync(skillMdPath)) {
     console.error(`FAIL ${entry.name}: missing SKILL.md`);
     failed = true;

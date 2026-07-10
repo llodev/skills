@@ -20,7 +20,7 @@ if ! git rev-parse --verify --quiet "$BASE_REF" >/dev/null; then
   fi
 fi
 
-RAW_SKILL_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'pm-tasks/*/SKILL.md' || true)"
+RAW_SKILL_CHANGES="$(git diff --name-only "$BASE_REF"...HEAD -- 'skills/*/SKILL.md' || true)"
 
 # Drop files whose ONLY change is the frontmatter `version:` field. `version:sync`
 # (run by `changeset version`) bumps that field on every release; counting it would
@@ -105,7 +105,7 @@ done
 if [ ${#found[@]} -eq 0 ]; then
   echo "doctor: no .tool.json found in workspace — skipping"
 else
-  if ! node pm-tasks/pm-tasks-core/dist/bin/doctor.js; then
+  if ! node skills/pm-tasks-core/dist/bin/doctor.js; then
     echo "abort: doctor reported errors; resolve or run \`pnpm --filter @llodev/pm-tasks-<tool> init --doctor --fix-hints-only\`"
     exit 1
   fi

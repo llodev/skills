@@ -121,8 +121,10 @@ jobs:
           # the adapter would pin the last real release instead of the canary.
           while IFS= read -r name; do
             [ -n "$name" ] || continue
-            dir="pm-tasks/${name##*/}"
-            [ -d "$dir" ] || { echo "refusing: directory $dir for $name not found"; exit 1; }
+            base="${name##*/}"
+            if [ -d "skills/$base" ]; then dir="skills/$base"
+            elif [ -d "packages/$base" ]; then dir="packages/$base"
+            else echo "refusing: directory for $name not found under skills/ or packages/"; exit 1; fi
             (cd "$dir" && npm version "$VERSION" --no-git-tag-version --allow-same-version)
           done <<< "$PKGS"
 
@@ -132,7 +134,10 @@ jobs:
 
           while IFS= read -r name; do
             [ -n "$name" ] || continue
-            dir="pm-tasks/${name##*/}"
+            base="${name##*/}"
+            if [ -d "skills/$base" ]; then dir="skills/$base"
+            elif [ -d "packages/$base" ]; then dir="packages/$base"
+            else echo "refusing: directory for $name not found under skills/ or packages/"; exit 1; fi
 
             packout="$(cd "$dir" && pnpm pack --pack-destination "$RUNNER_TEMP" | tail -n 1)"
             case "$packout" in

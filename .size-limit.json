@@ -1,27 +1,27 @@
 [
   {
     "name": "@llodev/pm-tasks-core (tarball)",
-    "path": "pm-tasks/pm-tasks-core/dist/**/*.js",
+    "path": "skills/pm-tasks-core/dist/**/*.js",
     "limit": "21 kB"
   },
   {
     "name": "@llodev/pm-tasks-asana (tarball)",
-    "path": "pm-tasks/pm-tasks-asana/dist/**/*.js",
+    "path": "skills/pm-tasks-asana/dist/**/*.js",
     "limit": "10 kB"
   },
   {
     "name": "@llodev/pm-tasks-trello (tarball)",
-    "path": "pm-tasks/pm-tasks-trello/dist/**/*.js",
+    "path": "skills/pm-tasks-trello/dist/**/*.js",
     "limit": "10 kB"
   },
   {
     "name": "@llodev/pm-tasks-testkit (tarball)",
-    "path": "pm-tasks/pm-tasks-testkit/dist/**/*.js",
+    "path": "packages/pm-tasks-testkit/dist/**/*.js",
     "limit": "6 kB"
   },
   {
     "name": "@llodev/pm-tasks-jira (tarball)",
-    "path": "pm-tasks/pm-tasks-jira/dist/**/*.js",
+    "path": "skills/pm-tasks-jira/dist/**/*.js",
     "limit": "13 kB"
   }
 ]

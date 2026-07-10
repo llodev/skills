@@ -53,16 +53,16 @@ release-publish: ## publish to npm (gated by CI/auth)
 	pnpm changeset:publish
 
 init-asana: ## run pm-tasks-asana init (needs LLODEV_PM_TASKS_ASANA_PAT)
-	node pm-tasks/pm-tasks-asana/dist/bin/init.js
+	node skills/pm-tasks-asana/dist/bin/init.js
 
 init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
-	node pm-tasks/pm-tasks-trello/dist/bin/init.js
+	node skills/pm-tasks-trello/dist/bin/init.js
 
 init-jira: ## run pm-tasks-jira init
-	node pm-tasks/pm-tasks-jira/dist/bin/init.js
+	node skills/pm-tasks-jira/dist/bin/init.js
 
 doctor: ## run pm-tasks-core-doctor against workspace .tool.json files
-	node pm-tasks/pm-tasks-core/dist/bin/doctor.js $(ARGS)
+	node skills/pm-tasks-core/dist/bin/doctor.js $(ARGS)
 
 skill-judge: ## skill-judge:check — reads scores from stdin as JSON {path: score}
 	pnpm skill-judge:check
@@ -89,7 +89,7 @@ size: ## size-limit per-package gzipped budgets
 	pnpm run size
 
 clean: ## remove build artefacts and pnpm caches in node_modules
-	rm -rf node_modules pm-tasks/*/node_modules
+	rm -rf node_modules skills/*/node_modules packages/*/node_modules
 
 e2e: ## run E2E canary on packed tarballs
 	@node scripts/checks/canary-e2e.mjs

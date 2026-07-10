@@ -2,73 +2,95 @@
   "name": "llodev",
   "owner": {
     "name": "llodev",
-    "email": "lloliveira.dev@gmail.com"
+    "url": "https://github.com/llodev"
+  },
+  "metadata": {
+    "description": "Collection of Agent Skills created by @lloliveiradev for Claude Code, Cursor, Codex, Windsurf, and any agent that speaks the open Skills spec.",
+    "version": "1.11.0"
   },
   "plugins": [
     {
       "name": "pm-tasks-core",
+      "category": "ai-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/llodev/skills.git",
-        "path": "pm-tasks/pm-tasks-core"
+        "path": "skills/pm-tasks-core"
       },
-      "description": "Core extraction + CRUD vocabulary for the pm-tasks-* family.",
+      "description": "Shared extraction engine and canonical CRUD verb vocabulary (task.create, task.close, task.due-date.set, …) for the pm-tasks-* adapters. Dependency of every adapter.",
       "version": "1.11.0",
       "author": {
         "name": "llodev"
-      }
+      },
+      "keywords": ["agent-skill", "plan-to-tasks", "pm-tools", "task-extraction", "crud-verbs"]
     },
     {
       "name": "pm-tasks-trello",
+      "category": "ai-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/llodev/skills.git",
-        "path": "pm-tasks/pm-tasks-trello"
+        "path": "skills/pm-tasks-trello"
       },
-      "description": "Trello adapter — paste, publish via MCP, autonomous mode.",
+      "description": "Turn implementation plans into Trello cards and checklists — paste-ready output, MCP publish, or autonomous write-through. Requires pm-tasks-core.",
       "version": "1.6.0",
       "author": {
         "name": "llodev"
-      }
+      },
+      "keywords": ["agent-skill", "trello", "plan-to-tasks", "pm-tools", "trello-mcp"]
     },
     {
       "name": "pm-tasks-asana",
+      "category": "ai-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/llodev/skills.git",
-        "path": "pm-tasks/pm-tasks-asana"
+        "path": "skills/pm-tasks-asana"
       },
-      "description": "Asana adapter — paste, publish via MCP, autonomous mode.",
+      "description": "Turn plans into Asana tasks and subtasks with custom fields and section placement — paste, MCP publish, or autonomous mode. Requires pm-tasks-core.",
       "version": "1.6.0",
       "author": {
         "name": "llodev"
-      }
+      },
+      "keywords": ["agent-skill", "asana", "plan-to-tasks", "pm-tools", "asana-mcp"]
     },
     {
       "name": "pm-tasks-jira",
+      "category": "ai-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/llodev/skills.git",
-        "path": "pm-tasks/pm-tasks-jira"
+        "path": "skills/pm-tasks-jira"
       },
-      "description": "Jira adapter — paste, publish via Atlassian MCP, autonomous mode.",
+      "description": "Turn plans into Jira issues with epics, estimates, and workflow transitions — paste, Atlassian MCP publish, or autonomous mode. Requires pm-tasks-core.",
       "version": "1.0.1",
       "author": {
         "name": "llodev"
-      }
+      },
+      "keywords": ["agent-skill", "jira", "atlassian", "plan-to-tasks", "pm-tools", "atlassian-mcp"]
     },
     {
       "name": "django-schema-design",
+      "category": "ai-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/llodev/skills.git",
-        "path": "django/django-schema-design"
+        "path": "skills/django-schema-design"
       },
-      "description": "Django schema design — PK strategy (incremental/UUIDv4/UUIDv7), indexes, constraints, and safe migrations.",
+      "description": "Design Django database schemas with expert trade-offs — PK strategy (incremental/UUIDv4/UUIDv7 insert locality), indexes, constraints, and safe migrations. Knowledge skill, no MCP.",
       "version": "0.1.0",
       "author": {
         "name": "llodev"
-      }
+      },
+      "keywords": [
+        "agent-skill",
+        "django",
+        "schema-design",
+        "orm",
+        "postgresql",
+        "primary-key",
+        "uuidv7"
+      ]
     }
   ]
 }

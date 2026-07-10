@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Agent-agnostic lint for pm-tasks/* SKILL.md, references, and anti-patterns.
-// See pm-tasks/pm-tasks-core/references/agent-agnostic-lint.md for the contract.
+// Agent-agnostic lint for the pm-tasks family SKILL.md, references, and anti-patterns
+// (skills/pm-tasks-*). See skills/pm-tasks-core/references/agent-agnostic-lint.md for the contract.
 
 import { readFile } from "node:fs/promises";
 import { readdirSync, statSync } from "node:fs";
@@ -42,9 +42,11 @@ function walk(dir, results = []) {
 
 function findMatchingFiles() {
   const out = [];
-  const pmTasksDir = path.join(ROOT, "pm-tasks");
-  for (const pkgDir of readdirSync(pmTasksDir)) {
-    const pkgPath = path.join(pmTasksDir, pkgDir);
+  const skillsDir = path.join(ROOT, "skills");
+  for (const pkgDir of readdirSync(skillsDir)) {
+    // Scope: pm-tasks family only (multi-agent published adapters).
+    if (!pkgDir.startsWith("pm-tasks-")) continue;
+    const pkgPath = path.join(skillsDir, pkgDir);
     if (!statSync(pkgPath).isDirectory()) continue;
     const skill = path.join(pkgPath, "SKILL.md");
     try {
