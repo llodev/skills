@@ -1,9 +1,14 @@
 ---
 name: django-schema-design
-description: Design robust Django database schemas with model best practices, migration patterns, and primary key strategy (incremental, UUID, UUIDv7). Use when designing Django models, choosing PK types, writing migrations, or reviewing app schema. Covers Django ORM, PostgreSQL, indexes, constraints, and security considerations for IDs.
+description: >-
+  Design robust Django database schemas with model best practices, migration
+  patterns, and primary key strategy (incremental, UUID, UUIDv7). Use when
+  designing Django models, choosing PK types, writing migrations, or reviewing
+  app schema. Covers Django ORM, PostgreSQL, indexes, constraints, and security
+  considerations for IDs.
 license: MIT
 metadata:
-  version: 0.0.0
+  version: 0.1.0
   tags:
     - agent-skill
     - django
