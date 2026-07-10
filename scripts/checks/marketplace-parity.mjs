@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Validates that every plugin entry in .claude-plugin/marketplace.json
-// matches the corresponding pm-tasks/<name>/package.json version.
+// matches the corresponding package.json version. The package directory is
+// resolved from the entry's source.path (family-agnostic), falling back to
+// the legacy pm-tasks/<name> layout for entries without one.
 // Exit 0: all match. Exit 1: any drift or missing package.json.
 import { readFileSync, existsSync } from "node:fs";
 
@@ -12,12 +14,11 @@ const marketplace = JSON.parse(readFileSync(marketplacePath, "utf8"));
 let failed = false;
 
 for (const plugin of marketplace.plugins) {
-  const pkgPath = `${ROOT}/pm-tasks/${plugin.name}/package.json`;
+  const dir = plugin.source?.path ?? `pm-tasks/${plugin.name}`;
+  const pkgPath = `${ROOT}/${dir}/package.json`;
 
   if (!existsSync(pkgPath)) {
-    process.stderr.write(
-      `FAIL ${plugin.name}: no package.json found at pm-tasks/${plugin.name}/package.json\n`,
-    );
+    process.stderr.write(`FAIL ${plugin.name}: no package.json found at ${dir}/package.json\n`);
     failed = true;
     continue;
   }
