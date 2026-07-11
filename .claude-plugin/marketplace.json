@@ -18,11 +18,17 @@
         "path": "skills/pm-tasks-core"
       },
       "description": "Shared extraction engine and canonical CRUD verb vocabulary (task.create, task.close, task.due-date.set, …) for the pm-tasks-* adapters. Dependency of every adapter.",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "plan-to-tasks", "pm-tools", "task-extraction", "crud-verbs"]
+      "keywords": [
+        "agent-skill",
+        "plan-to-tasks",
+        "pm-tools",
+        "task-extraction",
+        "crud-verbs"
+      ]
     },
     {
       "name": "pm-tasks-trello",
@@ -33,11 +39,17 @@
         "path": "skills/pm-tasks-trello"
       },
       "description": "Turn implementation plans into Trello cards and checklists — paste-ready output, MCP publish, or autonomous write-through. Requires pm-tasks-core.",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "trello", "plan-to-tasks", "pm-tools", "trello-mcp"]
+      "keywords": [
+        "agent-skill",
+        "trello",
+        "plan-to-tasks",
+        "pm-tools",
+        "trello-mcp"
+      ]
     },
     {
       "name": "pm-tasks-asana",
@@ -48,11 +60,17 @@
         "path": "skills/pm-tasks-asana"
       },
       "description": "Turn plans into Asana tasks and subtasks with custom fields and section placement — paste, MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "asana", "plan-to-tasks", "pm-tools", "asana-mcp"]
+      "keywords": [
+        "agent-skill",
+        "asana",
+        "plan-to-tasks",
+        "pm-tools",
+        "asana-mcp"
+      ]
     },
     {
       "name": "pm-tasks-jira",
@@ -63,11 +81,18 @@
         "path": "skills/pm-tasks-jira"
       },
       "description": "Turn plans into Jira issues with epics, estimates, and workflow transitions — paste, Atlassian MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "jira", "atlassian", "plan-to-tasks", "pm-tools", "atlassian-mcp"]
+      "keywords": [
+        "agent-skill",
+        "jira",
+        "atlassian",
+        "plan-to-tasks",
+        "pm-tools",
+        "atlassian-mcp"
+      ]
     },
     {
       "name": "django-schema-design",
@@ -78,7 +103,7 @@
         "path": "skills/django-schema-design"
       },
       "description": "Design Django database schemas with expert trade-offs — PK strategy (incremental/UUIDv4/UUIDv7 insert locality), indexes, constraints, and safe migrations. Knowledge skill, no MCP.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
