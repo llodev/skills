@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks-testkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "In-memory fakes for the 7 canonical pm-tasks CRUD verbs (task.create, task.move, task.close, task.due-date.set, task.assignee.add, task.comment.add, checklist.check). Useful for testing custom skills/adapters without hitting real MCP servers.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/packages/pm-tasks-testkit",

@@ -1,6 +1,6 @@
 {
   "name": "@llodev/django-schema-design",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Design robust Django database schemas: model conventions, primary-key strategy (incremental, UUIDv4, UUIDv7 with insert-locality trade-offs), indexes (composite/covering/partial), constraints (unique/check/exclusion), and safe migrations. A knowledge skill for designing new Django models, choosing PK types, tuning schema for reads, or reviewing an app's schema. Covers Django ORM + PostgreSQL and the security angle on exposed IDs.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/django-schema-design",
