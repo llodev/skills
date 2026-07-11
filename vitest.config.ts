@@ -2,6 +2,8 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    // vitest v4 removed the standalone workspace file; projects live here now.
+    projects: ["skills/*", "packages/*"],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov", "html"],
