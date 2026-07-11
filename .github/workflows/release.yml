@@ -19,9 +19,11 @@ jobs:
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with: { node-version: 24, cache: pnpm, registry-url: "https://registry.npmjs.org" }
-      # Trusted Publishing requires npm CLI >= 11.5.1 (Node 24 ships npm 11.x; pin to be safe).
-      # `changeset publish` shells out to this `npm`, which performs the OIDC token exchange.
-      - run: npm install -g npm@latest
+      # Trusted Publishing needs npm CLI >= 11.5.1 for the OIDC token exchange. Pin to the 11.x
+      # line: npm 12 added strict config validation and rejects the `git-checks` config that
+      # `pnpm publish` (which `changeset publish` shells out to) passes down (EUNKNOWNCONFIG),
+      # whereas 11.x still tolerates it. Range stays >=11.5.1 <12 for both OIDC support and compat.
+      - run: npm install -g npm@^11.5.1
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r build
       - run: pnpm run typecheck
