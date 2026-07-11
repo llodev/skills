@@ -307,4 +307,27 @@ describe("normalizeEstimate never throws", () => {
     }).not.toThrow();
     expect(result?.ok).toBe(false);
   });
+
+  it("unknown strategy hits the exhaustive guard → ok:false", () => {
+    const result = normalizeEstimate(5, {
+      strategy: "bogus" as unknown as EstimationConfig["strategy"],
+      jiraTarget: "none",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/Unknown strategy/);
+  });
+
+  it("an internal throw is caught and returned as ok:false (never throws)", () => {
+    let result: NormalizeResult | undefined;
+    expect(() => {
+      // A non-iterable `scale` makes snapToScale throw inside the try block,
+      // exercising the catch → { ok: false, error }.
+      result = normalizeEstimate(5, {
+        strategy: "story_points",
+        jiraTarget: "none",
+        scale: 123 as unknown as number[],
+      });
+    }).not.toThrow();
+    expect(result?.ok).toBe(false);
+  });
 });

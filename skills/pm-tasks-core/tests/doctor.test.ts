@@ -384,6 +384,43 @@ describe("runChecks — branch coverage", () => {
     expect(cfg4!.result.ok).toBe(true);
   });
 
+  it("C-CFG-4 fails when defaults.sectionAlias does not resolve (asana-like)", async () => {
+    const tmp = tmpDir();
+    const config = {
+      ...baseConfig(),
+      sections: [{ id: "sec-1", name: "Section A", alias: "sec-a" }],
+      defaults: { sectionAlias: "nonexistent-section" },
+    };
+    const configPath = path.join(tmp, ".trello.json");
+    writeFileSync(configPath, JSON.stringify(config));
+    const ctx = makeCtx(tmp, { config, configPath });
+    const report = await runChecks(ctx);
+    const cfg4 = report.results.find((r) => r.check.id === "C-CFG-4");
+    expect(cfg4!.result.ok).toBe(false);
+    expect(cfg4!.result.message).toContain("nonexistent-section");
+  });
+
+  it("C-CFG-4 passes when every default alias resolves (board/list/section/assignee)", async () => {
+    const tmp = tmpDir();
+    const config = {
+      ...baseConfig(),
+      sections: [{ id: "sec-1", name: "Section A", alias: "sec-a" }],
+      members: [{ id: "user-1", name: "Ana", alias: "ana" }],
+      defaults: {
+        boardAlias: "my-board",
+        listAlias: "backlog",
+        sectionAlias: "sec-a",
+        assigneeAlias: "ana",
+      },
+    };
+    const configPath = path.join(tmp, ".trello.json");
+    writeFileSync(configPath, JSON.stringify(config));
+    const ctx = makeCtx(tmp, { config, configPath });
+    const report = await runChecks(ctx);
+    const cfg4 = report.results.find((r) => r.check.id === "C-CFG-4");
+    expect(cfg4!.result.ok).toBe(true);
+  });
+
   it("runChecks catches thrown errors from a check and marks it failed", async () => {
     const tmp = tmpDir();
     const ctx = makeCtx(tmp);

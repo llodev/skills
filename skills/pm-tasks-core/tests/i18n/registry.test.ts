@@ -7,7 +7,12 @@ import { readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { registerI18nRoot, loadStrings } from "../../src/i18n/registry.js";
+import {
+  registerI18nRoot,
+  loadStrings,
+  listLocales,
+  interpolate,
+} from "../../src/i18n/registry.js";
 
 const ASANA_I18N = path.resolve(import.meta.dirname, "..", "..", "..", "pm-tasks-asana", "i18n");
 const TRELLO_I18N = path.resolve(import.meta.dirname, "..", "..", "..", "pm-tasks-trello", "i18n");
@@ -68,4 +73,46 @@ test("loadStrings('asana', 'ja-JP') falls back to asana en-US", async () => {
   expect(fallback).toEqual(enUs);
   // Confirm the fallback really is asana data, not core.
   expect(Object.prototype.hasOwnProperty.call(fallback, "workspacePrompt")).toBe(true);
+});
+
+test("loadStrings rethrows non-ENOENT read errors (root is a file, not a dir)", async () => {
+  const tmpDir = mkdtempSync(path.join(tmpdir(), "registry-notdir-"));
+  try {
+    const filePath = path.join(tmpDir, "not-a-dir");
+    writeFileSync(filePath, "x");
+    // Registering a FILE as the root makes readFile(root/<locale>.json) fail with
+    // ENOTDIR — a non-ENOENT error that must propagate rather than trigger the
+    // en-US fallback.
+    registerI18nRoot("file-root-scope", filePath);
+    await expect(loadStrings("file-root-scope", "en-US")).rejects.toMatchObject({
+      code: "ENOTDIR",
+    });
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test("listLocales returns sorted locale names from a registered dir", async () => {
+  const tmpDir = mkdtempSync(path.join(tmpdir(), "registry-locales-"));
+  try {
+    writeFileSync(path.join(tmpDir, "pt-BR.json"), "{}");
+    writeFileSync(path.join(tmpDir, "en-US.json"), "{}");
+    writeFileSync(path.join(tmpDir, "es-ES.json"), "{}");
+    writeFileSync(path.join(tmpDir, "README.md"), "ignore me"); // non-json filtered out
+    registerI18nRoot("locales-scope", tmpDir);
+    expect(await listLocales("locales-scope")).toEqual(["en-US", "es-ES", "pt-BR"]);
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test("listLocales throws on unknown adapterPkg", async () => {
+  await expect(listLocales("missing-scope-xyz")).rejects.toThrow(
+    "unknown adapterPkg for i18n: missing-scope-xyz",
+  );
+});
+
+test("interpolate substitutes present vars and leaves missing ones literal", () => {
+  expect(interpolate("hi {name}, id {id}", { name: "Ana" })).toBe("hi Ana, id {id}");
+  expect(interpolate("no placeholders", {})).toBe("no placeholders");
 });
