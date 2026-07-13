@@ -29,7 +29,15 @@
           "name": { "type": "string" },
           "type": {
             "type": "string",
-            "enum": ["triage", "backlog", "unstarted", "started", "completed", "canceled"]
+            "enum": [
+              "triage",
+              "backlog",
+              "unstarted",
+              "started",
+              "completed",
+              "canceled",
+              "duplicate"
+            ]
           }
         }
       }

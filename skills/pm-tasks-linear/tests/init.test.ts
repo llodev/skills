@@ -18,6 +18,8 @@ const STATES = [
   { id: "state-todo", name: "Todo", type: "unstarted" },
   { id: "state-wip", name: "In Progress", type: "started" },
   { id: "state-done", name: "Done", type: "completed" },
+  { id: "state-canceled", name: "Canceled", type: "canceled" },
+  { id: "state-duplicate", name: "Duplicate", type: "duplicate" },
 ];
 
 const LABELS = [
