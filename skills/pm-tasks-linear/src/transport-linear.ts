@@ -198,10 +198,14 @@ function resolveStateByType(
  * strip leading/trailing "-". Used to build idempotent `est:<slug>` labels.
  */
 function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+  return (
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      // Single leading/trailing dash only — the previous replace already collapsed
+      // runs to one dash, so no `+` quantifier (avoids polynomial-ReDoS). Matches core aliasOf.
+      .replace(/^-|-$/g, "")
+  );
 }
 
 // ---------------------------------------------------------------------------
