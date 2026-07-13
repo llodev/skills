@@ -22,6 +22,8 @@ import type {
   TaskParentSetResponse,
   TaskEstimateSetRequest,
   TaskEstimateSetResponse,
+  TaskSprintSetRequest,
+  TaskSprintSetResponse,
 } from "./transport.js";
 // Re-export transport types so adapters can import everything they need
 // from the single `@llodev/pm-tasks-core/runtime` subpath (no transport subpath).
@@ -47,6 +49,8 @@ export type {
   TaskParentSetResponse,
   TaskEstimateSetRequest,
   TaskEstimateSetResponse,
+  TaskSprintSetRequest,
+  TaskSprintSetResponse,
   TaskSnapshot,
   CommentSnapshot,
 } from "./transport.js";
@@ -59,6 +63,7 @@ import { taskAssigneeAddHandler } from "./handlers/task-assignee-add.js";
 import { taskCommentAddHandler } from "./handlers/task-comment-add.js";
 import { taskParentSetHandler } from "./handlers/task-parent-set.js";
 import { taskEstimateSetHandler } from "./handlers/task-estimate-set.js";
+import { taskSprintSetHandler } from "./handlers/task-sprint-set.js";
 
 export interface CreateRuntimeOptions {
   /** Tool name — used for audit-log path and error messages. e.g. "trello", "asana". */
@@ -101,9 +106,10 @@ export interface Runtime {
   taskDueDateSet(req: TaskDueDateSetRequest): Promise<TransportResult<TaskDueDateSetResponse>>;
   taskAssigneeAdd(req: TaskAssigneeAddRequest): Promise<TransportResult<TaskAssigneeAddResponse>>;
   taskCommentAdd(req: TaskCommentAddRequest): Promise<TransportResult<TaskCommentAddResponse>>;
-  // F3 + F7: required on Runtime; factory guard returns UNSUPPORTED_VERB when transport omits them.
+  // F3 + F7 + F10: required on Runtime; factory guard returns UNSUPPORTED_VERB when transport omits them.
   taskParentSet(req: TaskParentSetRequest): Promise<TransportResult<TaskParentSetResponse>>;
   taskEstimateSet(req: TaskEstimateSetRequest): Promise<TransportResult<TaskEstimateSetResponse>>;
+  taskSprintSet(req: TaskSprintSetRequest): Promise<TransportResult<TaskSprintSetResponse>>;
 }
 
 export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Runtime> {
@@ -135,8 +141,8 @@ export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Run
   // Internal context — verb handlers close over this.
   const ctx: RuntimeContext = { config, transport, session, auditLogPath, tool, language };
 
-  // 4. Return Runtime — 7 existing + 2 new verb handlers wired (Phase 1 T5 complete).
-  //    F3 + F7 use optional-transport guard: UNSUPPORTED_VERB when adapter omits the method.
+  // 4. Return Runtime — 7 existing + 3 optional verb handlers wired (Phase 1 T5 complete).
+  //    F3 + F7 + F10 use optional-transport guard: UNSUPPORTED_VERB when adapter omits the method.
   return {
     taskCreate: (req) => taskCreateHandler(req, ctx),
     taskMove: (req) => taskMoveHandler(req, ctx),
@@ -150,6 +156,9 @@ export async function createCoreRuntime(opts: CreateRuntimeOptions): Promise<Run
       : (_req) => Promise.resolve({ ok: false as const, code: "UNSUPPORTED_VERB" as const }),
     taskEstimateSet: transport.taskEstimateSet
       ? (req) => taskEstimateSetHandler(req, ctx)
+      : (_req) => Promise.resolve({ ok: false as const, code: "UNSUPPORTED_VERB" as const }),
+    taskSprintSet: transport.taskSprintSet
+      ? (req) => taskSprintSetHandler(req, ctx)
       : (_req) => Promise.resolve({ ok: false as const, code: "UNSUPPORTED_VERB" as const }),
   };
 }

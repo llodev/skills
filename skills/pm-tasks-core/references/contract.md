@@ -71,7 +71,7 @@ Adapters MUST NOT translate user-authored content — verbatim is the contract. 
 
 The 6 verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
 
-v1.11.0 adds `task.parent.set` (8th) and `task.estimate.set` (9th); both adapter-optional. Total canonical verbs: 9.
+v1.11.0 adds `task.parent.set` (8th) and `task.estimate.set` (9th); both adapter-optional. v1.13.0 adds `task.sprint.set` (10th); adapter-optional, Linear is the first supporter. Total canonical verbs: 10.
 
 ### task.move (added v1.5.0, additive)
 
@@ -86,6 +86,10 @@ An 8th canonical verb, `task.parent.set`, is added in v1.11.0. Schema: `{ taskId
 ### task.estimate.set (added v1.11.0, additive)
 
 A 9th canonical verb, `task.estimate.set`, is added in v1.11.0. Schema: `{ taskId: string, input: EstimateInput, config: EstimationConfig }`. Records effort in the configured scale, normalized to the adapter-native field; the human-readable original is preserved by the adapter. Idempotency: last write wins. Adapter-optional — adapters that do not support native estimation fields omit this verb from their manifest. Full semantics: [`crud-vocabulary.md`](crud-vocabulary.md).
+
+### task.sprint.set (added v1.13.0, additive)
+
+A 10th canonical verb, `task.sprint.set`, is added in v1.13.0. Schema: `{ taskId: string, sprintRef: string }`. Assigns a task/issue to a sprint or cycle. `sprintRef` is opaque to core — the adapter resolves it to the native sprint/cycle ID (e.g., Linear cycle name or number). Adapter-optional — adapters that do not support sprint/cycle assignment (e.g., Trello, Asana, Jira) omit this verb from their manifest; the runtime returns `UNSUPPORTED_VERB`. Returns `NOT_APPLICABLE` when the sprint/cycle feature is disabled for the team or the referenced sprint/cycle does not exist. Linear is the first adapter to implement this verb; Jira remains `UNSUPPORTED_VERB`. Full semantics: [`crud-vocabulary.md`](crud-vocabulary.md).
 
 ## Custom verbs (extension API)
 
