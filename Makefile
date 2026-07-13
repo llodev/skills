@@ -61,6 +61,9 @@ init-trello: ## run pm-tasks-trello init (needs TRELLO_API_KEY/TOKEN)
 init-jira: ## run pm-tasks-jira init
 	node skills/pm-tasks-jira/dist/bin/init.js
 
+init-linear: ## run pm-tasks-linear init
+	node skills/pm-tasks-linear/dist/bin/init.js
+
 doctor: ## run pm-tasks-core-doctor against workspace .tool.json files
 	node skills/pm-tasks-core/dist/bin/doctor.js $(ARGS)
 
