@@ -67,7 +67,7 @@ const TEST_CONFIG = {
     { id: "state-unstarted", name: "Todo", type: "unstarted" },
     { id: "state-started", name: "In Progress", type: "started" },
     { id: "state-completed", name: "Done", type: "completed" },
-    { id: "state-cancelled", name: "Cancelled", type: "cancelled" },
+    { id: "state-canceled", name: "Canceled", type: "canceled" },
   ],
   labels: [
     { id: "label-1", name: "bug" },
@@ -132,6 +132,19 @@ describe("createLinearTransport — helpers", () => {
       expect(r.code).toBe("MCP_ERROR");
       expect(r.details).toMatchObject({ verb: "task.comment.add" });
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// T0b — save_issue key-guard (regression net)
+// ---------------------------------------------------------------------------
+
+describe("makeMcp stub — save_issue key-guard", () => {
+  it("rejects an unknown key (stateId) to prove the guard fires", async () => {
+    const { mcp } = makeMcp(new Map([["save_issue", { id: "x", url: "u" }]]));
+    await expect(mcp("save_issue", { id: "i-1", stateId: "state-abc" })).rejects.toThrow(
+      /unknown keys.*stateId/,
+    );
   });
 });
 

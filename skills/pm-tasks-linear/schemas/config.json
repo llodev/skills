@@ -29,7 +29,7 @@
           "name": { "type": "string" },
           "type": {
             "type": "string",
-            "enum": ["triage", "backlog", "unstarted", "started", "completed", "cancelled"]
+            "enum": ["triage", "backlog", "unstarted", "started", "completed", "canceled"]
           }
         }
       }

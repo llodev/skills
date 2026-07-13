@@ -76,7 +76,7 @@ describeOrSkip("Linear GraphQL smoke (real API — read-only)", () => {
     expect(typeof state.name).toBe("string");
     expect(typeof state.type).toBe("string");
     // type must be one of the valid Linear state types
-    expect(["triage", "backlog", "unstarted", "started", "completed", "cancelled"]).toContain(
+    expect(["triage", "backlog", "unstarted", "started", "completed", "canceled"]).toContain(
       state.type,
     );
   });
