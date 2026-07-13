@@ -11,13 +11,13 @@ Apply when Phase 4 / Phase 5 / Phase 5b target Linear. Authoritative formatting 
 ## Linear
 
 **NEVER write labels without reading first (replace-set trap).**
-Linear's `labelIds` on `save_issue` is a replace-set — writing any label overwrites the entire label array. Always call `get_issue` to read current label ids, strip `est:*`, merge the new label, and write the full set in a single `save_issue` call. Failure to read first clobbers all existing labels.
+Linear's `labels` on `save_issue` is a replace-set — writing any label overwrites the entire label array. Always call `get_issue` to read current label ids, strip `est:*`, merge the new label, and write the full set in a single `save_issue` call. Failure to read first clobbers all existing labels.
 
 **NEVER fake checklists with `- [ ]` in description.**
 `- [ ]` syntax in a Linear issue description is decorative text with no machine-addressable state. Checklist items must be **sub-issues** (`save_issue { parentId }`). `checklist.check` moves a sub-issue to a completed-type state — it cannot target description text. Using description markdown checkboxes makes check/uncheck impossible without full description rewrites.
 
 **NEVER assume cycles exist on a team.**
-Not all Linear teams use cycles. Always guard on `config.cycles.enabled` before calling `list_cycles` or passing `cycleId` to `save_issue`. Return `NOT_APPLICABLE` when disabled — do not error. Even when `config.cycles.enabled` is true, the team may have no active cycles yet; surface the MCP error directly rather than fabricating a cycle.
+Not all Linear teams use cycles. Always guard on `config.cycles.enabled` before calling `list_cycles` or passing `cycle` to `save_issue`. Return `NOT_APPLICABLE` when disabled — do not error. Even when `config.cycles.enabled` is true, the team may have no active cycles yet; surface the MCP error directly rather than fabricating a cycle.
 
 **NEVER resolve state by name.**
 Linear state names are locale-dependent, customizable by each team, and can change at any time. Always resolve states by **type** string (`unstarted`, `started`, `completed`, `canceled`, `backlog`, `duplicate`). Read from `config.states[]` which maps type → id. Hard-coding names like `"In Progress"` or `"Done"` will break when teams rename them.

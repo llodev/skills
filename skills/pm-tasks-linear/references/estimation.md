@@ -73,7 +73,7 @@ Examples:
 
 ### Replace-set trap
 
-**Linear labels are a replace-set** — writing `labelIds` overwrites the full label array. The transport always:
+**Linear labels are a replace-set** — writing `labels` overwrites the full label array. The transport always:
 
 1. Reads current label ids via `get_issue { id }`.
 2. Strips all prior `est:*` labels from the list.

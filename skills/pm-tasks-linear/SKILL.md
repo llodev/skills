@@ -79,7 +79,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - Due date → `dueDate` (YYYY-MM-DD; sliced from ISO 8601). Native Linear field.
 - Assignee → `save_issue { assignee }` by id/name/email/`"me"`. Single-assignee set.
 - Estimate → `save_issue { estimate }` (numeric points) when `estimation.enabled` and `linearTarget === "points"`.
-- **Checklists → sub-issues (M3 resolution):** The core `task.create` contract carries no `items[]`. During Phase 5 MCP publish, the SKILL orchestrates child creation: for each checklist item in the generic card, call `save_issue` with `parentId` = the created parent issue's id. This is the doc-layer resolution — Linear has no native checklist, so checklist items become **sub-issues**. `checklist.check` later moves the sub-issue to a completed-type state via `save_issue { id: subIssueId, stateId: <completed-type-id> }`.
+- **Checklists → sub-issues (M3 resolution):** The core `task.create` contract carries no `items[]`. During Phase 5 MCP publish, the SKILL orchestrates child creation: for each checklist item in the generic card, call `save_issue` with `parentId` = the created parent issue's id. This is the doc-layer resolution — Linear has no native checklist, so checklist items become **sub-issues**. `checklist.check` later moves the sub-issue to a completed-type state via `save_issue { id: subIssueId, state: <completed-type-id> }`.
 
 ## Phase 5 — MCP publish
 
@@ -120,9 +120,9 @@ Linear-specific verb mapping:
 
 | Transition        | Canonical verb + MCP call(s)                                                                                                                                                        |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Task started      | `task.move` → `save_issue { id, stateId }` (type `started`)                                                                                                                         |
-| Task completed    | `task.close` → `save_issue { id, stateId }` (type `completed`)                                                                                                                      |
-| Sub-issue checked | `checklist.check` → `save_issue { id: subIssueId, stateId }` (type `completed`) (idempotent)                                                                                        |
+| Task started      | `task.move` → `save_issue { id, state }` (type `started`)                                                                                                                           |
+| Task completed    | `task.close` → `save_issue { id, state }` (type `completed`)                                                                                                                        |
+| Sub-issue checked | `checklist.check` → `save_issue { id: subIssueId, state }` (type `completed`) (idempotent)                                                                                          |
 | Task failed       | `task.comment.add` → `save_comment { issueId, body }` with failure mode + `task.assignee.add` to reassign for human escalation. Do NOT call `task.move(_, "done")` or `task.close`. |
 
 **Linear note:** `get_issue` returns current state but not the full changelog. Verify lifecycle in the Linear UI activity feed when auditing.
@@ -137,16 +137,16 @@ Verb → MCP tool mapping summary:
 
 | Core verb           | Linear MCP tool                                         | Notes                                                                             |
 | ------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `task.create`       | `save_issue` (no id)                                    | `title`+`teamId` required; sub-issues via `parentId` per Phase 5                  |
-| `task.move`         | `save_issue` (id + stateId)                             | Resolve state by type: `open`→`unstarted`, `wip`→`started`, `done`→`completed`    |
-| `checklist.check`   | `save_issue` (sub-issue id + stateId)                   | `req.itemId` = sub-issue id; check = type `completed`; uncheck = type `unstarted` |
-| `task.close`        | `save_issue` (id + stateId)                             | Type `completed`; cancel = type `canceled`                                        |
+| `task.create`       | `save_issue` (no id)                                    | `title`+`team` required; sub-issues via `parentId` per Phase 5                    |
+| `task.move`         | `save_issue` (id + state)                               | Resolve state by type: `open`→`unstarted`, `wip`→`started`, `done`→`completed`    |
+| `checklist.check`   | `save_issue` (sub-issue id + state)                     | `req.itemId` = sub-issue id; check = type `completed`; uncheck = type `unstarted` |
+| `task.close`        | `save_issue` (id + state)                               | Type `completed`; cancel = type `canceled`                                        |
 | `task.due-date.set` | `save_issue` (id + dueDate)                             | `YYYY-MM-DD` sliced from ISO 8601                                                 |
 | `task.assignee.add` | `save_issue` (id + assignee)                            | Single-assignee set-not-add; accepts id/name/email/`"me"`                         |
 | `task.comment.add`  | `save_comment` (issueId + body)                         | Markdown, literal newlines; apply attribution prefix if enabled                   |
 | `task.parent.set`   | `save_issue` (id + parentId)                            | Arbitrary depth; `null` parentId detaches                                         |
 | `task.estimate.set` | `get_issue` (labels) → `save_issue` (estimate + labels) | Read-modify-write label merge; see § Estimation below                             |
-| `task.sprint.set`   | `list_cycles` → `save_issue` (id + cycleId)             | Team-gated; see § Sprint below                                                    |
+| `task.sprint.set`   | `list_cycles` → `save_issue` (id + cycle)               | Team-gated; see § Sprint below                                                    |
 
 `<task-ref>` resolution: Linear permalink (`https://linear.app/team/issue/LEO-12`) → bare identifier (`LEO-12`) → UUID → alias from `.linear.json` `taskAliases[]`.
 
@@ -165,7 +165,7 @@ Flow:
 5. Strip all prior `est:*` labels; append `est:<slug>` where `slug = slugify(normalized.humanReadable)`.
 6. If `est:<slug>` label does not exist in `config.labels[]` → create via `create_issue_label { name, teamId }` (create-on-demand, M1).
 7. Build native field patch: `linearTarget === "points"` → `estimate: n.points`; `linearTarget === "none"` → no native field.
-8. `save_issue({ id: taskId, ...nativeFieldPatch, labelIds: mergedIds })` — ONE call.
+8. `save_issue({ id: taskId, ...nativeFieldPatch, labels: mergedIds })` — ONE call.
 9. Return `{ ok: true, data: { normalized, fieldWritten } }`.
 
 The `est:<slug>` label is the durable human-readable record. Labels are plain strings: robust, idempotent, searchable.
@@ -180,8 +180,8 @@ Flow:
 
 1. Guard: `config.cycles.enabled === false` → return `NOT_APPLICABLE` with `{ reason: "cycles_disabled" }`.
 2. `list_cycles({ teamId })` — fetch all cycles for the team.
-3. Match `req.sprintRef` against `cycle.id` (exact), `cycle.name` (exact), or `String(cycle.number)` (exact). If no match, pass `req.sprintRef` directly as `cycleId` (may be a raw UUID).
-4. `save_issue({ id: req.taskId, cycleId })`.
+3. Match `req.sprintRef` against `cycle.id` (exact), `cycle.name` (exact), or `String(cycle.number)` (exact). If no match, pass `req.sprintRef` directly as `cycle` (may be a raw UUID).
+4. `save_issue({ id: req.taskId, cycle: cycleId })`.
 5. Return `{ ok: true, data: { previousSprintRef: null, newSprintRef: cycleId } }`.
 
 If `config.cycles.enabled` is true but no cycles exist yet on the team, step 2 returns an empty list and step 4 will likely fail at the MCP layer. Surface the raw error.
@@ -268,7 +268,7 @@ See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-
 **MCP-driven (default, recommended):** Requires the Linear MCP connected in your agent session.
 
 - `list_teams` — select team (`key` + `name`).
-- `list_issue_statuses { teamId }` — discover states (move/close targets) with their stable `type`.
+- `list_issue_statuses { team }` — discover states (move/close targets) with their stable `type`.
 - `list_issue_labels` — workspace-level label registry.
 - `list_users` — member roster (id/name/email).
 - `get_team { id }` — team settings (`cyclesEnabled`, `issueEstimationType`).
