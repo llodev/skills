@@ -6,6 +6,20 @@
   "targetPromptPoints": "Linear suporta estimativas de pontos nativas. Destino de escrita:",
   "targetPoints": "points (recomendado)",
   "targetNone": "none — guardar apenas como label est:",
+  "noEstimation": "Estimativa não está habilitada para este time — as estimativas serão guardadas apenas como label est:. Para habilitar, vá em Configurações do time → Tipos de issue → ative estimativa e execute init novamente.",
   "autonomousPrompt": "Habilitar modo autônomo? (o agente pode escrever no Linear sem confirmação por ação)",
-  "nextDoctor": "Próximo: pm-tasks-linear init --doctor"
+  "nextDoctor": "Próximo: pm-tasks-linear init --doctor",
+  "attributionCommentPrefix": "🤖 Criado via pm-tasks-linear",
+  "attributionAutoPrefix": "🤖 [auto] Criado via pm-tasks-linear",
+  "errorNotFound": "Issue do Linear não encontrada: {ref}",
+  "errorNotApplicable": "Operação não aplicável: {reason}",
+  "errorInvalidRequest": "Requisição inválida: {message}",
+  "errorCyclesDisabled": "Ciclos estão desabilitados para este time. Ative ciclos nas configurações do time no Linear e execute pm-tasks-linear init novamente.",
+  "errorMissingConfig": "Nenhum .linear.json encontrado. Execute: npx @llodev/pm-tasks-linear init",
+  "doctorOk": "Configuração do Linear OK",
+  "doctorNoConfig": "Nenhum .linear.json encontrado. Execute: npx @llodev/pm-tasks-linear init",
+  "doctorNoStates": "Nenhum estado encontrado na configuração. Execute init novamente para atualizar.",
+  "doctorNoCompleted": "Nenhum estado do tipo completado encontrado na configuração. Execute init novamente.",
+  "doctorEstimationMismatch": "estimation.linearTarget é 'points' mas a estratégia não produz pontos. Execute init novamente.",
+  "doctorAutonomousDisabled": "autonomous.enabled é false — modo autônomo está desativado."
 }

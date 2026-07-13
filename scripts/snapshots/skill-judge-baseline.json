@@ -30,10 +30,10 @@
     "notes": "v1.11.0 initial Jira adapter SKILL.md; skill-judge rubric eval Grade B (~101/120 raw across D1-D8), recorded at 85 calibrated to the mature-adapter peer band (core 85, asana 83, trello 80) — jira sits at top of band: 9 verbs + foundational estimation + transition-by-category/est-label/F2-unsupported anti-patterns"
   },
   "skills/pm-tasks-linear/SKILL.md": {
-    "score": 29,
-    "version": "0.0.0",
-    "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
+    "score": 83,
+    "version": "1.0.0",
+    "capturedAt": "2026-07-13",
+    "notes": "v1.13.0 Phase 4 full SKILL.md rewrite; self-assessed ~100/120 raw (D1-D8), calibrated to 83 within mature-adapter peer band (jira 85, asana 83, trello 80); 10 verbs + sprint/cycles + sub-issues-as-checklists M3 resolution + 8 anti-patterns + replace-set label discipline; skill-judge tool requires stdin agent invocation (not runnable standalone)"
   },
   "skills/pm-tasks-monday/SKILL.md": {
     "score": 29,
