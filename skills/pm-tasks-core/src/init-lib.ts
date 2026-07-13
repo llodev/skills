@@ -265,7 +265,7 @@ export async function writeConfig(
       if (confirm === undefined && process.stdin.isTTY) {
         confirm = async () => {
           const s = opts?.strings ?? (await loadStrings("core", "en-US"));
-          return promptYesNo(s.configExistsPrompt, { defaultNo: true, strings: opts?.strings });
+          return promptYesNo(s.configExistsPrompt, { defaultNo: true, strings: s });
         };
       }
 
