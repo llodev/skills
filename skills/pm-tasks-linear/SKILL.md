@@ -271,7 +271,7 @@ See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-
 - `list_issue_statuses { team }` — discover states (move/close targets) with their stable `type`.
 - `list_issue_labels` — workspace-level label registry.
 - `list_users` — member roster (id/name/email).
-- `get_team { id }` — team settings (`cyclesEnabled`, `issueEstimationType`).
+- `get_team { query }` — team settings (`cyclesEnabled`, `issueEstimationType`).
 - `list_cycles { teamId }` — confirm cycles are available.
 
 **GraphQL standalone:** For environments where MCP is not available. Set `LINEAR_API_KEY` in env (personal API key — no Bearer prefix needed). The init script queries the Linear GraphQL API at `https://api.linear.app/graphql` directly for the same discovery.
