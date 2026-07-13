@@ -135,18 +135,18 @@ For verbs other than `task.create`, jump directly to the operation.
 
 Verb → MCP tool mapping summary:
 
-| Core verb           | Linear MCP tool                                         | Notes                                                                             |
-| ------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `task.create`       | `save_issue` (no id)                                    | `title`+`team` required; sub-issues via `parentId` per Phase 5                    |
-| `task.move`         | `save_issue` (id + state)                               | Resolve state by type: `open`→`unstarted`, `wip`→`started`, `done`→`completed`    |
-| `checklist.check`   | `save_issue` (sub-issue id + state)                     | `req.itemId` = sub-issue id; check = type `completed`; uncheck = type `unstarted` |
-| `task.close`        | `save_issue` (id + state)                               | Type `completed`; cancel = type `canceled`                                        |
-| `task.due-date.set` | `save_issue` (id + dueDate)                             | `YYYY-MM-DD` sliced from ISO 8601                                                 |
-| `task.assignee.add` | `save_issue` (id + assignee)                            | Single-assignee set-not-add; accepts id/name/email/`"me"`                         |
-| `task.comment.add`  | `save_comment` (issueId + body)                         | Markdown, literal newlines; apply attribution prefix if enabled                   |
-| `task.parent.set`   | `save_issue` (id + parentId)                            | Arbitrary depth; `null` parentId detaches                                         |
-| `task.estimate.set` | `get_issue` (labels) → `save_issue` (estimate + labels) | Read-modify-write label merge; see § Estimation below                             |
-| `task.sprint.set`   | `list_cycles` → `save_issue` (id + cycle)               | Team-gated; see § Sprint below                                                    |
+| Core verb           | Linear MCP tool                                         | Notes                                                                                                       |
+| ------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `task.create`       | `save_issue` (no id)                                    | `title`+`team` required; `project: config.defaultProjectId` when set; sub-issues via `parentId` per Phase 5 |
+| `task.move`         | `save_issue` (id + state)                               | Resolve state by type: `open`→`unstarted`, `wip`→`started`, `done`→`completed`                              |
+| `checklist.check`   | `save_issue` (sub-issue id + state)                     | `req.itemId` = sub-issue id; check = type `completed`; uncheck = type `unstarted`                           |
+| `task.close`        | `save_issue` (id + state)                               | Type `completed`; cancel = type `canceled`                                                                  |
+| `task.due-date.set` | `save_issue` (id + dueDate)                             | `YYYY-MM-DD` sliced from ISO 8601                                                                           |
+| `task.assignee.add` | `save_issue` (id + assignee)                            | Single-assignee set-not-add; accepts id/name/email/`"me"`                                                   |
+| `task.comment.add`  | `save_comment` (issueId + body)                         | Markdown, literal newlines; apply attribution prefix if enabled                                             |
+| `task.parent.set`   | `save_issue` (id + parentId)                            | Arbitrary depth; `null` parentId detaches                                                                   |
+| `task.estimate.set` | `get_issue` (labels) → `save_issue` (estimate + labels) | Read-modify-write label merge; see § Estimation below                                                       |
+| `task.sprint.set`   | `list_cycles` → `save_issue` (id + cycle)               | Team-gated; see § Sprint below                                                                              |
 
 `<task-ref>` resolution: Linear permalink (`https://linear.app/team/issue/LEO-12`) → bare identifier (`LEO-12`) → UUID → alias from `.linear.json` `taskAliases[]`.
 
@@ -253,6 +253,8 @@ Key fields written by `init`:
 - `members` — `[{ id, name, email, alias? }]`.
 - `estimation` — `{ strategy, linearTarget: "points"|"none", enabled, scale? }`.
 - `cycles` — `{ enabled }` (gate for `task.sprint.set`).
+- `projects` — `[{ id, name }]` (OPTIONAL; workspace projects discovered at init).
+- `defaultProjectId` — OPTIONAL string; id from `projects[]`. When set, `task.create` files the new issue into this project automatically.
 - `locale` — chosen at init; used for narration.
 - `attribution` — opt-in block; see core attribution reference.
 - `autonomous` — `{ enabled, allow[], scope: { teams[], projects[] }, rateLimit, auditLog }`.
@@ -273,8 +275,9 @@ See [`../pm-tasks-core/references/init-ux.md`](../pm-tasks-core/references/init-
 - `list_users` — member roster (id/name/email).
 - `get_team { query }` — team settings (`cyclesEnabled`, `issueEstimationType`).
 - `list_cycles { teamId }` — confirm cycles are available.
+- `list_projects { team }` — workspace projects (stored in `config.projects[]`; optional default prompt).
 
-**GraphQL standalone:** For environments where MCP is not available. Set `LINEAR_API_KEY` in env (personal API key — no Bearer prefix needed). The init script queries the Linear GraphQL API at `https://api.linear.app/graphql` directly for the same discovery.
+**GraphQL standalone:** For environments where MCP is not available. Set `LINEAR_API_KEY` in env (personal API key — no Bearer prefix needed). The init script queries the Linear GraphQL API at `https://api.linear.app/graphql` directly for the same discovery (uses `{ projects { nodes { id name } } }` for projects).
 
 ```bash
 export LINEAR_API_KEY=lin_api_...
@@ -290,6 +293,6 @@ Pass `--doctor` to run workspace health checks:
 npx @llodev/pm-tasks-linear init --doctor
 ```
 
-Doctor checks (C-LIN-*): config present and valid, team resolvable, states cover at least one `completed`-type, estimation/cycles flags coherent, autonomous scope sane.
+Doctor checks (C-LIN-*): config present and valid, team resolvable, states cover at least one `completed`-type, estimation/cycles flags coherent, autonomous scope sane, project ids consistent (`C-LIN-8`: `defaultProjectId` and `autonomous.scope.projects` ids must all appear in `projects[]`).
 
 The init prompt prints the absolute path it will write to, so you always see exactly where the file goes. Walk through the prompts and pick local (`./.linear.json`, recommended, committable) or global (`~/.config/llodev/pm-tasks/linear.json`).

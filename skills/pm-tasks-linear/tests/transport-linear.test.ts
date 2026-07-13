@@ -220,6 +220,38 @@ describe("createLinearTransport — taskCreate", () => {
 });
 
 // ---------------------------------------------------------------------------
+// T1b — taskCreate with defaultProjectId
+// ---------------------------------------------------------------------------
+
+describe("createLinearTransport — taskCreate + defaultProjectId", () => {
+  it("passes project: <id> to save_issue when config.defaultProjectId is set", async () => {
+    const configWithProject = {
+      ...TEST_CONFIG,
+      projects: [{ id: "proj-abc", name: "Alpha" }],
+      defaultProjectId: "proj-abc",
+    };
+    const { mcp, calls } = makeMcp(
+      new Map([["save_issue", { id: "issue-99", url: "https://linear.app/i/ENG-99" }]]),
+    );
+    const t = createLinearTransport({ mcp, config: configWithProject });
+    const r = await t.taskCreate({
+      boardOrProjectId: "IGNORED",
+      listOrSectionId: "IGNORED",
+      name: "Scoped Issue",
+    });
+    expect(r.ok).toBe(true);
+    expect(calls[0].args).toMatchObject({ project: "proj-abc" });
+  });
+
+  it("does NOT include project key when defaultProjectId is absent", async () => {
+    const { mcp, calls } = makeMcp(new Map([["save_issue", { id: "issue-100" }]]));
+    const t = createLinearTransport({ mcp, config: TEST_CONFIG });
+    await t.taskCreate({ boardOrProjectId: "b", listOrSectionId: "s", name: "n" });
+    expect(Object.keys(calls[0].args)).not.toContain("project");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // T2 — taskMove
 // ---------------------------------------------------------------------------
 

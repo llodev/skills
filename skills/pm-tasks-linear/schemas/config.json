@@ -143,6 +143,19 @@
         "auditLog": { "type": "string" }
       }
     },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" }
+        }
+      }
+    },
+    "defaultProjectId": { "type": "string" },
     "attribution": { "type": "string" }
   }
 }

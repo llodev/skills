@@ -7,6 +7,7 @@
   "targetPoints": "points (recomendado)",
   "targetNone": "none — guardar solo como etiqueta est:",
   "noEstimation": "La estimación no está habilitada para este equipo — las estimaciones se guardarán solo como etiqueta est:. Para habilitar, ve a Configuración del equipo → Tipos de incidencia → activa estimación y vuelve a ejecutar init.",
+  "projectPrompt": "Proyecto predeterminado (opcional — presiona Enter para omitir):",
   "autonomousPrompt": "¿Habilitar modo autónomo? (el agente puede escribir en Linear sin confirmación por acción)",
   "nextDoctor": "Siguiente: pm-tasks-linear init --doctor",
   "attributionCommentPrefix": "🤖 Creado mediante pm-tasks-linear",

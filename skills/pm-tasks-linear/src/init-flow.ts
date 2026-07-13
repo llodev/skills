@@ -54,6 +54,11 @@ export interface LinearMember {
   email?: string;
 }
 
+export interface LinearProject {
+  id: string;
+  name: string;
+}
+
 export interface LinearTeamSettings {
   cyclesEnabled: boolean;
   issueEstimationType: string; // "notUsed" means estimation disabled
@@ -70,6 +75,7 @@ export interface LinearInitApi {
   getUsers(): Promise<LinearMember[]>;
   getTeamSettings(teamId: string): Promise<LinearTeamSettings>;
   getCycles(teamId: string): Promise<unknown[]>;
+  getProjects(teamId: string): Promise<LinearProject[]>;
 }
 
 export type PickFn = <T>(
@@ -173,6 +179,13 @@ function createMcpApi(mcp: McpCaller): LinearInitApi {
       const res = await mcp("list_cycles", { teamId });
       return extractNodes(res);
     },
+    getProjects: async (teamId: string) => {
+      const res = await mcp("list_projects", { team: teamId });
+      return extractNodes(res).map((n) => ({
+        id: String(n["id"] ?? ""),
+        name: String(n["name"] ?? ""),
+      }));
+    },
   };
 }
 
@@ -249,6 +262,12 @@ function createGraphQLApi(apiKey: string): LinearInitApi {
         id: teamId,
       });
       return data.team.cycles.nodes;
+    },
+    getProjects: async (_teamId: string) => {
+      const data = await gql<{
+        projects: { nodes: Array<{ id: string; name: string }> };
+      }>(`{ projects { nodes { id name } } }`);
+      return data.projects.nodes.map((p) => ({ id: p.id, name: p.name }));
     },
   };
 }
@@ -408,6 +427,34 @@ export async function runInit(deps: InitDeps = {}): Promise<Record<string, unkno
   }));
 
   // -------------------------------------------------------------------------
+  // Step 2b: Discover projects and prompt for optional default
+  // -------------------------------------------------------------------------
+  let projects: LinearProject[] = [];
+  try {
+    projects = await api.getProjects(team.id);
+  } catch {
+    // Non-fatal — proceed without projects
+  }
+
+  let defaultProjectId: string | undefined;
+  if (projects.length > 0) {
+    const projectChoices: Choice<string | null>[] = [
+      { label: "(none)", value: null },
+      ...projects.map((p) => ({ label: p.name, value: p.id })),
+    ];
+    const picked = await doPick(
+      strings.projectPrompt ?? "Default project (optional):",
+      projectChoices,
+      {
+        defaultIndex: 0,
+      },
+    );
+    if (picked != null) {
+      defaultProjectId = picked;
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // Step 3: Estimation strategy
   // -------------------------------------------------------------------------
   const strategy =
@@ -449,10 +496,14 @@ export async function runInit(deps: InitDeps = {}): Promise<Record<string, unkno
 
   let autonomous: Record<string, unknown> | undefined;
   if (wantAuto) {
+    const scopeProjects = defaultProjectId ? [defaultProjectId] : [];
     autonomous = {
       enabled: false,
       allow: [...LINEAR_10_VERBS],
-      scope: { teams: [team.id] },
+      scope: {
+        teams: [team.id],
+        ...(scopeProjects.length > 0 ? { projects: scopeProjects } : {}),
+      },
       rateLimit: { writesPerMinute: 30, commentsPerMinute: 10 },
       auditLog: "./logs/linear/audit.log",
     };
@@ -469,6 +520,8 @@ export async function runInit(deps: InitDeps = {}): Promise<Record<string, unkno
   if (states.length > 0) out.states = states;
   if (labels.length > 0) out.labels = labels;
   if (members.length > 0) out.members = members;
+  if (projects.length > 0) out.projects = projects;
+  if (defaultProjectId !== undefined) out.defaultProjectId = defaultProjectId;
   out.estimation = estimation;
   out.cycles = { enabled: cyclesEnabled };
   if (autonomous !== undefined) out.autonomous = autonomous;

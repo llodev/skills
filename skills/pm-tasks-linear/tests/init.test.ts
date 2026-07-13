@@ -43,6 +43,7 @@ function makeApi(overrides: Partial<LinearInitApi> = {}): LinearInitApi {
       issueEstimationType: "fibonacci",
     }),
     getCycles: async () => [],
+    getProjects: async () => [],
     ...overrides,
   };
 }
@@ -276,6 +277,55 @@ describe("runInit — GraphQL path (mocked fetch)", () => {
     }
   });
 
+  it("discovers projects via GraphQL projects.nodes path", async () => {
+    const mockFetch = async (
+      _url: string,
+      opts: { headers?: Record<string, string>; body?: string },
+    ) => {
+      const body = JSON.parse(opts.body ?? "{}") as { query?: string };
+      const query = body.query ?? "";
+      let data: unknown;
+      if (query.includes("teams")) {
+        data = { teams: { nodes: [{ id: "team-gql2", key: "GQL", name: "GQL Team" }] } };
+      } else if (query.includes("states")) {
+        data = { team: { states: { nodes: [{ id: "s-1", name: "Done", type: "completed" }] } } };
+      } else if (query.includes("issueLabels")) {
+        data = { issueLabels: { nodes: [] } };
+      } else if (query.includes("users")) {
+        data = { users: { nodes: [] } };
+      } else if (query.includes("cyclesEnabled")) {
+        data = { team: { cyclesEnabled: false, issueEstimationType: "fibonacci" } };
+      } else if (query.includes("cycles")) {
+        data = { team: { cycles: { nodes: [] } } };
+      } else if (query.includes("projects")) {
+        data = { projects: { nodes: [{ id: "proj-gql", name: "GQL Project" }] } };
+      } else {
+        data = {};
+      }
+      return { ok: true, json: async () => ({ data }) };
+    };
+
+    const origFetch = globalThis.fetch;
+    const origKey = process.env.LINEAR_API_KEY;
+    (globalThis as Record<string, unknown>).fetch = mockFetch;
+    process.env.LINEAR_API_KEY = "lin_api_gql_test";
+    try {
+      const out = await runInit({
+        locale: "en-US",
+        pick: async (_label, choices) => choices[0].value,
+        yesNo: async () => false,
+        doWrite: async () => undefined,
+        doValidate: async () => ({ ok: true }),
+        doLoadSchema: async () => ({}),
+        outPath: "/dev/null",
+      });
+      expect(out["projects"]).toEqual([{ id: "proj-gql", name: "GQL Project" }]);
+    } finally {
+      (globalThis as Record<string, unknown>).fetch = origFetch;
+      process.env.LINEAR_API_KEY = origKey;
+    }
+  });
+
   it("strips surrounding quotes from LINEAR_API_KEY (M-guard)", () => {
     expect(stripEnvQuotes('"lin_api_123"')).toBe("lin_api_123");
     expect(stripEnvQuotes("'lin_api_123'")).toBe("lin_api_123");
@@ -339,6 +389,143 @@ describe("runInit — MCP path (mocked McpCaller)", () => {
     const teamCall = mcpCalls.find((c) => c.tool === "get_team");
     expect(teamCall?.args).toHaveProperty("query"); // not id
     expect(teamCall?.args).not.toHaveProperty("id");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Project discovery
+// ---------------------------------------------------------------------------
+
+const PROJECTS = [
+  { id: "proj-1", name: "Alpha" },
+  { id: "proj-2", name: "Beta" },
+];
+
+describe("runInit — project discovery", () => {
+  it("stores projects[] when api.getProjects returns results", async () => {
+    const api = makeApi({ getProjects: async () => PROJECTS });
+    const out = await runInit(baseDeps(api));
+    expect(out["projects"]).toEqual(PROJECTS);
+  });
+
+  it("does not store projects key when getProjects returns empty", async () => {
+    const api = makeApi({ getProjects: async () => [] });
+    const out = await runInit(baseDeps(api));
+    expect(out["projects"]).toBeUndefined();
+  });
+
+  it("does not store projects key when getProjects throws", async () => {
+    const api = makeApi({
+      getProjects: async () => {
+        throw new Error("network error");
+      },
+    });
+    const out = await runInit(baseDeps(api));
+    expect(out["projects"]).toBeUndefined();
+    expect(out["defaultProjectId"]).toBeUndefined();
+  });
+
+  it("sets defaultProjectId when user picks a project", async () => {
+    const api = makeApi({ getProjects: async () => PROJECTS });
+    // pick fn: for project prompt return "proj-1"; for other prompts return first choice
+    const out = await runInit(
+      baseDeps(api, {
+        pick: async (_label, choices) => {
+          // project prompt has "(none)" as index 0, projects after — pick index 1
+          if (choices.some((c) => c.value === null)) {
+            return choices[1].value as string;
+          }
+          return choices[0].value;
+        },
+      }),
+    );
+    expect(out["defaultProjectId"]).toBe("proj-1");
+  });
+
+  it("does not set defaultProjectId when user picks none", async () => {
+    const api = makeApi({ getProjects: async () => PROJECTS });
+    // pick fn always picks first = "(none)"
+    const out = await runInit(baseDeps(api));
+    expect(out["defaultProjectId"]).toBeUndefined();
+  });
+
+  it("autonomous scope.projects populated when defaultProjectId set", async () => {
+    const api = makeApi({ getProjects: async () => PROJECTS });
+    const out = await runInit(
+      baseDeps(api, {
+        yesNo: async () => true, // enable autonomous
+        pick: async (_label, choices) => {
+          if (choices.some((c) => c.value === null)) {
+            return choices[1].value as string; // pick proj-1
+          }
+          return choices[0].value;
+        },
+      }),
+    );
+    const auto = out["autonomous"] as Record<string, unknown>;
+    const scope = auto["scope"] as Record<string, unknown>;
+    expect(scope["projects"] as string[]).toContain("proj-1");
+  });
+
+  it("autonomous scope.projects absent when no default project chosen", async () => {
+    const api = makeApi({ getProjects: async () => PROJECTS });
+    const out = await runInit(
+      baseDeps(api, {
+        yesNo: async () => true, // enable autonomous
+        // default pick = first = "(none)"
+      }),
+    );
+    const auto = out["autonomous"] as Record<string, unknown>;
+    const scope = auto["scope"] as Record<string, unknown>;
+    expect(scope["projects"]).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Project discovery — MCP path
+// ---------------------------------------------------------------------------
+
+describe("runInit — MCP path project discovery", () => {
+  it("calls list_projects with team id and stores results", async () => {
+    const mcpCalls: Array<{ tool: string; args: Record<string, unknown> }> = [];
+
+    const mockMcp = async (tool: string, args: Record<string, unknown>) => {
+      mcpCalls.push({ tool, args });
+      switch (tool) {
+        case "list_teams":
+          return { nodes: [{ id: "mcp-team", key: "MCP", name: "MCP Team" }] };
+        case "list_issue_statuses":
+          return { nodes: [{ id: "s-done", name: "Done", type: "completed" }] };
+        case "list_issue_labels":
+          return { nodes: [{ id: "l-bug", name: "bug" }] };
+        case "list_users":
+          return { nodes: [{ id: "u-alice", name: "Alice", email: "alice@co.com" }] };
+        case "get_team":
+          return { cyclesEnabled: false, issueEstimationType: "fibonacci" };
+        case "list_cycles":
+          return { nodes: [] };
+        case "list_projects":
+          return { nodes: [{ id: "proj-mcp", name: "MCP Project" }] };
+        default:
+          throw new Error(`Unexpected MCP call: ${tool}`);
+      }
+    };
+
+    const out = await runInit({
+      mcp: mockMcp,
+      locale: "en-US",
+      pick: async (_label, choices) => choices[0].value,
+      yesNo: async () => false,
+      doWrite: async () => undefined,
+      doValidate: async () => ({ ok: true }),
+      doLoadSchema: async () => ({}),
+      outPath: "/dev/null",
+    });
+
+    expect(mcpCalls.map((c) => c.tool)).toContain("list_projects");
+    const projCall = mcpCalls.find((c) => c.tool === "list_projects");
+    expect(projCall?.args).toHaveProperty("team", "mcp-team");
+    expect(out["projects"]).toEqual([{ id: "proj-mcp", name: "MCP Project" }]);
   });
 });
 

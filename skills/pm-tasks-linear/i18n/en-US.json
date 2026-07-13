@@ -7,6 +7,7 @@
   "targetPoints": "points (recommended)",
   "targetNone": "none — store as est: label only",
   "noEstimation": "Estimation is not enabled for this team — estimates will be stored as an est: label only. To enable, go to team Settings → Issue types → enable estimation, then re-run init.",
+  "projectPrompt": "Default project (optional — press Enter to skip):",
   "autonomousPrompt": "Enable autonomous mode? (agent can write to Linear without per-action confirmation)",
   "nextDoctor": "Next: pm-tasks-linear init --doctor",
   "attributionCommentPrefix": "🤖 Created via pm-tasks-linear",

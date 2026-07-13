@@ -7,6 +7,7 @@
   "targetPoints": "points (recomendado)",
   "targetNone": "none — guardar apenas como label est:",
   "noEstimation": "Estimativa não está habilitada para este time — as estimativas serão guardadas apenas como label est:. Para habilitar, vá em Configurações do time → Tipos de issue → ative estimativa e execute init novamente.",
+  "projectPrompt": "Projeto padrão (opcional — pressione Enter para pular):",
   "autonomousPrompt": "Habilitar modo autônomo? (o agente pode escrever no Linear sem confirmação por ação)",
   "nextDoctor": "Próximo: pm-tasks-linear init --doctor",
   "attributionCommentPrefix": "🤖 Criado via pm-tasks-linear",

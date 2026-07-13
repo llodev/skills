@@ -80,6 +80,8 @@ interface LinearConfig {
     sizeMap?: Record<string, number>;
   };
   cycles?: { enabled: boolean };
+  projects?: Array<{ id: string; name: string }>;
+  defaultProjectId?: string;
 }
 
 export interface CreateLinearTransportOptions {
@@ -224,6 +226,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
           team: teamId,
           title: req.name,
           ...(req.description != null ? { description: req.description } : {}),
+          ...(config.defaultProjectId != null ? { project: config.defaultProjectId } : {}),
         });
 
         if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {

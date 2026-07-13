@@ -272,3 +272,95 @@ describe("C-LIN-7 — team reachable", () => {
     expect(result.message).toContain("network timeout");
   });
 });
+
+// ---------------------------------------------------------------------------
+// C-LIN-8: Project ids consistent
+// ---------------------------------------------------------------------------
+
+describe("C-LIN-8 — project ids consistent", () => {
+  it("passes when no projects configured", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(makeCtx());
+    expect(result.ok).toBe(true);
+    expect(result.message).toContain("not applicable");
+  });
+
+  it("passes when projects[] present and defaultProjectId matches", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(
+      makeCtx({
+        projects: [{ id: "proj-1", name: "Alpha" }],
+        defaultProjectId: "proj-1",
+      }),
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  it("passes when projects[] present and no defaultProjectId", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(
+      makeCtx({
+        projects: [{ id: "proj-1", name: "Alpha" }],
+      }),
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  it("fails when defaultProjectId references id not in projects[]", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(
+      makeCtx({
+        projects: [{ id: "proj-1", name: "Alpha" }],
+        defaultProjectId: "proj-MISSING",
+      }),
+    );
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain("proj-MISSING");
+    expect(result.fixHint).toBeDefined();
+  });
+
+  it("fails when autonomous.scope.projects contains undeclared id", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(
+      makeCtx({
+        projects: [{ id: "proj-1", name: "Alpha" }],
+        autonomous: {
+          enabled: false,
+          allow: ["task.create"],
+          scope: { teams: ["team-abc"], projects: ["proj-GHOST"] },
+        },
+      }),
+    );
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain("proj-GHOST");
+  });
+
+  it("passes when autonomous.scope.projects ids all declared", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(
+      makeCtx({
+        projects: [
+          { id: "proj-1", name: "Alpha" },
+          { id: "proj-2", name: "Beta" },
+        ],
+        autonomous: {
+          enabled: false,
+          allow: ["task.create"],
+          scope: { teams: ["team-abc"], projects: ["proj-1", "proj-2"] },
+        },
+      }),
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  it("fails when defaultProjectId set but projects[] absent", async () => {
+    const [, , , , , , , C_LIN_8] = makeLinearChecks();
+    const result = await C_LIN_8.run(
+      makeCtx({
+        defaultProjectId: "proj-orphan",
+      }),
+    );
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain("projects[] is absent");
+  });
+});

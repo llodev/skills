@@ -197,6 +197,73 @@ const C_LIN_6: DoctorCheck = {
 };
 
 // ---------------------------------------------------------------------------
+// C-LIN-8: Project ids consistent — defaultProjectId and scope.projects must
+//           reference ids declared in the projects[] array.
+// ---------------------------------------------------------------------------
+
+const C_LIN_8: DoctorCheck = {
+  id: "C-LIN-8",
+  label: "Project ids consistent",
+  severity: "warn",
+  async run(ctx: DoctorContext): Promise<{ ok: boolean; message: string; fixHint?: string }> {
+    const cfg = ctx.config as Record<string, unknown>;
+    const projects = cfg["projects"] as Array<Record<string, unknown>> | undefined;
+
+    // If no projects array at all, check is not applicable.
+    if (!projects || projects.length === 0) {
+      const hasDefaultOrScope =
+        typeof cfg["defaultProjectId"] === "string" ||
+        (() => {
+          const auto = cfg["autonomous"] as Record<string, unknown> | undefined;
+          const scope = auto?.["scope"] as Record<string, unknown> | undefined;
+          const sp = scope?.["projects"] as string[] | undefined;
+          return sp && sp.length > 0;
+        })();
+      if (hasDefaultOrScope) {
+        return {
+          ok: false,
+          message: "defaultProjectId or autonomous.scope.projects set but projects[] is absent",
+          fixHint: "Re-run pm-tasks-linear init to populate projects array.",
+        };
+      }
+      return { ok: true, message: "No projects configured — check not applicable" };
+    }
+
+    const knownIds = new Set(
+      projects.filter((p) => typeof p["id"] === "string").map((p) => p["id"] as string),
+    );
+
+    const failures: string[] = [];
+
+    // Check defaultProjectId
+    const defaultId = cfg["defaultProjectId"];
+    if (typeof defaultId === "string" && !knownIds.has(defaultId)) {
+      failures.push(`defaultProjectId "${defaultId}" not in projects[]`);
+    }
+
+    // Check autonomous.scope.projects
+    const auto = cfg["autonomous"] as Record<string, unknown> | undefined;
+    const scope = auto?.["scope"] as Record<string, unknown> | undefined;
+    const scopeProjects = (scope?.["projects"] as string[] | undefined) ?? [];
+    for (const pid of scopeProjects) {
+      if (!knownIds.has(pid)) {
+        failures.push(`autonomous.scope.projects id "${pid}" not in projects[]`);
+      }
+    }
+
+    if (failures.length > 0) {
+      return {
+        ok: false,
+        message: failures.join("; "),
+        fixHint: "Re-run pm-tasks-linear init to refresh project list.",
+      };
+    }
+
+    return { ok: true, message: `projects[] consistent (${knownIds.size} declared)` };
+  },
+};
+
+// ---------------------------------------------------------------------------
 // C-LIN-7: Team reachable (probe-based; degrades gracefully when no probe)
 // ---------------------------------------------------------------------------
 
@@ -245,7 +312,7 @@ function makeC_LIN_7(probe?: LinearProbe): DoctorCheck {
 
 /** Create the linear-specific check array, optionally with a live probe for C-LIN-7. */
 export function makeLinearChecks(probe?: LinearProbe): DoctorCheck[] {
-  return [C_LIN_1, C_LIN_2, C_LIN_3, C_LIN_4, C_LIN_5, C_LIN_6, makeC_LIN_7(probe)];
+  return [C_LIN_1, C_LIN_2, C_LIN_3, C_LIN_4, C_LIN_5, C_LIN_6, makeC_LIN_7(probe), C_LIN_8];
 }
 
 /** Pre-built checks without a probe (used when running standalone without MCP). */
