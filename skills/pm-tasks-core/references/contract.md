@@ -71,7 +71,9 @@ Adapters MUST NOT translate user-authored content — verbatim is the contract. 
 
 The 6 verbs of v1, with their semantic invariants and idempotency rules, live in [`crud-vocabulary.md`](crud-vocabulary.md). Adapters map each verb to one or more MCP tool calls.
 
-v1.11.0 adds `task.parent.set` (8th) and `task.estimate.set` (9th); both adapter-optional. v1.13.0 adds `task.sprint.set` (10th); adapter-optional, Linear is the first supporter. Total canonical verbs: 10.
+v1.11.0 adds `task.parent.set` (8th) and `task.estimate.set` (9th); both adapter-optional. Total canonical verbs: 9.
+
+v1.13.0 adds `task.sprint.set` (10th canonical verb); adapter-optional, Linear is the first supporter.
 
 ### task.move (added v1.5.0, additive)
 
