@@ -108,12 +108,18 @@ describe("C-LIN-3 — completed state present", () => {
     expect(result.ok).toBe(false);
   });
 
-  it("skips check gracefully when states is absent", async () => {
+  it("fails when states is absent", async () => {
     const [, , C_LIN_3] = makeLinearChecks();
     const result = await C_LIN_3.run(makeCtx({ states: undefined }));
-    // No states → advisory skip, ok=true
-    expect(result.ok).toBe(true);
-    expect(result.message).toContain("skipping");
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain("states[] is empty");
+  });
+
+  it("fails when states is an empty array", async () => {
+    const [, , C_LIN_3] = makeLinearChecks();
+    const result = await C_LIN_3.run(makeCtx({ states: [] }));
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain("states[] is empty");
   });
 });
 

@@ -82,9 +82,9 @@ const C_LIN_3: DoctorCheck = {
     const states = cfg["states"];
     if (!Array.isArray(states) || states.length === 0) {
       return {
-        ok: true,
-        message:
-          "No states in config — skipping completed-state check (init did not populate states)",
+        ok: false,
+        message: "states[] is empty — task.close and task.move to done will fail at runtime",
+        fixHint: "Re-run pm-tasks-linear init to populate workflow states.",
       };
     }
     const hasCompleted = (states as Array<Record<string, unknown>>).some(
