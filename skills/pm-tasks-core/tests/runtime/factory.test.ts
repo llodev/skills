@@ -41,10 +41,11 @@ describe("createCoreRuntime", () => {
     expect(typeof rt.taskCommentAdd).toBe("function");
   });
 
-  it("returns a Runtime with taskParentSet and taskEstimateSet methods", async () => {
+  it("returns a Runtime with taskParentSet, taskEstimateSet, and taskSprintSet methods", async () => {
     const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
     expect(typeof rt.taskParentSet).toBe("function");
     expect(typeof rt.taskEstimateSet).toBe("function");
+    expect(typeof rt.taskSprintSet).toBe("function");
   });
 
   it("taskParentSet → UNSUPPORTED_VERB when transport omits the method", async () => {
@@ -60,6 +61,12 @@ describe("createCoreRuntime", () => {
       input: 5,
       config: { strategy: "story_points", jiraTarget: "story_points" },
     });
+    expect(result).toEqual({ ok: false, code: "UNSUPPORTED_VERB" });
+  });
+
+  it("taskSprintSet → UNSUPPORTED_VERB when transport omits the method", async () => {
+    const rt = await createCoreRuntime({ tool: "trello", configPath, transport: stubTransport });
+    const result = await rt.taskSprintSet({ taskId: "t1", sprintRef: "Sprint 1" });
     expect(result).toEqual({ ok: false, code: "UNSUPPORTED_VERB" });
   });
 
