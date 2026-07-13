@@ -457,7 +457,7 @@ describe("createLinearTransport — taskParentSet", () => {
 describe("createLinearTransport — taskEstimateSet", () => {
   const ESTIMATE_CONFIG = {
     strategy: "story_points" as const,
-    jiraTarget: "story_points" as const,
+    linearTarget: "points" as const,
     scale: [1, 2, 3, 5, 8, 13],
   };
 
@@ -529,7 +529,7 @@ describe("createLinearTransport — taskEstimateSet", () => {
       input: "not-a-number-or-valid-size",
       config: {
         strategy: "story_points" as const,
-        jiraTarget: "story_points" as const,
+        linearTarget: "points" as const,
         scale: [1, 2, 3],
       },
     });
@@ -566,7 +566,7 @@ describe("createLinearTransport — taskEstimateSet", () => {
     await t.taskEstimateSet?.({
       taskId: "issue-1",
       input: 3,
-      config: { strategy: "story_points" as const, jiraTarget: "none" as const },
+      config: { strategy: "story_points" as const, linearTarget: "none" as const },
     });
 
     expect(Object.keys(calls[1].args)).not.toContain("estimate");

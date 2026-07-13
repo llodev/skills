@@ -44,12 +44,12 @@ import type {
   TaskCommentAddResponse,
   TaskParentSetRequest,
   TaskParentSetResponse,
-  TaskEstimateSetRequest,
   TaskEstimateSetResponse,
   TaskSprintSetRequest,
   TaskSprintSetResponse,
 } from "@llodev/pm-tasks-core/runtime";
 import { normalizeEstimate } from "@llodev/pm-tasks-core/estimation";
+import type { EstimateInput, EstimationStrategy } from "@llodev/pm-tasks-core/estimation";
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -86,6 +86,36 @@ export interface CreateLinearTransportOptions {
   mcp: McpCaller;
   config: LinearConfig;
 }
+
+/**
+ * Linear-specific estimation config — uses `linearTarget` instead of the
+ * Jira-named `jiraTarget` field from core's EstimationConfig.
+ * Mapped to EstimationConfig internally before calling normalizeEstimate.
+ */
+export interface LinearEstimationConfig {
+  strategy: EstimationStrategy;
+  /** "points" → write Linear estimate field + est: label; "none" → label only */
+  linearTarget: "points" | "none";
+  scale?: number[];
+  sizeMap?: Record<string, number>;
+}
+
+/** Linear-specific override of TaskEstimateSetRequest with linearTarget config. */
+export interface LinearTaskEstimateSetRequest {
+  taskId: string;
+  input: EstimateInput;
+  config: LinearEstimationConfig;
+}
+
+/**
+ * Linear transport type — identical to Transport but narrows taskEstimateSet
+ * to accept LinearTaskEstimateSetRequest (uses linearTarget, not jiraTarget).
+ */
+export type LinearTransport = Omit<Transport, "taskEstimateSet"> & {
+  taskEstimateSet?(
+    req: LinearTaskEstimateSetRequest,
+  ): Promise<TransportResult<TaskEstimateSetResponse>>;
+};
 
 // ---------------------------------------------------------------------------
 // Internal helpers
@@ -176,7 +206,7 @@ function slugify(s: string): string {
 // Factory
 // ---------------------------------------------------------------------------
 
-export function createLinearTransport(opts: CreateLinearTransportOptions): Transport {
+export function createLinearTransport(opts: CreateLinearTransportOptions): LinearTransport {
   const { mcp, config } = opts;
   const teamId = config.team.id;
 
@@ -382,7 +412,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Trans
     // linearTarget "none" → label-only write (no estimate field).
     // -------------------------------------------------------------------
     async taskEstimateSet(
-      req: TaskEstimateSetRequest,
+      req: LinearTaskEstimateSetRequest,
     ): Promise<TransportResult<TaskEstimateSetResponse>> {
       // Guard: estimation must be enabled
       if (config.estimation?.enabled === false) {
@@ -394,14 +424,20 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Trans
       }
 
       // Step 1 — normalize via core (never throws; returns Result)
-      const r = normalizeEstimate(req.input, req.config);
+      // Map linearTarget → jiraTarget so core's EstimationConfig contract is satisfied.
+      const coreConfig = {
+        ...req.config,
+        jiraTarget: (req.config.linearTarget === "points" ? "story_points" : "none") as
+          "story_points" | "none",
+      };
+      const r = normalizeEstimate(req.input, coreConfig);
       if (!r.ok) {
         return { ok: false, code: "INVALID_REQUEST", details: { message: r.error } };
       }
       const n = r.value;
 
       // Guard: linearTarget must match strategy output
-      if (n.jiraTarget === "story_points" && n.points == null) {
+      if (config.estimation?.linearTarget === "points" && n.points == null) {
         return {
           ok: false,
           code: "INVALID_REQUEST",

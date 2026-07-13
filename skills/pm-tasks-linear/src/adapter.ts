@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { createCoreRuntime, type Runtime } from "@llodev/pm-tasks-core/runtime";
+import { createCoreRuntime, type Runtime, type Transport } from "@llodev/pm-tasks-core/runtime";
 import { createLinearTransport, type McpCaller } from "./transport-linear.js";
 
 export type { McpCaller };
@@ -28,7 +28,10 @@ export interface CreateAdapterOptions {
 export async function createAdapter(opts: CreateAdapterOptions): Promise<Runtime> {
   const raw = await readFile(opts.configPath, "utf-8");
   const config = JSON.parse(raw);
-  const transport = createLinearTransport({ mcp: opts.mcp, config });
+  // Cast to Transport: taskEstimateSet is narrowed to LinearTaskEstimateSetRequest
+  // (uses linearTarget instead of jiraTarget); the runtime always calls it via
+  // the task-estimate-set handler which passes req.config as-is from the caller.
+  const transport = createLinearTransport({ mcp: opts.mcp, config }) as unknown as Transport;
   return createCoreRuntime({
     tool: "linear",
     configPath: opts.configPath,

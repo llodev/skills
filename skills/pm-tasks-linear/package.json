@@ -9,8 +9,8 @@
     "url": "https://github.com/llodev/skills.git",
     "directory": "skills/pm-tasks-linear"
   },
-  "main": "./dist/bin/init.js",
-  "types": "./dist/bin/init.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "SKILL.md",
     "README.md",
@@ -37,8 +37,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/bin/init.d.ts",
-      "import": "./dist/bin/init.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./adapter": {
       "types": "./dist/adapter.d.ts",
