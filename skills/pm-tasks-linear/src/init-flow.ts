@@ -139,7 +139,7 @@ function createMcpApi(mcp: McpCaller): LinearInitApi {
       }));
     },
     getStates: async (teamId: string) => {
-      const res = await mcp("list_issue_statuses", { teamId });
+      const res = await mcp("list_issue_statuses", { team: teamId });
       return extractNodes(res).map((n) => ({
         id: String(n["id"] ?? ""),
         name: String(n["name"] ?? ""),
@@ -162,7 +162,7 @@ function createMcpApi(mcp: McpCaller): LinearInitApi {
       }));
     },
     getTeamSettings: async (teamId: string) => {
-      const res = await mcp("get_team", { id: teamId });
+      const res = await mcp("get_team", { query: teamId });
       const obj = isRecord(res) ? res : {};
       return {
         cyclesEnabled: Boolean(obj["cyclesEnabled"] ?? false),

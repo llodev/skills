@@ -11,14 +11,45 @@ interface CallRecord {
 }
 
 /**
+ * Allowed keys for save_issue — mirrors the real Linear MCP schema
+ * (additionalProperties: false). Any key outside this set is an error.
+ */
+const SAVE_ISSUE_ALLOWED_KEYS = new Set([
+  "id",
+  "team",
+  "title",
+  "description",
+  "assignee",
+  "state",
+  "cycle",
+  "dueDate",
+  "estimate",
+  "labels",
+  "parentId",
+  "priority",
+  "project",
+  "milestone",
+]);
+
+/**
  * Build a recording McpCaller from a per-tool response map.
  * If a tool name is not in the map, the stub throws an unexpected-call error.
  * If the mapped value is an Error instance, it is thrown.
+ * For save_issue calls, throws if any key is outside SAVE_ISSUE_ALLOWED_KEYS
+ * (faithful to additionalProperties: false in the real schema).
  */
 function makeMcp(responses: Map<string, unknown>): { mcp: McpCaller; calls: CallRecord[] } {
   const calls: CallRecord[] = [];
   const mcp: McpCaller = async (tool, args) => {
     calls.push({ tool, args });
+    if (tool === "save_issue") {
+      const badKeys = Object.keys(args).filter((k) => !SAVE_ISSUE_ALLOWED_KEYS.has(k));
+      if (badKeys.length > 0) {
+        throw new Error(
+          `save_issue received unknown keys (additionalProperties: false): ${badKeys.join(", ")}`,
+        );
+      }
+    }
     if (responses.has(tool)) {
       const resp = responses.get(tool);
       if (resp instanceof Error) throw resp;
@@ -109,7 +140,7 @@ describe("createLinearTransport — helpers", () => {
 // ---------------------------------------------------------------------------
 
 describe("createLinearTransport — taskCreate", () => {
-  it("success: dispatches save_issue with teamId + title; returns id + url", async () => {
+  it("success: dispatches save_issue with team + title; returns id + url", async () => {
     const { mcp, calls } = makeMcp(
       new Map([["save_issue", { id: "issue-42", url: "https://linear.app/team/issue/ENG-42" }]]),
     );
@@ -124,7 +155,7 @@ describe("createLinearTransport — taskCreate", () => {
     expect(calls).toHaveLength(1);
     expect(calls[0].tool).toBe("save_issue");
     expect(calls[0].args).toMatchObject({
-      teamId: "team-abc",
+      team: "team-abc",
       title: "My Issue",
       description: "some body",
     });
@@ -134,7 +165,7 @@ describe("createLinearTransport — taskCreate", () => {
     });
   });
 
-  it("boardOrProjectId and listOrSectionId are IGNORED: teamId comes from config", async () => {
+  it("boardOrProjectId and listOrSectionId are IGNORED: team comes from config", async () => {
     const { mcp, calls } = makeMcp(new Map([["save_issue", { id: "issue-5" }]]));
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
     await t.taskCreate({
@@ -145,7 +176,7 @@ describe("createLinearTransport — taskCreate", () => {
     const argsStr = JSON.stringify(calls[0].args);
     expect(argsStr).not.toContain("should-not-appear");
     expect(argsStr).not.toContain("also-ignored");
-    expect(calls[0].args.teamId).toBe("team-abc");
+    expect(calls[0].args.team).toBe("team-abc");
   });
 
   it("no description: does not include description key in args", async () => {
@@ -187,7 +218,7 @@ describe("createLinearTransport — taskMove", () => {
 
     expect(calls).toHaveLength(1);
     expect(calls[0].tool).toBe("save_issue");
-    expect(calls[0].args).toEqual({ id: "issue-1", stateId: "state-unstarted" });
+    expect(calls[0].args).toEqual({ id: "issue-1", state: "state-unstarted" });
     expect(r).toEqual({
       ok: true,
       data: { previousListOrSectionId: null, newListOrSectionId: "state-unstarted" },
@@ -199,7 +230,7 @@ describe("createLinearTransport — taskMove", () => {
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
     await t.taskMove({ taskId: "issue-2", targetListOrSectionId: "wip" });
 
-    expect(calls[0].args.stateId).toBe("state-started");
+    expect(calls[0].args.state).toBe("state-started");
   });
 
   it("state-by-type: done → completed state id", async () => {
@@ -207,7 +238,7 @@ describe("createLinearTransport — taskMove", () => {
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
     await t.taskMove({ taskId: "issue-3", targetListOrSectionId: "done" });
 
-    expect(calls[0].args.stateId).toBe("state-completed");
+    expect(calls[0].args.state).toBe("state-completed");
   });
 
   it("raw Linear type passthrough: passes type string directly when no config.states", async () => {
@@ -216,7 +247,7 @@ describe("createLinearTransport — taskMove", () => {
     const t = createLinearTransport({ mcp, config: configNoStates });
     await t.taskMove({ taskId: "issue-4", targetListOrSectionId: "started" });
 
-    expect(calls[0].args.stateId).toBe("started");
+    expect(calls[0].args.state).toBe("started");
   });
 
   it("MCP throws 429 → RATE_LIMITED", async () => {
@@ -245,7 +276,7 @@ describe("createLinearTransport — checklistCheck", () => {
 
     expect(calls).toHaveLength(1);
     expect(calls[0].tool).toBe("save_issue");
-    expect(calls[0].args).toEqual({ id: "sub-issue-1", stateId: "state-completed" });
+    expect(calls[0].args).toEqual({ id: "sub-issue-1", state: "state-completed" });
     expect(r).toEqual({
       ok: true,
       data: { previousState: "incomplete", newState: "complete" },
@@ -262,7 +293,7 @@ describe("createLinearTransport — checklistCheck", () => {
       targetState: "incomplete",
     });
 
-    expect(calls[0].args).toEqual({ id: "sub-issue-2", stateId: "state-unstarted" });
+    expect(calls[0].args).toEqual({ id: "sub-issue-2", state: "state-unstarted" });
     expect(r).toEqual({
       ok: true,
       data: { previousState: "complete", newState: "incomplete" },
@@ -295,7 +326,7 @@ describe("createLinearTransport — taskClose", () => {
 
     expect(calls).toHaveLength(1);
     expect(calls[0].tool).toBe("save_issue");
-    expect(calls[0].args).toEqual({ id: "issue-10", stateId: "state-completed" });
+    expect(calls[0].args).toEqual({ id: "issue-10", state: "state-completed" });
     expect(r).toEqual({
       ok: true,
       data: { closed: true, movedToListOrSectionId: "state-completed" },
@@ -495,10 +526,10 @@ describe("createLinearTransport — taskEstimateSet", () => {
 
     // label-1 (bug) survives; est:2-points is stripped (starts with est:)
     // new est:3 label from create_issue_label is added
-    const labelIds = calls[2].args.labelIds as string[];
-    expect(labelIds).toContain("label-1");
-    expect(labelIds).not.toContain("label-est-old");
-    expect(labelIds).toContain("new-est-3-id");
+    const labels = calls[2].args.labels as string[];
+    expect(labels).toContain("label-1");
+    expect(labels).not.toContain("label-est-old");
+    expect(labels).toContain("new-est-3-id");
 
     expect(r?.ok).toBe(true);
     if (r?.ok) {
@@ -581,7 +612,7 @@ describe("createLinearTransport — taskEstimateSet", () => {
     const saveCall = calls.find((c) => c.tool === "save_issue");
     expect(saveCall).toBeDefined();
     expect(Object.keys(saveCall!.args)).not.toContain("estimate");
-    expect(Object.keys(saveCall!.args)).toContain("labelIds");
+    expect(Object.keys(saveCall!.args)).toContain("labels");
   });
 });
 
@@ -612,7 +643,7 @@ describe("createLinearTransport — taskSprintSet", () => {
     expect(calls[0].tool).toBe("list_cycles");
     expect(calls[0].args).toEqual({ teamId: "team-abc" });
     expect(calls[1].tool).toBe("save_issue");
-    expect(calls[1].args).toEqual({ id: "issue-1", cycleId: "cycle-10" });
+    expect(calls[1].args).toEqual({ id: "issue-1", cycle: "cycle-10" });
     expect(r).toEqual({
       ok: true,
       data: { previousSprintRef: null, newSprintRef: "cycle-10" },
@@ -629,7 +660,7 @@ describe("createLinearTransport — taskSprintSet", () => {
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
     await t.taskSprintSet?.({ taskId: "issue-1", sprintRef: "5" });
 
-    expect(calls[1].args.cycleId).toBe("cycle-5");
+    expect(calls[1].args.cycle).toBe("cycle-5");
   });
 
   it("resolves cycle by id directly", async () => {
@@ -642,10 +673,10 @@ describe("createLinearTransport — taskSprintSet", () => {
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
     await t.taskSprintSet?.({ taskId: "issue-1", sprintRef: "cycle-abc" });
 
-    expect(calls[1].args.cycleId).toBe("cycle-abc");
+    expect(calls[1].args.cycle).toBe("cycle-abc");
   });
 
-  it("cycle not found in list_cycles: falls back to sprintRef as cycleId", async () => {
+  it("cycle not found in list_cycles: falls back to sprintRef as cycle", async () => {
     const { mcp, calls } = makeMcp(
       new Map([
         ["list_cycles", { nodes: [] }],
@@ -655,7 +686,7 @@ describe("createLinearTransport — taskSprintSet", () => {
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
     await t.taskSprintSet?.({ taskId: "issue-1", sprintRef: "unknown-cycle" });
 
-    expect(calls[1].args.cycleId).toBe("unknown-cycle");
+    expect(calls[1].args.cycle).toBe("unknown-cycle");
   });
 
   it("cycles disabled → NOT_APPLICABLE (no MCP calls)", async () => {
@@ -726,9 +757,9 @@ describe("createLinearTransport — taskEstimateSet M1 (label create-on-demand)"
     expect(calls[1].args.name).toMatch(/^est:/);
     expect(calls[1].args.teamId).toBe("team-abc");
 
-    // The new label id should appear in save_issue labelIds
-    const labelIds = calls[2].args.labelIds as string[];
-    expect(labelIds).toContain("new-est-label-id");
+    // The new label id should appear in save_issue labels
+    const labels = calls[2].args.labels as string[];
+    expect(labels).toContain("new-est-label-id");
 
     expect(r?.ok).toBe(true);
   });
@@ -762,9 +793,9 @@ describe("createLinearTransport — taskEstimateSet M1 (label create-on-demand)"
     expect(calls.map((c) => c.tool)).not.toContain("create_issue_label");
     expect(calls).toHaveLength(2);
 
-    // The registered label id appears in labelIds
-    const labelIds = calls[1].args.labelIds as string[];
-    expect(labelIds).toContain("label-est-3");
+    // The registered label id appears in labels
+    const labels = calls[1].args.labels as string[];
+    expect(labels).toContain("label-est-3");
   });
 
   it("proceeds without est: label when create_issue_label throws", async () => {
@@ -792,8 +823,8 @@ describe("createLinearTransport — taskEstimateSet M1 (label create-on-demand)"
     expect(r?.ok).toBe(true);
     // get_issue + create_issue_label(failed) + save_issue
     expect(calls).toHaveLength(3);
-    // labelIds should NOT include the new label (creation failed)
-    const labelIds = calls[2].args.labelIds as string[];
-    expect(labelIds).toContain("label-1"); // non-est label survives
+    // labels should NOT include the new label (creation failed)
+    const labels = calls[2].args.labels as string[];
+    expect(labels).toContain("label-1"); // non-est label survives
   });
 });

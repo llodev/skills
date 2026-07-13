@@ -328,6 +328,15 @@ describe("runInit — MCP path (mocked McpCaller)", () => {
     expect(mcpCalls.map((c) => c.tool)).toContain("list_issue_labels");
     expect(mcpCalls.map((c) => c.tool)).toContain("list_users");
     expect(mcpCalls.map((c) => c.tool)).toContain("get_team");
+
+    // Verify corrected MCP param keys (real schema conformance)
+    const statusCall = mcpCalls.find((c) => c.tool === "list_issue_statuses");
+    expect(statusCall?.args).toHaveProperty("team"); // not teamId
+    expect(statusCall?.args).not.toHaveProperty("teamId");
+
+    const teamCall = mcpCalls.find((c) => c.tool === "get_team");
+    expect(teamCall?.args).toHaveProperty("query"); // not id
+    expect(teamCall?.args).not.toHaveProperty("id");
   });
 });
 

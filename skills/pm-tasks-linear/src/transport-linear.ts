@@ -221,7 +221,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
     async taskCreate(req: TaskCreateRequest): Promise<TransportResult<TaskCreateResponse>> {
       try {
         const resp = await mcp("save_issue", {
-          teamId,
+          team: teamId,
           title: req.name,
           ...(req.description != null ? { description: req.description } : {}),
         });
@@ -251,7 +251,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
         const linearType = coreTargetToLinearType(req.targetListOrSectionId);
         const stateId = resolveStateByType(config.states, linearType);
 
-        await mcp("save_issue", { id: req.taskId, stateId });
+        await mcp("save_issue", { id: req.taskId, state: stateId });
 
         return {
           ok: true,
@@ -278,7 +278,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
         const targetType = req.targetState === "complete" ? "completed" : "unstarted";
         const stateId = resolveStateByType(config.states, targetType);
 
-        await mcp("save_issue", { id: req.itemId, stateId });
+        await mcp("save_issue", { id: req.itemId, state: stateId });
 
         const prev = req.targetState === "complete" ? "incomplete" : "complete";
         return { ok: true, data: { previousState: prev, newState: req.targetState } };
@@ -297,7 +297,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
       try {
         const stateId = resolveStateByType(config.states, "completed");
 
-        await mcp("save_issue", { id: req.taskId, stateId });
+        await mcp("save_issue", { id: req.taskId, state: stateId });
 
         return { ok: true, data: { closed: true, movedToListOrSectionId: stateId } };
       } catch (e) {
@@ -504,7 +504,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
         // Step 4 — build save_issue args
         const saveArgs: Record<string, unknown> = {
           id: req.taskId,
-          labelIds,
+          labels: labelIds,
         };
 
         // Write estimate field if linearTarget = "points"
@@ -563,7 +563,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
           }
         }
 
-        await mcp("save_issue", { id: req.taskId, cycleId });
+        await mcp("save_issue", { id: req.taskId, cycle: cycleId });
 
         return { ok: true, data: { previousSprintRef: null, newSprintRef: cycleId } };
       } catch (e) {
