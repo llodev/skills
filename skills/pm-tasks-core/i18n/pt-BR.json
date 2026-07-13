@@ -19,5 +19,7 @@
   "errInvalidConfig": "config inválido",
   "attribution.descriptionFooter": "— publicado por {agent} via @llodev/pm-tasks-{tool}",
   "attribution.commentPrefix": "[{agent}]",
-  "attribution.autonomousCommentPrefix": "[{agent} · autônomo]"
+  "attribution.autonomousCommentPrefix": "[{agent} · autônomo]",
+  "configExistsPrompt": "Já existe um arquivo de configuração. Sobrescrever?",
+  "configExistsKept": "Mantendo a configuração existente — init cancelado."
 }

@@ -41,6 +41,15 @@ export interface PromptYesNoOptions {
   strings?: StringsTable;
 }
 
+export interface WriteConfigOptions {
+  /** Overwrite without prompting. */
+  force?: boolean;
+  /** Locale strings for the overwrite prompt. Falls back to en-US. */
+  strings?: StringsTable;
+  /** Injectable confirm fn (for tests). Defaults to promptYesNo when stdin is a TTY. */
+  confirmOverwrite?: () => Promise<boolean>;
+}
+
 export interface MultiSelectOptions<T = string> {
   strings?: StringsTable;
 }
@@ -235,12 +244,43 @@ export function aliasOf(name: unknown): string {
     .replace(/^-|-$/g, "");
 }
 
-export async function writeConfig(targetPath: string, data: unknown): Promise<void> {
+export async function writeConfig(
+  targetPath: string,
+  data: unknown,
+  opts?: WriteConfigOptions,
+): Promise<void> {
   await mkdir(path.dirname(targetPath), { recursive: true });
   try {
     await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n", { flag: "wx" });
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code === "EEXIST") {
+      // force: overwrite without prompting
+      if (opts?.force === true) {
+        await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n", { flag: "w" });
+        return;
+      }
+
+      // Determine confirm source: injected fn, or TTY-default, or neither (non-interactive)
+      let confirm: (() => Promise<boolean>) | undefined = opts?.confirmOverwrite;
+      if (confirm === undefined && process.stdin.isTTY) {
+        confirm = async () => {
+          const s = opts?.strings ?? (await loadStrings("core", "en-US"));
+          return promptYesNo(s.configExistsPrompt, { defaultNo: true, strings: opts?.strings });
+        };
+      }
+
+      if (confirm !== undefined) {
+        const yes = await confirm();
+        if (yes) {
+          await writeFile(targetPath, JSON.stringify(data, null, 2) + "\n", { flag: "w" });
+          return;
+        }
+        // User declined (or injected confirm returned false)
+        const s = opts?.strings ?? (await loadStrings("core", "en-US"));
+        throw new Error(s.configExistsKept);
+      }
+
+      // Non-interactive: no TTY and no injected confirm — preserve original behavior
       throw new Error(`config already exists at ${targetPath}, aborting`);
     }
     throw e;

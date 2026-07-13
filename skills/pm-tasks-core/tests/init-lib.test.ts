@@ -149,6 +149,59 @@ describe("writeConfig", () => {
       rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  it("force:true overwrites without prompting", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "existing.json");
+    try {
+      writeFileSync(target, '{"original":true}\n');
+      await writeConfig(target, { updated: true }, { force: true });
+      expect(JSON.parse(readFileSync(target, "utf8"))).toEqual({ updated: true });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("confirmOverwrite:async()=>true overwrites and resolves", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "existing.json");
+    try {
+      writeFileSync(target, '{"original":true}\n');
+      await writeConfig(target, { updated: true }, { confirmOverwrite: async () => true });
+      expect(JSON.parse(readFileSync(target, "utf8"))).toEqual({ updated: true });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("confirmOverwrite:async()=>false throws 'kept' error and leaves file unchanged", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "existing.json");
+    try {
+      writeFileSync(target, '{"original":true}\n');
+      const before = readFileSync(target, "utf8");
+      await expect(
+        writeConfig(target, { updated: true }, { confirmOverwrite: async () => false }),
+      ).rejects.toThrow(/init cancelled/);
+      expect(readFileSync(target, "utf8")).toBe(before);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("non-interactive (no confirm, not a TTY) throws original abort error", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "existing.json");
+    // process.stdin.isTTY is falsy in test runner — no confirmOverwrite injected
+    try {
+      writeFileSync(target, '{"original":true}\n');
+      await expect(writeConfig(target, { updated: true })).rejects.toThrow(
+        /config already exists at .*existing\.json, aborting/,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("promptLocale", () => {

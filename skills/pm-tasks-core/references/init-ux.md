@@ -51,6 +51,19 @@ Print:
 - Sample trigger prompt the user can paste (`"create a card on <tool> from this plan"`)
 - Reminder: secrets go in env vars or OS keychain, NEVER in this JSON.
 
+## Overwrite prompt (existing config)
+
+When `writeConfig` detects that the target file already exists (`EEXIST`), it follows this decision tree:
+
+| Condition                                     | Behavior                                                                                                                |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `opts.force === true`                         | Overwrites silently — no prompt.                                                                                        |
+| `opts.confirmOverwrite` provided              | Calls it; `true` → overwrite, `false` → throws "kept" error.                                                            |
+| `process.stdin.isTTY` is truthy               | Prompts `"A config file already exists. Overwrite? [y/N]"` (default **No**); yes → overwrite, no → throws "kept" error. |
+| Non-interactive (no TTY, no injected confirm) | Throws original `"config already exists at <path>, aborting"` (preserves prior safe behavior; never hangs).             |
+
+The prompt text is localized via the `strings` option (`configExistsPrompt` / `configExistsKept` keys, all three locales). Adapters that already load a `StringsTable` should pass `{ strings }` to surface the locale-correct message. Default (no `strings`) falls back to en-US.
+
 ## Implementation API (consumed by adapters)
 
 Adapter `scripts/init.mjs` imports from `@llodev/pm-tasks-core/init-lib`:
