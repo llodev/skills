@@ -468,13 +468,38 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
               .map((l) => String(l["id"]))
           : [];
 
-        // Step 3 — build est: label via Linear label registry or create inline
+        // Step 3 — build est: label via Linear label registry, or create on-demand (M1)
         const slug = slugify(n.humanReadable);
         const estLabelName = `est:${slug}`;
 
         // Find existing label id in config.labels if available
-        const existingLabel = config.labels?.find((l) => l.name === estLabelName);
-        const labelIds = existingLabel ? [...currentLabelIds, existingLabel.id] : currentLabelIds; // if no registry entry, omit label (Phase 3 init populates labels)
+        let existingLabel = config.labels?.find((l) => l.name === estLabelName);
+
+        // M1: label create-on-demand — if the est: label is not in config.labels,
+        // create it via Linear MCP and use the returned id.
+        if (!existingLabel) {
+          try {
+            const createResult = await mcp("create_issue_label", {
+              name: estLabelName,
+              teamId,
+            });
+            if (
+              typeof createResult === "object" &&
+              createResult !== null &&
+              "id" in createResult &&
+              typeof (createResult as Record<string, unknown>)["id"] === "string"
+            ) {
+              existingLabel = {
+                id: String((createResult as Record<string, unknown>)["id"]),
+                name: estLabelName,
+              };
+            }
+          } catch {
+            // Label creation failed — proceed without the label rather than blocking estimation
+          }
+        }
+
+        const labelIds = existingLabel ? [...currentLabelIds, existingLabel.id] : currentLabelIds;
 
         // Step 4 — build save_issue args
         const saveArgs: Record<string, unknown> = {

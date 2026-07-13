@@ -1,0 +1,11 @@
+{
+  "header": "pm-tasks-linear init",
+  "teamPrompt": "Select Linear team:",
+  "noTeam": "No team selected. Exiting.",
+  "strategyPrompt": "Select estimation strategy:",
+  "targetPromptPoints": "Linear supports native point estimates. Write target:",
+  "targetPoints": "points (recommended)",
+  "targetNone": "none — store as est: label only",
+  "autonomousPrompt": "Enable autonomous mode? (agent can write to Linear without per-action confirmation)",
+  "nextDoctor": "Next: pm-tasks-linear init --doctor"
+}

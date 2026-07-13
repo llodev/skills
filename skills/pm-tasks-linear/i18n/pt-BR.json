@@ -1,0 +1,11 @@
+{
+  "header": "pm-tasks-linear init",
+  "teamPrompt": "Selecione o time do Linear:",
+  "noTeam": "Nenhum time selecionado. Saindo.",
+  "strategyPrompt": "Selecione a estratégia de estimativa:",
+  "targetPromptPoints": "Linear suporta estimativas de pontos nativas. Destino de escrita:",
+  "targetPoints": "points (recomendado)",
+  "targetNone": "none — guardar apenas como label est:",
+  "autonomousPrompt": "Habilitar modo autônomo? (o agente pode escrever no Linear sem confirmação por ação)",
+  "nextDoctor": "Próximo: pm-tasks-linear init --doctor"
+}

@@ -1,0 +1,11 @@
+{
+  "header": "pm-tasks-linear init",
+  "teamPrompt": "Selecciona el equipo de Linear:",
+  "noTeam": "Ningún equipo seleccionado. Saliendo.",
+  "strategyPrompt": "Selecciona la estrategia de estimación:",
+  "targetPromptPoints": "Linear admite estimaciones de puntos nativas. Destino de escritura:",
+  "targetPoints": "points (recomendado)",
+  "targetNone": "none — guardar solo como etiqueta est:",
+  "autonomousPrompt": "¿Habilitar modo autónomo? (el agente puede escribir en Linear sin confirmación por acción)",
+  "nextDoctor": "Siguiente: pm-tasks-linear init --doctor"
+}

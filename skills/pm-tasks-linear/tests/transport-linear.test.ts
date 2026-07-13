@@ -462,6 +462,8 @@ describe("createLinearTransport — taskEstimateSet", () => {
   };
 
   it("success: reads labels, strips est:*, merges new est: label, writes save_issue with estimate", async () => {
+    // Note: normalizeEstimate(3, story_points) → humanReadable="3" → slug="3" → estLabelName="est:3"
+    // TEST_CONFIG has est:3-points (not est:3), so label is NOT in registry → M1 create-on-demand fires.
     const { mcp, calls } = makeMcp(
       new Map([
         [
@@ -473,6 +475,7 @@ describe("createLinearTransport — taskEstimateSet", () => {
             ],
           },
         ],
+        ["create_issue_label", { id: "new-est-3-id" }],
         ["save_issue", {}],
       ]),
     );
@@ -483,17 +486,19 @@ describe("createLinearTransport — taskEstimateSet", () => {
       config: ESTIMATE_CONFIG,
     });
 
-    expect(calls).toHaveLength(2);
+    // M1: get_issue + create_issue_label + save_issue
+    expect(calls).toHaveLength(3);
     expect(calls[0].tool).toBe("get_issue");
     expect(calls[0].args).toEqual({ id: "issue-1" });
-    expect(calls[1].tool).toBe("save_issue");
+    expect(calls[1].tool).toBe("create_issue_label");
+    expect(calls[2].tool).toBe("save_issue");
 
-    // label-1 (bug) survives; est:2-points is stripped (not in label list since id not in config.labels)
-    // est:3-points would be added if found in config.labels — check label-est is added
-    const labelIds = calls[1].args.labelIds as string[];
+    // label-1 (bug) survives; est:2-points is stripped (starts with est:)
+    // new est:3 label from create_issue_label is added
+    const labelIds = calls[2].args.labelIds as string[];
     expect(labelIds).toContain("label-1");
-    // Old est: label filtered out (name starts with est:)
     expect(labelIds).not.toContain("label-est-old");
+    expect(labelIds).toContain("new-est-3-id");
 
     expect(r?.ok).toBe(true);
     if (r?.ok) {
@@ -548,14 +553,17 @@ describe("createLinearTransport — taskEstimateSet", () => {
   });
 
   it("linearTarget 'none': writes labelIds only (no estimate field)", async () => {
+    // M1: label not in registry → create_issue_label fires; save_issue is calls[2]
     const { mcp, calls } = makeMcp(
       new Map([
         ["get_issue", { labels: [] }],
+        ["create_issue_label", { id: "est-label-none" }],
         ["save_issue", {}],
       ]),
     );
     const configNone = {
       ...TEST_CONFIG,
+      labels: [], // empty → create-on-demand fires
       estimation: {
         strategy: "story_points" as const,
         linearTarget: "none" as const,
@@ -569,8 +577,11 @@ describe("createLinearTransport — taskEstimateSet", () => {
       config: { strategy: "story_points" as const, linearTarget: "none" as const },
     });
 
-    expect(Object.keys(calls[1].args)).not.toContain("estimate");
-    expect(Object.keys(calls[1].args)).toContain("labelIds");
+    // calls: get_issue(0), create_issue_label(1), save_issue(2)
+    const saveCall = calls.find((c) => c.tool === "save_issue");
+    expect(saveCall).toBeDefined();
+    expect(Object.keys(saveCall!.args)).not.toContain("estimate");
+    expect(Object.keys(saveCall!.args)).toContain("labelIds");
   });
 });
 
@@ -673,5 +684,116 @@ describe("createLinearTransport — taskSprintSet", () => {
     const r = await t.taskSprintSet?.({ taskId: "issue-1", sprintRef: "Sprint 1" });
     expect(r?.ok).toBe(false);
     if (r && !r.ok) expect(r.code).toBe("RATE_LIMITED");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// T9-M1 — taskEstimateSet: label create-on-demand (M1 fix)
+// ---------------------------------------------------------------------------
+
+describe("createLinearTransport — taskEstimateSet M1 (label create-on-demand)", () => {
+  const ESTIMATE_CONFIG = {
+    strategy: "story_points" as const,
+    linearTarget: "points" as const,
+    scale: [1, 2, 3, 5, 8, 13],
+  };
+
+  it("creates est: label via create_issue_label when label not in config.labels", async () => {
+    // Config has NO est:3-points label
+    const configNoLabel = {
+      ...TEST_CONFIG,
+      labels: [{ id: "label-1", name: "bug" }], // no est: labels
+    };
+
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["get_issue", { labels: [{ id: "label-1", name: "bug" }] }],
+        ["create_issue_label", { id: "new-est-label-id" }],
+        ["save_issue", {}],
+      ]),
+    );
+
+    const t = createLinearTransport({ mcp, config: configNoLabel });
+    const r = await t.taskEstimateSet?.({
+      taskId: "issue-1",
+      input: 3,
+      config: ESTIMATE_CONFIG,
+    });
+
+    // Should have called: get_issue, create_issue_label, save_issue
+    expect(calls).toHaveLength(3);
+    expect(calls[1].tool).toBe("create_issue_label");
+    expect(calls[1].args.name).toMatch(/^est:/);
+    expect(calls[1].args.teamId).toBe("team-abc");
+
+    // The new label id should appear in save_issue labelIds
+    const labelIds = calls[2].args.labelIds as string[];
+    expect(labelIds).toContain("new-est-label-id");
+
+    expect(r?.ok).toBe(true);
+  });
+
+  it("uses config.labels label when est: label already registered — no create_issue_label call", async () => {
+    // input=3, strategy=story_points → humanReadable="3" → slug="3" → estLabelName="est:3"
+    // Config must have a label named exactly "est:3" for registry lookup to succeed.
+    const configWithExactLabel = {
+      ...TEST_CONFIG,
+      labels: [
+        { id: "label-1", name: "bug" },
+        { id: "label-est-3", name: "est:3" }, // exact match for slug "3"
+      ],
+    };
+
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["get_issue", { labels: [] }],
+        ["save_issue", {}],
+      ]),
+    );
+
+    const t = createLinearTransport({ mcp, config: configWithExactLabel });
+    await t.taskEstimateSet?.({
+      taskId: "issue-1",
+      input: 3,
+      config: ESTIMATE_CONFIG,
+    });
+
+    // Only get_issue + save_issue — no create_issue_label because label found in registry
+    expect(calls.map((c) => c.tool)).not.toContain("create_issue_label");
+    expect(calls).toHaveLength(2);
+
+    // The registered label id appears in labelIds
+    const labelIds = calls[1].args.labelIds as string[];
+    expect(labelIds).toContain("label-est-3");
+  });
+
+  it("proceeds without est: label when create_issue_label throws", async () => {
+    const configNoLabel = {
+      ...TEST_CONFIG,
+      labels: [{ id: "label-1", name: "bug" }],
+    };
+
+    const { mcp, calls } = makeMcp(
+      new Map([
+        ["get_issue", { labels: [{ id: "label-1", name: "bug" }] }],
+        ["create_issue_label", new Error("forbidden")],
+        ["save_issue", {}],
+      ]),
+    );
+
+    const t = createLinearTransport({ mcp, config: configNoLabel });
+    const r = await t.taskEstimateSet?.({
+      taskId: "issue-1",
+      input: 3,
+      config: ESTIMATE_CONFIG,
+    });
+
+    // Should still succeed — label creation failure is non-fatal
+    expect(r?.ok).toBe(true);
+    // get_issue + create_issue_label(failed) + save_issue
+    expect(calls).toHaveLength(3);
+    // labelIds should NOT include the new label (creation failed)
+    const labelIds = calls[2].args.labelIds as string[];
+    expect(labelIds).toContain("label-1"); // non-est label survives
   });
 });
