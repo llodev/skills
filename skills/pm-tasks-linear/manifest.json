@@ -1,0 +1,15 @@
+{
+  "tool": "linear",
+  "verbs": [
+    "task.create",
+    "task.move",
+    "checklist.check",
+    "task.close",
+    "task.due-date.set",
+    "task.assignee.add",
+    "task.comment.add",
+    "task.parent.set",
+    "task.estimate.set",
+    "task.sprint.set"
+  ]
+}

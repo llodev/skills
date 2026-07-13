@@ -1,7 +1,62 @@
 {
   "name": "@llodev/pm-tasks-linear",
-  "version": "0.0.0",
-  "private": true,
-  "description": "[SCAFFOLD — NOT IMPLEMENTED] Future Linear adapter for @llodev/pm-tasks-*.",
-  "license": "MIT"
+  "version": "1.0.0",
+  "description": "Linear adapter for the @llodev/pm-tasks-* family. Use when the user mentions Linear, asks to create a Linear issue, publish to Linear, post to Linear, transition an issue, add a comment in Linear, or uses --publish-linear; OR for CRUD on existing issues (check sub-issue, close issue, change due-date, assign person, comment, set sprint/cycle); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Implements 10 CRUD verbs (including task.sprint.set) via the Linear MCP server. Requires @llodev/pm-tasks-core installed.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/pm-tasks-linear",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "skills/pm-tasks-linear"
+  },
+  "main": "./dist/bin/init.js",
+  "types": "./dist/bin/init.d.ts",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "i18n",
+    "schemas",
+    "manifest.json",
+    "dist"
+  ],
+  "keywords": [
+    "agent-skill",
+    "linear",
+    "plan-to-tasks",
+    "pm-tools",
+    "linear-mcp"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/init.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/bin/init.d.ts",
+      "import": "./dist/bin/init.js"
+    },
+    "./adapter": {
+      "types": "./dist/adapter.d.ts",
+      "import": "./dist/adapter.js"
+    },
+    "./schemas/*.json": "./schemas/*.json",
+    "./manifest.json": "./manifest.json"
+  },
+  "bin": {
+    "pm-tasks-linear": "./dist/bin/init.js"
+  },
+  "dependencies": {
+    "@llodev/pm-tasks-core": "workspace:^"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
