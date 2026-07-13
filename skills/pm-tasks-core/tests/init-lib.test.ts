@@ -189,6 +189,26 @@ describe("writeConfig", () => {
     }
   });
 
+  it("regression: confirmOverwrite:false + locale:pt-BR throws core pt-BR kept message", async () => {
+    // Proves writeConfig loads CORE strings by locale, not adapter strings.
+    // A wrong-table load (e.g. linear strings) would lack configExistsKept → undefined → crash.
+    const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
+    const target = path.join(dir, "existing.json");
+    try {
+      writeFileSync(target, '{"original":true}\n');
+      const ptBR = await loadStrings("core", "pt-BR");
+      await expect(
+        writeConfig(
+          target,
+          { updated: true },
+          { confirmOverwrite: async () => false, locale: "pt-BR" },
+        ),
+      ).rejects.toThrow(ptBR.configExistsKept);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("non-interactive (no confirm, not a TTY) throws original abort error", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "pm-tasks-write-"));
     const target = path.join(dir, "existing.json");

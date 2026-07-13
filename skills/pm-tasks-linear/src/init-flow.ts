@@ -93,7 +93,7 @@ export interface InitDeps {
   yesNo?: (question: string) => Promise<boolean>;
   /** Pre-resolved locale (tests pass this to skip interactive promptLocale) */
   locale?: string;
-  doWrite?: (targetPath: string, data: unknown, opts?: { strings?: StringsTable }) => Promise<void>;
+  doWrite?: (targetPath: string, data: unknown, opts?: { locale?: string }) => Promise<void>;
   doValidate?: (data: unknown, schema: unknown) => Promise<ValidationResult>;
   doLoadSchema?: () => Promise<unknown>;
   outPath?: string;
@@ -537,7 +537,7 @@ export async function runInit(deps: InitDeps = {}): Promise<Record<string, unkno
   }
 
   const safeConfig = sanitizePersistedConfig(out);
-  await doWrite(outPath, safeConfig, { strings });
+  await doWrite(outPath, safeConfig, { locale });
   printInstructions([
     `Config written to ${outPath}`,
     strings.nextDoctor,

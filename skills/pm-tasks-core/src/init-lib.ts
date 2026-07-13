@@ -44,8 +44,8 @@ export interface PromptYesNoOptions {
 export interface WriteConfigOptions {
   /** Overwrite without prompting. */
   force?: boolean;
-  /** Locale strings for the overwrite prompt. Falls back to en-US. */
-  strings?: StringsTable;
+  /** Locale for the overwrite prompt. Resolves CORE strings by locale. Falls back to en-US. */
+  locale?: string;
   /** Injectable confirm fn (for tests). Defaults to promptYesNo when stdin is a TTY. */
   confirmOverwrite?: () => Promise<boolean>;
 }
@@ -167,8 +167,8 @@ export async function promptYesNo(
   const s = strings ?? (await loadStrings("core", "en-US"));
   const r = rl();
   try {
-    const yesShort = s.yesNoYes;
-    const noShort = s.yesNoNo;
+    const yesShort = s.yesNoYes ?? "y";
+    const noShort = s.yesNoNo ?? "n";
     const a = (await r.question(`${question} [${yesShort}/${noShort.toUpperCase()}]: `))
       .trim()
       .toLowerCase();
@@ -264,7 +264,7 @@ export async function writeConfig(
       let confirm: (() => Promise<boolean>) | undefined = opts?.confirmOverwrite;
       if (confirm === undefined && process.stdin.isTTY) {
         confirm = async () => {
-          const s = opts?.strings ?? (await loadStrings("core", "en-US"));
+          const s = await loadStrings("core", opts?.locale ?? "en-US");
           return promptYesNo(s.configExistsPrompt, { defaultNo: true, strings: s });
         };
       }
@@ -276,7 +276,7 @@ export async function writeConfig(
           return;
         }
         // User declined (or injected confirm returned false)
-        const s = opts?.strings ?? (await loadStrings("core", "en-US"));
+        const s = await loadStrings("core", opts?.locale ?? "en-US");
         throw new Error(s.configExistsKept);
       }
 
