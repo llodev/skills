@@ -19,9 +19,9 @@
   },
   "skills/pm-tasks-core/SKILL.md": {
     "score": 85,
-    "version": "1.4.0",
-    "capturedAt": "2026-06-17",
-    "notes": "v1.4 re-grade after TS migration path update (skill-judge 97/120, Grade B); Δ vs v1.1.1 baseline within rubric variance, no content change"
+    "version": "1.13.0",
+    "capturedAt": "2026-07-13",
+    "notes": "v1.13.0 added task.sprint.set to the canonical verb enumeration (9→10 verbs) in the description; purely additive doc change, Δ within rubric variance (NOISE_BAND), no re-score — score reconfirmed at 85"
   },
   "skills/pm-tasks-jira/SKILL.md": {
     "score": 85,
