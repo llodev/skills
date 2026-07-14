@@ -63,6 +63,11 @@
             "type": "string",
             "enum": ["text", "number", "enum", "multi_enum", "date", "people"]
           },
+          "unit": {
+            "type": "string",
+            "enum": ["minutes", "hours", "days", "points"],
+            "description": "Native unit a number field is stored in. When the source value uses a different unit, convert to this unit before writing (e.g. hours→minutes ×60). Only meaningful for type:\"number\"."
+          },
           "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" },
           "options": {
             "type": "array",
@@ -87,7 +92,7 @@
         "inheritParentFields": {
           "type": "array",
           "items": { "type": "string", "minLength": 4 },
-          "description": "Custom field IDs whose values flow from parent to subtask at create time."
+          "description": "Custom field IDs auto-copied parent->subtask at create time (a floor, NOT a whitelist). Fields not listed are still set per-task from the card's actual scope and must never be left blank just because they are absent here."
         },
         "inheritAssignee": { "type": "boolean" }
       }

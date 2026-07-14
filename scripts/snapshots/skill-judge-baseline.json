@@ -1,9 +1,9 @@
 {
   "skills/pm-tasks-asana/SKILL.md": {
-    "score": 83,
-    "version": "1.4.0",
-    "capturedAt": "2026-06-17",
-    "notes": "v1.5 re-grade after task.move documentation added (verb list 6→7 + autonomous lifecycle); Δ within rubric variance (NOISE_BAND), no structural change"
+    "score": 85,
+    "version": "1.8.0",
+    "capturedAt": "2026-07-14",
+    "notes": "v1.8.0 re-grade after field-unit annotation + inheritParentFields floor-semantics clarification; skill-judge 85/100 (Δ+2 vs 83). Ratcheted rather than bypassed so the CI skill-judge gate passes without the local SKIP_SKILL_JUDGE_GATE env var"
   },
   "skills/pm-tasks-bitrix24/SKILL.md": {
     "score": 29,
