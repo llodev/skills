@@ -1,5 +1,13 @@
 # @llodev/pm-tasks-asana
 
+## 1.8.0
+
+### Minor Changes
+
+- [#50](https://github.com/llodev/skills/pull/50) [`889f99d`](https://github.com/llodev/skills/commit/889f99de02de68a8d92a9106ddfe1b9043a504ff) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - Number custom fields can declare a `unit` (`minutes|hours|days|points`); values are converted to the field's native unit before writing (e.g. 12 h → 720 min), fixing estimated-duration being stored in the wrong unit. Clarify that `subtaskDefaults.inheritParentFields` is an auto-copy floor, not a whitelist — Competência/Módulo/due date are filled per-task from actual scope and never left blank. SKILL.md + anti-patterns hardened.
+
+  skill-judge: pm-tasks-asana scored 85/100 vs baseline 83 (Δ +2); baseline ratcheted 83→85 (real, within-band improvement) so the CI skill-judge gate passes without the local SKIP_SKILL_JUDGE_GATE bypass.
+
 ## 1.7.0
 
 ### Minor Changes
