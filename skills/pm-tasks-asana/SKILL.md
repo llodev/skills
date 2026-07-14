@@ -54,7 +54,7 @@ Asana tasks have:
 
 - **Name** (title, ≤80 chars for board view).
 - **Description** (rich text; prefer `**Section**` bold labels — `##` headings render inconsistently).
-- **Subtasks** — one level deep. Custom fields and assignee do NOT auto-propagate from parent; the adapter sets them explicitly per `subtaskDefaults.inheritParentFields` in `.asana.json`.
+- **Subtasks** — one level deep. Custom fields and assignee do NOT auto-propagate from parent. `subtaskDefaults.inheritParentFields` lists the fields **auto-copied** from the parent (a floor, not a whitelist); every subtask still gets its own domain fields (e.g. Competência, Módulo) and due date filled from what that subtask actually touches — never left blank, never inherited unless its ID is listed.
 - **Sections** — group tasks within a project.
 - **Custom fields** — per-project; API always uses option GIDs, never display names.
 - **Multi-assignee** — Asana allows multiple followers; primary assignee is a single field. Use `task.assignee.add` to add followers.
@@ -67,6 +67,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - Sections of the generic card → bold `**Section**` labels inside `description` (not `##`).
 - "Implementation Checklist" + "Verification Checklist" → subtasks (flatten any nested bullets; Asana supports one level only).
 - Labels → custom field options (resolved via `.asana.json` `customFields[]`).
+- Number custom fields with a `unit` (`.asana.json` `customFields[].unit`) → convert the source value to the field's native unit before writing. E.g. an effort of "12 h" into a `minutes` field is `720`, not `12`.
 - Due date → `due_on` (YYYY-MM-DD).
 - Assignee → `assignee` GID resolved from `.asana.json` `members[]` or `me` at publish time.
 
@@ -84,7 +85,7 @@ Strict order: 5.1 read `.asana.json` (full file) → 5.2.5 resolve assignee + cu
 MCP publish sequence:
 
 1. **Parent task** — `create_tasks` with `name`, `notes` (description), `projects: [projectGid]`, `memberships: [{ project, section }]`, `assignee` (resolved GID), `due_on`, `custom_fields` (JSON string of `{fieldGid: optionGid}`).
-2. **Subtasks** — `create_tasks` per subtask with `parent: parentGid`, `name`, `assignee` (inherited or per-subtask), `custom_fields` matching `subtaskDefaults.inheritParentFields`.
+2. **Subtasks** — `create_tasks` per subtask with `parent: parentGid`, `name`, `assignee` (inherited or per-subtask), `custom_fields` = the parent values for the fields in `subtaskDefaults.inheritParentFields` (auto-copy floor) **plus** each subtask's own domain fields (Competência, Módulo) and due date resolved from what it actually touches. Never leave a domain/date field blank because it is absent from `inheritParentFields`.
 3. **Tags** (optional) — `addTag` per tag GID.
 4. **Confirm** — list parent + subtasks with permalinks.
 
