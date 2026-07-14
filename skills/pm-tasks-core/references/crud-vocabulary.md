@@ -1,6 +1,6 @@
 # CRUD vocabulary (v1)
 
-Nine verbs. Each adapter maps every verb to one or more MCP tool calls.
+Ten verbs. Each adapter maps every verb to one or more MCP tool calls.
 
 ## task.create
 
@@ -78,6 +78,18 @@ Records effort in the configured scale, normalized to the adapter-native field; 
 - **Idempotency:** last write wins.
 - **Adapter-optional:** Adapters that do not support native estimation fields MUST omit this verb from their manifest.
 - **Added:** v1.11.0.
+
+## task.sprint.set
+
+Assign a task/issue to a sprint or cycle. Adapter-optional.
+
+- **Inputs:** `taskId` (native task/issue ID), `sprintRef` (cycle name, number, or ID — opaque to core; the adapter resolves it to the native sprint/cycle).
+- **Schema:** `{ taskId: string, sprintRef: string }`.
+- **Idempotency:** last write wins (re-assigning to the same sprint is a no-op at the adapter's discretion).
+- **Adapter-optional:** Adapters that do not support sprint/cycle assignment MUST omit this verb from their manifest. The runtime factory returns `UNSUPPORTED_VERB` when the transport does not implement `taskSprintSet`.
+- **Team-gating:** Returns `NOT_APPLICABLE` when the sprint/cycle feature is disabled for the team, or when the referenced sprint/cycle does not exist.
+- **First supporter:** Linear (via cycles). Jira remains `UNSUPPORTED_VERB` (sprint assignment requires the Agile API which is not exposed via MCP).
+- **Added:** v1.13.0.
 
 ## Verbs forbidden in autonomous mode (v1, hard-coded)
 

@@ -121,7 +121,11 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
 
-  skills/pm-tasks-linear: {}
+  skills/pm-tasks-linear:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
 
   skills/pm-tasks-monday: {}
 

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llodev.github.io/skills/schemas/pm-tasks-linear.json",
+  "title": "pm-tasks-linear config",
+  "type": "object",
+  "required": ["version", "team"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "enum": ["1"] },
+    "locale": { "type": "string" },
+    "team": {
+      "type": "object",
+      "required": ["id", "key", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "key": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": [
+              "triage",
+              "backlog",
+              "unstarted",
+              "started",
+              "completed",
+              "canceled",
+              "duplicate"
+            ]
+          }
+        }
+      }
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" }
+        }
+      }
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "alias": { "type": "string" }
+        }
+      }
+    },
+    "estimation": {
+      "type": "object",
+      "required": ["strategy", "linearTarget"],
+      "additionalProperties": false,
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": [
+            "story_points",
+            "fibonacci",
+            "planning_poker",
+            "affinity",
+            "t_shirt",
+            "ideal_days",
+            "ideal_hours",
+            "three_point"
+          ]
+        },
+        "scale": { "type": "array", "items": { "type": "number" } },
+        "linearTarget": { "type": "string", "enum": ["points", "none"] },
+        "sizeMap": { "type": "object", "additionalProperties": { "type": "number" } },
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "cycles": {
+      "type": "object",
+      "required": ["enabled"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "autonomous": {
+      "type": "object",
+      "required": ["enabled", "allow"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "allow": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "task.create",
+              "task.move",
+              "checklist.check",
+              "task.close",
+              "task.due-date.set",
+              "task.assignee.add",
+              "task.comment.add",
+              "task.parent.set",
+              "task.estimate.set",
+              "task.sprint.set"
+            ]
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "teams": { "type": "array", "items": { "type": "string" } },
+            "projects": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "rateLimit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "writesPerMinute": { "type": "number" },
+            "commentsPerMinute": { "type": "number" }
+          }
+        },
+        "auditLog": { "type": "string" }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" }
+        }
+      }
+    },
+    "defaultProjectId": { "type": "string" },
+    "attribution": { "type": "string" }
+  }
+}

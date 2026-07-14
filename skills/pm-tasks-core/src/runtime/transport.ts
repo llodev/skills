@@ -164,6 +164,20 @@ export interface TaskEstimateSetResponse {
 }
 
 // ---------------------------------------------------------------------------
+// 10. taskSprintSet  (canonical: task.sprint.set)
+// ---------------------------------------------------------------------------
+
+// F10  task.sprint.set
+export interface TaskSprintSetRequest {
+  taskId: string;
+  sprintRef: string; // cycle name/number/id — opaque to core; adapter resolves it
+}
+export interface TaskSprintSetResponse {
+  previousSprintRef: string | null;
+  newSprintRef: string;
+}
+
+// ---------------------------------------------------------------------------
 // Transport interface
 // ---------------------------------------------------------------------------
 
@@ -194,6 +208,9 @@ export interface Transport {
 
   /** task.estimate.set — write a normalised story-point/time estimate (adapter-optional; Jira only in Phase 4) */
   taskEstimateSet?(req: TaskEstimateSetRequest): Promise<TransportResult<TaskEstimateSetResponse>>;
+
+  /** task.sprint.set — assign a task to a sprint/cycle (adapter-optional; Linear is the first supporter) */
+  taskSprintSet?(req: TaskSprintSetRequest): Promise<TransportResult<TaskSprintSetResponse>>;
 }
 
 // ---------------------------------------------------------------------------

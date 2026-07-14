@@ -86,6 +86,9 @@ const CANONICAL_VERBS = new Set([
   // Jira adapter (Phase 2) will declare them; adding here allows declaration without namespace error.
   "task.parent.set",
   "task.estimate.set",
+  // F2 (v1.13.0): adapter-optional sprint/cycle verb. Linear declares it (first supporter);
+  // Trello/Asana/Jira omit it. Canonical → no `linear.` namespace prefix required.
+  "task.sprint.set",
 ]);
 
 const entries = await readdir("skills", { withFileTypes: true });

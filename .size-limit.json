@@ -2,7 +2,7 @@
   {
     "name": "@llodev/pm-tasks-core (tarball)",
     "path": "skills/pm-tasks-core/dist/**/*.js",
-    "limit": "21 kB"
+    "limit": "22 kB"
   },
   {
     "name": "@llodev/pm-tasks-asana (tarball)",
@@ -22,6 +22,11 @@
   {
     "name": "@llodev/pm-tasks-jira (tarball)",
     "path": "skills/pm-tasks-jira/dist/**/*.js",
+    "limit": "13 kB"
+  },
+  {
+    "name": "@llodev/pm-tasks-linear (tarball)",
+    "path": "skills/pm-tasks-linear/dist/**/*.js",
     "limit": "13 kB"
   }
 ]

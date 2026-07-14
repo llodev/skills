@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 const REQUIRED_LOCALES = ["en-US", "pt-BR", "es-ES"];
-const ADAPTERS = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-jira"];
+const ADAPTERS = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-jira", "pm-tasks-linear"];
 
 async function checkAdapter(adapter) {
   const root = path.join(REPO, "skills", adapter, "i18n");
