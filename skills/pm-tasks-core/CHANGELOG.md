@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-core
 
+## 1.13.0
+
+### Minor Changes
+
+- [#48](https://github.com/llodev/skills/pull/48) [`cb86eb5`](https://github.com/llodev/skills/commit/cb86eb5735ba51fbe574972d99e122a9ca9bd92e) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - core: add task.sprint.set (10th canonical verb); Linear is the first adapter to implement it; init now prompts to overwrite an existing config instead of aborting.
+
 ## 1.12.0
 
 ### Minor Changes
