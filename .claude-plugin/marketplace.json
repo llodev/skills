@@ -18,11 +18,17 @@
         "path": "skills/pm-tasks-core"
       },
       "description": "Shared extraction engine and canonical CRUD verb vocabulary (task.create, task.close, task.due-date.set, …) for the pm-tasks-* adapters. Dependency of every adapter.",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "plan-to-tasks", "pm-tools", "task-extraction", "crud-verbs"]
+      "keywords": [
+        "agent-skill",
+        "plan-to-tasks",
+        "pm-tools",
+        "task-extraction",
+        "crud-verbs"
+      ]
     },
     {
       "name": "pm-tasks-trello",
@@ -37,7 +43,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "trello", "plan-to-tasks", "pm-tools", "trello-mcp"]
+      "keywords": [
+        "agent-skill",
+        "trello",
+        "plan-to-tasks",
+        "pm-tools",
+        "trello-mcp"
+      ]
     },
     {
       "name": "pm-tasks-asana",
@@ -52,7 +64,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "asana", "plan-to-tasks", "pm-tools", "asana-mcp"]
+      "keywords": [
+        "agent-skill",
+        "asana",
+        "plan-to-tasks",
+        "pm-tools",
+        "asana-mcp"
+      ]
     },
     {
       "name": "pm-tasks-jira",
@@ -67,7 +85,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "jira", "atlassian", "plan-to-tasks", "pm-tools", "atlassian-mcp"]
+      "keywords": [
+        "agent-skill",
+        "jira",
+        "atlassian",
+        "plan-to-tasks",
+        "pm-tools",
+        "atlassian-mcp"
+      ]
     },
     {
       "name": "pm-tasks-linear",
@@ -82,7 +107,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "linear", "plan-to-tasks", "pm-tools", "linear-mcp"]
+      "keywords": [
+        "agent-skill",
+        "linear",
+        "plan-to-tasks",
+        "pm-tools",
+        "linear-mcp"
+      ]
     },
     {
       "name": "django-schema-design",
