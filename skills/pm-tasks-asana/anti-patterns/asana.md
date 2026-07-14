@@ -48,6 +48,12 @@ The MCP's `mcp__asana__get_task` returns user-authored comments but does NOT ret
 
 When auditing whether an agent action was correctly attributed to the agent account (not the human account), open the task in the Asana UI and inspect the activity feed. Do not infer attribution from the MCP response.
 
+## Number custom fields are written in their native unit
+
+**NEVER** write a raw human number into a `number` custom field that declares a `unit` without converting to that native unit first. Example: a "Duração estimada" field with `unit: "minutes"` receiving an effort of 12 hours must be written as `720`, not `12` (which would mean 12 minutes). **Why:** Asana stores the number verbatim; the wrong unit silently under/over-states effort and corrupts capacity math.
+
+---
+
 ## Subtasks do NOT inherit custom fields automatically
 
 Asana itself does not propagate `custom_fields` from a parent task to its subtasks at create time, regardless of project-level defaults. The adapter MUST replicate the parent's selected `inheritParentFields` (declared in `.asana.json` under `subtaskDefaults`) when creating each subtask:
@@ -60,3 +66,5 @@ await createSubtasks({
 ```
 
 Failing to do this leaves subtasks with empty custom fields even when the parent had them set.
+
+**NEVER** treat `inheritParentFields` as the complete field set for a task or subtask — it is the **auto-copy floor**, not a whitelist. Competência, Módulo, and due date must be filled on every task/subtask from what it actually touches (a single task may span more than one competência/módulo). Leaving them blank because they are absent from `inheritParentFields` is the exact failure that loses tracking. **Why:** the config only names what is copied automatically; everything else is still required, and a silently blank field reads as "no scope" to whoever runs the board. When a value is genuinely unknown (e.g. due date), ask instead of leaving it blank.
