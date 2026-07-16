@@ -24,7 +24,7 @@ If you only need one adapter, install it directly (`npm i @llodev/pm-tasks-trell
 
 ## Versioning
 
-This package follows the v1.0.0 release of the family. Adapters are pinned via `peerDependencies` so npm warns on incompatible upgrades. Bumped in lockstep at release time via Changesets.
+This meta-package carries its own version line (currently 3.x), decoupled from the adapters (on the 1.x line). Adapters are pinned via `peerDependencies` so npm warns on incompatible upgrades. Bumped at release time via Changesets.
 
 ## License
 
