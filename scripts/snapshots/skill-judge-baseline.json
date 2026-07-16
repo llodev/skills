@@ -54,9 +54,9 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "skills/pm-tasks-trello/SKILL.md": {
-    "score": 80,
-    "version": "1.4.0",
-    "capturedAt": "2026-06-17",
-    "notes": "v1.5 re-grade after task.move documentation added (verb list 6→7); Δ within rubric variance (NOISE_BAND), no structural change"
+    "score": 82,
+    "version": "1.8.0",
+    "capturedAt": "2026-07-16",
+    "notes": "v1.8.0 (Lifecycle Fidelity R3): temporal-handling guidance — create-time due (typed), start on WIP move, overwrite-due + plan-footer close (Trello has no auto timestamp) + operations.md § Temporal handling + autonomous.md verb rows + anti-pattern rules. Δ+2 vs 80 (completeness gain). Also corrects the stale baseline version (was 1.4.0, live package now 1.8.0). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   }
 }
