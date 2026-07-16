@@ -72,3 +72,40 @@ Implementation in the adapter:
 
 1. `mcp__trello__update_card` with `{ id, dueComplete: true }`
 2. `mcp__trello__move_card` with `{ cardId, idList: <closeListId> }`
+
+## Temporal handling (lifecycle fidelity)
+
+Implements the cross-adapter principle in [`../../pm-tasks-core/references/lifecycle-fidelity.md`](../../pm-tasks-core/references/lifecycle-fidelity.md) for Trello. **Create** is typed; **start** and **close** are interpretive guidance applied by the agent in the Phase 5 / autonomous flow. Trello has **no auto completion timestamp**, so — unlike Asana/Jira/Linear — the agent must actively record reality and stash the plan.
+
+**Create (typed).** The core `TaskCreateRequest.dueDate` maps to `due` (full ISO 8601) on `create_card` — wired in the typed transport (`src/transport-trello.ts` `taskCreate`). The other create-time fields are config-dependent and stay on the SKILL-orchestrated Phase 4/5 path (they need `.trello.json` resolution the config-free transport does not have):
+
+| Core create field | Trello mapping                                                                              | Where                          |
+| ----------------- | ------------------------------------------------------------------------------------------- | ------------------------------ |
+| `dueDate`         | `due` (ISO 8601)                                                                            | typed transport `taskCreate`   |
+| `labels`          | `idLabels[]` (label name → id via `.trello.json` `labels[]`)                                | SKILL Phase 4/5                |
+| `priority`        | no native Trello field; a label if one is configured, else NOT_APPLICABLE                   | SKILL Phase 4/5, if configured |
+| `estimate`        | no native Trello field; carried into the plan footer (below) at create so it survives close | SKILL Phase 4/5                |
+
+To preserve the estimate for the eventual close footer (Trello has no native estimate field), the Phase 4/5 publish flow appends the **plan footer** (below) to the card `desc` at create.
+
+**Start (move → WIP).** When moving a card to the WIP list, also stamp the native start date: `update_card { id: <cardId>, start: <today ISO 8601> }` (a second call after `move_card`). Trello's `start` field takes an ISO date and has no co-field requirement (unlike Asana's `start_on`, which needs `due_on` present).
+
+**Close (overwrite — Trello has no auto timestamp).** At close, reflect reality in the live field and keep the plan:
+
+1. `update_card { id: <cardId>, due: <actual completion ISO>, dueComplete: true }` — **overwrite** `due` with the actual completion date. This is the opposite of Asana (which never overwrites `due_on`, because Asana auto-stamps `completed_at`).
+2. Move the card to Done (`move_card { cardId, idList: <doneListId> }`).
+3. **Preserve the plan** in a single description footer, so the planned-vs-actual gap survives. Read the current `desc` (`get_card`), then set/replace exactly one footer line:
+
+   | locale | plan footer template                                 |
+   | ------ | ---------------------------------------------------- |
+   | pt-BR  | `— Planejado: due {plannedDue} · est {estimate} —`   |
+   | en-US  | `— Planned: due {plannedDue} · est {estimate} —`     |
+   | es-ES  | `— Planificado: due {plannedDue} · est {estimate} —` |
+
+   Pick the template by `config.locale`. `{plannedDue}` = the original planned due (the card's `due` value BEFORE this close overwrote it — capture it first); `{estimate}` = the plan estimate (from the footer already written at create, or from the plan). `{plannedDue}`/`{estimate}` render as `YYYY-MM-DD` / effort (e.g. `8h`).
+
+**Footer rules (replace, never duplicate, never clobber attribution):**
+
+- The plan footer is the single line matching `^—\s*(Planejado|Planned|Planificado):\s.*—\s*$` (starts and ends with an em-dash `—`, contains the localized "Planned:" keyword). On re-close, find and REPLACE that line — do not append a second one.
+- The attribution footer (`— posted by … via @llodev/pm-tasks-trello`, from core `getAttribution`, appended at create when `config.attribution.enabled`) is DISTINCT (no trailing em-dash, no "Planned:" keyword). The plan-footer replace MUST leave it untouched.
+- Premium custom fields for planned-due / estimate are opportunistic and out of scope here; the footer is the baseline mechanism.

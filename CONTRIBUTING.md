@@ -18,13 +18,13 @@ You're ready to work. See [`Makefile`](Makefile) for the full list of targets.
 
 ## Branch naming
 
-The branch **is the version**. Examples:
+The branch is **`pmt-<skill>-v<X.Y.Z>`** — `pmt` (project-management-tasks) + the released package's short name (`core`, `asana`, `trello`, `jira`, `linear`, …) + **that package's** version. The skill segment disambiguates versions across packages (asana 1.8.0 vs trello 1.8.0 no longer collide). Examples:
 
-- Feature branch: `v1.6.0`, `v1.6.1`, `v1.7.0`
+- Feature/release branch: `pmt-asana-v1.9.0`, `pmt-trello-v1.8.0`, `pmt-core-v1.14.0`
 - Documentation branch: `docs/contributing-guide`, `docs/roadmap-update`
-- Hotfix branch: `v1.6.2` (same rule as features)
+- Hotfix branch: `pmt-asana-v1.9.1` (same rule as features)
 
-**No prefixes** (`feat/`, `release/`). **No suffixes** (`-attribution`, `-hardening`). The theme goes in the PR title and the changeset, not the branch.
+**No `feat/` / `release/` prefixes. No theme suffixes** (`-attribution`, `-hardening`). The theme goes in the PR title and the changeset, not the branch.
 
 ## Releases: 1 PR = 1 changeset = 1 release
 

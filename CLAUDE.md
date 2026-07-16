@@ -19,6 +19,6 @@
 ## Release convention
 
 - **One PR = one changeset = one release.** Never batch multiple changesets across PRs — `changeset version` collapses them into a single bump (highest minor wins) and intermediate versions never reach npm. See [`.changeset/README.md` § Release granularity](.changeset/README.md#release-granularity).
-- **Branch naming: the version is the branch name.** Examples: `v1.2.0`, `v1.2.1`, `v1.3.0`. No prefixes (`feat/`, `release/`), no suffixes (`-attribution`, `-hardening`) — the SKILL.md / changeset / CHANGELOG already carry the theme.
-- **Hotfix branches:** same rule. The branch is the version (`v1.2.2`), not `hotfix/<thing>`.
-- **PR title:** `feat(release): vX.Y.Z — <one-line theme>` (theme goes in the title, not the branch).
+- **Branch naming: `pmt-<skill>-v<X.Y.Z>`.** `pmt` = project-management-tasks; `<skill>` = the released package's short name (`core`, `asana`, `trello`, `jira`, `linear`, …); `<X.Y.Z>` = **that package's** version being released. Examples: `pmt-asana-v1.9.0`, `pmt-trello-v1.8.0`, `pmt-core-v1.14.0`. The skill segment disambiguates the version across packages (asana 1.8.0 and trello 1.8.0 no longer collide as a bare `v1.8.0`). No `feat/` / `release/` prefixes and no theme suffixes (`-attribution`, `-hardening`) — the SKILL.md / changeset / CHANGELOG already carry the theme.
+- **Hotfix branches:** same rule. The branch is `pmt-<skill>-v<X.Y.Z>` at the patch version (`pmt-asana-v1.9.1`), not `hotfix/<thing>`.
+- **PR title:** `feat(release): <skill> vX.Y.Z — <one-line theme>` (skill + version + theme in the title).

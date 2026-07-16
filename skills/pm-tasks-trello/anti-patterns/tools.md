@@ -38,6 +38,10 @@ Use when preview looks wrong **or** the user says paste mangled formatting. **Au
 
 **NEVER** commit the active token user (or any per-developer member id) into `members[]` in `.trello.json`. **Why:** the file is shared in git; resolve "me" at runtime via `trello_get_member({ memberId: "me" })` at Phase 5.2.5 — each developer's `TRELLO_TOKEN` resolves to themselves without editing the repo.
 
+**NEVER** leave the original planned `due` as the card's live `due` at close on Trello. **Why:** Trello has no auto completion timestamp (unlike Asana `completed_at` / Jira `resolutiondate` / Linear `completedAt`), so the live `due` is the only place reality can show. At close, overwrite `due` = actual completion + set `dueComplete: true`, and stash the plan (original due + estimate) in the single description footer. This is the OPPOSITE of Asana, which never overwrites `due_on`.
+
+**NEVER** duplicate the plan footer or let its replace clobber the attribution footer. **Why:** the plan footer is one line matching `— {Planned}: due … · est … —`; on re-close, REPLACE that exact line, do not append another. The attribution footer (`— posted by … via @llodev/pm-tasks-trello`) is a different string — leave it intact.
+
 ---
 
 ## Cross-tool
