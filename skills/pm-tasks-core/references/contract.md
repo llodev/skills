@@ -141,3 +141,5 @@ Adapters MUST include a short fallback section in their own `SKILL.md` (~10 line
 
 - Reference this file by relative path: `skills/pm-tasks-core/references/contract.md`.
 - Declare `"@llodev/pm-tasks-core"` in `dependencies` for skillpm + Claude Code marketplace cascade. Vercel CLI users must install core manually — note this in the adapter description.
+
+See [`lifecycle-fidelity.md`](lifecycle-fidelity.md) for the cross-adapter lifecycle-fidelity principle (create-time fields + start/close plan-vs-actual handling).
