@@ -14,7 +14,7 @@ description: >-
   installed.
 license: MIT
 metadata:
-  version: 1.7.0
+  version: 1.8.0
   tags:
     - agent-skill
     - trello
@@ -70,6 +70,8 @@ Skip 5.2 preview & approval. Apply autonomous-mode contract from [`skills/pm-tas
 ## Phase 6 — CRUD operations (existing cards)
 
 For verbs other than `task.create`, jump directly to the operation. **MANDATORY — READ ENTIRE FILE** [`references/operations.md`](references/operations.md) which lists verb → MCP tool mapping and `<task-ref>` resolution for Trello URLs/IDs. For `task.comment.add`, apply attribution prefix if `config.attribution.enabled === true` (see Phase 5 § Attribution).
+
+Temporal handling (create-time `due`, `start` on WIP move, and the overwrite-`due`-and-footer close) is documented in [`references/operations.md`](references/operations.md) § Temporal handling.
 
 ## Phase 7 — Plan-execution mode
 
