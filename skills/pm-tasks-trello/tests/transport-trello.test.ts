@@ -79,6 +79,33 @@ describe("createTrelloTransport — taskCreate", () => {
     });
     expect(calls[0].args.desc).toBe("[ct:tok-1] body");
   });
+
+  it("maps req.dueDate to due (full ISO 8601, no truncation) on the create_card payload", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([["mcp__trello__create_card", { id: "card1", url: "https://trello.com/c/abc" }]]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    await transport.taskCreate({
+      boardOrProjectId: "boardX",
+      listOrSectionId: "listY",
+      name: "Hello",
+      dueDate: "2026-07-20T00:00:00.000Z",
+    });
+    expect(calls[0].args).toMatchObject({ due: "2026-07-20T00:00:00.000Z" });
+  });
+
+  it("omits due when dueDate is absent", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([["mcp__trello__create_card", { id: "card1", url: "https://trello.com/c/abc" }]]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    await transport.taskCreate({
+      boardOrProjectId: "boardX",
+      listOrSectionId: "listY",
+      name: "Hello",
+    });
+    expect(Object.prototype.hasOwnProperty.call(calls[0].args, "due")).toBe(false);
+  });
 });
 
 // ---------------------------------------------------------------------------

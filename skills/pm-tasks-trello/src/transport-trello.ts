@@ -107,6 +107,7 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trans
         name: req.name,
         desc,
       };
+      if (req.dueDate !== undefined) args.due = req.dueDate;
       try {
         const resp = await mcp("mcp__trello__create_card", args);
         if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {
