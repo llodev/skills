@@ -147,4 +147,30 @@ describe("taskCreateHandler", () => {
       code: "AUTH_ERROR",
     });
   });
+
+  it("forwards optional create-time fields (labels/priority/estimate/dueDate) to the transport", async () => {
+    const { transport, calls } = buildRecordingTransport({
+      ok: true,
+      data: { id: "cardB", url: "https://trello.com/c/abc" },
+    });
+    const ctx = makeCtx({ transport });
+    const req = {
+      boardOrProjectId: "boardA",
+      listOrSectionId: "listA",
+      name: "Task with fields",
+      labels: ["api", "web"],
+      priority: "high",
+      estimate: 8,
+      dueDate: "2026-07-20",
+    };
+    const result = await taskCreateHandler(req, ctx);
+    expect(result.ok).toBe(true);
+    const created = calls.find((c) => c.method === "taskCreate");
+    expect(created?.req).toMatchObject({
+      labels: ["api", "web"],
+      priority: "high",
+      estimate: 8,
+      dueDate: "2026-07-20",
+    });
+  });
 });
