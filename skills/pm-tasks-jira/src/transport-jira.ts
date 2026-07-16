@@ -223,6 +223,7 @@ export function createJiraTransport(opts: CreateJiraTransportOptions): Transport
           issueTypeName,
           summary: req.name,
           description,
+          ...(req.dueDate !== undefined ? { duedate: req.dueDate.slice(0, 10) } : {}),
         });
 
         if (!isObjectWith(resp, "key") || typeof resp.key !== "string") {
