@@ -29,6 +29,8 @@ Apply when Phase 4 / Phase 5 / Phase 5b target Jira. Authoritative formatting + 
 
 **NEVER document or append a description footer for estimates.** Jira descriptions are ADF; programmatic modification of ADF is fragile and not attempted. The `task.estimate.set` verb preserves the human-readable estimate as an `est:<slug>` label on the issue — not in the description. See [`references/estimation.md`](../references/estimation.md) for the label strategy.
 
+**NEVER** overwrite `duedate` when closing a Jira issue. **Why:** Jira auto-stamps `resolutiondate` on transition to the `done` category — that is the actual completion. `duedate` must stay = the original plan so the board shows planned-vs-actual. Overwriting it destroys the plan and duplicates what `resolutiondate` already records. (Contrast Trello, which HAS no auto timestamp and therefore does overwrite — do not carry that rule across adapters.) See [`../references/operations.md`](../references/operations.md) § Temporal handling.
+
 **NEVER use the SSE transport endpoint for Atlassian MCP.** The SSE endpoint (`/events`) was retired 2026-06-30. Configure the Streamable-HTTP endpoint: `https://mcp.atlassian.com/v1/mcp`. The `mcp__atlassian__*` tool names and arguments are unchanged.
 
 **NEVER call `task.sprint.set`.** It is not in the adapter's manifest. The Atlassian MCP exposes no agile/sprint API. The core factory returns `UNSUPPORTED_VERB`. Sprint management is out of scope for v1.x; roadmapped for v1.12.0.

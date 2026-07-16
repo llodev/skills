@@ -18,7 +18,7 @@ description: >-
   Requires @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   tags:
     - agent-skill
     - jira
@@ -75,7 +75,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - Sections of the generic card → markdown headings in `description` (ADF handles them when sent with `markdown: true`).
 - "Implementation Checklist" + "Verification Checklist" → **Subtask summaries** (one Subtask per item; Jira supports one level only; Subtask `parent` = parent issue key).
 - Labels → `labels[]` array. Resolve from `.jira.json` `labels[]` or pass through raw.
-- Due date → `duedate` (YYYY-MM-DD; sliced from ISO 8601). **Not applicable for Subtasks** — omit silently.
+- Due date → `duedate` (YYYY-MM-DD; sliced from ISO 8601). **Not applicable for Subtasks** — omit silently. The typed transport `taskCreate` also maps the core `TaskCreateRequest.dueDate` to `duedate` — see [`references/operations.md`](references/operations.md) § Temporal handling for the create/start/close split.
 - Assignee → `lookupJiraAccountId` by display name or email; `editJiraIssue { assignee: { accountId } }`.
 - Issue type → v1 maps all created cards to the configured `issueTypes.task` (Subtasks use `issueTypes.subtask`). Per-type override is not yet supported — `TaskCreateRequest` carries no type field.
 
@@ -117,6 +117,8 @@ Jira-specific verb mapping:
 | Step complete (subtask) | `checklist.check` → `transitionJiraIssue(subtaskKey, "done")`                                                                                                                                                                                                  |
 | Task complete (full)    | `task.move(key, "done")` → `transitionJiraIssue` to `done` category, then `task.comment.add` → `addCommentToJiraIssue(body: "Task complete. Commit: <SHA>.", markdown: true)`, then `task.close` → `transitionJiraIssue` to `done` category again (idempotent) |
 | Task failed             | `task.comment.add` → `addCommentToJiraIssue` with failure mode + `task.assignee.add` to reassign for human escalation. Do NOT call `task.move(_, "done")` or `task.close`.                                                                                     |
+
+**Close preserves the plan (lifecycle fidelity):** transitioning to `done` lets Jira auto-stamp `resolutiondate` (the real completion). Leave `duedate` = the original plan — never overwrite it at close. Jira has no wired start-date field (optional custom-field increment, not implemented). See [`references/operations.md`](references/operations.md) § Temporal handling and [`../pm-tasks-core/references/lifecycle-fidelity.md`](../pm-tasks-core/references/lifecycle-fidelity.md).
 
 **Jira caveat (per [`anti-patterns/jira.md`](./anti-patterns/jira.md)):** `getJiraIssue` returns field values but not the full changelog. Verify lifecycle in the Jira UI activity feed when auditing — the UI is the human's audit log.
 

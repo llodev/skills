@@ -46,6 +46,23 @@ Request field semantics (Jira-specific):
 
 The SKILL / adapter layer is responsible for passing the correct value in `req.itemId`. Transport does not validate issue-key format for the incomplete path.
 
+## Temporal handling (lifecycle fidelity)
+
+Implements the cross-adapter principle in [`../../pm-tasks-core/references/lifecycle-fidelity.md`](../../pm-tasks-core/references/lifecycle-fidelity.md) for Jira. **Create** is typed; **start** and **close** are interpretive guidance. Jira separates plan from actual **natively**, so close is free — the same native-timestamp pattern as Asana (and the opposite of Trello's overwrite).
+
+**Create (typed).** The core `TaskCreateRequest.dueDate` (ISO 8601) maps to `duedate` (`YYYY-MM-DD`) on `createJiraIssue` — wired in the typed transport (`src/transport-jira.ts` `taskCreate`). `duedate` is **not applicable on Subtasks**; `taskCreate` always creates a task-type issue, so this is safe, but a create-time due date is silently omitted for subtask-type creation. The remaining create-time fields stay on the SKILL-orchestrated Phase 4/5 path (they need `.jira.json` resolution the config-free typed mapping does not do):
+
+| Core create field | Jira mapping                                            | Where                                               |
+| ----------------- | ------------------------------------------------------- | --------------------------------------------------- |
+| `dueDate`         | `duedate` (`YYYY-MM-DD`)                                | typed transport `taskCreate`                        |
+| `estimate`        | `timetracking.originalEstimate` (or story-points field) | SKILL Phase 4/5 + `task.estimate.set`, config-aware |
+| `labels`          | `labels[]`                                              | SKILL Phase 4/5, config-aware                       |
+| `priority`        | `priority` field if configured; else NOT_APPLICABLE     | SKILL Phase 4/5, if configured                      |
+
+**Start (move → WIP).** Jira has **no wired start-date field** in this adapter. The WIP move transitions the issue to the `indeterminate` status category (`task.move(key, "indeterminate")`) but stamps no date. A custom "start date" field could be written via `editJiraIssue` if a team configures one — this is an **optional, documented increment, not implemented** in this program.
+
+**Close (native — no overwrite).** Transition to the `done` category (`task.close` / `task.move(key, "done")`). Jira stamps `resolutiondate` server-side automatically — that is the **actual** completion. Leave `duedate` untouched: it stays = the **plan**, giving a planned-vs-actual comparison for free. **Never overwrite `duedate` at close** on Jira (unlike Trello, which has no auto timestamp). `resolutiondate` is read-only from the adapter's perspective — the adapter never writes it.
+
 ## `<task-ref>` resolution for Jira
 
 Accept, in order:
