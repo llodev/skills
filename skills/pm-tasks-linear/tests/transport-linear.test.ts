@@ -199,6 +199,26 @@ describe("createLinearTransport — taskCreate", () => {
     expect(Object.keys(calls[0].args)).not.toContain("description");
   });
 
+  it("maps req.dueDate to dueDate (YYYY-MM-DD) on the create save_issue", async () => {
+    const { mcp, calls } = makeMcp(new Map([["save_issue", { id: "issue-7" }]]));
+    const t = createLinearTransport({ mcp, config: TEST_CONFIG });
+    await t.taskCreate({
+      boardOrProjectId: "b",
+      listOrSectionId: "s",
+      name: "n",
+      dueDate: "2026-07-20T00:00:00.000Z",
+    });
+    expect(calls[0].tool).toBe("save_issue");
+    expect(calls[0].args.dueDate).toBe("2026-07-20");
+  });
+
+  it("omits dueDate on create when absent", async () => {
+    const { mcp, calls } = makeMcp(new Map([["save_issue", { id: "issue-8" }]]));
+    const t = createLinearTransport({ mcp, config: TEST_CONFIG });
+    await t.taskCreate({ boardOrProjectId: "b", listOrSectionId: "s", name: "n" });
+    expect(Object.prototype.hasOwnProperty.call(calls[0].args, "dueDate")).toBe(false);
+  });
+
   it("shape error: stub returns {} (no id) → MCP_ERROR with verb details", async () => {
     const { mcp } = makeMcp(new Map([["save_issue", {}]]));
     const t = createLinearTransport({ mcp, config: TEST_CONFIG });
