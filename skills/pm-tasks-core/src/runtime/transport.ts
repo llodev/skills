@@ -40,6 +40,12 @@ export interface TaskCreateRequest {
   name: string; // card/task title
   description?: string; // optional body
   clientToken?: string; // for [ct:<token>] idempotency marker
+  // Create-time fields (issue #47, Option A). All optional and additive;
+  // each adapter maps the subset its tool supports and ignores the rest.
+  labels?: string[]; // adapter maps to its label/tag model
+  priority?: string; // adapter maps to its priority model (may be NOT_APPLICABLE)
+  estimate?: EstimateInput; // reuse core/estimation input; adapter normalizes
+  dueDate?: string; // ISO 8601 date (YYYY-MM-DD)
 }
 
 export interface TaskCreateResponse {

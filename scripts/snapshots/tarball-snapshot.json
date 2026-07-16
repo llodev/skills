@@ -116,6 +116,7 @@
     "package/references/doctor.md",
     "package/references/generic-card.md",
     "package/references/init-ux.md",
+    "package/references/lifecycle-fidelity.md",
     "package/references/plan-execution.md",
     "package/schemas/adapter-manifest.schema.json",
     "package/schemas/attribution.schema.json",
