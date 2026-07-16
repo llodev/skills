@@ -60,7 +60,7 @@
         "path": "skills/pm-tasks-asana"
       },
       "description": "Turn plans into Asana tasks and subtasks with custom fields and section placement — paste, MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "author": {
         "name": "llodev"
       },
