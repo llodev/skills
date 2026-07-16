@@ -89,6 +89,7 @@ The `init` prompt prints the absolute path it will write to, so you always see e
 
 - **`add_member_to_card`** sometimes reports a false error even on success — the adapter re-fetches the card and checks `members[]` to confirm.
 - **Trello descriptions don't render tables** — the adapter flattens them to bullets automatically (see [`references/format.md`](./references/format.md)).
+- **Lifecycle fidelity (Trello is the outlier):** `task.create` writes the plan due-date to `due`. Trello has **no** native completion timestamp, so `task.close` **overwrites** `due` with the actual completion date, sets `dueComplete`, and moves the card to Done — the original plan (due date + estimate) is preserved instead in a localized **description footer**. This is the opposite of the other adapters, which never overwrite the plan field. See [`references/operations.md`](./references/operations.md) § Temporal handling and [`pm-tasks-core`'s lifecycle-fidelity reference](../pm-tasks-core/references/lifecycle-fidelity.md).
 
 ## Documentation
 
