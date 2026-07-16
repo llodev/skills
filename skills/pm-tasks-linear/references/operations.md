@@ -61,6 +61,23 @@ The SKILL / adapter layer is responsible for passing the sub-issue id in `req.it
 
 Idempotency: `save_issue { id: subIssueId, state }` is idempotent — re-applying the same state type is a no-op.
 
+## Temporal handling (lifecycle fidelity)
+
+Implements the cross-adapter principle in [`../../pm-tasks-core/references/lifecycle-fidelity.md`](../../pm-tasks-core/references/lifecycle-fidelity.md) for Linear. **Create** is typed; **start** and **close** are **already handled natively by Linear's state machine** — this section documents that; there is no new runtime behavior for start/close.
+
+**Create (typed).** The core `TaskCreateRequest.dueDate` (ISO 8601) maps to `dueDate` (`YYYY-MM-DD`) on `save_issue` — wired in the typed transport (`src/transport-linear.ts` `taskCreate`). The remaining create-time fields stay on the SKILL-orchestrated Phase 4/5 path (they need `.linear.json` resolution / replace-set label logic the config-free typed mapping does not do):
+
+| Core create field | Linear mapping                                           | Where                                    |
+| ----------------- | -------------------------------------------------------- | ---------------------------------------- |
+| `dueDate`         | `dueDate` (`YYYY-MM-DD`)                                 | typed transport `taskCreate`             |
+| `estimate`        | Linear estimate field + `est:<slug>` label (replace-set) | SKILL Phase 4/5 + `task.estimate.set`    |
+| `labels`          | `labels[]` (replace-set, id-resolved)                    | SKILL Phase 4/5, config-aware            |
+| `priority`        | `priority` (0–4)                                         | SKILL Phase 4/5 (future typed increment) |
+
+**Start (move → WIP) — already native.** `task.move(id, "wip")` resolves to a `started`-type state (`save_issue { id, state }`). Linear **auto-stamps `startedAt`** the first time an issue enters a started-type state. No extra call, no config — the existing `task.move` already produces the start timestamp.
+
+**Close (native — no overwrite).** `task.close` moves the issue to a `completed`-type state; Linear **auto-stamps `completedAt`** (the actual completion). Leave `dueDate` untouched: it stays = the **plan**. **Never overwrite `dueDate` at close** on Linear (unlike Trello). `startedAt`/`completedAt` are read-only from the adapter's perspective — the adapter never writes them. This makes Linear the lightest adapter on the fidelity axis: create-time `dueDate` is the only new behavior; start and close were already faithful.
+
 ## Idempotency
 
 | Verb                | Idempotency rule                                                                                               |

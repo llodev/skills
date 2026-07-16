@@ -34,6 +34,8 @@ Linear supports only one assignee per issue. `save_issue { assignee }` is a **se
 **NEVER pass `linearTarget: "points"` with a non-point strategy.**
 Strategies like `ideal_hours` or raw `t_shirt` (without a `sizeMap`) do not produce `n.points`. If `linearTarget === "points"` and `n.points === null`, the transport returns `INVALID_REQUEST`. This is a config coherence error — fix by re-running `pm-tasks-linear init` and aligning the strategy with the target.
 
+**NEVER** overwrite `dueDate` when closing a Linear issue. **Why:** Linear auto-stamps `completedAt` (and `startedAt` on the WIP move) — those are the actual timestamps. `dueDate` must stay = the original plan so the board shows planned-vs-actual. Overwriting it destroys the plan and duplicates what `completedAt` already records. (Contrast Trello, which HAS no auto timestamp and therefore does overwrite — do not carry that rule across adapters.) See [`../references/operations.md`](../references/operations.md) § Temporal handling.
+
 ## Cross-tool
 
 **NEVER** apply Linear's quirks (replace-set labels, `save_issue` upsert, type-based state resolution, single assignee, cycle team-gating) to another adapter after switching targets mid-chat. Re-load that adapter's SKILL.md and apply only its rules.

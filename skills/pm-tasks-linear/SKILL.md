@@ -18,7 +18,7 @@ description: >-
   implement task.sprint.set (via cycles). Requires @llodev/pm-tasks-core.
 license: MIT
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   tags:
     - agent-skill
     - linear
@@ -76,7 +76,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - Title → issue `title`.
 - Sections of the generic card → Markdown headings in `description` (literal newlines, per MCP instructions).
 - Labels → resolve by name from `config.labels[]`; pass through raw strings otherwise.
-- Due date → `dueDate` (YYYY-MM-DD; sliced from ISO 8601). Native Linear field.
+- Due date → `dueDate` (YYYY-MM-DD; sliced from ISO 8601). Native Linear field; typed in the transport (`src/transport-linear.ts` `taskCreate`) — see [`references/operations.md`](references/operations.md) § Temporal handling.
 - Assignee → `save_issue { assignee }` by id/name/email/`"me"`. Single-assignee set.
 - Estimate → `save_issue { estimate }` (numeric points) when `estimation.enabled` and `linearTarget === "points"`.
 - **Checklists → sub-issues (M3 resolution):** The core `task.create` contract carries no `items[]`. During Phase 5 MCP publish, the SKILL orchestrates child creation: for each checklist item in the generic card, call `save_issue` with `parentId` = the created parent issue's id. This is the doc-layer resolution — Linear has no native checklist, so checklist items become **sub-issues**. `checklist.check` later moves the sub-issue to a completed-type state via `save_issue { id: subIssueId, state: <completed-type-id> }`.
@@ -124,6 +124,8 @@ Linear-specific verb mapping:
 | Task completed    | `task.close` → `save_issue { id, state }` (type `completed`)                                                                                                                        |
 | Sub-issue checked | `checklist.check` → `save_issue { id: subIssueId, state }` (type `completed`) (idempotent)                                                                                          |
 | Task failed       | `task.comment.add` → `save_comment { issueId, body }` with failure mode + `task.assignee.add` to reassign for human escalation. Do NOT call `task.move(_, "done")` or `task.close`. |
+
+**Close/start preserve the plan (lifecycle fidelity):** Linear auto-stamps `startedAt` when `task.move` enters a `started` state and `completedAt` when `task.close` enters a `completed` state — both are the real timestamps. Leave `dueDate` = the original plan; never overwrite it at close. No extra calls: start/close fidelity is already native. See [`references/operations.md`](references/operations.md) § Temporal handling and [`../pm-tasks-core/references/lifecycle-fidelity.md`](../pm-tasks-core/references/lifecycle-fidelity.md).
 
 **Linear note:** `get_issue` returns current state but not the full changelog. Verify lifecycle in the Linear UI activity feed when auditing.
 
