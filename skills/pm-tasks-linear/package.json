@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks-linear",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Linear adapter for the @llodev/pm-tasks-* family. Use when the user mentions Linear, asks to create a Linear issue, publish to Linear, post to Linear, transition an issue, add a comment in Linear, or uses --publish-linear; OR for CRUD on existing issues (check sub-issue, close issue, change due-date, assign person, comment, set sprint/cycle); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Implements 10 CRUD verbs (including task.sprint.set) via the Linear MCP server. Requires @llodev/pm-tasks-core installed.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/pm-tasks-linear",
