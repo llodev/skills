@@ -231,6 +231,7 @@ export function createLinearTransport(opts: CreateLinearTransportOptions): Linea
           title: req.name,
           ...(req.description != null ? { description: req.description } : {}),
           ...(config.defaultProjectId != null ? { project: config.defaultProjectId } : {}),
+          ...(req.dueDate != null ? { dueDate: req.dueDate.slice(0, 10) } : {}),
         });
 
         if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {
