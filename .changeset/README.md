@@ -119,7 +119,7 @@ Consumers can't `npm i @llodev/pm-tasks-core@1.3.0` to test an intermediate mile
 
 For any plan that lists multiple releases (e.g. `docs/plans/2026-06-15-…`):
 
-1. One Phase per branch — **branch name = the version** (`v1.2.0`, `v1.2.1`, `v1.3.0`). No `feat/` prefix, no theme suffix. The theme goes in the PR title and the changeset, not in the branch name.
+1. One Phase per branch — **branch name = `pmt-<skill>-v<X.Y.Z>`** (`pmt-trello-v1.8.0`, `pmt-trello-v1.8.1`, `pmt-asana-v1.9.0`). No `feat/` prefix, no theme suffix. The theme goes in the PR title and the changeset, not in the branch name.
 2. One changeset per branch.
 3. PR → CI → merge → publish → confirm on npm.
 4. **Only then** start the next Phase.
