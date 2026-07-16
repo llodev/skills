@@ -39,7 +39,7 @@
         "path": "skills/pm-tasks-trello"
       },
       "description": "Turn implementation plans into Trello cards and checklists — paste-ready output, MCP publish, or autonomous write-through. Requires pm-tasks-core.",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "author": {
         "name": "llodev"
       },
