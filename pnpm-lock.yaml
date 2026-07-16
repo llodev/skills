@@ -68,6 +68,12 @@ importers:
       '@llodev/pm-tasks-core':
         specifier: workspace:*
         version: link:../../skills/pm-tasks-core
+      '@llodev/pm-tasks-jira':
+        specifier: workspace:*
+        version: link:../../skills/pm-tasks-jira
+      '@llodev/pm-tasks-linear':
+        specifier: workspace:*
+        version: link:../../skills/pm-tasks-linear
       '@llodev/pm-tasks-trello':
         specifier: workspace:*
         version: link:../../skills/pm-tasks-trello

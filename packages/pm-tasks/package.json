@@ -1,7 +1,7 @@
 {
   "name": "@llodev/pm-tasks",
   "version": "3.1.0",
-  "description": "Meta-package: installs the entire @llodev/pm-tasks-* family (core + Trello + Asana).",
+  "description": "Meta-package: installs the entire @llodev/pm-tasks-* family (core + Trello + Asana + Jira + Linear).",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -11,12 +11,16 @@
   "peerDependencies": {
     "@llodev/pm-tasks-core": "^1.0.0",
     "@llodev/pm-tasks-trello": "^1.0.0",
-    "@llodev/pm-tasks-asana": "^1.0.0"
+    "@llodev/pm-tasks-asana": "^1.0.0",
+    "@llodev/pm-tasks-jira": "^1.0.0",
+    "@llodev/pm-tasks-linear": "^1.0.0"
   },
   "devDependencies": {
     "@llodev/pm-tasks-core": "workspace:*",
     "@llodev/pm-tasks-trello": "workspace:*",
-    "@llodev/pm-tasks-asana": "workspace:*"
+    "@llodev/pm-tasks-asana": "workspace:*",
+    "@llodev/pm-tasks-jira": "workspace:*",
+    "@llodev/pm-tasks-linear": "workspace:*"
   },
   "files": [
     "README.md"
