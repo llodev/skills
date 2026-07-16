@@ -29,6 +29,23 @@ The resolved section GID MUST be in `autonomous.scope.sections` — otherwise th
 
 Idempotency: fetch current task memberships before calling `update_tasks`. If the task is already in the target section, return `{ ok: true }` without an MCP write.
 
+## Temporal handling (lifecycle fidelity)
+
+Implements the cross-adapter principle in [`../../pm-tasks-core/references/lifecycle-fidelity.md`](../../pm-tasks-core/references/lifecycle-fidelity.md) for Asana. **Create** is typed; **start** and **close** are interpretive guidance the agent applies in the Phase 5 / 5b flow.
+
+**Create (typed).** The core `TaskCreateRequest.dueDate` (ISO 8601) maps to `due_on` (`YYYY-MM-DD`) on `create_tasks` — wired in the typed transport (`src/transport-asana.ts` `taskCreate`). The remaining create-time fields are config-dependent and stay on the SKILL-orchestrated Phase 4/5 path (they need `.asana.json` custom-field resolution the config-free transport does not have):
+
+| Core create field | Asana mapping                                                                                | Where                                           |
+| ----------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `dueDate`         | `due_on` (`YYYY-MM-DD`)                                                                      | typed transport `taskCreate`                    |
+| `estimate`        | number custom field, converted to its native `unit` (e.g. 12 h → 720 for a `minutes` field)  | SKILL Phase 4/5 (`custom_fields`, config-aware) |
+| `labels`          | enum / multi_enum custom-field option GIDs                                                   | SKILL Phase 4/5 (`custom_fields`, config-aware) |
+| `priority`        | a custom field if one is configured; otherwise NOT_APPLICABLE (Asana has no native priority) | SKILL Phase 4/5, if configured                  |
+
+**Start (move → WIP).** When moving a task to the WIP section, also stamp the start date: `update_tasks { task: <gid>, start_on: <today YYYY-MM-DD>, due_on: <current due_on> }`. The Asana MCP **requires `due_on` to be present in the same `update_tasks` call when setting `start_on`** — so read the task's current `due_on` first (`get_task`) and re-send it unchanged. Never send `start_on` alone (it clears/rejects). This is guidance, not a typed verb: the transport `taskMove` only changes `memberships` (section); the `start_on` stamp is a second, agent-issued `update_tasks` call in the Phase 5b WIP transition.
+
+**Close (native de-para).** Set `completed: true` (via `task.close`). Asana stamps `completed_at` server-side automatically — that is the **actual** completion. Leave `due_on` untouched: it stays = the **plan**. This gives a planned-vs-actual comparison for free; **never overwrite `due_on` at close** on Asana (unlike Trello, which has no auto timestamp). `completed_at` is read-only from the adapter's perspective — the adapter never writes it.
+
 ## `<task-ref>` resolution for Asana
 
 Accept, in order:
