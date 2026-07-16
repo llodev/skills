@@ -13,7 +13,7 @@ description: >-
   create task"). Do NOT activate alone — it has no tool-specific formatting.
 license: MIT
 metadata:
-  version: 1.13.0
+  version: 1.14.0
   tags:
     - agent-skill
     - plan-to-tasks
