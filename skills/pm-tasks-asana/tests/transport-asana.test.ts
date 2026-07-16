@@ -112,6 +112,47 @@ describe("createAsanaTransport — taskCreate", () => {
     const sent = calls[0].args.tasks as Array<Record<string, unknown>>;
     expect(Object.prototype.hasOwnProperty.call(sent[0], "notes")).toBe(false);
   });
+
+  it("maps req.dueDate to due_on (YYYY-MM-DD) on the create_tasks payload", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([["mcp__claude_ai_Asana__create_tasks", { tasks: [{ gid: "task1" }] }]]),
+    );
+    const transport = createAsanaTransport({ mcp });
+    await transport.taskCreate({
+      boardOrProjectId: "p",
+      listOrSectionId: "s",
+      name: "n",
+      dueDate: "2026-07-20T00:00:00.000Z",
+    });
+    const sent = calls[0].args.tasks as Array<Record<string, unknown>>;
+    expect(sent[0].due_on).toBe("2026-07-20");
+  });
+
+  it("omits due_on when dueDate is absent", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([["mcp__claude_ai_Asana__create_tasks", { tasks: [{ gid: "task1" }] }]]),
+    );
+    const transport = createAsanaTransport({ mcp });
+    await transport.taskCreate({ boardOrProjectId: "p", listOrSectionId: "s", name: "n" });
+    const sent = calls[0].args.tasks as Array<Record<string, unknown>>;
+    expect(Object.prototype.hasOwnProperty.call(sent[0], "due_on")).toBe(false);
+  });
+
+  it("short-circuits to INVALID_REQUEST (no MCP call) when dueDate is malformed", async () => {
+    const { mcp, calls } = makeMcp(
+      new Map([["mcp__claude_ai_Asana__create_tasks", { tasks: [{ gid: "task1" }] }]]),
+    );
+    const transport = createAsanaTransport({ mcp });
+    const result = await transport.taskCreate({
+      boardOrProjectId: "p",
+      listOrSectionId: "s",
+      name: "n",
+      dueDate: "not-a-date",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.code).toBe("INVALID_REQUEST");
+    expect(calls).toHaveLength(0);
+  });
 });
 
 // ---------------------------------------------------------------------------
