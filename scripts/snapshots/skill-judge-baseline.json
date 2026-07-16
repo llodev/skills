@@ -30,10 +30,10 @@
     "notes": "v1.2.0 (Lifecycle Fidelity R4): temporal-handling guidance (typed create-time dueDate→duedate; native resolutiondate close with no duedate overwrite; start-field documented-optional) + operations.md § Temporal handling + create/close pointer + never-overwrite-duedate NEVER rule. Δ+1 vs 85 (within mature-adapter band; completeness gain). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-linear/SKILL.md": {
-    "score": 83,
-    "version": "1.0.0",
-    "capturedAt": "2026-07-13",
-    "notes": "v1.13.0 Phase 4 full SKILL.md rewrite; self-assessed ~100/120 raw (D1-D8), calibrated to 83 within mature-adapter peer band (jira 85, asana 83, trello 80); 10 verbs + sprint/cycles + sub-issues-as-checklists M3 resolution + 8 anti-patterns + replace-set label discipline; skill-judge tool requires stdin agent invocation (not runnable standalone)"
+    "score": 84,
+    "version": "1.1.0",
+    "capturedAt": "2026-07-16",
+    "notes": "v1.1.0 (Lifecycle Fidelity R4): temporal-handling guidance (typed create-time dueDate→dueDate; start/close already native via startedAt/completedAt; never overwrite dueDate) + operations.md § Temporal handling + create/close pointer + never-overwrite-dueDate NEVER rule. Δ+1 vs 83 (within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-monday/SKILL.md": {
     "score": 29,
