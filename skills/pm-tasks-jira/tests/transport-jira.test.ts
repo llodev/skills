@@ -11,14 +11,41 @@ interface CallRecord {
 }
 
 /**
+ * Allowed keys for createJiraIssue — mirrors the real Atlassian MCP schema
+ * (additionalProperties: false). Any key outside this set is an error.
+ * Covers both call sites: task.create (cloudId, projectKey, issueTypeName,
+ * summary, description, duedate) and checklist.check subtask-create (parent).
+ */
+const CREATE_JIRA_ISSUE_ALLOWED_KEYS = new Set([
+  "cloudId",
+  "projectKey",
+  "issueTypeName",
+  "summary",
+  "description",
+  "parent",
+  "duedate",
+]);
+
+/**
  * Build a recording McpCaller from a per-tool response map.
  * If a tool name is not in the map, the stub throws an unexpected-call error.
  * If the mapped value is an Error instance, it is thrown.
+ * For createJiraIssue calls, throws if any key is outside
+ * CREATE_JIRA_ISSUE_ALLOWED_KEYS (faithful to additionalProperties: false
+ * in the real schema).
  */
 function makeMcp(responses: Map<string, unknown>): { mcp: McpCaller; calls: CallRecord[] } {
   const calls: CallRecord[] = [];
   const mcp: McpCaller = async (tool, args) => {
     calls.push({ tool, args });
+    if (tool === "createJiraIssue") {
+      const badKeys = Object.keys(args).filter((k) => !CREATE_JIRA_ISSUE_ALLOWED_KEYS.has(k));
+      if (badKeys.length > 0) {
+        throw new Error(
+          `createJiraIssue received unknown keys (additionalProperties: false): ${badKeys.join(", ")}`,
+        );
+      }
+    }
     if (responses.has(tool)) {
       const resp = responses.get(tool);
       if (resp instanceof Error) throw resp;
@@ -196,6 +223,26 @@ describe("createJiraTransport — taskCreate", () => {
       expect(r.code).toBe("MCP_ERROR");
       expect(r.details).toMatchObject({ verb: "task.create" });
     }
+  });
+
+  it("maps req.dueDate to the Jira due field (YYYY-MM-DD) on createJiraIssue", async () => {
+    const { mcp, calls } = makeMcp(new Map([["createJiraIssue", { key: "KAN-9" }]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    await t.taskCreate({
+      boardOrProjectId: "b",
+      listOrSectionId: "s",
+      name: "n",
+      dueDate: "2026-07-20T00:00:00.000Z",
+    });
+    expect(calls[0].tool).toBe("createJiraIssue");
+    expect(calls[0].args.duedate).toBe("2026-07-20");
+  });
+
+  it("omits the due field when dueDate is absent", async () => {
+    const { mcp, calls } = makeMcp(new Map([["createJiraIssue", { key: "KAN-9" }]]));
+    const t = createJiraTransport({ mcp, config: TEST_CONFIG });
+    await t.taskCreate({ boardOrProjectId: "b", listOrSectionId: "s", name: "n" });
+    expect(Object.prototype.hasOwnProperty.call(calls[0].args, "duedate")).toBe(false);
   });
 
   it("MCP throws 401 → AUTH_ERROR", async () => {

@@ -24,10 +24,10 @@
     "notes": "v1.13.0 added task.sprint.set to the canonical verb enumeration (9→10 verbs) in the description; purely additive doc change, Δ within rubric variance (NOISE_BAND), no re-score — score reconfirmed at 85"
   },
   "skills/pm-tasks-jira/SKILL.md": {
-    "score": 85,
-    "version": "1.0.0",
-    "capturedAt": "2026-06-27",
-    "notes": "v1.11.0 initial Jira adapter SKILL.md; skill-judge rubric eval Grade B (~101/120 raw across D1-D8), recorded at 85 calibrated to the mature-adapter peer band (core 85, asana 83, trello 80) — jira sits at top of band: 9 verbs + foundational estimation + transition-by-category/est-label/F2-unsupported anti-patterns"
+    "score": 86,
+    "version": "1.2.0",
+    "capturedAt": "2026-07-16",
+    "notes": "v1.2.0 (Lifecycle Fidelity R4): temporal-handling guidance (typed create-time dueDate→duedate; native resolutiondate close with no duedate overwrite; start-field documented-optional) + operations.md § Temporal handling + create/close pointer + never-overwrite-duedate NEVER rule. Δ+1 vs 85 (within mature-adapter band; completeness gain). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-linear/SKILL.md": {
     "score": 83,
