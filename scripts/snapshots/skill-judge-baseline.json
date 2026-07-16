@@ -1,9 +1,9 @@
 {
   "skills/pm-tasks-asana/SKILL.md": {
-    "score": 85,
-    "version": "1.8.0",
-    "capturedAt": "2026-07-14",
-    "notes": "v1.8.0 re-grade after field-unit annotation + inheritParentFields floor-semantics clarification; skill-judge 85/100 (Δ+2 vs 83). Ratcheted rather than bypassed so the CI skill-judge gate passes without the local SKIP_SKILL_JUDGE_GATE env var"
+    "score": 86,
+    "version": "1.9.0",
+    "capturedAt": "2026-07-16",
+    "notes": "v1.9.0 (Lifecycle Fidelity R2): temporal-handling guidance (start_on on WIP with due_on co-write, native completed_at close) + operations.md § Temporal handling + create/start/close pointer + start_on NEVER rule. Δ+1 vs 85 (within mature-adapter band; completeness gain). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-bitrix24/SKILL.md": {
     "score": 29,

@@ -134,6 +134,17 @@ export function createAsanaTransport(opts: CreateAsanaTransportOptions): Transpo
         memberships: [{ project: req.boardOrProjectId, section: req.listOrSectionId }],
       };
       if (notes !== undefined) taskPayload.notes = notes;
+      if (req.dueDate !== undefined) {
+        const dueOn = isoToDueOn(req.dueDate);
+        if (dueOn === null) {
+          return {
+            ok: false,
+            code: "INVALID_REQUEST",
+            details: { message: "dueDate must be ISO 8601", verb: "taskCreate" },
+          };
+        }
+        taskPayload.due_on = dueOn;
+      }
       try {
         const resp = await mcp("mcp__claude_ai_Asana__create_tasks", { tasks: [taskPayload] });
         if (!isObjectWith(resp, "tasks") || !Array.isArray(resp.tasks) || resp.tasks.length === 0) {

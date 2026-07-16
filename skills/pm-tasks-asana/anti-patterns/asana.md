@@ -34,6 +34,8 @@ Apply when Phase 4 / Phase 5 / Phase 5b target Asana. Authoritative formatting +
 
 **NEVER** set `section_id` without also setting `project_id` / `default_project`. **Why:** Asana API requires project context for section placement.
 
+**NEVER** set `start_on` on `update_tasks` without also re-sending the task's current `due_on` in the **same** call. **Why:** the Asana MCP requires `due_on` to be present when `start_on` is set; sending `start_on` alone rejects or clears the due date. On the WIP transition, `get_task` the current `due_on` first, then send both together. See [`../references/operations.md`](../references/operations.md) § Temporal handling.
+
 ---
 
 ## Cross-tool

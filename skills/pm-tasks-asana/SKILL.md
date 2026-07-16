@@ -15,7 +15,7 @@ description: >-
   @llodev/pm-tasks-core installed.
 license: MIT
 metadata:
-  version: 1.8.0
+  version: 1.9.0
   tags:
     - agent-skill
     - asana
@@ -68,7 +68,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - "Implementation Checklist" + "Verification Checklist" → subtasks (flatten any nested bullets; Asana supports one level only).
 - Labels → custom field options (resolved via `.asana.json` `customFields[]`).
 - Number custom fields with a `unit` (`.asana.json` `customFields[].unit`) → convert the source value to the field's native unit before writing. E.g. an effort of "12 h" into a `minutes` field is `720`, not `12`.
-- Due date → `due_on` (YYYY-MM-DD).
+- Due date → `due_on` (YYYY-MM-DD). The typed transport `taskCreate` also maps the core `TaskCreateRequest.dueDate` to `due_on` — see [`references/operations.md`](references/operations.md) § Temporal handling for the create/start/close split.
 - Assignee → `assignee` GID resolved from `.asana.json` `members[]` or `me` at publish time.
 
 ## Phase 5 — MCP publish
@@ -105,14 +105,16 @@ Mandatory when the controller is executing a plan with multiple tasks autonomous
 
 Asana-specific verb mapping:
 
-| Transition              | Canonical verb + MCP call(s)                                                                                                                                                                                                                                                                                                                                                                                     |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Task start              | `task.move(cardId, "wip")` → `mcp__claude_ai_Asana__update_tasks { task: <gid>, memberships: [{ project: <projectGid>, section: <wipSectionGid> }] }`                                                                                                                                                                                                                                                            |
-| Step complete (subtask) | `checklist.check` → `mcp__claude_ai_Asana__update_tasks { task: <subtaskGid>, completed: true }`                                                                                                                                                                                                                                                                                                                 |
-| Task complete (full)    | `task.move(cardId, "done")` → `mcp__claude_ai_Asana__update_tasks { task: <parentGid>, memberships: [{ project: <projectGid>, section: <doneSectionGid> }] }` then `task.comment.add` → `mcp__claude_ai_Asana__add_comment { task_id: <parentGid>, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `task.close` → `mcp__claude_ai_Asana__update_tasks { task: <parentGid>, completed: true }` |
-| Task failed             | `task.comment.add` → `mcp__claude_ai_Asana__add_comment` with failure mode + `mcp__claude_ai_Asana__update_tasks { task: <gid>, add_followers: ["<escalateToAliasGid>"] }` for human escalation. Do NOT call `task.move(_, "done")` or `task.close`.                                                                                                                                                             |
+| Transition              | Canonical verb + MCP call(s)                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Task start              | `task.move(cardId, "wip")` → `mcp__claude_ai_Asana__update_tasks { task: <gid>, memberships: [{ project: <projectGid>, section: <wipSectionGid> }] }` **then** stamp the start date: read the current `due_on` (`get_task`) and call `mcp__claude_ai_Asana__update_tasks { task: <gid>, start_on: <today>, due_on: <current due_on> }` (the MCP requires `due_on` present when setting `start_on`). See [`references/operations.md`](references/operations.md) § Temporal handling. |
+| Step complete (subtask) | `checklist.check` → `mcp__claude_ai_Asana__update_tasks { task: <subtaskGid>, completed: true }`                                                                                                                                                                                                                                                                                                                                                                                    |
+| Task complete (full)    | `task.move(cardId, "done")` → `mcp__claude_ai_Asana__update_tasks { task: <parentGid>, memberships: [{ project: <projectGid>, section: <doneSectionGid> }] }` then `task.comment.add` → `mcp__claude_ai_Asana__add_comment { task_id: <parentGid>, text: "🤖 [agent] Task complete. Commit: <SHA>. <branch>." }` then `task.close` → `mcp__claude_ai_Asana__update_tasks { task: <parentGid>, completed: true }`                                                                    |
+| Task failed             | `task.comment.add` → `mcp__claude_ai_Asana__add_comment` with failure mode + `mcp__claude_ai_Asana__update_tasks { task: <gid>, add_followers: ["<escalateToAliasGid>"] }` for human escalation. Do NOT call `task.move(_, "done")` or `task.close`.                                                                                                                                                                                                                                |
 
 Resolve `<wipSectionGid>` / `<doneSectionGid>` from `.asana.json` using `defaults.wipSectionAlias` / `defaults.doneSectionAlias` to look up the matching entry in `sections[]` by alias. Both must already be in `autonomous.scope.sections` — otherwise the verb returns `OUT_OF_SCOPE`.
+
+**Close preserves the plan (lifecycle fidelity):** `task.close` sets `completed: true`; Asana auto-stamps `completed_at` (the real completion). Leave `due_on` = the original plan — never overwrite it at close. See [`references/operations.md`](references/operations.md) § Temporal handling and [`../pm-tasks-core/references/lifecycle-fidelity.md`](../pm-tasks-core/references/lifecycle-fidelity.md).
 
 **Asana caveat (per [`anti-patterns/asana.md`](./anti-patterns/asana.md)):** the MCP `get_task` doesn't return activity stories, so verifying the lifecycle programmatically is incomplete. The UI activity feed IS the human's audit log — keep it dense and accurate.
 
