@@ -64,12 +64,8 @@ export function computeSnapshot() {
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 if (isMain) {
   if (!existsSync(rubricPath)) {
-    console.error(
-      `skill-judge-rubric-snapshot: rubric file not found: ${rubricPath}`
-    );
-    console.error(
-      "  Set SKILL_JUDGE_RUBRIC_PATH to override, or install the skill-judge skill."
-    );
+    console.error(`skill-judge-rubric-snapshot: rubric file not found: ${rubricPath}`);
+    console.error("  Set SKILL_JUDGE_RUBRIC_PATH to override, or install the skill-judge skill.");
     process.exit(1);
   }
 

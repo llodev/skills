@@ -4,7 +4,14 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const PACKAGES = ["pm-tasks-core", "pm-tasks-asana", "pm-tasks-trello", "pm-tasks-testkit", "pm-tasks-jira", "pm-tasks-linear"];
+const PACKAGES = [
+  "pm-tasks-core",
+  "pm-tasks-asana",
+  "pm-tasks-trello",
+  "pm-tasks-testkit",
+  "pm-tasks-jira",
+  "pm-tasks-linear",
+];
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 // testkit is a non-skill workspace package; every other entry is a skill.

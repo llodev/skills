@@ -25,21 +25,15 @@ const rubricPath = process.env.SKILL_JUDGE_RUBRIC_PATH
 
 // Skip gracefully if rubric not installed
 if (!existsSync(rubricPath)) {
-  console.log(
-    "skill-judge-rubric-check: rubric file not found — skipping drift gate."
-  );
+  console.log("skill-judge-rubric-check: rubric file not found — skipping drift gate.");
   console.log(`  (looked for: ${rubricPath})`);
   process.exit(0);
 }
 
 // Require golden master to exist (must be committed)
 if (!existsSync(GOLDEN_PATH)) {
-  console.error(
-    `skill-judge-rubric-check: golden master not found: ${GOLDEN_PATH}`
-  );
-  console.error(
-    "  Run `make skill-judge-rubric-snapshot` to generate it, then commit the result."
-  );
+  console.error(`skill-judge-rubric-check: golden master not found: ${GOLDEN_PATH}`);
+  console.error("  Run `make skill-judge-rubric-snapshot` to generate it, then commit the result.");
   process.exit(1);
 }
 
@@ -66,7 +60,7 @@ for (const [name, maxScore] of currentMap) {
     drifted = true;
   } else if (goldenMap.get(name) !== maxScore) {
     console.error(
-      `skill-judge-rubric-check: maxScore changed for "${name}": ${goldenMap.get(name)} → ${maxScore}`
+      `skill-judge-rubric-check: maxScore changed for "${name}": ${goldenMap.get(name)} → ${maxScore}`,
     );
     drifted = true;
   }
@@ -80,9 +74,7 @@ for (const [name] of goldenMap) {
 }
 
 if (drifted) {
-  console.error(
-    "  Run `make skill-judge-rubric-snapshot` to ratchet OR revert the rubric change."
-  );
+  console.error("  Run `make skill-judge-rubric-snapshot` to ratchet OR revert the rubric change.");
   process.exit(1);
 }
 
