@@ -1,6 +1,21 @@
 ---
 name: ts-ddd-entity
-description: "Create, review, or guide Domain Entity implementation in a TypeScript + DDD codebase. Use when: the request touches `*.entity.ts` files under `apps/api/src/<bc>/domain/entities/` or their tests under `apps/api/test/<bc>/domain/entities/`; modeling business rules with `Entity` from `@acme/shared` (dual API `create`/`tryCreate`, `Result` / `Result.combine` validation); validating FK refs with `Id.required` or own id with `Id.tryCreate`; enforcing enum-backed closed-set fields (status / kind / layout / provider / palette) from `@acme/<bc>-contracts` instead of string literals; validating nested entities or arrays element-by-element; adding state transitions via `cloneWith` (leaf entity) or named domain methods like `publish`, `addSection`, `deactivate` that mutate `_field` + `touch()` (aggregate root); exposing typed getters or `toSnapshot()` for persistence boundaries."
+description: >-
+  Create, review, or guide Domain Entity implementation in a TypeScript + DDD
+  codebase. Use when: the request touches `*.entity.ts` files under
+  `apps/api/src/<bc>/domain/entities/` or their tests under
+  `apps/api/test/<bc>/domain/entities/`; modeling business rules with `Entity`
+  from `@acme/shared` (dual API `create`/`tryCreate`, `Result` /
+  `Result.combine` validation); validating FK refs with `Id.required` or own id
+  with `Id.tryCreate`; enforcing enum-backed closed-set fields (status / kind /
+  layout / provider / palette) from `@acme/<bc>-contracts` instead of string
+  literals; validating nested entities or arrays element-by-element; adding
+  state transitions via `cloneWith` (leaf entity) or named domain methods like
+  `publish`, `addSection`, `deactivate` that mutate `_field` + `touch()`
+  (aggregate root); exposing typed getters or `toSnapshot()` for persistence
+  boundaries.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Entity

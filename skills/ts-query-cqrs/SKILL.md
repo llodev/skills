@@ -1,6 +1,13 @@
 ---
 name: ts-query-cqrs
-description: "Create, review, or guide read-side queries in a TypeScript + DDD CQRS codebase. Use when the request involves `*Query` interfaces, `*.query.ts` files, read use cases (`find-*`), DTO projections for API/front consumption, pagination/filters/aggregations, or separating read (query) from write (repository/command)."
+description: >-
+  Create, review, or guide read-side queries in a TypeScript + DDD CQRS
+  codebase. Use when the request involves `*Query` interfaces, `*.query.ts`
+  files, read use cases (`find-*`), DTO projections for API/front consumption,
+  pagination/filters/aggregations, or separating read (query) from write
+  (repository/command).
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Query (CQRS Read Side)

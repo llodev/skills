@@ -1,6 +1,17 @@
 ---
 name: ts-ddd-repository
-description: "Create, review, or guide repository contracts and implementations in a TypeScript + DDD codebase. Use when the request involves `*.repository.ts` files under `apps/api/src/<bc>/domain/repositories/` or `apps/api/src/<bc>/infra/{firestore,memory}/`, persistence operations (save / findBy* / list*), the `<NAME>_REPOSITORY` DI token, adapting the Firebase Admin SDK to a domain port, `toFirestore`/`fromFirestore` mappers, the side-by-side Firestore + InMemory adapter pair, contract tests under `apps/api/test/<bc>/infra/{firestore,memory}/`, `Result` error handling, or CQRS Repository vs Query separation."
+description: >-
+  Create, review, or guide repository contracts and implementations in a
+  TypeScript + DDD codebase. Use when the request involves `*.repository.ts`
+  files under `apps/api/src/<bc>/domain/repositories/` or
+  `apps/api/src/<bc>/infra/{firestore,memory}/`, persistence operations (save /
+  findBy* / list*), the `<NAME>_REPOSITORY` DI token, adapting the Firebase
+  Admin SDK to a domain port, `toFirestore`/`fromFirestore` mappers, the
+  side-by-side Firestore + InMemory adapter pair, contract tests under
+  `apps/api/test/<bc>/infra/{firestore,memory}/`, `Result` error handling, or
+  CQRS Repository vs Query separation.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Repository

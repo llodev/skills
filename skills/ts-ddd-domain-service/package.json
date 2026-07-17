@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-domain-service",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Domain services for logic that spans entities — stateless policies/calculators returning Result.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-domain-service",
