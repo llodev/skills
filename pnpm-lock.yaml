@@ -88,6 +88,33 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@26.1.1)(@vitest/coverage-v8@4.1.10)(vite@7.3.6(@types/node@26.1.1)(lightningcss@1.32.0)(tsx@4.23.1))
 
+  packages/ts-ddd:
+    devDependencies:
+      '@llodev/ts-ddd-controller':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-controller
+      '@llodev/ts-ddd-domain-service':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-domain-service
+      '@llodev/ts-ddd-dto':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-dto
+      '@llodev/ts-ddd-entity':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-entity
+      '@llodev/ts-ddd-repository':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-repository
+      '@llodev/ts-ddd-use-case':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-use-case
+      '@llodev/ts-ddd-value-object':
+        specifier: workspace:*
+        version: link:../../skills/ts-ddd-value-object
+      '@llodev/ts-query-cqrs':
+        specifier: workspace:*
+        version: link:../../skills/ts-query-cqrs
+
   skills/django-schema-design: {}
 
   skills/pm-tasks-asana:
@@ -150,6 +177,22 @@ importers:
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
+
+  skills/ts-ddd-controller: {}
+
+  skills/ts-ddd-domain-service: {}
+
+  skills/ts-ddd-dto: {}
+
+  skills/ts-ddd-entity: {}
+
+  skills/ts-ddd-repository: {}
+
+  skills/ts-ddd-use-case: {}
+
+  skills/ts-ddd-value-object: {}
+
+  skills/ts-query-cqrs: {}
 
 packages:
 

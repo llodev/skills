@@ -1,0 +1,37 @@
+{
+  "name": "@llodev/ts-ddd-dto",
+  "version": "0.0.0",
+  "description": "DTOs & contracts — Zod 4 schemas paired with z.infer types, enum-backed closed sets, input/output/read projections.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-dto",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ts-ddd-dto"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "typescript",
+    "ddd",
+    "dto",
+    "zod",
+    "contracts",
+    "cqrs"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

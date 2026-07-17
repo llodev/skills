@@ -1,0 +1,37 @@
+{
+  "name": "@llodev/ts-ddd-controller",
+  "version": "0.0.0",
+  "description": "HTTP controllers in a TypeScript + DDD API — routes, guards, Zod validation, use-case orchestration, Result→HTTP mapping.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-controller",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ts-ddd-controller"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "typescript",
+    "ddd",
+    "controller",
+    "nestjs",
+    "http",
+    "zod"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

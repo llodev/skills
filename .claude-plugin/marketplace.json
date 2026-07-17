@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Collection of Agent Skills created by @lloliveiradev for Claude Code, Cursor, Codex, Windsurf, and any agent that speaks the open Skills spec.",
-    "version": "1.11.0"
+    "version": "1.12.0"
   },
   "plugins": [
     {
@@ -106,6 +106,126 @@
         "primary-key",
         "uuidv7"
       ]
+    },
+    {
+      "name": "ts-ddd-controller",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-controller"
+      },
+      "description": "HTTP controllers in a TypeScript + DDD API — routes, guards, Zod validation, use-case orchestration, Result→HTTP mapping.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "controller", "nestjs", "http", "zod"]
+    },
+    {
+      "name": "ts-ddd-domain-service",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-domain-service"
+      },
+      "description": "Domain services for logic that spans entities — stateless policies/calculators returning Result.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "domain-service", "policy", "result"]
+    },
+    {
+      "name": "ts-ddd-dto",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-dto"
+      },
+      "description": "DTOs & contracts — Zod 4 schemas paired with z.infer types, enum-backed closed sets, input/output/read projections.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "dto", "zod", "contracts", "cqrs"]
+    },
+    {
+      "name": "ts-ddd-entity",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-entity"
+      },
+      "description": "Domain entities — Entity base, create/tryCreate with Result.combine, VO normalization, state transitions via cloneWith.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "entity", "aggregate", "result"]
+    },
+    {
+      "name": "ts-ddd-repository",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-repository"
+      },
+      "description": "Repository ports + adapters — Firestore/InMemory pair, toFirestore/fromFirestore, DI token, contract tests.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "repository", "firestore", "persistence"]
+    },
+    {
+      "name": "ts-ddd-use-case",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-use-case"
+      },
+      "description": "Application use cases — UseCase<IN,OUT>, @Injectable() + repo-port orchestration, Result.ok/fail/combine.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "use-case", "application", "result"]
+    },
+    {
+      "name": "ts-ddd-value-object",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-ddd-value-object"
+      },
+      "description": "Value objects — ValueObject + Result, closed-set + composite VOs, tryCreate/create, normalization.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "value-object", "vo", "result"]
+    },
+    {
+      "name": "ts-query-cqrs",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/ts-query-cqrs"
+      },
+      "description": "Read-side CQRS queries — *Query ports, find-* read use cases, DTO projections, pagination/filters, Prisma/InMemory.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "typescript", "ddd", "cqrs", "query", "read-model", "prisma"]
     }
   ]
 }
