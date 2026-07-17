@@ -1,0 +1,37 @@
+{
+  "name": "@llodev/ts-query-cqrs",
+  "version": "0.1.0",
+  "description": "Read-side CQRS queries — *Query ports, find-* read use cases, DTO projections, pagination/filters, Prisma/InMemory.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-query-cqrs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ts-query-cqrs"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "typescript",
+    "ddd",
+    "cqrs",
+    "query",
+    "read-model",
+    "prisma"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

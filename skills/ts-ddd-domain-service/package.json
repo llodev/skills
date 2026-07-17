@@ -1,0 +1,36 @@
+{
+  "name": "@llodev/ts-ddd-domain-service",
+  "version": "0.1.0",
+  "description": "Domain services for logic that spans entities — stateless policies/calculators returning Result.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-domain-service",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ts-ddd-domain-service"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "typescript",
+    "ddd",
+    "domain-service",
+    "policy",
+    "result"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

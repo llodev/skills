@@ -1,0 +1,36 @@
+{
+  "name": "@llodev/ts-ddd-value-object",
+  "version": "0.1.0",
+  "description": "Value objects — ValueObject + Result, closed-set + composite VOs, tryCreate/create, normalization.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-value-object",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ts-ddd-value-object"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "typescript",
+    "ddd",
+    "value-object",
+    "vo",
+    "result"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
