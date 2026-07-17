@@ -30,7 +30,7 @@ The Claude Code marketplace bundle installs the cascade automatically — see th
 ## What's inside
 
 - **Phases 1–3** of the extraction pipeline (plan input → structured sections → canonical generic card) — the same shape every adapter consumes.
-- **6 CRUD verbs** every adapter implements: `task.create`, `checklist.check`, `task.close`, `task.due-date.set`, `task.assignee.add`, `task.comment.add`.
+- **7 CRUD verbs** every adapter implements: `task.create`, `task.move`, `checklist.check`, `task.close`, `task.due-date.set`, `task.assignee.add`, `task.comment.add`. Plus **3 adapter-optional** verbs (`task.parent.set`, `task.estimate.set`, `task.sprint.set`) — **10 canonical verbs** total.
 - **Autonomous-mode contract**: activation sentinels (`[autonomous]` / `--auto`), allowlist gate, scope guardrails, audit log format, continuous-loop expectations across multi-task runs.
 - **Shared init UX library** (`@llodev/pm-tasks-core/init-lib`) consumed by every adapter's `init` script — i18n strings, `promptLocale`, `loadStrings`, platform-aware config dir resolver.
 - **References** in [`references/`](./references/): `contract.md`, `crud-vocabulary.md`, `autonomous-mode.md`, `generic-card.md`, `audit-log-format.md`, `init-ux.md`.

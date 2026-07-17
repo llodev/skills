@@ -99,6 +99,8 @@ npx @llodev/pm-tasks-linear init --doctor
 
 **save_issue upsert:** When `id` is absent, `save_issue` **creates** a new issue. Always pass `id` on updates — omitting it silently creates a duplicate.
 
+**Lifecycle fidelity:** `task.create` writes the plan due-date to `dueDate`. Start (`startedAt`) and close (`completedAt`) are auto-stamped natively by the existing `task.move` / `task.close` calls — no extra calls needed — and `dueDate` (the plan) is **never overwritten**. See [`references/operations.md`](./references/operations.md) § Temporal handling and [`pm-tasks-core`'s lifecycle-fidelity reference](../pm-tasks-core/references/lifecycle-fidelity.md).
+
 ## Documentation
 
 - [`SKILL.md`](SKILL.md) — full skill reference (routing, Linear model, all phases, CRUD verbs, result envelope)
