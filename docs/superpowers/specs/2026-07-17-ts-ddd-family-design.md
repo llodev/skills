@@ -33,8 +33,9 @@ These are **knowledge/guide skills — no MCP, no runtime dist**. The work is pa
 
 ## 4. Templates (exact molds)
 
-- **Per-skill packaging** mirrors `skills/django-schema-design/`: `package.json`, `README.md`, `docs/i18n/README.pt-BR.md`, `docs/i18n/README.es-ES.md`, `LICENSE`, `CHANGELOG.md`. Existing `SKILL.md`, `references/`, `agents/`, `examples/` stay.
-  - Note vs django mold: ts-ddd skills also ship `agents/` and `examples/` dirs → both MUST be listed in `package.json` `files`.
+- **Per-skill packaging** mirrors `skills/django-schema-design/`: `package.json`, `README.md`, `docs/i18n/README.pt-BR.md`, `docs/i18n/README.es-ES.md`, `LICENSE`, `CHANGELOG.md`. Existing `SKILL.md`, `references/`, `examples/` stay.
+  - Note vs django mold: ts-ddd skills also ship an `examples/` dir → it MUST be listed in `package.json` `files`.
+  - **`agents/openai.yaml` is removed from all 8.** It is a Codex interface manifest (display_name/default_prompt) present only in this family; nothing in the repo (scripts, marketplace, SKILL.md, publishing) consumes it, and neither the django nor pm-tasks molds ship an `agents/` dir. Dropped for consistency + clean `files` surface. Reversible if `agents/` is later standardized across all families.
 - **Meta-package** mirrors `packages/pm-tasks/`: `package.json` (`peerDependencies` of the 8 skills at `^0.1.0`; `devDependencies` at `workspace:*`; `files: ["README.md"]`), `README.md`, `LICENSE`, `CHANGELOG.md`. Meta is **npm-only — NOT a marketplace plugin** (confirmed: marketplace lists individual skills only; `@llodev/pm-tasks` meta is absent from it).
 
 ## 5. Phased plan
