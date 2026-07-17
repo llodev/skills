@@ -62,13 +62,13 @@ if (!r.ok) throw new Error(`task.move failed: ${r.code}`);
 
 | Package                     | Status      | Source                                                   | npm                                 | Vercel CLI                                            |
 | --------------------------- | ----------- | -------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------- |
-| `@llodev/pm-tasks` _(meta)_ | ✅ v3.0.0   | [packages/pm-tasks/](packages/pm-tasks/)                 | `npm i @llodev/pm-tasks`            | —                                                     |
-| `@llodev/pm-tasks-core`     | ✅ v1.4.0   | [skills/pm-tasks-core/](skills/pm-tasks-core/)           | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/skills/pm-tasks-core`   |
-| `@llodev/pm-tasks-asana`    | ✅ v1.4.0   | [skills/pm-tasks-asana/](skills/pm-tasks-asana/)         | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/skills/pm-tasks-asana`  |
-| `@llodev/pm-tasks-trello`   | ✅ v1.4.0   | [skills/pm-tasks-trello/](skills/pm-tasks-trello/)       | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/skills/pm-tasks-trello` |
-| `@llodev/pm-tasks-testkit`  | ✅ v0.1.0   | [packages/pm-tasks-testkit/](packages/pm-tasks-testkit/) | `npm i -D @llodev/pm-tasks-testkit` | —                                                     |
-| `@llodev/pm-tasks-jira`     | ✅ v1.0.0   | [skills/pm-tasks-jira/](skills/pm-tasks-jira/)           | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/skills/pm-tasks-jira`   |
-| `pm-tasks-linear`           | 🔒 scaffold | [skills/pm-tasks-linear/](skills/pm-tasks-linear/)       | —                                   | —                                                     |
+| `@llodev/pm-tasks` _(meta)_ | ✅ v3.1.0   | [packages/pm-tasks/](packages/pm-tasks/)                 | `npm i @llodev/pm-tasks`            | —                                                     |
+| `@llodev/pm-tasks-core`     | ✅ v1.14.0  | [skills/pm-tasks-core/](skills/pm-tasks-core/)           | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/skills/pm-tasks-core`   |
+| `@llodev/pm-tasks-asana`    | ✅ v1.9.0   | [skills/pm-tasks-asana/](skills/pm-tasks-asana/)         | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/skills/pm-tasks-asana`  |
+| `@llodev/pm-tasks-trello`   | ✅ v1.8.0   | [skills/pm-tasks-trello/](skills/pm-tasks-trello/)       | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/skills/pm-tasks-trello` |
+| `@llodev/pm-tasks-testkit`  | ✅ v0.2.0   | [packages/pm-tasks-testkit/](packages/pm-tasks-testkit/) | `npm i -D @llodev/pm-tasks-testkit` | —                                                     |
+| `@llodev/pm-tasks-jira`     | ✅ v1.2.0   | [skills/pm-tasks-jira/](skills/pm-tasks-jira/)           | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/skills/pm-tasks-jira`   |
+| `@llodev/pm-tasks-linear`   | ✅ v1.1.0   | [skills/pm-tasks-linear/](skills/pm-tasks-linear/)       | `npm i @llodev/pm-tasks-linear`     | `npx skills add llodev/skills/skills/pm-tasks-linear` |
 | `pm-tasks-notion`           | 🔒 scaffold | [skills/pm-tasks-notion/](skills/pm-tasks-notion/)       | —                                   | —                                                     |
 | `pm-tasks-clickup`          | 🔒 scaffold | [skills/pm-tasks-clickup/](skills/pm-tasks-clickup/)     | —                                   | —                                                     |
 | `pm-tasks-monday`           | 🔒 scaffold | [skills/pm-tasks-monday/](skills/pm-tasks-monday/)       | —                                   | —                                                     |
@@ -76,10 +76,10 @@ if (!r.ok) throw new Error(`task.move failed: ${r.code}`);
 | `pm-tasks-todoist`          | 🔒 scaffold | [skills/pm-tasks-todoist/](skills/pm-tasks-todoist/)     | —                                   | —                                                     |
 
 > [!NOTE]
-> `scaffold` skills are reserved namespaces with a placeholder `SKILL.md`. Their description tells agents NOT to activate until a real adapter ships.
+> `scaffold` skills are reserved namespaces with a placeholder `SKILL.md`. Their description tells agents NOT to activate until a real adapter ships. 5 scaffolds remain (notion, clickup, monday, bitrix24, todoist) — Linear has shipped and is no longer a scaffold.
 
 > [!NOTE]
-> `@llodev/pm-tasks` (meta) is versioned independently from the family via `onlyUpdatePeerDependentsWhenOutOfRange`. The family is at `v1.x`; meta jumped to `v3.0.0` before decoupling and will stay at `v3.x` until the family reaches `v2.0.0`.
+> `@llodev/pm-tasks` (meta) is versioned independently from the family via `onlyUpdatePeerDependentsWhenOutOfRange`. The family is at `v1.x`; meta jumped to `v3.0.0` before decoupling (currently `v3.1.0`) and will stay at `v3.x` until the family reaches `v2.0.0`.
 
 ### `django-*` — Django design skills
 
@@ -91,6 +91,25 @@ Pure **knowledge** skills for designing production-grade Django apps — no MCP,
 
 > [!NOTE]
 > `django-schema-design` covers the **database-schema** layer (PK strategy, indexes, constraints, migrations). A future `django-model-design` sibling is reserved for the **model layer** (relationships, managers, fat-vs-thin models).
+
+### `@llodev/ts-ddd` — TypeScript DDD design skills
+
+Pure **knowledge** skills for building a TypeScript + DDD codebase — no MCP, no config, no init. They activate on the prompt and inject expert decisions (`Result`-based validation, `cloneWith` state transitions, enum-backed closed sets, Firestore/InMemory adapter pairs) for each architectural layer, plus a CQRS read-side companion.
+
+| Package                         | Status    | Source                                                         | npm                                   | Vercel CLI                                                  |
+| ------------------------------- | --------- | -------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------- |
+| `@llodev/ts-ddd` _(meta)_       | ✅ v0.1.0 | [packages/ts-ddd/](packages/ts-ddd/)                           | `npm i @llodev/ts-ddd`                | —                                                           |
+| `@llodev/ts-ddd-entity`         | ✅ v0.1.0 | [skills/ts-ddd-entity/](skills/ts-ddd-entity/)                 | `npm i @llodev/ts-ddd-entity`         | `npx skills add llodev/skills/skills/ts-ddd-entity`         |
+| `@llodev/ts-ddd-value-object`   | ✅ v0.1.0 | [skills/ts-ddd-value-object/](skills/ts-ddd-value-object/)     | `npm i @llodev/ts-ddd-value-object`   | `npx skills add llodev/skills/skills/ts-ddd-value-object`   |
+| `@llodev/ts-ddd-dto`            | ✅ v0.1.0 | [skills/ts-ddd-dto/](skills/ts-ddd-dto/)                       | `npm i @llodev/ts-ddd-dto`            | `npx skills add llodev/skills/skills/ts-ddd-dto`            |
+| `@llodev/ts-ddd-use-case`       | ✅ v0.1.0 | [skills/ts-ddd-use-case/](skills/ts-ddd-use-case/)             | `npm i @llodev/ts-ddd-use-case`       | `npx skills add llodev/skills/skills/ts-ddd-use-case`       |
+| `@llodev/ts-ddd-repository`     | ✅ v0.1.0 | [skills/ts-ddd-repository/](skills/ts-ddd-repository/)         | `npm i @llodev/ts-ddd-repository`     | `npx skills add llodev/skills/skills/ts-ddd-repository`     |
+| `@llodev/ts-ddd-controller`     | ✅ v0.1.0 | [skills/ts-ddd-controller/](skills/ts-ddd-controller/)         | `npm i @llodev/ts-ddd-controller`     | `npx skills add llodev/skills/skills/ts-ddd-controller`     |
+| `@llodev/ts-ddd-domain-service` | ✅ v0.1.0 | [skills/ts-ddd-domain-service/](skills/ts-ddd-domain-service/) | `npm i @llodev/ts-ddd-domain-service` | `npx skills add llodev/skills/skills/ts-ddd-domain-service` |
+| `@llodev/ts-query-cqrs`         | ✅ v0.1.0 | [skills/ts-query-cqrs/](skills/ts-query-cqrs/)                 | `npm i @llodev/ts-query-cqrs`         | `npx skills add llodev/skills/skills/ts-query-cqrs`         |
+
+> [!NOTE]
+> `ts-query-cqrs` is the read-side companion — it covers `*Query` ports and `find-*` read use cases that stay separate from the write-side `ts-ddd-repository`/`ts-ddd-use-case` pair. Install `@llodev/ts-ddd` to pull in all 8 skills at once.
 
 ## Agent compatibility
 
@@ -112,11 +131,21 @@ Non-skill workspace packages (the meta-package, test kit) live under `packages/`
 │   ├── pm-tasks-asana/        Asana adapter (parent + subtasks, custom fields, sections)
 │   ├── pm-tasks-trello/       Trello adapter (boards, lists, labels, members)
 │   ├── pm-tasks-jira/         Jira adapter (epics, estimates, transitions)
-│   ├── pm-tasks-<member>/     Reserved scaffolds (Linear, Notion, ClickUp, …)
-│   └── django-schema-design/  Schema design: PK strategy, indexes, constraints, migrations
+│   ├── pm-tasks-linear/       Linear adapter (cycles, labels, native temporal fields)
+│   ├── pm-tasks-<member>/     Reserved scaffolds (Notion, ClickUp, Monday, Bitrix24, Todoist)
+│   ├── django-schema-design/  Schema design: PK strategy, indexes, constraints, migrations
+│   ├── ts-ddd-entity/         Domain entities: Entity base, Result.combine, cloneWith transitions
+│   ├── ts-ddd-value-object/   Value objects: closed-set + composite VOs, tryCreate/create
+│   ├── ts-ddd-dto/            DTOs & contracts: Zod 4 schemas, z.infer types, closed-set enums
+│   ├── ts-ddd-use-case/       Application use cases: UseCase<IN,OUT>, repo-port orchestration
+│   ├── ts-ddd-repository/     Repository ports + adapters: Firestore/InMemory pair, DI token
+│   ├── ts-ddd-controller/     HTTP controllers: routes, guards, Zod validation, Result→HTTP
+│   ├── ts-ddd-domain-service/ Domain services: stateless policies/calculators returning Result
+│   └── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
 ├── packages/                  Non-skill workspace packages (no SKILL.md)
 │   ├── pm-tasks/              Meta-package — installs the whole pm-tasks family
-│   └── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
+│   ├── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
+│   └── ts-ddd/                Meta-package — installs the whole ts-ddd family
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
@@ -137,22 +166,19 @@ Releases follow the [Changesets](https://github.com/changesets/changesets) workf
 
 ## Roadmap
 
-Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool adapters. Full detail with priorities and rationale in [`docs/roadmap.md`](docs/roadmap.md).
+Active focus: adapter expansion (Jira, Linear) has shipped, and the cross-cutting **Lifecycle Fidelity** program landed across all 5 released adapters. Current priority is stabilizing and dogfooding the 5 released adapters (core, asana, trello, jira, linear); further adapters are demand-driven from the scaffold pool, not scheduled. Full detail with priorities and rationale in [`docs/roadmap.md`](docs/roadmap.md).
 
-**Recently delivered (`v1.8.0` → `v1.11.0`):**
+**Recently delivered (`v1.8.0` → Lifecycle Fidelity):**
 
 - `v1.8.0` (minor) — **Observability v1**: smart `audit.log` rotation (size + age + multi-tool, atomic, idempotent) · `pm-tasks-core-doctor` CLI · adapter `--doctor` flags.
 - `v1.9.0` (minor) — **Headless runtime + plan-execution**: `/adapter` subpath (`createAdapter`, 7 verbs, stubbable `McpCaller`) · agent-agnostic `/plan-execution` mode (config gate, plan-task discovery, `onTaskStart`/`onTaskComplete` boundary hooks).
 - `v1.10.0` (minor) — **Canary publish**: per-PR `0.0.0-pr-<N>-<sha>` under dist-tag `pr-<N>` · `--from-canary` E2E (installs from real npm) · auto-cleanup on close (untag + unpublish/deprecate) · doctor `C-VER-1` probe + pre-release `-pr-` guard.
 - `v1.11.0` (minor) — **pm-tasks-jira v1.0.0**: first Jira adapter (9 verbs, headless `/adapter`, init + doctor, F3 `task.parent.set` + F7 `task.estimate.set`, estimation module) · core: estimation types + `normalizeEstimate` helper.
+- **pm-tasks-jira v1.2.0** and **pm-tasks-linear v1.0.0 → v1.1.0** — jira's estimation/lifecycle follow-ups, and the new Linear adapter (Cycles, labels), both carried forward through the Lifecycle Fidelity program below.
+- **Lifecycle Fidelity** (core → asana `v1.9.0` → trello `v1.8.0` → jira `v1.2.0` → linear `v1.1.0`) — create-time typed `dueDate` across all adapters, plus start/close temporal handling: native no-overwrite semantics for asana/jira/linear, overwrite + description-footer for trello.
 
-**What's next:**
+**Adapter expansion — demand-driven (no committed order or version):**
 
-- **`pm-tasks-linear` (S2, `v1.12.0`)** — next new adapter. Linear MCP; `Cycle` aligns natively with our verb model. See [docs/roadmap.md](docs/roadmap.md).
-
-**Adapter expansion (`v1.12.0+`):**
-
-- `pm-tasks-linear` (S2) — Linear MCP. Premium dev mindshare; `Cycle` aligns natively with our verb model.
 - `pm-tasks-github-projects` (S8) — `github-mcp-server` native PM on GitHub; high value, low cost.
 - `pm-tasks-clickup` (S3) · `pm-tasks-notion` (S4) · `pm-tasks-monday` (S5) · `pm-tasks-todoist` (S6) · `pm-tasks-bitrix24` (S7).
 
@@ -170,9 +196,9 @@ Active focus: hardening the `pm-tasks-*` foundation before shipping new PM tool 
 
 - `django-schema-design` (`v0.1.0`) — **shipped**: PK strategy (incremental / UUIDv4 / UUIDv7 with insert-locality trade-offs), indexes, constraints, and safe migrations. First of several planned Django-context skills; `django-model-design` (model layer) is the natural next.
 
-**Future families:**
+**New family — `ts-ddd-*` (TypeScript DDD design skills):**
 
-- **`ts-ddd-*`** — Domain-Driven Design building blocks for TypeScript codebases (entities, value objects, use cases, repositories, controllers).
+- 8 skills **shipped** at `v0.1.0`: `ts-ddd-entity`, `ts-ddd-value-object`, `ts-ddd-dto`, `ts-ddd-use-case`, `ts-ddd-repository`, `ts-ddd-controller`, `ts-ddd-domain-service`, plus the read-side `ts-query-cqrs`. Project-agnostic DDD building blocks for TypeScript codebases — `Result`-based validation, closed-set enums, Firestore/InMemory adapter pairs, and CQRS read/write separation. Install the whole family with `@llodev/ts-ddd` (meta).
 
 ## Docs
 

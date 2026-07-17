@@ -58,5 +58,53 @@
     "rubricChecksum": "manual",
     "rubricVersion": "v1",
     "totalRaw": 80
+  },
+  "skills/ts-ddd-controller/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 84
+  },
+  "skills/ts-ddd-domain-service/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 88
+  },
+  "skills/ts-ddd-dto/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 80
+  },
+  "skills/ts-ddd-entity/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 93
+  },
+  "skills/ts-ddd-repository/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 88
+  },
+  "skills/ts-ddd-use-case/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 88
+  },
+  "skills/ts-ddd-value-object/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 92
+  },
+  "skills/ts-query-cqrs/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 76
   }
 }

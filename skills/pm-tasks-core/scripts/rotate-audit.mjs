@@ -52,8 +52,7 @@ if (!parsed.tool) {
   process.exit(2);
 }
 
-const resolvedLogPath =
-  parsed.logPath ?? join(resolveDataDir(parsed.tool), "audit.log");
+const resolvedLogPath = parsed.logPath ?? join(resolveDataDir(parsed.tool), "audit.log");
 
 const rotateOpts = {
   logPath: resolvedLogPath,
@@ -72,8 +71,6 @@ try {
   process.stdout.write(JSON.stringify(output) + "\n");
   process.exit(0);
 } catch (err) {
-  process.stderr.write(
-    `error: ${err instanceof Error ? err.message : String(err)}\n`,
-  );
+  process.stderr.write(`error: ${err instanceof Error ? err.message : String(err)}\n`);
   process.exit(1);
 }

@@ -104,6 +104,7 @@ npx @llodev/pm-tasks-jira init --doctor
 - **Estimation records effort, never a calendar deadline.** Story Points need a board field — `init` auto-detects it (`customfield_10016` by default); if it's absent, `task.estimate.set` returns `INVALID_REQUEST` with a hint to enable it. The human-readable original is preserved as an idempotent `est:` label.
 - **Due dates on a sub-task** return `NOT_APPLICABLE` — team-managed Jira sub-tasks don't carry their own due date.
 - **Issue types are read from config** (`issueTypes{}`, locale-specific names) — never hard-coded. See [`anti-patterns/jira.md`](./anti-patterns/jira.md).
+- **Lifecycle fidelity:** `task.create` writes the plan due-date to `duedate`. At `task.close` (transition to Done), Jira auto-stamps `resolutiondate` as the actual completion and `duedate` (the plan) is **never overwritten**. There is no wired start-date field — start tracking is documented-optional. See [`references/operations.md`](./references/operations.md) § Temporal handling and [`pm-tasks-core`'s lifecycle-fidelity reference](../pm-tasks-core/references/lifecycle-fidelity.md).
 
 ## Documentation
 

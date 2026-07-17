@@ -7,9 +7,7 @@ import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path
-  .resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
-  .replace(/\/$/, "");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..").replace(/\/$/, "");
 
 // Pattern → { regex, caseSensitive }
 const BANNED = [
@@ -109,9 +107,7 @@ async function main() {
   }
 
   // The lint rule's own design doc is self-exempt (it must contain the patterns).
-  allViolations = allViolations.filter(
-    (v) => !v.file.endsWith("/agent-agnostic-lint.md"),
-  );
+  allViolations = allViolations.filter((v) => !v.file.endsWith("/agent-agnostic-lint.md"));
 
   if (allViolations.length === 0) {
     console.log("agent-agnostic-lint: ✓ no violations");
@@ -119,9 +115,7 @@ async function main() {
   }
   console.error(`agent-agnostic-lint: ${allViolations.length} violation(s)`);
   for (const v of allViolations) {
-    console.error(
-      `  ${path.relative(ROOT, v.file)}:${v.line}  ${v.pattern}  → ${v.snippet}`,
-    );
+    console.error(`  ${path.relative(ROOT, v.file)}:${v.line}  ${v.pattern}  → ${v.snippet}`);
   }
   process.exit(1);
 }

@@ -1,0 +1,36 @@
+{
+  "name": "@llodev/ts-ddd-repository",
+  "version": "0.1.0",
+  "description": "Repository ports + adapters — Firestore/InMemory pair, toFirestore/fromFirestore, DI token, contract tests.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-repository",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ts-ddd-repository"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "typescript",
+    "ddd",
+    "repository",
+    "firestore",
+    "persistence"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

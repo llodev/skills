@@ -87,6 +87,7 @@ The `init` prompt prints the absolute path it will write to, so you always see e
 
 - **Assignee is a single field** — use `task.assignee.add` to add followers; the primary assignee replaces on conflict.
 - **MCP `get_task` doesn't return activity stories** — the Asana UI activity feed is the source of truth for attribution audits. See [`anti-patterns/asana.md`](./anti-patterns/asana.md).
+- **Lifecycle fidelity:** `task.create` writes the plan due-date to `due_on`; moving a task to WIP stamps `start_on` (re-sending `due_on`, as the MCP requires); at `task.close`, Asana's native `completed_at` records the actual completion timestamp and `due_on` (the plan) is **never overwritten**. See [`references/operations.md`](./references/operations.md) § Temporal handling and [`pm-tasks-core`'s lifecycle-fidelity reference](../pm-tasks-core/references/lifecycle-fidelity.md).
 
 ## Documentation
 
