@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-dto",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "DTOs & contracts — Zod 4 schemas paired with z.infer types, enum-backed closed sets, input/output/read projections.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-dto",

@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-value-object",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Value objects — ValueObject + Result, closed-set + composite VOs, tryCreate/create, normalization.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-value-object",

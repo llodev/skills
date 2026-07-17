@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-repository",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Repository ports + adapters — Firestore/InMemory pair, toFirestore/fromFirestore, DI token, contract tests.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-repository",

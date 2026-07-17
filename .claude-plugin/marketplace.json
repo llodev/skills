@@ -116,7 +116,7 @@
         "path": "skills/ts-ddd-controller"
       },
       "description": "HTTP controllers in a TypeScript + DDD API — routes, guards, Zod validation, use-case orchestration, Result→HTTP mapping.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -131,7 +131,7 @@
         "path": "skills/ts-ddd-domain-service"
       },
       "description": "Domain services for logic that spans entities — stateless policies/calculators returning Result.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -146,7 +146,7 @@
         "path": "skills/ts-ddd-dto"
       },
       "description": "DTOs & contracts — Zod 4 schemas paired with z.infer types, enum-backed closed sets, input/output/read projections.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -161,7 +161,7 @@
         "path": "skills/ts-ddd-entity"
       },
       "description": "Domain entities — Entity base, create/tryCreate with Result.combine, VO normalization, state transitions via cloneWith.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -176,7 +176,7 @@
         "path": "skills/ts-ddd-repository"
       },
       "description": "Repository ports + adapters — Firestore/InMemory pair, toFirestore/fromFirestore, DI token, contract tests.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -191,7 +191,7 @@
         "path": "skills/ts-ddd-use-case"
       },
       "description": "Application use cases — UseCase<IN,OUT>, @Injectable() + repo-port orchestration, Result.ok/fail/combine.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -206,7 +206,7 @@
         "path": "skills/ts-ddd-value-object"
       },
       "description": "Value objects — ValueObject + Result, closed-set + composite VOs, tryCreate/create, normalization.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
@@ -221,7 +221,7 @@
         "path": "skills/ts-query-cqrs"
       },
       "description": "Read-side CQRS queries — *Query ports, find-* read use cases, DTO projections, pagination/filters, Prisma/InMemory.",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "author": {
         "name": "llodev"
       },
