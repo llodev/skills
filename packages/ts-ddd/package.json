@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Meta-package: installs the entire @llodev/ts-ddd-* family (entity, value-object, dto, use-case, repository, controller, domain-service + ts-query-cqrs).",
   "license": "MIT",
   "repository": {

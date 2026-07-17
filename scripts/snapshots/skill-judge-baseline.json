@@ -63,48 +63,48 @@
     "score": 84,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 83 from Task 0; delta +1 (package-name portability fix)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 83 from Task 0; delta +1 (package-name portability fix). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-ddd-domain-service/SKILL.md": {
     "score": 88,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder, description's explicit 'your-best-day monorepo' framing removed, Codex agents/ manifest dropped; before-score 85 from Task 0; delta +3 (description fix + portability)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder, description's explicit 'your-best-day monorepo' framing removed, Codex agents/ manifest dropped; before-score 85 from Task 0; delta +3 (description fix + portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-ddd-dto/SKILL.md": {
     "score": 80,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (was highest your-best-day mention count in family, now 0), Codex agents/ manifest dropped; before-score 78 from Task 0; delta +2 (portability)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (was highest your-best-day mention count in family, now 0), Codex agents/ manifest dropped; before-score 78 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-ddd-entity/SKILL.md": {
     "score": 93,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 91 from Task 0; delta +2 (portability)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 91 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-ddd-repository/SKILL.md": {
     "score": 88,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 87 from Task 0; delta +1 (portability)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 87 from Task 0; delta +1 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-ddd-use-case/SKILL.md": {
     "score": 88,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 86 from Task 0; delta +2 (portability)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 86 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-ddd-value-object/SKILL.md": {
     "score": 92,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 90 from Task 0; delta +2 (portability)."
+    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 90 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   },
   "skills/ts-query-cqrs/SKILL.md": {
     "score": 76,
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; already decoupled at Task 0 (0 your-best-day/celebrations refs before or after), Codex agents/ manifest dropped; before-score 76 from Task 0; delta 0 (no coupling fix applicable, generalization neutral)."
+    "notes": "ts-ddd first packaging; already decoupled at Task 0 (0 your-best-day/celebrations refs before or after), Codex agents/ manifest dropped; before-score 76 from Task 0; delta 0 (no coupling fix applicable, generalization neutral). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
   }
 }

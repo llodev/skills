@@ -1,6 +1,16 @@
 ---
 name: ts-ddd-controller
-description: "Create, review, or guide HTTP controllers in a TypeScript + DDD api. Use when the request involves `*.controller.ts` under `apps/api/src/<bc>/presentation/controllers/`, route definition, `ApiKeyGuard` on mutations, `ZodValidationPipe` against `@acme/<bc>-contracts` schemas, use case orchestration, mapping `Result` to HTTP via `mapResultToHttp`, signed-URL enrichment through a response mapper, HTTP status conventions (200/201/204), or controller tests using `@nestjs/testing` + `supertest` with an in-memory repository."
+description: >-
+  Create, review, or guide HTTP controllers in a TypeScript + DDD api. Use when
+  the request involves `*.controller.ts` under
+  `apps/api/src/<bc>/presentation/controllers/`, route definition, `ApiKeyGuard`
+  on mutations, `ZodValidationPipe` against `@acme/<bc>-contracts` schemas, use
+  case orchestration, mapping `Result` to HTTP via `mapResultToHttp`, signed-URL
+  enrichment through a response mapper, HTTP status conventions (200/201/204),
+  or controller tests using `@nestjs/testing` + `supertest` with an in-memory
+  repository.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Controller

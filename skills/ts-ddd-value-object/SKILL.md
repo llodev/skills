@@ -1,6 +1,16 @@
 ---
 name: ts-ddd-value-object
-description: "Create, review, or guide Value Object implementation in a TypeScript + DDD codebase. Use when the request involves 'value object', 'VO', `*.vo.ts` files (either shared at `libs/shared/src/vo/...` or BC-local at `apps/api/src/<bc>/domain/value-objects/...`), domain attribute validation/normalization, closed-set VOs derived from string enums (PaletteKey-style), composite-value VOs (ImageRef-style), `ValueObject` + `Result` pattern, `ValueObjectConfig`, `tryCreate`/`create` dual API, or VO test coverage."
+description: >-
+  Create, review, or guide Value Object implementation in a TypeScript + DDD
+  codebase. Use when the request involves 'value object', 'VO', `*.vo.ts` files
+  (either shared at `libs/shared/src/vo/...` or BC-local at
+  `apps/api/src/<bc>/domain/value-objects/...`), domain attribute
+  validation/normalization, closed-set VOs derived from string enums
+  (PaletteKey-style), composite-value VOs (ImageRef-style), `ValueObject` +
+  `Result` pattern, `ValueObjectConfig`, `tryCreate`/`create` dual API, or VO
+  test coverage.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Value Object

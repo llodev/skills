@@ -22,7 +22,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "plan-to-tasks", "pm-tools", "task-extraction", "crud-verbs"]
+      "keywords": [
+        "agent-skill",
+        "plan-to-tasks",
+        "pm-tools",
+        "task-extraction",
+        "crud-verbs"
+      ]
     },
     {
       "name": "pm-tasks-trello",
@@ -37,7 +43,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "trello", "plan-to-tasks", "pm-tools", "trello-mcp"]
+      "keywords": [
+        "agent-skill",
+        "trello",
+        "plan-to-tasks",
+        "pm-tools",
+        "trello-mcp"
+      ]
     },
     {
       "name": "pm-tasks-asana",
@@ -52,7 +64,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "asana", "plan-to-tasks", "pm-tools", "asana-mcp"]
+      "keywords": [
+        "agent-skill",
+        "asana",
+        "plan-to-tasks",
+        "pm-tools",
+        "asana-mcp"
+      ]
     },
     {
       "name": "pm-tasks-jira",
@@ -67,7 +85,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "jira", "atlassian", "plan-to-tasks", "pm-tools", "atlassian-mcp"]
+      "keywords": [
+        "agent-skill",
+        "jira",
+        "atlassian",
+        "plan-to-tasks",
+        "pm-tools",
+        "atlassian-mcp"
+      ]
     },
     {
       "name": "pm-tasks-linear",
@@ -82,7 +107,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "linear", "plan-to-tasks", "pm-tools", "linear-mcp"]
+      "keywords": [
+        "agent-skill",
+        "linear",
+        "plan-to-tasks",
+        "pm-tools",
+        "linear-mcp"
+      ]
     },
     {
       "name": "django-schema-design",
@@ -116,11 +147,19 @@
         "path": "skills/ts-ddd-controller"
       },
       "description": "HTTP controllers in a TypeScript + DDD API — routes, guards, Zod validation, use-case orchestration, Result→HTTP mapping.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "controller", "nestjs", "http", "zod"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "controller",
+        "nestjs",
+        "http",
+        "zod"
+      ]
     },
     {
       "name": "ts-ddd-domain-service",
@@ -131,11 +170,18 @@
         "path": "skills/ts-ddd-domain-service"
       },
       "description": "Domain services for logic that spans entities — stateless policies/calculators returning Result.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "domain-service", "policy", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "domain-service",
+        "policy",
+        "result"
+      ]
     },
     {
       "name": "ts-ddd-dto",
@@ -146,11 +192,19 @@
         "path": "skills/ts-ddd-dto"
       },
       "description": "DTOs & contracts — Zod 4 schemas paired with z.infer types, enum-backed closed sets, input/output/read projections.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "dto", "zod", "contracts", "cqrs"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "dto",
+        "zod",
+        "contracts",
+        "cqrs"
+      ]
     },
     {
       "name": "ts-ddd-entity",
@@ -161,11 +215,18 @@
         "path": "skills/ts-ddd-entity"
       },
       "description": "Domain entities — Entity base, create/tryCreate with Result.combine, VO normalization, state transitions via cloneWith.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "entity", "aggregate", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "entity",
+        "aggregate",
+        "result"
+      ]
     },
     {
       "name": "ts-ddd-repository",
@@ -176,11 +237,18 @@
         "path": "skills/ts-ddd-repository"
       },
       "description": "Repository ports + adapters — Firestore/InMemory pair, toFirestore/fromFirestore, DI token, contract tests.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "repository", "firestore", "persistence"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "repository",
+        "firestore",
+        "persistence"
+      ]
     },
     {
       "name": "ts-ddd-use-case",
@@ -191,11 +259,18 @@
         "path": "skills/ts-ddd-use-case"
       },
       "description": "Application use cases — UseCase<IN,OUT>, @Injectable() + repo-port orchestration, Result.ok/fail/combine.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "use-case", "application", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "use-case",
+        "application",
+        "result"
+      ]
     },
     {
       "name": "ts-ddd-value-object",
@@ -206,11 +281,18 @@
         "path": "skills/ts-ddd-value-object"
       },
       "description": "Value objects — ValueObject + Result, closed-set + composite VOs, tryCreate/create, normalization.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "value-object", "vo", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "value-object",
+        "vo",
+        "result"
+      ]
     },
     {
       "name": "ts-query-cqrs",
@@ -221,11 +303,19 @@
         "path": "skills/ts-query-cqrs"
       },
       "description": "Read-side CQRS queries — *Query ports, find-* read use cases, DTO projections, pagination/filters, Prisma/InMemory.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "cqrs", "query", "read-model", "prisma"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "cqrs",
+        "query",
+        "read-model",
+        "prisma"
+      ]
     }
   ]
 }

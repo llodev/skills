@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-controller",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "HTTP controllers in a TypeScript + DDD API — routes, guards, Zod validation, use-case orchestration, Result→HTTP mapping.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-controller",

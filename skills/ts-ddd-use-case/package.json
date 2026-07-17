@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-use-case",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Application use cases — UseCase<IN,OUT>, @Injectable() + repo-port orchestration, Result.ok/fail/combine.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-use-case",

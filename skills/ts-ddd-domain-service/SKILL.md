@@ -1,6 +1,17 @@
 ---
 name: ts-ddd-domain-service
-description: "Create, review, or guide pure Domain Service implementation in a TypeScript + DDD monorepo. Use when the request involves `*.service.ts` files inside `apps/api/src/<bc>/domain/services/`, domain policies, pure calculations/rules across multiple entities/VOs, naming patterns (`*Policy`, `*Calculator`, `*Resolver`, `*Specification`), branching on closed-set enums (status / kind / role) from `@acme/celebrations-contracts`, or tests in `apps/api/test/<bc>/domain/services/`. Scope is the *pure* domain layer; for orchestrators that need a repository or other I/O (e.g. `SlugAllocator`), see the sibling `application/services/` section at the end."
+description: >-
+  Create, review, or guide pure Domain Service implementation in a TypeScript +
+  DDD monorepo. Use when the request involves `*.service.ts` files inside
+  `apps/api/src/<bc>/domain/services/`, domain policies, pure calculations/rules
+  across multiple entities/VOs, naming patterns (`*Policy`, `*Calculator`,
+  `*Resolver`, `*Specification`), branching on closed-set enums (status / kind /
+  role) from `@acme/celebrations-contracts`, or tests in
+  `apps/api/test/<bc>/domain/services/`. Scope is the *pure* domain layer; for
+  orchestrators that need a repository or other I/O (e.g. `SlugAllocator`), see
+  the sibling `application/services/` section at the end.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Domain Service

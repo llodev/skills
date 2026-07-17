@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd-entity",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Domain entities — Entity base, create/tryCreate with Result.combine, VO normalization, state transitions via cloneWith.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ts-ddd-entity",

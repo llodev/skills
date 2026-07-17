@@ -1,6 +1,17 @@
 ---
 name: ts-ddd-dto
-description: "Create, review, or guide Data Transfer Objects in a TypeScript + DDD monorepo. Use when the request involves the per-BC contracts package (`libs/contracts/<bc>/src/{interfaces,schemas,dtos}/`), Zod 4 schemas paired with `z.infer` DTO types, closed-set values modelled as string-backed `XxxEnum` (with `z.literal(EnumName.X)` for discriminators and `z.nativeEnum(EnumName)` for full-set validators), input contracts (`CreateXxxDTO`, `UpdateXxxDTO`), output contracts (`XxxResponseDTO`), CQRS read projections, pagination/filters/metadata, or wire-shape changes consumed by both `apps/api` and `apps/web`."
+description: >-
+  Create, review, or guide Data Transfer Objects in a TypeScript + DDD monorepo.
+  Use when the request involves the per-BC contracts package
+  (`libs/contracts/<bc>/src/{interfaces,schemas,dtos}/`), Zod 4 schemas paired
+  with `z.infer` DTO types, closed-set values modelled as string-backed
+  `XxxEnum` (with `z.literal(EnumName.X)` for discriminators and
+  `z.nativeEnum(EnumName)` for full-set validators), input contracts
+  (`CreateXxxDTO`, `UpdateXxxDTO`), output contracts (`XxxResponseDTO`), CQRS
+  read projections, pagination/filters/metadata, or wire-shape changes consumed
+  by both `apps/api` and `apps/web`.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD DTO

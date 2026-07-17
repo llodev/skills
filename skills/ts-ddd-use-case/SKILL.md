@@ -1,6 +1,19 @@
 ---
 name: ts-ddd-use-case
-description: "Create, review, or guide use case (application service) implementation in a TypeScript + DDD codebase. Use when the request involves `*.usecase.ts` files under `apps/api/src/<bc>/application/usecases/`, `application/services/<name>.service.ts` orchestrators, `UseCase<IN,OUT>` from `@acme/shared`, NestJS `@Injectable()` + `@Inject(<REPO_TOKEN>)` wiring, `Result.ok` / `Result.fail` / `withFail` / `Result.combine`, repository-port orchestration (`findBySlug`, `save`, `listByStatus`), aggregate state-transitions (`publish`, `addSection`), enum-typed inputs (`CelebrationKind`, `CelebrationStatusEnum.DRAFT`), or use-case tests under `apps/api/test/<bc>/application/usecases/` using `InMemoryCelebrationRepository`."
+description: >-
+  Create, review, or guide use case (application service) implementation in a
+  TypeScript + DDD codebase. Use when the request involves `*.usecase.ts` files
+  under `apps/api/src/<bc>/application/usecases/`,
+  `application/services/<name>.service.ts` orchestrators, `UseCase<IN,OUT>` from
+  `@acme/shared`, NestJS `@Injectable()` + `@Inject(<REPO_TOKEN>)` wiring,
+  `Result.ok` / `Result.fail` / `withFail` / `Result.combine`, repository-port
+  orchestration (`findBySlug`, `save`, `listByStatus`), aggregate
+  state-transitions (`publish`, `addSection`), enum-typed inputs
+  (`CelebrationKind`, `CelebrationStatusEnum.DRAFT`), or use-case tests under
+  `apps/api/test/<bc>/application/usecases/` using
+  `InMemoryCelebrationRepository`.
+metadata:
+  version: 0.1.0
 ---
 
 # TypeScript DDD Use Case
