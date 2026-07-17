@@ -92,6 +92,25 @@ Pure **knowledge** skills for designing production-grade Django apps — no MCP,
 > [!NOTE]
 > `django-schema-design` covers the **database-schema** layer (PK strategy, indexes, constraints, migrations). A future `django-model-design` sibling is reserved for the **model layer** (relationships, managers, fat-vs-thin models).
 
+### `@llodev/ts-ddd` — TypeScript DDD design skills
+
+Pure **knowledge** skills for building a TypeScript + DDD codebase — no MCP, no config, no init. They activate on the prompt and inject expert decisions (`Result`-based validation, `cloneWith` state transitions, enum-backed closed sets, Firestore/InMemory adapter pairs) for each architectural layer, plus a CQRS read-side companion.
+
+| Package                         | Status    | Source                                                         | npm                                   | Vercel CLI                                                  |
+| ------------------------------- | --------- | -------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------- |
+| `@llodev/ts-ddd` _(meta)_       | ✅ v0.1.0 | [packages/ts-ddd/](packages/ts-ddd/)                           | `npm i @llodev/ts-ddd`                | —                                                           |
+| `@llodev/ts-ddd-entity`         | ✅ v0.1.0 | [skills/ts-ddd-entity/](skills/ts-ddd-entity/)                 | `npm i @llodev/ts-ddd-entity`         | `npx skills add llodev/skills/skills/ts-ddd-entity`         |
+| `@llodev/ts-ddd-value-object`   | ✅ v0.1.0 | [skills/ts-ddd-value-object/](skills/ts-ddd-value-object/)     | `npm i @llodev/ts-ddd-value-object`   | `npx skills add llodev/skills/skills/ts-ddd-value-object`   |
+| `@llodev/ts-ddd-dto`            | ✅ v0.1.0 | [skills/ts-ddd-dto/](skills/ts-ddd-dto/)                       | `npm i @llodev/ts-ddd-dto`            | `npx skills add llodev/skills/skills/ts-ddd-dto`            |
+| `@llodev/ts-ddd-use-case`       | ✅ v0.1.0 | [skills/ts-ddd-use-case/](skills/ts-ddd-use-case/)             | `npm i @llodev/ts-ddd-use-case`       | `npx skills add llodev/skills/skills/ts-ddd-use-case`       |
+| `@llodev/ts-ddd-repository`     | ✅ v0.1.0 | [skills/ts-ddd-repository/](skills/ts-ddd-repository/)         | `npm i @llodev/ts-ddd-repository`     | `npx skills add llodev/skills/skills/ts-ddd-repository`     |
+| `@llodev/ts-ddd-controller`     | ✅ v0.1.0 | [skills/ts-ddd-controller/](skills/ts-ddd-controller/)         | `npm i @llodev/ts-ddd-controller`     | `npx skills add llodev/skills/skills/ts-ddd-controller`     |
+| `@llodev/ts-ddd-domain-service` | ✅ v0.1.0 | [skills/ts-ddd-domain-service/](skills/ts-ddd-domain-service/) | `npm i @llodev/ts-ddd-domain-service` | `npx skills add llodev/skills/skills/ts-ddd-domain-service` |
+| `@llodev/ts-query-cqrs`         | ✅ v0.1.0 | [skills/ts-query-cqrs/](skills/ts-query-cqrs/)                 | `npm i @llodev/ts-query-cqrs`         | `npx skills add llodev/skills/skills/ts-query-cqrs`         |
+
+> [!NOTE]
+> `ts-query-cqrs` is the read-side companion — it covers `*Query` ports and `find-*` read use cases that stay separate from the write-side `ts-ddd-repository`/`ts-ddd-use-case` pair. Install `@llodev/ts-ddd` to pull in all 8 skills at once.
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -114,10 +133,19 @@ Non-skill workspace packages (the meta-package, test kit) live under `packages/`
 │   ├── pm-tasks-jira/         Jira adapter (epics, estimates, transitions)
 │   ├── pm-tasks-linear/       Linear adapter (cycles, labels, native temporal fields)
 │   ├── pm-tasks-<member>/     Reserved scaffolds (Notion, ClickUp, Monday, Bitrix24, Todoist)
-│   └── django-schema-design/  Schema design: PK strategy, indexes, constraints, migrations
+│   ├── django-schema-design/  Schema design: PK strategy, indexes, constraints, migrations
+│   ├── ts-ddd-entity/         Domain entities: Entity base, Result.combine, cloneWith transitions
+│   ├── ts-ddd-value-object/   Value objects: closed-set + composite VOs, tryCreate/create
+│   ├── ts-ddd-dto/            DTOs & contracts: Zod 4 schemas, z.infer types, closed-set enums
+│   ├── ts-ddd-use-case/       Application use cases: UseCase<IN,OUT>, repo-port orchestration
+│   ├── ts-ddd-repository/     Repository ports + adapters: Firestore/InMemory pair, DI token
+│   ├── ts-ddd-controller/     HTTP controllers: routes, guards, Zod validation, Result→HTTP
+│   ├── ts-ddd-domain-service/ Domain services: stateless policies/calculators returning Result
+│   └── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
 ├── packages/                  Non-skill workspace packages (no SKILL.md)
 │   ├── pm-tasks/              Meta-package — installs the whole pm-tasks family
-│   └── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
+│   ├── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
+│   └── ts-ddd/                Meta-package — installs the whole ts-ddd family
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
@@ -168,9 +196,9 @@ Active focus: adapter expansion (Jira, Linear) has shipped, and the cross-cuttin
 
 - `django-schema-design` (`v0.1.0`) — **shipped**: PK strategy (incremental / UUIDv4 / UUIDv7 with insert-locality trade-offs), indexes, constraints, and safe migrations. First of several planned Django-context skills; `django-model-design` (model layer) is the natural next.
 
-**Future families:**
+**New family — `ts-ddd-*` (TypeScript DDD design skills):**
 
-- **`ts-ddd-*`** — Domain-Driven Design building blocks for TypeScript codebases (entities, value objects, use cases, repositories, controllers).
+- 8 skills **shipped** at `v0.1.0`: `ts-ddd-entity`, `ts-ddd-value-object`, `ts-ddd-dto`, `ts-ddd-use-case`, `ts-ddd-repository`, `ts-ddd-controller`, `ts-ddd-domain-service`, plus the read-side `ts-query-cqrs`. Project-agnostic DDD building blocks for TypeScript codebases — `Result`-based validation, closed-set enums, Firestore/InMemory adapter pairs, and CQRS read/write separation. Install the whole family with `@llodev/ts-ddd` (meta).
 
 ## Docs
 
