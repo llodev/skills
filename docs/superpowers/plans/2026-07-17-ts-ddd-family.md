@@ -111,11 +111,34 @@ Expected: **no output** (exit 1). If anything prints, fix it and re-run.
 Run: `node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-links.mjs`
 Expected: EXIT 0 for both.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Exclude illustrative examples from vitest collection (fixes pre-existing red coverage)**
+
+DISCOVERED IN TASK 0: `pnpm coverage` is **already red on `main`** — the `skills/ts-ddd-*/examples/*.test.ts` files are collected by vitest (`projects: ["skills/*", "packages/*"]`, no `test.exclude`) and fail because they import packages that don't exist in this repo (`@your-best-day/*` → after generalization `@acme/*`, and `@celebrations/*`). These example files are **illustrative documentation, not a runnable suite** — they demonstrate DDD/test patterns and are shipped inside the packages, not executed. Only ts-ddd skills have an `examples/` dir (verified: no pm-tasks/django `examples/`), so excluding `examples/` is scoped to this family.
+
+Edit `vitest.config.ts` to stop collecting example files. Import `configDefaults` and add `**/examples/**` to a root `test.exclude` so defaults are preserved:
+
+```ts
+import { configDefaults, defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    projects: ["skills/*", "packages/*"],
+    exclude: [...configDefaults.exclude, "**/examples/**"],
+    coverage: {
+      // ...unchanged...
+    },
+  },
+});
+```
+
+Run: `pnpm coverage 2>&1 | tail -15`
+Expected: PASS now (the 4 previously-failing example test files are no longer collected; all real `src/**` suites still run). This is the new green baseline all later coverage checks compare against.
+
+- [ ] **Step 6: Commit**
 
 ```bash
-git add skills/ts-ddd-* skills/ts-query-cqrs
-git commit -m "refactor(ts-ddd): generalize skills to @acme/ placeholder, drop Codex agents manifest"
+git add skills/ts-ddd-* skills/ts-query-cqrs vitest.config.ts
+git commit -m "refactor(ts-ddd): generalize skills to @acme/ placeholder, drop Codex agents manifest, exclude illustrative examples from vitest"
 ```
 
 ---
