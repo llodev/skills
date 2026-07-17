@@ -464,9 +464,17 @@ git commit -m "docs(ts-ddd): wire family into marketplace, root README + i18n, r
 - Consumes: everything above.
 - Produces: a release-ready branch that passes `make pre-release`.
 
-- [ ] **Step 1: Resolve the "publish AT 0.1.0" mechanic**
+- [ ] **Step 1: Reset versions to `0.0.0` for a clean first-release bump (CONFIRMED mechanic)**
 
-Changesets bumps the CURRENT `package.json` version. To have the FIRST published version be exactly `0.1.0`, set each new package's `package.json` `version` to `0.0.0` and use a **minor** changeset (0.0.0 + minor → 0.1.0). Update Task 3 Step 1 / Task 4 Step 1 outputs accordingly **iff** verification here shows a double-bump. Verify with a dry run in Step 3 before committing any version edit.
+`changeset:version` = `changeset version && pnpm run version:sync` — `version:sync` mirrors each `package.json` version into `.claude-plugin/marketplace.json` AFTER the bump. `changeset version` bumps the CURRENT `package.json` value, so 0.1.0 + minor → **0.2.0** (wrong). The changesets standard for a first release is to start at **0.0.0** so minor → **0.1.0**. `marketplace-parity` requires `marketplace.plugin.version === package.json.version` (strict equal), so the marketplace plugin versions must match whatever `package.json` holds at all times.
+
+Therefore, reconcile the 0.1.0 values that Tasks 3–5 wrote:
+
+1. Set `version` to `0.0.0` in ALL 9 `package.json`: the 8 `skills/ts-ddd-*/package.json` + `skills/ts-query-cqrs/package.json` + `packages/ts-ddd/package.json`.
+2. Set `version` to `0.0.0` for the 8 ts-ddd plugin entries in `.claude-plugin/marketplace.json` (the meta is not a plugin — leave it out; leave top-level `metadata.version` at `1.12.0`).
+3. Leave the `scripts/snapshots/skill-judge-baseline.json` `"version": "0.1.0"` notes as-is (they label the target release, not the current package version; the baseline test only checks `\d+\.\d+\.\d+`).
+
+Result: on this feature PR everything sits at `0.0.0` (parity green: 0.0.0 == 0.0.0). At `make release-version` the minor changeset bumps all 9 to `0.1.0` and `version:sync` lifts the marketplace plugins to `0.1.0` — the standard changesets two-PR flow (feature@0.0.0 → "Version Packages"@0.1.0 → publish).
 
 - [ ] **Step 2: Write the changeset**
 
@@ -497,7 +505,7 @@ and worked examples. No MCP, no runtime — pure knowledge skills.
 
 - [ ] **Step 3: Dry-run version to confirm 0.1.0 (no double-bump)**
 
-Run: `pnpm changeset version --snapshot dryrun 2>&1 | grep -iE 'ts-ddd|ts-query' | head` (or inspect on a throwaway branch). Confirm each resolves to `0.1.0`, not `0.2.0`. Reconcile per Step 1 if needed. Discard the dry-run changes (`git checkout .` on version-modified files) — the real bump happens at release time, not now.
+On a throwaway state, run `pnpm changeset:version` and inspect the resulting `package.json` versions for the 9 packages — each MUST become `0.1.0` (not `0.2.0`), and `version:sync` MUST lift the 8 marketplace plugins to `0.1.0` too. Then FULLY DISCARD the dry-run: `git checkout -- . && git clean -fd .changeset` is wrong (would drop the real changeset) — instead `git stash` or `git checkout -- <version-modified files>` leaving `.changeset/ts-ddd-family-first-release.md` intact. The real bump happens at release time, not now: after the dry-run the tree must be back to all-`0.0.0` with the changeset present.
 
 - [ ] **Step 4: Full validate + pre-release gate**
 
