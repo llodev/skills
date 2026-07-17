@@ -1,5 +1,11 @@
 # @llodev/pm-tasks
 
+## 3.1.1
+
+### Patch Changes
+
+- [#62](https://github.com/llodev/skills/pull/62) [`01056c4`](https://github.com/llodev/skills/commit/01056c4b4b3f37c574ead17a843505d213444a6c) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - Meta-package now installs the full released family — added `@llodev/pm-tasks-jira` and `@llodev/pm-tasks-linear` to the peer/dev dependencies and the install list (previously only core + Trello + Asana). No API change; installing `@llodev/pm-tasks` now pulls in all five released adapters.
+
 ## 3.1.0
 
 ### Minor Changes

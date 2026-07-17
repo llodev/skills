@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Meta-package: installs the entire @llodev/pm-tasks-* family (core + Trello + Asana + Jira + Linear).",
   "license": "MIT",
   "repository": {
