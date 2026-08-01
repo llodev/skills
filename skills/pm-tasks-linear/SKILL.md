@@ -18,7 +18,7 @@ description: >-
   implement task.sprint.set (via cycles). Requires @llodev/pm-tasks-core.
 license: MIT
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   tags:
     - agent-skill
     - linear
