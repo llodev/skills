@@ -89,6 +89,8 @@ If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (tit
 
 Lookup order: `<git-root>/.trello.json` → `~/.config/llodev/pm-tasks/trello.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — only env vars / keychain.
 
+> **Narration language.** When `.trello.json` sets `locale`, agent-authored narration — comments the agent writes, autonomous commit/PR copy, code comments — MUST use it. The plan's language still governs card title/description/checklist text. `pm-tasks-core-doctor` `C-LANG-1` warns if unset or set to a locale with no installed i18n bundle. See pm-tasks-core § Narration language.
+
 ## Init
 
 ```
