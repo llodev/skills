@@ -46,6 +46,7 @@ function makeTmpDir(): string {
 function baseConfig() {
   return {
     tool: "trello",
+    locale: "en-US",
     boards: [{ id: "board-1", name: "My Board", alias: "my-board" }],
     lists: [{ id: "list-1", name: "Backlog", alias: "backlog" }],
     members: [],
@@ -486,5 +487,62 @@ describe("C-VER-1 — canary probe", () => {
     const report = await runChecks(ctx);
     const ver1 = report.results.find((r) => r.check.id === "C-VER-1");
     expect(ver1!.result.ok).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Test: C-LANG-1 — narration language
+// ---------------------------------------------------------------------------
+
+function baseCtx(overrides: Record<string, unknown> = {}) {
+  return {
+    tool: "trello",
+    configPath: "/tmp/.trello.json",
+    config: {},
+    manifest: { tool: "trello", verbs: [] },
+    schema: { type: "object" },
+    auditLogPath: "/tmp/audit.log",
+    auditRotationMaxBytes: 10 * 1024 * 1024,
+    availableLocales: ["en-US", "pt-BR", "es-ES"],
+    ...overrides,
+  };
+}
+
+function lang(report: Awaited<ReturnType<typeof runChecks>>) {
+  return report.results.find((r) => r.check.id === "C-LANG-1")!;
+}
+
+describe("C-LANG-1 narration language", () => {
+  it("warns when locale is absent", async () => {
+    const report = await runChecks(baseCtx({ config: {} }), []);
+    const r = lang(report);
+    expect(r.check.severity).toBe("warn");
+    expect(r.result.ok).toBe(false);
+    expect(r.result.message).toMatch(/no .*locale/i);
+    expect(r.result.fixHint).toMatch(/\.trello\.json/);
+  });
+
+  it("passes and echoes the language when set to an installed locale", async () => {
+    const report = await runChecks(baseCtx({ config: { locale: "pt-BR" } }), []);
+    const r = lang(report);
+    expect(r.result.ok).toBe(true);
+    expect(r.result.message).toMatch(/pt-BR/);
+  });
+
+  it("warns when locale has no installed i18n bundle", async () => {
+    const report = await runChecks(baseCtx({ config: { locale: "fr-FR" } }), []);
+    const r = lang(report);
+    expect(r.result.ok).toBe(false);
+    expect(r.result.message).toMatch(/fr-FR/);
+    expect(r.result.message).toMatch(/en-US|pt-BR|es-ES/);
+  });
+
+  it("passes without cross-check when availableLocales is unknown", async () => {
+    const report = await runChecks(
+      baseCtx({ config: { locale: "fr-FR" }, availableLocales: undefined }),
+      [],
+    );
+    const r = lang(report);
+    expect(r.result.ok).toBe(true);
   });
 });
