@@ -182,6 +182,8 @@ If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (tit
 
 Lookup order: `<git-root>/.asana.json` → `~/.config/llodev/pm-tasks/asana.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — Asana MCP holds OAuth; `init` uses `LLODEV_PM_TASKS_ASANA_PAT` env var only.
 
+> **Narration language.** When `.asana.json` sets `locale`, agent-authored narration — comments the agent writes, autonomous commit/PR copy, code comments — MUST use it. The plan's language still governs task title/description/checklist text. `pm-tasks-core-doctor` `C-LANG-1` warns if unset or set to a locale with no installed i18n bundle. See pm-tasks-core § Narration language.
+
 ## Init
 
 ```
