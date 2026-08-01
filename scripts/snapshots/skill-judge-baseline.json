@@ -1,9 +1,9 @@
 {
   "skills/pm-tasks-asana/SKILL.md": {
-    "score": 86,
-    "version": "1.9.0",
-    "capturedAt": "2026-07-16",
-    "notes": "v1.9.0 (Lifecycle Fidelity R2): temporal-handling guidance (start_on on WIP with due_on co-write, native completed_at close) + operations.md § Temporal handling + create/start/close pointer + start_on NEVER rule. Δ+1 vs 85 (within mature-adapter band; completeness gain). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
+    "score": 87,
+    "version": "1.10.0",
+    "capturedAt": "2026-08-01",
+    "notes": "v1.10.0 (U1 language-respect): added § Narration language banner (agent narration follows .asana.json `locale`; task content follows the plan; C-LANG-1 warns on unset/no-bundle). Δ+1 vs 86 (completeness gain, within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-bitrix24/SKILL.md": {
     "score": 29,
