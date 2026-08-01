@@ -209,6 +209,8 @@ If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (tit
 
 Lookup order: `<git-root>/.jira.json` → `~/.config/llodev/pm-tasks/jira.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — Atlassian MCP holds OAuth; `init` uses `mcp__atlassian__atlassianUserInfo` to discover the site and project via MCP.
 
+> **Narration language.** When `.jira.json` sets `locale`, agent-authored narration — comments the agent writes, autonomous commit/PR copy, code comments — MUST use it. The plan's language still governs issue summary/description/checklist text. `pm-tasks-core-doctor` `C-LANG-1` warns if unset or set to a locale with no installed i18n bundle. See pm-tasks-core § Narration language.
+
 Key fields written by `init`:
 
 - `project` — `{ key, id, style }` (`id` is the numeric project id; `style` is `team-managed` / `company-managed`).
