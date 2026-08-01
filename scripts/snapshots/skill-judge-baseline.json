@@ -54,10 +54,10 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "skills/pm-tasks-trello/SKILL.md": {
-    "score": 82,
-    "version": "1.8.0",
-    "capturedAt": "2026-07-16",
-    "notes": "v1.8.0 (Lifecycle Fidelity R3): temporal-handling guidance — create-time due (typed), start on WIP move, overwrite-due + plan-footer close (Trello has no auto timestamp) + operations.md § Temporal handling + autonomous.md verb rows + anti-pattern rules. Δ+2 vs 80 (completeness gain). Also corrects the stale baseline version (was 1.4.0, live package now 1.8.0). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
+    "score": 83,
+    "version": "1.9.0",
+    "capturedAt": "2026-08-01",
+    "notes": "v1.9.0 (U1 language-respect): added § Narration language banner (agent narration follows .trello.json `locale`; card content follows the plan; C-LANG-1 warns on unset/no-bundle). Δ+1 vs 82 (completeness gain, within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-controller/SKILL.md": {
     "score": 84,
