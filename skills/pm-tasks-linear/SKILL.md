@@ -247,6 +247,8 @@ If `@llodev/pm-tasks-core` is not installed: ask the user for minimum input (tit
 
 Lookup order: `<git-root>/.linear.json` → `~/.config/llodev/pm-tasks/linear.json` → abort with init instructions. Schema: [`schemas/config.json`](schemas/config.json). Secrets NEVER in JSON — Linear MCP handles OAuth; `init` uses `LINEAR_API_KEY` (env only) for standalone GraphQL discovery.
 
+> **Narration language.** When `.linear.json` sets `locale`, agent-authored narration — comments the agent writes, autonomous commit/PR copy, code comments — MUST use it. The plan's language still governs issue title/description/checklist text. `pm-tasks-core-doctor` `C-LANG-1` warns if unset or set to a locale with no installed i18n bundle. See pm-tasks-core § Narration language.
+
 Key fields written by `init`:
 
 - `team` — `{ id, key, name }`.

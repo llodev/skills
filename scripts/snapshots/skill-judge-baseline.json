@@ -30,10 +30,10 @@
     "notes": "v1.3.0 (U1 language-respect): added § Narration language banner (agent narration follows .jira.json `locale`; issue content follows the plan; C-LANG-1 warns on unset/no-bundle — sole locale guard since jira's locale has no schema enum). Δ+1 vs 86 (completeness gain, within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-linear/SKILL.md": {
-    "score": 84,
-    "version": "1.1.0",
-    "capturedAt": "2026-07-16",
-    "notes": "v1.1.0 (Lifecycle Fidelity R4): temporal-handling guidance (typed create-time dueDate→dueDate; start/close already native via startedAt/completedAt; never overwrite dueDate) + operations.md § Temporal handling + create/close pointer + never-overwrite-dueDate NEVER rule. Δ+1 vs 83 (within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
+    "score": 85,
+    "version": "1.2.0",
+    "capturedAt": "2026-08-01",
+    "notes": "v1.2.0 (U1 language-respect): added § Narration language banner (agent narration follows .linear.json `locale`; issue content follows the plan; C-LANG-1 warns on unset/no-bundle — sole locale guard since linear's locale has no schema enum). Δ+1 vs 84 (completeness gain, within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-monday/SKILL.md": {
     "score": 29,
