@@ -20,6 +20,8 @@ export interface DoctorContext {
   auditLogPath: string; // resolved via audit.ts resolveDataDir
   auditRotationMaxBytes: number; // default 10 * 1024 * 1024
   coreVersion?: string; // running @llodev/pm-tasks-core version; absent ⇒ treated as released
+  /** Installed i18n locales for this adapter (from listLocales). Absent ⇒ skip cross-check. */
+  availableLocales?: string[];
 }
 
 export interface DoctorResult {
@@ -326,6 +328,45 @@ const C_CFG_4: DoctorCheck = {
   },
 };
 
+const LANG_SHAPE = /^[a-z]{2}-[A-Z]{2}$/;
+
+const C_LANG_1: DoctorCheck = {
+  id: "C-LANG-1",
+  label: "Narration language set + has an i18n bundle",
+  severity: "warn",
+  async run(ctx) {
+    const cfg = asRecord(ctx.config);
+    const locale = asString(cfg["locale"]).trim();
+
+    if (!locale) {
+      return {
+        ok: false,
+        message: "no `locale` set — agent narration defaults to English",
+        fixHint: `Add "locale": "<value>" (e.g. "pt-BR") to .${ctx.tool}.json.`,
+      };
+    }
+
+    if (!LANG_SHAPE.test(locale)) {
+      return {
+        ok: false,
+        message: `locale "${locale}" is not a BCP-47 locale of the form xx-XX`,
+        fixHint: `Use a locale like en-US, pt-BR, or es-ES in .${ctx.tool}.json.`,
+      };
+    }
+
+    const installed = ctx.availableLocales;
+    if (installed && installed.length > 0 && !installed.includes(locale)) {
+      return {
+        ok: false,
+        message: `locale "${locale}" has no installed i18n bundle; available: ${installed.join(", ")}`,
+        fixHint: `Set locale to one of ${installed.join(", ")} in .${ctx.tool}.json.`,
+      };
+    }
+
+    return { ok: true, message: `narration language: ${locale}` };
+  },
+};
+
 export const CORE_CHECKS: DoctorCheck[] = [
   C_VER_1,
   C_FS_1,
@@ -335,6 +376,7 @@ export const CORE_CHECKS: DoctorCheck[] = [
   C_CFG_2,
   C_CFG_3,
   C_CFG_4,
+  C_LANG_1,
 ];
 
 // ---------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveDataDir } from "../audit.js";
 import { type DoctorCheck, type RunReport, runChecks } from "../doctor.js";
+import { listLocales, registerI18nRoot } from "../i18n/registry.js";
 
 // ---------------------------------------------------------------------------
 // Path anchoring — bin lives at dist/bin/doctor.js after build
@@ -256,6 +257,19 @@ async function main(): Promise<void> {
     const assets = await loadAdapterAssets(tool);
     const extraChecks: DoctorCheck[] = assets ? [] : makeDegradedChecks();
 
+    // Discover installed i18n locales for C-LANG-1's cross-check. Only attempted
+    // when adapter assets are present; never allowed to crash the doctor.
+    let availableLocales: string[] | undefined;
+    if (assets) {
+      try {
+        const i18nRoot = path.join(PACKAGES_ROOT, `pm-tasks-${tool}`, "i18n");
+        registerI18nRoot(`__doctor-${tool}`, i18nRoot);
+        availableLocales = await listLocales(`__doctor-${tool}`);
+      } catch {
+        availableLocales = undefined; // never crash the doctor over locale discovery
+      }
+    }
+
     const ctx = {
       tool,
       configPath: effectiveConfigPath,
@@ -265,6 +279,7 @@ async function main(): Promise<void> {
       auditLogPath: path.join(resolveDataDir(tool), "audit.log"),
       auditRotationMaxBytes: 10 * 1024 * 1024,
       coreVersion,
+      availableLocales,
     };
 
     // If no adapter assets, skip C-CFG-* checks by passing degraded extras

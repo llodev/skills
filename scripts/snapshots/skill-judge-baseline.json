@@ -18,10 +18,10 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "skills/pm-tasks-core/SKILL.md": {
-    "score": 85,
-    "version": "1.13.0",
-    "capturedAt": "2026-07-13",
-    "notes": "v1.13.0 added task.sprint.set to the canonical verb enumeration (9→10 verbs) in the description; purely additive doc change, Δ within rubric variance (NOISE_BAND), no re-score — score reconfirmed at 85"
+    "score": 86,
+    "version": "1.15.0",
+    "capturedAt": "2026-08-01",
+    "notes": "v1.15.0 (U1 language-respect): added § Narration language (agent-authored narration follows config `locale`; task content still follows the plan — a non-obvious two-concept split) + Autonomous-mode cross-link + C-LANG-1 doctor reference. Δ+1 vs 85 (completeness/usability gain, within mature-skill band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-jira/SKILL.md": {
     "score": 86,

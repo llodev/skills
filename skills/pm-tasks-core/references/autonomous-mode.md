@@ -117,4 +117,4 @@ Any failure → structured envelope. Skill does NOT auto-retry. Caller decides r
 
 ## Forensics
 
-The audit log is the source of truth for "what happened in this autonomous session". Also serves as the lookup index for `taskRef` step 4–5 in [`crud-vocabulary.md`](crud-vocabulary.md).
+The audit log is the source of truth for "what happened in this autonomous session". Also serves as the lookup index for `taskRef` step 4–5 in [`crud-vocabulary.md`](crud-vocabulary.md). Agent-authored free-text (commit/PR/comment copy) uses the configured `locale`; task content uses the plan's language.
