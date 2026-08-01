@@ -5,6 +5,7 @@ import path from "node:path";
 import { resolveDataDir } from "@llodev/pm-tasks-core/audit";
 import { type DoctorCheck, type DoctorContext, runChecks } from "@llodev/pm-tasks-core/doctor";
 import { renderReport, type RenderOpts } from "@llodev/pm-tasks-core/bin/doctor";
+import { registerI18nRoot, listLocales } from "@llodev/pm-tasks-core/i18n";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -158,6 +159,14 @@ export async function runDoctor({ argv }: RunDoctorOpts): Promise<void> {
   const schema = JSON.parse(schemaRaw) as unknown;
   const manifest = JSON.parse(manifestRaw) as { tool: string; verbs: string[] };
 
+  let availableLocales: string[] | undefined;
+  try {
+    registerI18nRoot("__doctor-asana", path.join(ROOT, "i18n"));
+    availableLocales = await listLocales("__doctor-asana");
+  } catch {
+    availableLocales = undefined; // never crash the doctor over locale discovery
+  }
+
   const ctx: DoctorContext = {
     tool: "asana",
     configPath,
@@ -166,6 +175,7 @@ export async function runDoctor({ argv }: RunDoctorOpts): Promise<void> {
     schema,
     auditLogPath: path.join(resolveDataDir("asana"), "audit.log"),
     auditRotationMaxBytes: 10 * 1024 * 1024,
+    availableLocales,
   };
 
   const report = await runChecks(ctx, ADAPTER_CHECKS);
