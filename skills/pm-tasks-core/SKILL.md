@@ -55,7 +55,11 @@ See [`references/crud-vocabulary.md`](references/crud-vocabulary.md). Ten verbs:
 
 ## Autonomous mode
 
-See [`references/autonomous-mode.md`](references/autonomous-mode.md). Activated only by sentinel `[autonomous]` / `--auto` / env `LLODEV_PM_TASKS_AUTONOMOUS=1`. Requires explicit allowlist + scope + rate limit in the tool's config. Never inferred.
+See [`references/autonomous-mode.md`](references/autonomous-mode.md). Activated only by sentinel `[autonomous]` / `--auto` / env `LLODEV_PM_TASKS_AUTONOMOUS=1`. Requires explicit allowlist + scope + rate limit in the tool's config. Never inferred. Agent-authored copy (commits, PRs, comments) follows the workspace narration language — see [Narration language](#narration-language).
+
+## Narration language
+
+**Narration language.** When `.<tool>.json` sets `locale`, all agent-authored narration — comments the agent writes, autonomous-mode commit and PR copy, code comments, and audit/CLI free-text — MUST be in that locale's language. The **plan's** language still governs **task content** (title, description, checklist items); these are separate concerns. If `locale` is unset, `pm-tasks-core-doctor` (`C-LANG-1`) warns and narration defaults to English.
 
 ## Configuration
 
