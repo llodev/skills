@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks-jira",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": false,
   "description": "Jira adapter for the @llodev/pm-tasks-* family. Use when the user mentions Jira or Atlassian, asks to create a Jira issue, publish to Jira, post to Jira, transition a ticket, add a comment in Jira, or uses --publish-jira; OR for CRUD on existing issues (check sub-task, close issue, change due-date, assign person, comment); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Implements 9 CRUD verbs via the Atlassian MCP server. Requires @llodev/pm-tasks-core installed.",
   "license": "MIT",

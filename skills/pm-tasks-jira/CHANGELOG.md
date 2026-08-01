@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-jira
 
+## 1.3.0
+
+### Minor Changes
+
+- [#76](https://github.com/llodev/skills/pull/76) [`2cffaf1`](https://github.com/llodev/skills/commit/2cffaf1d3400252f6a15f5fc79c514bbe8806b39) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - Add the U1 narration-language banner and wire installed-locale discovery into the doctor so `C-LANG-1` validates `.jira.json`'s `locale` against installed i18n bundles. Agent-authored narration follows `locale`; issue content still follows the plan. (Jira's `locale` has no schema enum, so `C-LANG-1`'s shape + bundle check is the primary locale guard.)
+
 ## 1.2.0
 
 ### Minor Changes

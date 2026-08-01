@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-linear
 
+## 1.2.0
+
+### Minor Changes
+
+- [#77](https://github.com/llodev/skills/pull/77) [`9d38eea`](https://github.com/llodev/skills/commit/9d38eea822b93c4ccccaf1e202035c319abb2e1e) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - Add the U1 narration-language banner and wire installed-locale discovery into the doctor so `C-LANG-1` validates `.linear.json`'s `locale` against installed i18n bundles. Agent-authored narration follows `locale`; issue content still follows the plan. (Linear's `locale` has no schema enum, so `C-LANG-1`'s shape + bundle check is the primary locale guard.)
+
 ## 1.1.0
 
 ### Minor Changes

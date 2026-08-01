@@ -39,7 +39,7 @@
         "path": "skills/pm-tasks-trello"
       },
       "description": "Turn implementation plans into Trello cards and checklists — paste-ready output, MCP publish, or autonomous write-through. Requires pm-tasks-core.",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "author": {
         "name": "llodev"
       },
@@ -60,7 +60,7 @@
         "path": "skills/pm-tasks-asana"
       },
       "description": "Turn plans into Asana tasks and subtasks with custom fields and section placement — paste, MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.9.0",
+      "version": "1.10.0",
       "author": {
         "name": "llodev"
       },
@@ -81,7 +81,7 @@
         "path": "skills/pm-tasks-jira"
       },
       "description": "Turn plans into Jira issues with epics, estimates, and workflow transitions — paste, Atlassian MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "llodev"
       },
@@ -103,7 +103,7 @@
         "path": "skills/pm-tasks-linear"
       },
       "description": "Turn plans into Linear issues with sub-issues, estimates, and cycles (sprints) — paste-ready, Linear MCP publish, or autonomous mode. First pm-tasks adapter with sprint support. Requires pm-tasks-core.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "llodev"
       },

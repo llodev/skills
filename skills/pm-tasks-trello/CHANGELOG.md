@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-trello
 
+## 1.9.0
+
+### Minor Changes
+
+- [#73](https://github.com/llodev/skills/pull/73) [`631fc0a`](https://github.com/llodev/skills/commit/631fc0a4658a4b304bd422076b57fc0d66063dae) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - Add the U1 narration-language banner and wire installed-locale discovery into the doctor so `C-LANG-1` validates `.trello.json`'s `locale` against installed i18n bundles. Agent-authored narration follows `locale`; card content still follows the plan.
+
 ## 1.8.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @llodev/pm-tasks-asana
 
+## 1.10.0
+
+### Minor Changes
+
+- [#75](https://github.com/llodev/skills/pull/75) [`c4c667a`](https://github.com/llodev/skills/commit/c4c667a16c16955c68d059f4f72e01baece2d174) Thanks [@lloliveiradev](https://github.com/lloliveiradev)! - Add the U1 narration-language banner and wire installed-locale discovery into the doctor so `C-LANG-1` validates `.asana.json`'s `locale` against installed i18n bundles. Agent-authored narration follows `locale`; task content still follows the plan.
+
 ## 1.9.0
 
 ### Minor Changes
