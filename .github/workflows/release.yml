@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v7
         with: { node-version: 24, cache: pnpm, registry-url: "https://registry.npmjs.org" }
       # Trusted Publishing needs npm CLI >= 11.5.1 for the OIDC token exchange. Pin to the 11.x
