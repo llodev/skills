@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { createTrelloTransport, type McpCaller } from "../src/transport-trello.js";
+import { batchCreateWithChecklists } from "../src/batch-create.js";
+import type { Runtime } from "@llodev/pm-tasks-core/runtime";
+import type { TrelloTransport } from "../src/transport-trello.js";
 
 interface CallRecord {
   tool: string;
@@ -116,5 +119,73 @@ describe("createTrelloTransport — createChecklists", () => {
     });
     expect(calls.filter((c) => c.tool === "mcp__trello__trello_create_checklist")).toHaveLength(2);
     expect(calls.filter((c) => c.tool === "mcp__trello__trello_create_check_item")).toHaveLength(4);
+  });
+});
+
+describe("batchCreateWithChecklists — orchestrator", () => {
+  it("creates each card via runtime.taskCreate then its checklists via transport", async () => {
+    const created: string[] = [];
+    const runtime = {
+      taskCreate: async (req: { name: string }) => {
+        created.push(req.name);
+        return { ok: true as const, data: { id: `card-${req.name}`, url: `u/${req.name}` } };
+      },
+    } as unknown as Runtime;
+    const transport = {
+      createChecklists: async (cardId: string, cls: { name: string }[]) => ({
+        ok: true as const,
+        data: cls.map((c) => ({ id: `cl-${cardId}`, name: c.name, items: [] })),
+      }),
+    } as unknown as TrelloTransport;
+
+    const res = await batchCreateWithChecklists(
+      {
+        boardOrProjectId: "b",
+        cards: [
+          { listOrSectionId: "l", name: "A", checklists: [{ name: "Pre-flight", items: [] }] },
+          { listOrSectionId: "l", name: "B" },
+        ],
+      },
+      { runtime, transport },
+    );
+
+    expect(created).toEqual(["A", "B"]);
+    expect(res.ok).toBe(true);
+    expect(res.created).toBe(2);
+    expect(res.failed).toBe(0);
+    expect(res.results[0]).toEqual({
+      ok: true,
+      card: { id: "card-A", url: "u/A" },
+      checklists: [{ id: "cl-card-A", name: "Pre-flight", items: [] }],
+    });
+  });
+
+  it("marks a card failed when runtime.taskCreate fails, without aborting the batch", async () => {
+    const runtime = {
+      taskCreate: async (req: { name: string }) =>
+        req.name === "bad"
+          ? { ok: false as const, code: "MCP_ERROR" as const, details: { message: "boom" } }
+          : { ok: true as const, data: { id: `card-${req.name}` } },
+    } as unknown as Runtime;
+    const transport = {
+      createChecklists: async () => ({ ok: true as const, data: [] }),
+    } as unknown as TrelloTransport;
+
+    const res = await batchCreateWithChecklists(
+      {
+        boardOrProjectId: "b",
+        cards: [
+          { listOrSectionId: "l", name: "bad" },
+          { listOrSectionId: "l", name: "ok" },
+        ],
+      },
+      { runtime, transport },
+    );
+
+    expect(res.ok).toBe(false);
+    expect(res.created).toBe(1);
+    expect(res.failed).toBe(1);
+    expect(res.results[0].ok).toBe(false);
+    expect(res.results[0].error?.code).toBe("MCP_ERROR");
   });
 });
