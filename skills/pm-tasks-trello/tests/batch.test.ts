@@ -188,4 +188,78 @@ describe("batchCreateWithChecklists — orchestrator", () => {
     expect(res.results[0].ok).toBe(false);
     expect(res.results[0].error?.code).toBe("MCP_ERROR");
   });
+
+  it("does not abort the batch when runtime.taskCreate THROWS (rejects) for one card", async () => {
+    const runtime = {
+      taskCreate: async (req: { name: string }) => {
+        if (req.name === "boom") throw new Error("audit append failed: disk full");
+        return { ok: true as const, data: { id: `card-${req.name}` } };
+      },
+    } as unknown as Runtime;
+    const transport = {
+      createChecklists: async () => ({ ok: true as const, data: [] }),
+    } as unknown as TrelloTransport;
+
+    // Must not throw/reject even though one worker's runtime.taskCreate rejects.
+    const res = await batchCreateWithChecklists(
+      {
+        boardOrProjectId: "b",
+        cards: [
+          { listOrSectionId: "l", name: "boom" },
+          { listOrSectionId: "l", name: "ok" },
+        ],
+      },
+      { runtime, transport },
+    );
+
+    expect(res.ok).toBe(false);
+    expect(res.created).toBe(1);
+    expect(res.failed).toBe(1);
+    expect(res.results[0].ok).toBe(false);
+    expect(res.results[0].error).toEqual({
+      code: "MCP_ERROR",
+      message: "audit append failed: disk full",
+    });
+    expect(res.results[1]).toEqual({
+      ok: true,
+      card: { id: "card-ok" },
+      checklists: [],
+    });
+  });
+
+  it("marks a card failed when transport.createChecklists fails, still carrying the card ref", async () => {
+    const runtime = {
+      taskCreate: async (req: { name: string }) => ({
+        ok: true as const,
+        data: { id: `card-${req.name}`, url: `u/${req.name}` },
+      }),
+    } as unknown as Runtime;
+    const transport = {
+      createChecklists: async () => ({
+        ok: false as const,
+        code: "MCP_ERROR" as const,
+        details: { message: "checklist create failed" },
+      }),
+    } as unknown as TrelloTransport;
+
+    const res = await batchCreateWithChecklists(
+      {
+        boardOrProjectId: "b",
+        cards: [
+          { listOrSectionId: "l", name: "A", checklists: [{ name: "Pre-flight", items: [] }] },
+        ],
+      },
+      { runtime, transport },
+    );
+
+    expect(res.ok).toBe(false);
+    expect(res.created).toBe(0);
+    expect(res.failed).toBe(1);
+    expect(res.results[0]).toEqual({
+      ok: false,
+      card: { id: "card-A", url: "u/A" },
+      checklists: [],
+      error: { code: "MCP_ERROR", message: "checklist create failed" },
+    });
+  });
 });

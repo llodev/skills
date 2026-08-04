@@ -77,11 +77,17 @@ Temporal handling (create-time `due`, `start` on WIP move, and the overwrite-`du
 
 Batch-creates multiple cards, each with its checklists, in bounded parallel —
 ~10× faster than one-at-a-time on large plans. Cards route through the audited
-`task.create` path; checklists are created two-phase (all checklists, then all
-items) with a concurrency cap of 8 to respect Trello's 300 req/10s limit. One
-card failing does not abort the batch. Autonomous-gateable via
-`autonomous.allow`. Headless entry: `@llodev/pm-tasks-trello/adapter` →
-`trelloBatchCreateWithChecklists`. This release's speedup is parallelism;
+`task.create` path (audit log entry per card; **no automatic idempotency/dedupe
+on retry** — re-running a batch re-creates cards that already succeeded);
+checklists are created two-phase (all checklists, then all items) with a
+concurrency cap (`concurrency`, default 8) that bounds **each phase within one
+card's** checklist creation. Across the batch, up to `concurrency` cards are
+also created in parallel, so peak in-flight MCP calls can reach `concurrency ×
+concurrency` (64 at the default) — lower `concurrency` for very large batches.
+Trello's 300 req/10s limit still applies; a 429 degrades to a per-card error
+envelope, not a crash. One card failing does not abort the batch. Autonomous-
+gateable via `autonomous.allow`. Headless entry: `@llodev/pm-tasks-trello/adapter`
+→ `trelloBatchCreateWithChecklists`. This release's speedup is parallelism;
 `idChecklistSource` template cloning (exposed by the Trello MCP) is a possible
 future optimization for repeated checklist templates.
 

@@ -79,8 +79,12 @@ time) — ~10× faster on large plans:
 Preserve order: Pre-flight → implementation blocks in plan order → Verification
 last; items keep their plan order within each checklist.
 
-**Rate limit:** Trello allows 300 req/10s per key. With ~8 in flight per phase,
-a card with 8 checklists × 5 items (~50 calls) stays well within limits.
+**Rate limit:** Trello allows 300 req/10s per key. The concurrency cap (default 8) bounds each phase **within one card's** checklist creation, so a card with
+8 checklists × 5 items (~50 calls) stays well within limits. Across a batch of
+many cards, up to `concurrency` cards are also created in parallel, so peak
+in-flight MCP calls can reach `concurrency × concurrency` (64 at the default) —
+lower `concurrency` for very large batches. A 429 degrades to a per-card error
+envelope, not a crash.
 
 **Headless / autonomous consumers:** call the typed
 `trello.task.batch-create-with-checklists` verb
@@ -106,14 +110,14 @@ Only if Step 1 omitted `idLabels` / `idMembers` but Phase 5.2.5 resolved new val
 
 ### Error handling
 
-| Failure                               | Action                                                                                               |
-| ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| MCP not connected                     | Abort Phase 5; deliver paste-ready output (Phase 4); check MCP server config and `TRELLO_*` env vars |
-| `boardId` / `listId` not resolved     | Re-run § **MCP config discovery**; do not guess IDs                                                  |
-| Label name not in `.trello.json`      | Skip that label; continue; report under **omitted**; do not auto-create labels                       |
-| Member not in `members[]`             | Stop before create; list valid usernames                                                             |
-| Card creation fails                   | Abort; report error; no checklists created                                                           |
-| Checklist creation fails mid-sequence | Report card URL; which checklists succeeded vs "add manually"                                        |
-| Label/member fallback fails           | Report card URL; list what was applied at create vs failed fallback                                  |
+| Failure                            | Action                                                                                               |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| MCP not connected                  | Abort Phase 5; deliver paste-ready output (Phase 4); check MCP server config and `TRELLO_*` env vars |
+| `boardId` / `listId` not resolved  | Re-run § **MCP config discovery**; do not guess IDs                                                  |
+| Label name not in `.trello.json`   | Skip that label; continue; report under **omitted**; do not auto-create labels                       |
+| Member not in `members[]`          | Stop before create; list valid usernames                                                             |
+| Card creation fails                | Abort; report error; no checklists created                                                           |
+| Checklist creation fails mid-batch | Report card URL; which checklists succeeded vs "add manually"                                        |
+| Label/member fallback fails        | Report card URL; list what was applied at create vs failed fallback                                  |
 
 **NEVER** leave a partial card without reporting what was and wasn't created.

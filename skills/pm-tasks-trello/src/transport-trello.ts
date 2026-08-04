@@ -114,7 +114,7 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
         ? `[ct:${req.clientToken}] ${req.description ?? ""}`.trim()
         : req.description;
       const args: Record<string, unknown> = {
-        listId: req.listOrSectionId,
+        idList: req.listOrSectionId,
         name: req.name,
         desc,
       };
