@@ -298,7 +298,11 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
     //   mcp__trello__trello_create_checklist + trello_create_check_item
     //   Two-phase so in-flight calls per phase stay ≤ `concurrency`.
     // -------------------------------------------------------------------
-    async createChecklists(cardId, checklists, concurrency = 8) {
+    async createChecklists(
+      cardId: string,
+      checklists: readonly ChecklistInput[],
+      concurrency = 8,
+    ): Promise<TransportResult<ChecklistResult[]>> {
       try {
         // Phase 1 — create every checklist (parallel, capped).
         const created = await mapWithConcurrency(checklists, concurrency, async (cl) => {
@@ -318,8 +322,10 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
             checklistId: it.checklistId,
             name: it.name,
           });
-          const id = isObjectWith(ir, "id") && typeof ir.id === "string" ? ir.id : "";
-          return { checklistId: it.checklistId, id, name: it.name };
+          if (!isObjectWith(ir, "id") || typeof ir.id !== "string") {
+            throw new Error("Trello create_check_item returned no id");
+          }
+          return { checklistId: it.checklistId, id: ir.id, name: it.name };
         });
 
         // Regroup items under their checklist, preserving order.
