@@ -73,6 +73,18 @@ For verbs other than `task.create`, jump directly to the operation. **MANDATORY 
 
 Temporal handling (create-time `due`, `start` on WIP move, and the overwrite-`due`-and-footer close) is documented in [`references/operations.md`](references/operations.md) § Temporal handling.
 
+### `trello.task.batch-create-with-checklists` (custom verb)
+
+Batch-creates multiple cards, each with its checklists, in bounded parallel —
+~10× faster than one-at-a-time on large plans. Cards route through the audited
+`task.create` path; checklists are created two-phase (all checklists, then all
+items) with a concurrency cap of 8 to respect Trello's 300 req/10s limit. One
+card failing does not abort the batch. Autonomous-gateable via
+`autonomous.allow`. Headless entry: `@llodev/pm-tasks-trello/adapter` →
+`trelloBatchCreateWithChecklists`. This release's speedup is parallelism;
+`idChecklistSource` template cloning (exposed by the Trello MCP) is a possible
+future optimization for repeated checklist templates.
+
 ## Phase 7 — Plan-execution mode
 
 When the calling agent passes a plan reference (a path to a markdown plan file, a plan slug, or an explicit list of expected task titles), this skill loads `.trello.json` via `requireConfig` and uses `discoverPlanTasks` (from `@llodev/pm-tasks-core`) to triage which tasks in the plan already exist as cards in scope. The skill returns the triage report `{ found, missing, ambiguous }` — the **calling agent** decides how to act on each bucket (create missing cards via Phase 4 + 5; disambiguate by picking the right ambiguous card; proceed with existing).

@@ -7,6 +7,7 @@
     "task.due-date.set",
     "task.assignee.add",
     "task.comment.add",
-    "checklist.check"
+    "checklist.check",
+    "trello.task.batch-create-with-checklists"
   ]
 }
