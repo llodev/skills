@@ -111,7 +111,8 @@
               "task.close",
               "task.due-date.set",
               "task.assignee.add",
-              "task.comment.add"
+              "task.comment.add",
+              "trello.task.batch-create-with-checklists"
             ]
           }
         },

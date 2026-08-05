@@ -1,5 +1,7 @@
 import { createCoreRuntime, type Runtime } from "@llodev/pm-tasks-core/runtime";
 import { createTrelloTransport, type McpCaller } from "./transport-trello.js";
+import { batchCreateWithChecklists } from "./batch-create.js";
+import type { BatchCreateRequest, BatchCreateResult } from "./batch.js";
 
 export interface CreateAdapterOptions {
   /** Absolute or cwd-relative path to .trello.json config file. */
@@ -12,18 +14,28 @@ export interface CreateAdapterOptions {
   language?: string;
 }
 
+/** Trello Runtime plus the F13 batch extension. */
+export type TrelloAdapter = Runtime & {
+  trelloBatchCreateWithChecklists(req: BatchCreateRequest): Promise<BatchCreateResult>;
+};
+
 /**
  * Construct a ready-to-use Trello adapter Runtime. Loads config from configPath,
  * wires the Trello MCP transport from the caller-supplied McpCaller, and returns
- * the same Runtime shape as createCoreRuntime.
+ * the same Runtime shape as createCoreRuntime plus the F13 batch extension.
  */
-export async function createAdapter(opts: CreateAdapterOptions): Promise<Runtime> {
+export async function createAdapter(opts: CreateAdapterOptions): Promise<TrelloAdapter> {
   const transport = createTrelloTransport({ mcp: opts.mcp });
-  return createCoreRuntime({
+  const runtime = await createCoreRuntime({
     tool: "trello",
     configPath: opts.configPath,
     transport,
     session: opts.session,
     language: opts.language,
   });
+  return {
+    ...runtime,
+    trelloBatchCreateWithChecklists: (req) =>
+      batchCreateWithChecklists(req, { runtime, transport }),
+  };
 }

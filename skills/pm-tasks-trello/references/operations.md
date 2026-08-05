@@ -4,15 +4,16 @@ Maps each verb from [`skills/pm-tasks-core/references/crud-vocabulary.md`](../..
 
 ## Verb → MCP tool
 
-| Verb                | MCP tool                    | Params (key ones)                                                                                                                                            |
-| ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `task.create`       | `create_card`               | `listId`, `name`, `desc`, `pos`, `due`, `labelIds[]`, `memberIds[]`, optional checklist via follow-up `trello_create_checklist` + `trello_create_check_item` |
-| `task.move`         | `move_card`                 | `cardId`, `idList` = resolved from `targetList` alias. See § `task.move` below.                                                                              |
-| `checklist.check`   | `trello_update_check_item`  | `cardId`, `checkItemId`, `state: "complete"`                                                                                                                 |
-| `task.close`        | `move_card` + `update_card` | `cardId`, `idList` = `defaults.closeListAlias` resolved; ALSO `dueComplete: true` via `update_card`. See § `task.close` below.                               |
-| `task.due-date.set` | `update_card`               | `cardId`, `due` (ISO 8601 or `null`)                                                                                                                         |
-| `task.assignee.add` | `trello_add_member_to_card` | `cardId`, `memberId`                                                                                                                                         |
-| `task.comment.add`  | `trello_add_comment`        | `cardId`, `text` (prefixed with `[ct:<clientToken>]` if provided)                                                                                            |
+| Verb                                       | MCP tool                                                                                         | Params (key ones)                                                                                                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `task.create`                              | `create_card`                                                                                    | `idList`, `name`, `desc`, `pos`, `due`, `labelIds[]`, `memberIds[]`, optional checklist via follow-up `trello_create_checklist` + `trello_create_check_item`   |
+| `task.move`                                | `move_card`                                                                                      | `cardId`, `idList` = resolved from `targetList` alias. See § `task.move` below.                                                                                |
+| `checklist.check`                          | `trello_update_check_item`                                                                       | `cardId`, `checkItemId`, `state: "complete"`                                                                                                                   |
+| `task.close`                               | `move_card` + `update_card`                                                                      | `cardId`, `idList` = `defaults.closeListAlias` resolved; ALSO `dueComplete: true` via `update_card`. See § `task.close` below.                                 |
+| `task.due-date.set`                        | `update_card`                                                                                    | `cardId`, `due` (ISO 8601 or `null`)                                                                                                                           |
+| `task.assignee.add`                        | `trello_add_member_to_card`                                                                      | `cardId`, `memberId`                                                                                                                                           |
+| `task.comment.add`                         | `trello_add_comment`                                                                             | `cardId`, `text` (prefixed with `[ct:<clientToken>]` if provided)                                                                                              |
+| `trello.task.batch-create-with-checklists` | `create_card` + `trello_create_checklist` + `trello_create_check_item` (bounded-parallel, cap 8) | `boardOrProjectId`, `cards[]` (`listOrSectionId`, `name`, `desc`, `due`, `clientToken`, `checklists[{name, items[]}]`). Custom Trello verb; see § batch below. |
 
 ## `<task-ref>` resolution for Trello
 
@@ -37,15 +38,16 @@ Implementation steps in adapter's runtime logic:
 
 ## Result envelope (Trello-specific `details`)
 
-| Verb                | `details` fields                                                              |
-| ------------------- | ----------------------------------------------------------------------------- |
-| `task.create`       | `{ shortLink, dateLastActivity, checklists: [{id,name,items: [{id,name}]}] }` |
-| `task.move`         | `{ previousListId, newListId, targetList }`                                   |
-| `checklist.check`   | `{ checklistId, checkItemId }`                                                |
-| `task.close`        | `{ previousListId, newListId }`                                               |
-| `task.due-date.set` | `{ previousDue, newDue }`                                                     |
-| `task.assignee.add` | `{ memberId, username }`                                                      |
-| `task.comment.add`  | `{ commentId }`                                                               |
+| Verb                                       | `details` fields                                                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `task.create`                              | `{ shortLink, dateLastActivity, checklists: [{id,name,items: [{id,name}]}] }`                                 |
+| `task.move`                                | `{ previousListId, newListId, targetList }`                                                                   |
+| `checklist.check`                          | `{ checklistId, checkItemId }`                                                                                |
+| `task.close`                               | `{ previousListId, newListId }`                                                                               |
+| `task.due-date.set`                        | `{ previousDue, newDue }`                                                                                     |
+| `task.assignee.add`                        | `{ memberId, username }`                                                                                      |
+| `task.comment.add`                         | `{ commentId }`                                                                                               |
+| `trello.task.batch-create-with-checklists` | `{ ok, created, failed, results: [{ ok, card:{id,url}, checklists:[{id,name,items:[{id,name}]}], error? }] }` |
 
 ## `task.move` — resolution rules
 
@@ -109,3 +111,9 @@ To preserve the estimate for the eventual close footer (Trello has no native est
 - The plan footer is the single line matching `^—\s*(Planejado|Planned|Planificado):\s.*—\s*$` (starts and ends with an em-dash `—`, contains the localized "Planned:" keyword). On re-close, find and REPLACE that line — do not append a second one.
 - The attribution footer (`— posted by … via @llodev/pm-tasks-trello`, from core `getAttribution`, appended at create when `config.attribution.enabled`) is DISTINCT (no trailing em-dash, no "Planned:" keyword). The plan-footer replace MUST leave it untouched.
 - Premium custom fields for planned-due / estimate are opportunistic and out of scope here; the footer is the baseline mechanism.
+
+## `trello.task.batch-create-with-checklists` — batch creation
+
+Each card in `cards[]` goes through the same audited `task.create` path (config resolution, attribution, and an audit-log entry per card) as a single-card create — batching does not bypass those checks. There is **no automatic idempotency/dedupe on retry**: the runtime layer does not read back the `[ct:]` marker, so re-running a batch re-creates cards that already succeeded. Checklists are created in two phases: all checklists for all cards first, then all check items, each phase run bounded-parallel with a concurrency cap (`concurrency`, default 8). That cap bounds each phase **within one card's** checklist creation — across the batch, up to `concurrency` cards are also created in parallel, so peak in-flight MCP calls can reach `concurrency × concurrency` (64 at the default). Lower `concurrency` for very large batches; Trello's 300 req/10s rate limit still applies, and a 429 degrades to a per-card `RATE_LIMITED` error envelope rather than aborting the batch. One card failing (create or checklist error, including a thrown/rejected call) does not abort the batch — it is recorded in `results[]` with `ok: false` and `error`, and the remaining cards proceed; `created`/`failed` in the envelope summarize the outcome. The speedup versus one-at-a-time is purely from parallelizing the existing `create_card` / `trello_create_checklist` / `trello_create_check_item` POSTs — no new Trello capability is used.
+
+Note: `trello_create_checklist` also exposes an optional `idChecklistSource` param that clones items from an existing checklist. It is intentionally **not** used by this verb — F13's cards each carry their own distinct checklist content, so cloning a single template does not apply here. It remains a candidate future optimization for the same-template-across-many-cards case.

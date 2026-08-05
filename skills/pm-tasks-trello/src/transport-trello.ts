@@ -35,6 +35,8 @@ import type {
   TaskCommentAddRequest,
   TaskCommentAddResponse,
 } from "@llodev/pm-tasks-core/runtime";
+import { mapWithConcurrency } from "./concurrency.js";
+import type { ChecklistInput, ChecklistResult } from "./batch.js";
 
 /**
  * MCP-call dispatcher. The agent runtime that loads this transport
@@ -46,6 +48,15 @@ export type McpCaller = (toolName: string, args: Record<string, unknown>) => Pro
 export interface CreateTrelloTransportOptions {
   mcp: McpCaller;
 }
+
+/** Trello transport plus Trello-only extension methods (F13). Not part of core Transport. */
+export type TrelloTransport = Transport & {
+  createChecklists(
+    cardId: string,
+    checklists: readonly ChecklistInput[],
+    concurrency?: number,
+  ): Promise<TransportResult<ChecklistResult[]>>;
+};
 
 // ---------------------------------------------------------------------------
 // Internal helpers
@@ -91,7 +102,7 @@ function shapeError(verb: string): {
 // Factory
 // ---------------------------------------------------------------------------
 
-export function createTrelloTransport(opts: CreateTrelloTransportOptions): Transport {
+export function createTrelloTransport(opts: CreateTrelloTransportOptions): TrelloTransport {
   const { mcp } = opts;
 
   return {
@@ -103,7 +114,7 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trans
         ? `[ct:${req.clientToken}] ${req.description ?? ""}`.trim()
         : req.description;
       const args: Record<string, unknown> = {
-        listId: req.listOrSectionId,
+        idList: req.listOrSectionId,
         name: req.name,
         desc,
       };
@@ -276,6 +287,56 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trans
           ok: true,
           data: { commentId: resp.id, postedAt },
         };
+      } catch (e) {
+        const { code, details } = classifyError(e);
+        return { ok: false, code, details };
+      }
+    },
+
+    // -------------------------------------------------------------------
+    // F13. createChecklists (Trello extension) →
+    //   mcp__trello__trello_create_checklist + trello_create_check_item
+    //   Two-phase so in-flight calls per phase stay ≤ `concurrency`.
+    // -------------------------------------------------------------------
+    async createChecklists(
+      cardId: string,
+      checklists: readonly ChecklistInput[],
+      concurrency = 8,
+    ): Promise<TransportResult<ChecklistResult[]>> {
+      try {
+        // Phase 1 — create every checklist (parallel, capped).
+        const created = await mapWithConcurrency(checklists, concurrency, async (cl) => {
+          const resp = await mcp("mcp__trello__trello_create_checklist", { cardId, name: cl.name });
+          if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {
+            throw new Error("Trello create_checklist returned no id");
+          }
+          return { id: resp.id, name: cl.name, itemNames: cl.items };
+        });
+
+        // Phase 2 — create all items across all checklists (flattened, capped).
+        const flat = created.flatMap((c) =>
+          c.itemNames.map((name) => ({ checklistId: c.id, name })),
+        );
+        const itemRefs = await mapWithConcurrency(flat, concurrency, async (it) => {
+          const ir = await mcp("mcp__trello__trello_create_check_item", {
+            checklistId: it.checklistId,
+            name: it.name,
+          });
+          if (!isObjectWith(ir, "id") || typeof ir.id !== "string") {
+            throw new Error("Trello create_check_item returned no id");
+          }
+          return { checklistId: it.checklistId, id: ir.id, name: it.name };
+        });
+
+        // Regroup items under their checklist, preserving order.
+        const data: ChecklistResult[] = created.map((c) => ({
+          id: c.id,
+          name: c.name,
+          items: itemRefs
+            .filter((r) => r.checklistId === c.id)
+            .map((r) => ({ id: r.id, name: r.name })),
+        }));
+        return { ok: true, data };
       } catch (e) {
         const { code, details } = classifyError(e);
         return { ok: false, code, details };

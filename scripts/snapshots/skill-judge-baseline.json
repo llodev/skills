@@ -54,10 +54,10 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "skills/pm-tasks-trello/SKILL.md": {
-    "score": 83,
-    "version": "1.9.0",
-    "capturedAt": "2026-08-01",
-    "notes": "v1.9.0 (U1 language-respect): added § Narration language banner (agent narration follows .trello.json `locale`; card content follows the plan; C-LANG-1 warns on unset/no-bundle). Δ+1 vs 82 (completeness gain, within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
+    "score": 84,
+    "version": "1.10.0",
+    "capturedAt": "2026-08-04",
+    "notes": "v1.10.0 (F13 batch card+checklist creation): added § `trello.task.batch-create-with-checklists` (custom verb) under Phase 6 — bounded-parallel batch creation, two-phase checklist creation with concurrency cap, headless entry point, and a note on the deferred idChecklistSource optimization. Δ+1 vs 83 (completeness gain — one verb-doc subsection on an already-mature adapter skill, same shape/size as the U1 narration-language additions across the family). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-controller/SKILL.md": {
     "score": 84,

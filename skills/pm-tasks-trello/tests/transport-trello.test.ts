@@ -38,7 +38,7 @@ describe("createTrelloTransport — taskCreate", () => {
     });
     expect(calls).toHaveLength(1);
     expect(calls[0].tool).toBe("mcp__trello__create_card");
-    expect(calls[0].args).toEqual({ listId: "listY", name: "Hello", desc: "world" });
+    expect(calls[0].args).toEqual({ idList: "listY", name: "Hello", desc: "world" });
     expect(result).toEqual({ ok: true, data: { id: "card1", url: "https://trello.com/c/abc" } });
   });
 
