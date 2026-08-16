@@ -13,7 +13,7 @@ jobs:
       # (the skill-judge ratchet gate). A shallow checkout makes that gate self-skip.
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: pnpm/action-setup@v6.0.9
+      - uses: pnpm/action-setup@v6.0.10
       # Node 24 (matching release.yml) — size-limit >=13 dropped Node 20 support
       # (engines: ^22.18.0 || ^24.0.0 || >=26.0.0). Runtime Node-20 coverage stays
       # in e2e.yml / contract-check.yml; published packages remain engines.node >=20.
