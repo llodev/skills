@@ -33,10 +33,12 @@ jobs:
       - run: bash scripts/shell/pre-release-check.sh
       - uses: changesets/action@v2
         with:
-          version: pnpm run changeset:version
-          publish: pnpm run changeset:publish
+          # v2 renamed these inputs (`version`/`publish` -> `*-script`) and dropped support for
+          # passing the token via the GITHUB_TOKEN env var — it must come through `github-token`.
+          version-script: pnpm run changeset:version
+          publish-script: pnpm run changeset:publish
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Auth is npm Trusted Publishing (OIDC) — no long-lived token. The `id-token: write`
           # permission above lets the npm CLI mint a short-lived publish token per run, matched
           # against each package's trusted-publisher config on npmjs.com (repo + this workflow
