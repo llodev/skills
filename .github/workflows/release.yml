@@ -31,7 +31,7 @@ jobs:
       - run: pnpm run validate
       - run: pnpm run contract:check
       - run: bash scripts/shell/pre-release-check.sh
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         with:
           version: pnpm run changeset:version
           publish: pnpm run changeset:publish
