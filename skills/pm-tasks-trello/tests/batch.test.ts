@@ -263,3 +263,54 @@ describe("batchCreateWithChecklists — orchestrator", () => {
     });
   });
 });
+
+describe("createTrelloTransport — createChecklists live MCP response envelopes", () => {
+  it("reads ids out of the { summary, checklist } and { summary, checkItem } envelopes", async () => {
+    const { mcp } = makeQueuedMcp({
+      mcp__trello__trello_create_checklist: [
+        {
+          summary: 'Created checklist "Pre-flight"',
+          checklist: {
+            id: "6a839ba343eff6e2103da8d7",
+            name: "Pre-flight",
+            idBoard: "6a2b574aefe6fe9621a3d5a7",
+            idCard: "6a839b7608823cea85ab2786",
+            pos: 140737488355328,
+            checkItems: [],
+          },
+        },
+      ],
+      mcp__trello__trello_create_check_item: [
+        {
+          summary: 'Created check item "a"',
+          checkItem: { id: "6a839bd01c1c1a0b3e5f0a11", name: "a", state: "incomplete", pos: 17408 },
+        },
+        {
+          summary: 'Created check item "b"',
+          checkItem: { id: "6a839bd8b2f0c4d19a7e0b22", name: "b", state: "incomplete", pos: 34816 },
+        },
+      ],
+    });
+    const transport = createTrelloTransport({ mcp });
+
+    const res = await transport.createChecklists(
+      "6a839b7608823cea85ab2786",
+      [{ name: "Pre-flight", items: ["a", "b"] }],
+      8,
+    );
+
+    expect(res).toEqual({
+      ok: true,
+      data: [
+        {
+          id: "6a839ba343eff6e2103da8d7",
+          name: "Pre-flight",
+          items: [
+            { id: "6a839bd01c1c1a0b3e5f0a11", name: "a" },
+            { id: "6a839bd8b2f0c4d19a7e0b22", name: "b" },
+          ],
+        },
+      ],
+    });
+  });
+});
