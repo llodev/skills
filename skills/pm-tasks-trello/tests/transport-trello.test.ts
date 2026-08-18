@@ -405,3 +405,118 @@ describe("createTrelloTransport — taskCommentAdd", () => {
     expect(calls[0].args.text).toBe("hi");
   });
 });
+
+// ---------------------------------------------------------------------------
+// 8. Live MCP response-envelope conformance
+//
+// `atlassian-trello-mcp` wraps every write result in a named envelope
+// (`{ summary, card }`, `{ summary, comment }`, …) rather than returning the
+// resource flat. The fixtures below are verbatim captures from a live dogfood
+// run against a real board — a flat stub here is the mock-validates-itself
+// trap that let v1.10.0 report failure while really creating cards.
+// ---------------------------------------------------------------------------
+
+describe("createTrelloTransport — live MCP response envelopes", () => {
+  it("taskCreate: reads id + url out of the { summary, card } envelope", async () => {
+    const { mcp } = makeMcp(
+      new Map([
+        [
+          "mcp__trello__create_card",
+          {
+            summary: "Created card: Ship it",
+            card: {
+              id: "6a839b7608823cea85ab2786",
+              name: "Ship it",
+              description: "No description",
+              url: "https://trello.com/c/wjTO4g8R",
+              listId: "6a2b57600f0f20cbea2277f0",
+            },
+          },
+        ],
+      ]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    const result = await transport.taskCreate({
+      boardOrProjectId: "boardX",
+      listOrSectionId: "6a2b57600f0f20cbea2277f0",
+      title: "Ship it",
+    });
+
+    expect(result).toEqual({
+      ok: true,
+      data: { id: "6a839b7608823cea85ab2786", url: "https://trello.com/c/wjTO4g8R" },
+    });
+  });
+
+  it("taskCommentAdd: reads commentId + postedAt out of the { summary, comment } envelope", async () => {
+    const { mcp } = makeMcp(
+      new Map([
+        [
+          "mcp__trello__trello_add_comment",
+          {
+            summary: "Added comment to card 6a839b76",
+            comment: {
+              id: "6a83a1119b1d1f2c0f9c8a01",
+              type: "commentCard",
+              date: "2026-08-17T23:41:05.512Z",
+            },
+          },
+        ],
+      ]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    const result = await transport.taskCommentAdd({ taskId: "6a839b76", text: "done" });
+
+    expect(result).toEqual({
+      ok: true,
+      data: { commentId: "6a83a1119b1d1f2c0f9c8a01", postedAt: "2026-08-17T23:41:05.512Z" },
+    });
+  });
+
+  it("taskAssigneeAdd: tolerates the summary-only envelope add_member actually returns", async () => {
+    const { mcp } = makeMcp(
+      new Map([
+        ["mcp__trello__trello_add_member_to_card", { summary: "Added member u1 to card 6a839b76" }],
+      ]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    const result = await transport.taskAssigneeAdd({ taskId: "6a839b76", userId: "u1" });
+
+    expect(result).toEqual({ ok: true, data: { added: true, currentAssigneeIds: ["u1"] } });
+  });
+
+  it("taskCreate: still accepts a flat resource from a caller that unwraps itself", async () => {
+    const { mcp } = makeMcp(
+      new Map([["mcp__trello__create_card", { id: "card1", url: "https://trello.com/c/abc" }]]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    const result = await transport.taskCreate({
+      boardOrProjectId: "b",
+      listOrSectionId: "l",
+      title: "t",
+    });
+
+    expect(result).toEqual({ ok: true, data: { id: "card1", url: "https://trello.com/c/abc" } });
+  });
+
+  it("taskCreate: an envelope with no usable id is still a shape error", async () => {
+    const { mcp } = makeMcp(
+      new Map([["mcp__trello__create_card", { summary: "Created card: x", card: { name: "x" } }]]),
+    );
+    const transport = createTrelloTransport({ mcp });
+    const result = await transport.taskCreate({
+      boardOrProjectId: "b",
+      listOrSectionId: "l",
+      title: "t",
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.code).toBe("MCP_ERROR");
+      expect(result.details).toEqual({
+        message: "Trello MCP returned unexpected response shape",
+        verb: "task.create",
+      });
+    }
+  });
+});

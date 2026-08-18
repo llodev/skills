@@ -42,6 +42,10 @@ import type { ChecklistInput, ChecklistResult } from "./batch.js";
  * MCP-call dispatcher. The agent runtime that loads this transport
  * provides a function that proxies to the real `mcp__trello__*` tools.
  * Tests inject a recording stub.
+ *
+ * The resolved value may be either the enveloped result the Trello MCP server
+ * actually returns (`{ summary, card: { … } }`) or the bare resource, if the
+ * caller unwraps it first — the transport accepts both.
  */
 export type McpCaller = (toolName: string, args: Record<string, unknown>) => Promise<unknown>;
 
@@ -64,6 +68,21 @@ export type TrelloTransport = Transport & {
 
 function isObjectWith<K extends string>(value: unknown, key: K): value is Record<K, unknown> {
   return typeof value === "object" && value !== null && key in value;
+}
+
+/**
+ * `atlassian-trello-mcp` wraps every write result in a named envelope keyed by
+ * the resource — `create_card` returns `{ summary, card: { id, url, … } }`,
+ * `trello_add_comment` returns `{ summary, comment: { … } }`, and so on. A
+ * caller that unwraps on its own hands the resource back flat instead, so both
+ * shapes have to be accepted: prefer the envelope, fall back to the response.
+ */
+function unwrap(resp: unknown, key: string): unknown {
+  if (isObjectWith(resp, key)) {
+    const inner = resp[key];
+    if (typeof inner === "object" && inner !== null) return inner;
+  }
+  return resp;
 }
 
 function classifyError(e: unknown): { code: TransportErrorCode; details: Record<string, unknown> } {
@@ -120,7 +139,7 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
       };
       if (req.dueDate !== undefined) args.due = req.dueDate;
       try {
-        const resp = await mcp("mcp__trello__create_card", args);
+        const resp = unwrap(await mcp("mcp__trello__create_card", args), "card");
         if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {
           return shapeError("task.create");
         }
@@ -272,10 +291,10 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
     ): Promise<TransportResult<TaskCommentAddResponse>> {
       const text = req.clientToken ? `[ct:${req.clientToken}] ${req.text}` : req.text;
       try {
-        const resp = await mcp("mcp__trello__trello_add_comment", {
-          cardId: req.taskId,
-          text,
-        });
+        const resp = unwrap(
+          await mcp("mcp__trello__trello_add_comment", { cardId: req.taskId, text }),
+          "comment",
+        );
         if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {
           return shapeError("task.comment.add");
         }
@@ -306,7 +325,10 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
       try {
         // Phase 1 — create every checklist (parallel, capped).
         const created = await mapWithConcurrency(checklists, concurrency, async (cl) => {
-          const resp = await mcp("mcp__trello__trello_create_checklist", { cardId, name: cl.name });
+          const resp = unwrap(
+            await mcp("mcp__trello__trello_create_checklist", { cardId, name: cl.name }),
+            "checklist",
+          );
           if (!isObjectWith(resp, "id") || typeof resp.id !== "string") {
             throw new Error("Trello create_checklist returned no id");
           }
@@ -318,10 +340,13 @@ export function createTrelloTransport(opts: CreateTrelloTransportOptions): Trell
           c.itemNames.map((name) => ({ checklistId: c.id, name })),
         );
         const itemRefs = await mapWithConcurrency(flat, concurrency, async (it) => {
-          const ir = await mcp("mcp__trello__trello_create_check_item", {
-            checklistId: it.checklistId,
-            name: it.name,
-          });
+          const ir = unwrap(
+            await mcp("mcp__trello__trello_create_check_item", {
+              checklistId: it.checklistId,
+              name: it.name,
+            }),
+            "checkItem",
+          );
           if (!isObjectWith(ir, "id") || typeof ir.id !== "string") {
             throw new Error("Trello create_check_item returned no id");
           }

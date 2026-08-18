@@ -18,7 +18,7 @@ export interface BatchCardInput {
   listOrSectionId: string;
   name: string;
   description?: string;
-  dueDate?: string; // ISO 8601 (YYYY-MM-DD), maps to create_card `due`
+  dueDate?: string; // full ISO 8601 date-time, maps to create_card `due` (date-only is rejected)
   clientToken?: string; // idempotency marker (reuses task.create [ct:] convention)
   checklists?: ChecklistInput[];
 }
