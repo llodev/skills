@@ -68,6 +68,7 @@ Apply the generic card from core's [`../pm-tasks-core/references/generic-card.md
 - "Implementation Checklist" + "Verification Checklist" → subtasks (flatten any nested bullets; Asana supports one level only).
 - Labels → custom field options (resolved via `.asana.json` `customFields[]`).
 - Number custom fields with a `unit` (`.asana.json` `customFields[].unit`) → convert the source value to the field's native unit before writing. E.g. an effort of "12 h" into a `minutes` field is `720`, not `12`.
+- Number custom fields with `rollsUpFromSubtasks: true` (e.g. Asana's built-in **Estimated time**) → write **only on leaf tasks**. A task that has subtasks gets the field left **empty**: Asana already sums the subtasks into it, so writing the parent's own total on top double-counts. A task with no subtasks is filled normally. Never place such a field in `subtaskDefaults.inheritParentFields`.
 - Due date → `due_on` (YYYY-MM-DD). The typed transport `taskCreate` also maps the core `TaskCreateRequest.dueDate` to `due_on` — see [`references/operations.md`](references/operations.md) § Temporal handling for the create/start/close split.
 - Assignee → `assignee` GID resolved from `.asana.json` `members[]` or `me` at publish time.
 
@@ -84,8 +85,8 @@ Strict order: 5.1 read `.asana.json` (full file) → 5.2.5 resolve assignee + cu
 
 MCP publish sequence:
 
-1. **Parent task** — `create_tasks` with `name`, `notes` (description), `projects: [projectGid]`, `memberships: [{ project, section }]`, `assignee` (resolved GID), `due_on`, `custom_fields` (JSON string of `{fieldGid: optionGid}`).
-2. **Subtasks** — `create_tasks` per subtask with `parent: parentGid`, `name`, `assignee` (inherited or per-subtask), `custom_fields` = the parent values for the fields in `subtaskDefaults.inheritParentFields` (auto-copy floor) **plus** each subtask's own domain fields (Competência, Módulo) and due date resolved from what it actually touches. Never leave a domain/date field blank because it is absent from `inheritParentFields`.
+1. **Parent task** — `create_tasks` with `name`, `notes` (description), `projects: [projectGid]`, `memberships: [{ project, section }]`, `assignee` (resolved GID), `due_on`, `custom_fields` (JSON string of `{fieldGid: optionGid}`). **Omit every `rollsUpFromSubtasks` field** from this map when the card has subtasks — Asana fills them from the subtasks in step 2.
+2. **Subtasks** — `create_tasks` per subtask with `parent: parentGid`, `name`, `assignee` (inherited or per-subtask), `custom_fields` = the parent values for the fields in `subtaskDefaults.inheritParentFields` (auto-copy floor) **plus** each subtask's own domain fields (Competência, Módulo) and due date resolved from what it actually touches. Never leave a domain/date field blank because it is absent from `inheritParentFields`. Subtasks are leaves, so this is where every `rollsUpFromSubtasks` field carries its per-subtask value.
 3. **Tags** (optional) — `addTag` per tag GID.
 4. **Confirm** — list parent + subtasks with permalinks.
 
