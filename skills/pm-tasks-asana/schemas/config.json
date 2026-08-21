@@ -68,6 +68,10 @@
             "enum": ["minutes", "hours", "days", "points"],
             "description": "Native unit a number field is stored in. When the source value uses a different unit, convert to this unit before writing (e.g. hours→minutes ×60). Only meaningful for type:\"number\"."
           },
+          "rollsUpFromSubtasks": {
+            "type": "boolean",
+            "description": "True when Asana already sums this field from a task's subtasks (e.g. the built-in \"Estimated time\"). Such a field is written ONLY on leaf tasks (num_subtasks === 0); writing it on a parent double-counts, because Asana adds the parent's own value on top of the rolled-up total. A field with this flag must never appear in subtaskDefaults.inheritParentFields. Only meaningful for type:\"number\"."
+          },
           "alias": { "type": "string", "pattern": "^[a-z0-9-]+$" },
           "options": {
             "type": "array",

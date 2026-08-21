@@ -56,6 +56,23 @@ When auditing whether an agent action was correctly attributed to the agent acco
 
 ---
 
+## Roll-up number fields are written on leaves only
+
+**NEVER** write a `rollsUpFromSubtasks` number field (e.g. Asana's built-in **Estimated time**) on a task that has subtasks. **Why:** Asana already sums the subtasks into that field on the parent; writing the parent's own total on top makes the parent show roughly **double** the real effort, and the error is invisible — the field looks plausibly filled.
+
+The predicate is `num_subtasks`, available as an `opt_field` on `get_task` / `search_tasks`:
+
+- `num_subtasks === 0` → leaf. Write the field.
+- `num_subtasks > 0` → parent. Leave the field **empty** and let Asana sum.
+
+At create time no read is needed: the card structure already says which tasks get subtasks. Only `task.estimate.set` against a pre-existing task needs `get_task` with `opt_fields: "num_subtasks"` first.
+
+**NEVER** list a `rollsUpFromSubtasks` field in `subtaskDefaults.inheritParentFields`. **Why:** same double count from the other end — auto-copying the parent's total into every subtask, which Asana then sums back into the parent.
+
+The timeline table in the parent's **description** still shows the total. That is prose, not a field, and never enters the sum.
+
+---
+
 ## Subtasks do NOT inherit custom fields automatically
 
 Asana itself does not propagate `custom_fields` from a parent task to its subtasks at create time, regardless of project-level defaults. The adapter MUST replicate the parent's selected `inheritParentFields` (declared in `.asana.json` under `subtaskDefaults`) when creating each subtask:
