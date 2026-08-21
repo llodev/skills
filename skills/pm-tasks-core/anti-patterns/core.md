@@ -38,6 +38,10 @@ Expert guardrails — violating these wastes board space, breaks paste targets, 
 
 **NEVER** apply the tier table blindly to spikes, migrations, or "unknown-unknown" chunks. **Why:** those need **XL** or explicit `"too uncertain — spike first"` flag in timeline notes.
 
+**NEVER** add calendar slack on top of the 20% buffer when deriving a due date. **Why:** the buffer in the effort formula is the _only_ buffer; padding again at the calendar step applies it twice and is the main cause of deadlines that land days past the real finish. Use `ceil(realistic_hours / 6)` business days, verbatim.
+
+**NEVER** round a task up when it sits between two tiers. **Why:** the tiers already assume AI assistance, so rounding up is the default bias — and it compounds across every task in the plan. Tie goes to the lower tier.
+
 ---
 
 ## Scale
