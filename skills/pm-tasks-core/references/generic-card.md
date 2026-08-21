@@ -105,19 +105,42 @@ Estimate calendar time for a developer using AI assistance (Claude, Cursor, Copi
 
 | Tier               | Description                                  | AI-assisted estimate |
 | ------------------ | -------------------------------------------- | -------------------- |
-| S — Setup/config   | Files, manifests, workspace wiring           | 10–20 min            |
-| M — Standard TDD   | Write test → implement → pass                | 20–45 min            |
-| L — Complex domain | Entity/aggregate with invariants, many tests | 45–90 min            |
-| XL — Large block   | 4+ related tasks sharing the same fixture    | 1.5–3 h              |
-| Docs               | README, inline docs, layout updates          | 10–20 min            |
+| S — Setup/config   | Files, manifests, workspace wiring           | 5–15 min             |
+| M — Standard TDD   | Write test → implement → pass                | 15–30 min            |
+| L — Complex domain | Entity/aggregate with invariants, many tests | 30–60 min            |
+| XL — Large block   | 4+ related tasks sharing the same fixture    | 1–2 h                |
+| Docs               | README, inline docs, layout updates          | 5–15 min             |
 
-**Estimation formula:**
+When a task sits between two tiers, **take the lower one**. The tiers already
+assume AI assistance; rounding up is the default bias and it compounds across a
+plan.
+
+**Estimation formula (effort):**
 
 1. Classify each task by tier.
 2. Sum the estimates.
-3. Add 20% buffer for integration, context-switching, and debugging.
+3. Add 20% buffer for integration, context-switching, and debugging. **This is
+   the only buffer.**
 4. Round to a practical unit (hours or days).
 5. Present a range: `optimistic — realistic`.
+
+**Calendar formula (effort → due date):**
+
+A working day is **6 focused hours**. Convert the _realistic_ effort:
+
+```
+calendar_days = ceil(realistic_hours / 6)
+```
+
+- `realistic_hours ≤ 6` → **due today**. Do not push a same-day amount of work
+  into tomorrow.
+- Count **business days** from today (skip weekends).
+- **NEVER add slack on top.** Step 3 already bought the buffer; adding calendar
+  padding applies it twice and is the single biggest source of inflated
+  deadlines.
+
+Adapters set their native due-date field from this formula; see the adapter's
+`references/format.md`.
 
 **Format:**
 

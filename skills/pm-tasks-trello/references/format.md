@@ -69,9 +69,9 @@ Apply **3–5** named labels max (board gets noisy beyond that).
 
 ## Due date
 
-Set to the **realistic** estimate from the timeline section, starting from today.
+Derive from the **realistic** estimate in the timeline section using the calendar formula in [`../../pm-tasks-core/references/generic-card.md`](../../pm-tasks-core/references/generic-card.md) § _Timeline estimate_: `ceil(realistic_hours / 6)` business days from today, and **due today** when the realistic effort is ≤ 6 h.
 
-If the estimate is a range (e.g. "4–6h"), set the due date at the end of the realistic window.
+If the estimate is a range (e.g. "3–4h"), use the **upper** bound of the realistic window as `realistic_hours` — then apply the formula. Do not add slack on top of it; the 20% buffer is already inside that number.
 
 ## Parent / child cards (large phases)
 
