@@ -35,20 +35,20 @@
     }
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^1.0.0",
-    "@changesets/cli": "^3.0.1",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.2",
     "@size-limit/file": "^13.0.3",
-    "@types/node": "^26.4.0",
-    "@typescript-eslint/eslint-plugin": "^8.68.0",
-    "@typescript-eslint/parser": "^8.68.0",
+    "@types/node": "^26.4.1",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
+    "@typescript-eslint/parser": "^8.69.0",
     "@vitest/coverage-v8": "^4.1.11",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "eslint": "^10.9.1",
+    "eslint": "^10.10.0",
     "gray-matter": "^4.0.3",
     "prettier": "^3.9.6",
     "size-limit": "^13.0.3",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3",
     "vitest": "^4.1.11"
   }
