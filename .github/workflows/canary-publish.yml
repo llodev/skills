@@ -4,10 +4,21 @@ on:
   pull_request:
     types: [opened, synchronize]
 
-# Publishing needs no write access to the repo — every input comes from the
+# `id-token: write` mints the OIDC token npm exchanges for a short-lived,
+# publish-scoped credential (npm Trusted Publishing) — there is no NPM_TOKEN on
+# this path. It needs no write access to the repo: every input comes from the
 # event payload (or the checked-out git history), never the PR API.
+#
+# npm allows up to 10 trusted publisher configurations per package (GA
+# 2026-09-03), so this workflow has its OWN config on each of the publishable
+# packages, alongside the `release.yml` one. Both are registered as
+# org `llodev` / repo `skills` / workflow `<filename>.yml`, no environment.
+# The canary config MUST have direct `npm publish` enabled in its allowed
+# actions — a config defaults to stage-only, and a staged canary would sit
+# waiting for manual promotion instead of landing under its `pr-<N>` tag.
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   canary:
@@ -41,16 +52,17 @@ jobs:
             echo "::notice::canary-publish skipped: $1"
           }
 
-          # Guard 0 — Dependabot PRs run with a restricted token from the Dependabot
-          # secret store, so NPM_TOKEN is unreadable and a publish is impossible.
+          # Guard 0 — Dependabot PRs run with restricted permissions, so the
+          # `id-token: write` grant is withheld and no OIDC token can be minted.
           if [ "$ACTOR" = "dependabot[bot]" ]; then
-            skip "PR is from Dependabot (\`$ACTOR\`); no registry token access."
+            skip "PR is from Dependabot (\`$ACTOR\`); no OIDC token access."
             exit 0
           fi
 
-          # Guard 1 — fork PRs cannot read NPM_TOKEN, so a publish is impossible.
+          # Guard 1 — fork PRs also run with a read-only token and no
+          # `id-token: write`, so a publish is impossible.
           if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
-            skip "PR is from a fork (\`$HEAD_REPO\`); no registry token access."
+            skip "PR is from a fork (\`$HEAD_REPO\`); no OIDC token access."
             exit 0
           fi
 
@@ -72,9 +84,16 @@ jobs:
       - uses: actions/setup-node@v7
         if: steps.guard.outputs.should_publish == 'true'
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
+
+      # Trusted Publishing needs npm CLI >= 11.5.1 for the OIDC token exchange.
+      # Pinned to the 11.x line for the same reason as release.yml — see the
+      # comment there on npm 12's strict config validation.
+      - name: Pin npm to an OIDC-capable release
+        if: steps.guard.outputs.should_publish == 'true'
+        run: npm install -g npm@^11.5.1
 
       - name: Install dependencies
         if: steps.guard.outputs.should_publish == 'true'
@@ -91,7 +110,6 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
 

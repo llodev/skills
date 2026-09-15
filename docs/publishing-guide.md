@@ -435,9 +435,27 @@ and published under the dist-tag `pr-<N>`. The `0.0.0` prefix puts canary versio
 
 ### What auto-publishes
 
-The `canary-publish.yml` workflow fires on PR `opened` and `synchronize`. It derives the publishable package list from the workspace catalog at run time (data-driven — today: `pm-tasks-core`, `pm-tasks-asana`, `pm-tasks-trello`, `pm-tasks-testkit`). All packages in a PR share the same dist-tag.
+The `canary-publish.yml` workflow fires on PR `opened` and `synchronize`. It derives the publishable package list from the workspace catalog at run time (data-driven — today: `pm-tasks-core`, `pm-tasks-asana`, `pm-tasks-trello`, `pm-tasks-jira`, `pm-tasks-linear`, `pm-tasks-testkit`). All packages in a PR share the same dist-tag.
 
-Fork PRs are skipped automatically (no `NPM_TOKEN`). Add `[skip canary]` anywhere in the PR title or latest commit message to opt out.
+Dependabot PRs and fork PRs are skipped automatically — neither is granted `id-token: write`, so neither can mint an OIDC token. Add `[skip canary]` anywhere in the PR title or latest commit message to opt out.
+
+### Authentication — two trusted publishers per package
+
+Both publish paths use **npm Trusted Publishing (OIDC)**. There is no long-lived registry token on either one; each workflow declares `id-token: write` and npm exchanges the GitHub OIDC token for a short-lived, publish-scoped credential.
+
+npm allows up to **10 trusted publisher configurations per package** (GA 2026-09-03), so every publishable package carries two, added on npmjs.com under Packages → _package_ → Settings → Trusted publishing:
+
+| Config      | Organization | Repository | Workflow filename    | Environment | Allowed actions      |
+| ----------- | ------------ | ---------- | -------------------- | ----------- | -------------------- |
+| **release** | `llodev`     | `skills`   | `release.yml`        | _(none)_    | direct `npm publish` |
+| **canary**  | `llodev`     | `skills`   | `canary-publish.yml` | _(none)_    | direct `npm publish` |
+
+> [!IMPORTANT]
+> A new configuration defaults to **stage only**. The canary config must have direct `npm publish` enabled in its allowed actions, or every canary is staged and waits for manual promotion instead of landing under its `pr-<N>` tag. Configurations are also **immutable** — to correct one, delete it and create a new one.
+
+Adding a new publishable package means adding **both** configs for it before its first release; an OIDC token is scoped to the packages that trust it, and a missing config fails with `E404 ... PUT` on that package alone (see § 11).
+
+Only `canary-cleanup.yml` still needs a token, because Trusted Publishing mints a publish/stage-scoped credential and cannot deprecate versions or move dist-tags. Its `NPM_TOKEN` must be a granular token with **Read and write → stage only** and **Bypass 2FA** enabled; without Bypass 2FA every call fails `EOTP` in CI. Stage-only keeps deprecate and dist-tag moves while staying exempt from the January 2027 removal of direct token publishing. Granular write tokens cap at 90 days, so the secret needs rotating quarterly — cleanup is best-effort and a stale token degrades it without failing any PR.
 
 ### Installing a canary build
 
@@ -464,7 +482,7 @@ The `--from-canary` mode installs each package from the registry at its exact `0
 
 ### Cleanup
 
-When a PR is closed (merged or abandoned), `canary-cleanup.yml` retires that PR's canaries: it strips the `pr-<N>` dist-tag, then for each `0.0.0-pr-<N>-*` version tries `npm unpublish` and falls back to `npm deprecate`. npm only allows unpublishing a leaf package within a 72-hour window and refuses any version that has dependents (`E405` — e.g. `core`, which every adapter depends on), so depended-upon canaries are deprecated rather than removed (npm does not garbage-collect them). Cleanup is best-effort and never blocks the PR-close event; any leftover canary versions are harmless — they are never the `latest` tag and never satisfy a `^` range.
+When a PR is closed (merged or abandoned), `canary-cleanup.yml` retires that PR's canaries: it deprecates each `0.0.0-pr-<N>-*` version and strips the `pr-<N>` dist-tag. It does not attempt `npm unpublish` — npm only allows that for a leaf package within a 72-hour window and refuses any version that has dependents (`E405` — e.g. `core`, which every adapter depends on), and it is outside what a stage-only token may do. Deprecation is npm's own retirement path: the version persists, marked do-not-use (npm does not garbage-collect it). Cleanup is best-effort and never blocks the PR-close event; any leftover canary versions are harmless — they are never the `latest` tag and never satisfy a `^` range.
 
 ### Doctor probe
 

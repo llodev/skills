@@ -92,7 +92,7 @@ npm install --legacy-peer-deps @llodev/pm-tasks-trello@pr-42 @llodev/pm-tasks-co
 # Other adapters: @llodev/pm-tasks-asana@pr-42, @llodev/pm-tasks-testkit@pr-42
 ```
 
-All packages in a PR share the same tag. `--legacy-peer-deps` is required: npm 7+ errors `ERESOLVE` on the prerelease caret peer ranges canary tarballs carry, even with the exact version present. Canary versions use the `0.0.0-pr-<N>-<sha>` scheme and are unpublished automatically when the PR closes. See [`docs/publishing-guide.md` § 12](docs/publishing-guide.md#12-canary-publish-lifecycle-pm-tasks-v110) for the full lifecycle.
+All packages in a PR share the same tag. `--legacy-peer-deps` is required: npm 7+ errors `ERESOLVE` on the prerelease caret peer ranges canary tarballs carry, even with the exact version present. Canary versions use the `0.0.0-pr-<N>-<sha>` scheme and are deprecated and untagged automatically when the PR closes. See [`docs/publishing-guide.md` § 12](docs/publishing-guide.md#12-canary-publish-lifecycle-pm-tasks-v110) for the full lifecycle.
 
 ## Adding a new adapter
 
