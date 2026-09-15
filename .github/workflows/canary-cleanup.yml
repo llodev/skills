@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Mirror canary-publish's fork guard: a fork PR never had canaries published
-      # (publish skips on forks) and has no NPM_TOKEN access anyway.
+      # (publish skips on forks) and cannot read secrets anyway.
       - name: Skip if fork
         id: guard
         env:
@@ -50,16 +50,27 @@ jobs:
       #      package/version does NOT abort the loop; it completes for ALL
       #      packages even on partial failure.
       #
-      # npm unpublish only works for a leaf package within npm's 72 h window; it is
-      # REFUSED (E405 "has dependent packages") for any version with dependents —
-      # e.g. core, which every adapter depends on. So each version tries unpublish
-      # first and falls back to `npm deprecate` (npm's recommended retirement path:
-      # the version persists, marked do-not-use — npm does NOT garbage-collect it).
-      # The PR-scoped dist-tag is stripped regardless so it leaves the tag list.
+      # Retirement is `npm deprecate` + `npm dist-tag rm`, NOT unpublish.
+      # `npm unpublish` is refused (E405 "has dependent packages") for any version
+      # with dependents — e.g. core, which every adapter depends on — so it only
+      # ever succeeded for leaf packages inside npm's 72 h window. It is also
+      # outside what NPM_TOKEN is now allowed to do (see below). Deprecate is npm's
+      # own recommended retirement path: the version persists, marked do-not-use.
+      # The PR-scoped dist-tag is stripped so it leaves the tag list.
       # Stale canaries are harmless (never the `latest` tag, never match a `^` range).
       # No [skip canary] check: if publish was skipped there are simply no
       # matching versions and the loop is a no-op.
-      - name: Clean up canary versions (untag + unpublish/deprecate)
+      #
+      # This is the ONE path that still needs a token: npm Trusted Publishing mints
+      # a publish/stage-scoped credential only, so OIDC cannot deprecate or move
+      # dist-tags. NPM_TOKEN must therefore be a granular token with:
+      #   • Packages and scopes → Read and write → **stage only**
+      #   • **Bypass 2FA** enabled (without it every call fails EOTP in CI)
+      # Stage-only is the durable choice: it keeps deprecate + dist-tag rm while
+      # being exempt from the January 2027 removal of direct token publishing.
+      # Granular write tokens cap at 90 days, so this secret needs rotating
+      # quarterly — a failure here is best-effort and never red-fails the PR.
+      - name: Clean up canary versions (untag + deprecate)
         if: steps.guard.outputs.should_run == 'true'
         continue-on-error: true
         env:
@@ -67,7 +78,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           # Intentionally omit -e: each npm call must be best-effort so the
-          # loop completes for all packages even when individual unpublishes fail.
+          # loop completes for all packages even when individual calls fail.
           set -uo pipefail
 
           PREFIX="0.0.0-pr-${PR_NUMBER}-"
@@ -83,7 +94,6 @@ jobs:
             exit 0
           }
 
-          REMOVED=0
           DEPRECATED=0
           WARNED=0
           DEPMSG="orphaned canary for closed PR #${PR_NUMBER} — do not use"
@@ -109,28 +119,21 @@ jobs:
               continue
             }
 
-            # Per version: try unpublish first (full removal — works only for leaf
-            # packages within npm's 72h window), else deprecate. npm refuses to
-            # unpublish a version that has dependents (E405) — e.g. core, which every
-            # adapter depends on — so deprecate is the reliable retirement path npm
-            # itself recommends. Either way the version stops being advertised.
+            # Per version: deprecate. This is the reliable retirement path npm
+            # itself recommends, and the only one a stage-only token can perform.
             while IFS= read -r ver; do
               [ -n "$ver" ] || continue
-              if npm unpublish "${name}@${ver}" >/dev/null 2>&1; then
-                echo "unpublished ${name}@${ver}"
-                REMOVED=$((REMOVED + 1))
-              elif npm deprecate -f "${name}@${ver}" "$DEPMSG" >/dev/null 2>&1; then
+              if npm deprecate -f "${name}@${ver}" "$DEPMSG" >/dev/null 2>&1; then
                 echo "deprecated ${name}@${ver}"
                 DEPRECATED=$((DEPRECATED + 1))
               else
-                echo "::warning::canary-cleanup: could not unpublish or deprecate ${name}@${ver}"
+                echo "::warning::canary-cleanup: could not deprecate ${name}@${ver}"
                 WARNED=$((WARNED + 1))
               fi
             done <<< "$matched"
 
             # Strip the PR-scoped dist-tag so it no longer clutters `npm dist-tags`
-            # (a tag can dangle after unpublish; removal always works and is harmless
-            # if the tag is already gone).
+            # (removal is harmless if the tag is already gone).
             npm dist-tag rm "$name" "pr-${PR_NUMBER}" >/dev/null 2>&1 \
               && echo "removed dist-tag pr-${PR_NUMBER} from ${name}" || true
           done <<< "$PKGS"
@@ -138,7 +141,7 @@ jobs:
           {
             echo "### Canary cleanup — PR #${PR_NUMBER}"
             echo
-            echo "Prefix \`${PREFIX}\`: removed **${REMOVED}**, deprecated **${DEPRECATED}**; dist-tag \`pr-${PR_NUMBER}\` stripped from each package."
+            echo "Prefix \`${PREFIX}\`: deprecated **${DEPRECATED}**; dist-tag \`pr-${PR_NUMBER}\` stripped from each package."
             if [ "$WARNED" -gt 0 ]; then
               echo
               echo "> **${WARNED}** warning(s) — see step log for details."

@@ -50,9 +50,10 @@ The last wave of releases. Full history lives in each package's `CHANGELOG.md`; 
 
 ### 2.4 Release friction
 
-| #   | Gap                                                                | Why                                                                                                                                                                                                                    | Effort |
-| --- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| R1  | Changesets cannot open the Version Packages PR (org policy blocks) | The `llodev` org forbids Actions from creating PRs, so the version-PR step fails on every release and the PR is opened by hand from `changeset-release/main`. Fix is an org setting or a PAT — publish itself is fine. | S      |
+| #   | Gap                                                                | Why                                                                                                                                                                                                                                                                                                                                   | Effort |
+| --- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| R1  | Changesets cannot open the Version Packages PR (org policy blocks) | The `llodev` org forbids Actions from creating PRs, so the version-PR step fails on every release and the PR is opened by hand from `changeset-release/main`. Fix is an org setting or a PAT — publish itself is fine.                                                                                                                | S      |
+| R2  | `canary-cleanup.yml` still needs a 90-day granular token           | Publishing is fully on OIDC (both `release.yml` and `canary-publish.yml`), but Trusted Publishing cannot deprecate versions or move dist-tags, so cleanup keeps a stage-only + Bypass-2FA `NPM_TOKEN` that expires quarterly. Degrades silently — cleanup is best-effort. Watch for an npm OIDC scope that covers package management. | S      |
 
 ### 2.5 Blocked on upstream
 
