@@ -232,13 +232,14 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
     // publish step in the same job, and a just-published version routinely
     // ETARGETs until the packument propagates.
     //
-    // The budget was ~2 min and that is no longer enough. On the first OIDC
-    // canary run (PR #103) all six packages published successfully and the
-    // install still ETARGETed through every attempt — yet the versions
-    // resolved fine minutes later. npm now gates a fresh publish behind
-    // malware scanning, which stretched the accepted-publish → resolvable
-    // window well past the old budget. Backoff delays (seconds) between
-    // attempts; total wait budget ≈ 9 min.
+    // The budget was ~2 min and that proved too tight at least once: on the
+    // first OIDC canary run (PR #103) all six packages published successfully
+    // and the install still ETARGETed through every attempt, yet the versions
+    // resolved fine minutes later. The very next run installed on the first
+    // try, so the lag is intermittent and its cause is NOT established —
+    // npm's malware scanning of fresh publishes is a plausible contributor,
+    // not a verified one. Either way the window can exceed 2 min, so the
+    // budget is now ≈ 9 min. Backoff delays in seconds between attempts.
     const installCmd = canaryInstallCommand(specs);
     const BACKOFFS_SEC = [10, 15, 20, 30, 45, 60, 60, 90, 90, 120];
     const MAX_ATTEMPTS = BACKOFFS_SEC.length + 1;
