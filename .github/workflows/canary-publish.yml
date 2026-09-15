@@ -81,6 +81,12 @@ jobs:
       - uses: pnpm/action-setup@v6.0.10
         if: steps.guard.outputs.should_publish == 'true'
 
+      # `registry-url` is what points npm at the public registry. It also writes
+      # `_authToken=${NODE_AUTH_TOKEN}` into the runner .npmrc, and since this
+      # job sets no such variable, pnpm logs `Failed to replace env in config:
+      # ${NODE_AUTH_TOKEN}`. That warning is expected and harmless on the OIDC
+      # path — auth comes from the token exchange, not from .npmrc. Do not read
+      # it as the cause of a publish failure.
       - uses: actions/setup-node@v7
         if: steps.guard.outputs.should_publish == 'true'
         with:
@@ -199,7 +205,16 @@ jobs:
               });
             " || { echo "refusing: tarball manifest guard failed for $name"; exit 1; }
 
-            npm publish "$tarball" --tag "$TAG" --access public
+            # Idempotent publish. A rerun of this job (the normal response to a
+            # red E2E step) would otherwise die on the FIRST package with
+            # `E403 cannot publish over the previously published versions`,
+            # leaving the rest of the loop unreached. npm forbids republishing a
+            # version, so an already-present one is a success, not an error.
+            if npm view "${name}@${VERSION}" version >/dev/null 2>&1; then
+              echo "already published: ${name}@${VERSION} — skipping"
+            else
+              npm publish "$tarball" --tag "$TAG" --access public
+            fi
 
             echo "- \`$name@$VERSION\` → \`npm install $name@$TAG\`" >> "$SUMMARY_LINES"
           done <<< "$PKGS"

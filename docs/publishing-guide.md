@@ -439,6 +439,8 @@ The `canary-publish.yml` workflow fires on PR `opened` and `synchronize`. It der
 
 Dependabot PRs and fork PRs are skipped automatically — neither is granted `id-token: write`, so neither can mint an OIDC token. Add `[skip canary]` anywhere in the PR title or latest commit message to opt out.
 
+Re-running the job is safe: each package is published only if that exact version is not already on the registry. npm forbids republishing a version (`E403 cannot publish over the previously published versions`), so without that check a rerun would die on the first package and never reach the rest of the loop — which matters because the usual reason to rerun is a red E2E step _after_ a successful publish.
+
 ### Authentication — two trusted publishers per package
 
 Both publish paths use **npm Trusted Publishing (OIDC)**. There is no long-lived registry token on either one; each workflow declares `id-token: write` and npm exchanges the GitHub OIDC token for a short-lived, publish-scoped credential.
