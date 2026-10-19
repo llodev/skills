@@ -36,20 +36,20 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",
-    "@changesets/cli": "^3.0.2",
+    "@changesets/cli": "^3.0.3",
     "@size-limit/file": "^13.0.3",
-    "@types/node": "^26.4.1",
-    "@typescript-eslint/eslint-plugin": "^8.69.0",
-    "@typescript-eslint/parser": "^8.69.0",
+    "@types/node": "^26.6.5",
+    "@typescript-eslint/eslint-plugin": "^8.71.2",
+    "@typescript-eslint/parser": "^8.71.2",
     "@vitest/coverage-v8": "^4.1.11",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "eslint": "^10.10.0",
+    "eslint": "^10.13.0",
     "gray-matter": "^4.0.3",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.10",
     "size-limit": "^13.0.3",
-    "tsx": "^4.23.13",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   }
 }
