@@ -11,7 +11,7 @@ description: >-
   orchestrators that need a repository or other I/O (e.g. `SlugAllocator`), see
   the sibling `application/services/` section at the end.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD Domain Service

@@ -11,7 +11,7 @@ description: >-
   read projections, pagination/filters/metadata, or wire-shape changes consumed
   by both the API and the web client.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD DTO

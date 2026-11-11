@@ -11,7 +11,7 @@ description: >-
   `test/<bc>/infra/{firestore,memory}/`, `Result` error handling, or
   CQRS Repository vs Query separation.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD Repository
