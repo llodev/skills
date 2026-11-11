@@ -338,6 +338,26 @@
         "nestjs",
         "drf"
       ]
+    },
+    {
+      "name": "study-abstract",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/study-abstract"
+      },
+      "description": "Turn any study material into a didactic abstract the reader can use with the source closed.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": [
+        "agent-skill",
+        "study",
+        "abstract",
+        "glossary"
+      ]
     }
   ]
 }

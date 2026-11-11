@@ -129,6 +129,15 @@ Pure **knowledge** skills for manual HTTP API suites in `.http` files — no MCP
 | `@llodev/tests` _(meta)_ | ✅ v0.1.0 | [packages/tests/](packages/tests/)       | `npm i @llodev/tests`      | —                                                |
 | `@llodev/tests-http`     | ✅ v0.1.0 | [skills/tests-http/](skills/tests-http/) | `npm i @llodev/tests-http` | `npx skills add llodev/skills/skills/tests-http` |
 
+### `@llodev/study` — study-abstract skills
+
+Pure **knowledge** skills that turn study material into a didactic abstract the reader can use with the source closed — no MCP, no config, no init. The first member covers lectures, readings, slides, notebooks, and errata. Further `study-*` members can join the same meta-package.
+
+| Package                  | Status    | Source                                           | npm                            | Vercel CLI                                           |
+| ------------------------ | --------- | ------------------------------------------------ | ------------------------------ | ---------------------------------------------------- |
+| `@llodev/study` _(meta)_ | ✅ v0.1.0 | [packages/study/](packages/study/)               | `npm i @llodev/study`          | —                                                    |
+| `@llodev/study-abstract` | ✅ v0.1.0 | [skills/study-abstract/](skills/study-abstract/) | `npm i @llodev/study-abstract` | `npx skills add llodev/skills/skills/study-abstract` |
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -138,8 +147,8 @@ Every published skill declares which agents it targets via the `compatibility.ag
 ## Repository layout
 
 Skills live flat under `skills/` (one directory per skill, the convention agent
-skill indexers expect); family membership is carried by the `pm-tasks-` and
-`tests-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
+skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, and
+`study-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
 Non-skill workspace packages (the meta-package, test kit) live under `packages/`.
 
 ```
@@ -160,12 +169,14 @@ Non-skill workspace packages (the meta-package, test kit) live under `packages/`
 │   ├── ts-ddd-controller/     HTTP controllers: routes, guards, Zod validation, Result→HTTP
 │   ├── ts-ddd-domain-service/ Domain services: stateless policies/calculators returning Result
 │   ├── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
-│   └── tests-http/            HTTP test suites: discovery, NestJS and DRF adapters
+│   ├── tests-http/            HTTP test suites: discovery, NestJS and DRF adapters
+│   └── study-abstract/        Study abstracts: spoken overview, glossary, self-check
 ├── packages/                  Non-skill workspace packages (no SKILL.md)
 │   ├── pm-tasks/              Meta-package — installs the whole pm-tasks family
 │   ├── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
 │   ├── ts-ddd/                Meta-package — installs the whole ts-ddd family
-│   └── tests/                 Meta-package — installs the whole tests family
+│   ├── tests/                 Meta-package — installs the whole tests family
+│   └── study/                 Meta-package — installs the whole study family
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
