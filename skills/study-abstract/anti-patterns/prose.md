@@ -21,7 +21,6 @@ Each item is a failure mode of study abstracts. The reason is the part that matt
   ```
 
   The acronym arrives after the full name, once. Each stage has a verb and an object. The same test applies to every sentence in Key concepts.
-
 - **NEVER use `→` as the verb of a sentence.** The reader has to speak the line back. An arrow chain cannot be spoken, so it cannot be recalled.
 - **NEVER lead with a mnemonic.** The slogan is what sticks, and the list under it drifts. A heading `PC³DPS` followed by a table that orders the words differently teaches the slogan, not the ideas. Expand the words first. Use a mnemonic only after the list is already in that order.
 - **NEVER silently repair the source.** A question can ask for the sentence the source printed. Merging that sentence with a correction makes both unanswerable, because the reader can no longer tell which wording was asked for.

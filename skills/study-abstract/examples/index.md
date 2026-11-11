@@ -5,8 +5,8 @@ Read this only when writing the index of a set. Do not read it for one unit or f
 ```markdown
 # <Set title>
 
-| Unit                 | Question it answers                    |
-| -------------------- | -------------------------------------- |
+| Unit | Question it answers |
+| --- | --- |
 | <unit title, linked> | <one question, in the output language> |
 
 ## How the units relate

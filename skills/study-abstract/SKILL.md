@@ -46,13 +46,13 @@ Canonical headings, in order: **Title and source**, **In 30 seconds**, **Map**, 
 
 ## How many abstracts
 
-| What the user pointed at                                                  | Write                                                                               |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| One unit (lecture, chapter, paper, notebook, article)                     | One abstract, even if that unit is split across files                               |
-| Assets of a unit (figures, notes, a correction that names only that unit) | Inside that unit's abstract                                                         |
-| A set                                                                     | One abstract per unit, plus a short index                                           |
-| A mixed folder                                                            | One abstract per unit. No index                                                     |
-| One review of a set                                                       | The index only, after the unit abstracts exist. Do not fold the units into one file |
+| What the user pointed at | Write |
+| --- | --- |
+| One unit (lecture, chapter, paper, notebook, article) | One abstract, even if that unit is split across files |
+| Assets of a unit (figures, notes, a correction that names only that unit) | Inside that unit's abstract |
+| A set | One abstract per unit, plus a short index |
+| A mixed folder | One abstract per unit. No index |
+| One review of a set | The index only, after the unit abstracts exist. Do not fold the units into one file |
 
 A set is what the user called one course, or what the sources mark as one sequence by numbering or cross-reference. A mixed folder is files that only share a directory. Co-location is not membership. Do not invent a thread for it.
 
@@ -62,12 +62,12 @@ Put files where the user asked. If they named no path, write one markdown file p
 
 Always, in this order: **Title and source** (what it is, who produced it, where it is; point at a correction note when one contradicts the source), **In 30 seconds** (four or five sentences that can be spoken in one breath), **Key concepts** (one heading per theme, in source order; the idea, then its limit or the contrast), **Quick glossary** (every acronym and technical term in the file, one line on what it does), **Self-check** (short questions; the answer hidden in `<details>`, with the summary label translated).
 
-| Section          | Slot                 | Include when                                                                                    | Omit when                                |
-| ---------------- | -------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| Map              | after In 30 seconds  | A process, a taxonomy, states, or an ordered exchange                                           | The source is a flat list of definitions |
-| Reference tables | after Key concepts   | Two terms, formulas, dates, or source-versus-correction the reader will swap                    | Nothing is paired                        |
-| Easy to mix up   | after Quick glossary | Two ideas are actually confused. Name both, define both, say which account each side comes from | You would have to invent the pair        |
-| Connections      | last                 | Other units in the same set exist                                                               | The piece is standalone                  |
+| Section | Slot | Include when | Omit when |
+| --- | --- | --- | --- |
+| Map | after In 30 seconds | A process, a taxonomy, states, or an ordered exchange | The source is a flat list of definitions |
+| Reference tables | after Key concepts | Two terms, formulas, dates, or source-versus-correction the reader will swap | Nothing is paired |
+| Easy to mix up | after Quick glossary | Two ideas are actually confused. Name both, define both, say which account each side comes from | You would have to invent the pair |
+| Connections | last | Other units in the same set exist | The piece is standalone |
 
 ## Before the first sentence
 
@@ -79,15 +79,15 @@ On first use, the full name precedes the acronym. Author and year appear only on
 
 Apply every matching row. Do not merge the two sides into one sentence.
 
-| What you are holding                                             | Write                                                       |
-| ---------------------------------------------------------------- | ----------------------------------------------------------- |
-| Source and a correction disagree                                 | Both sentences, each labeled                                |
-| Prose and a figure disagree                                      | Both, and which is which                                    |
-| Another document differs in year, formula, count, or walkthrough | This source only                                            |
-| The source announces N items and lists a different N             | The mismatch. Do not drop an item to force the announcement |
-| Extraction breaks a token (`10 120`)                             | The tokens you saw. Label a usual reading as a reading      |
-| A metric comes from one run, one dialogue, or one table          | A single run or a single example, in the output language    |
-| A printed example contradicts its own definition                 | Both, unfinished                                            |
+| What you are holding | Write |
+| --- | --- |
+| Source and a correction disagree | Both sentences, each labeled |
+| Prose and a figure disagree | Both, and which is which |
+| Another document differs in year, formula, count, or walkthrough | This source only |
+| The source announces N items and lists a different N | The mismatch. Do not drop an item to force the announcement |
+| Extraction breaks a token (`10 120`) | The tokens you saw. Label a usual reading as a reading |
+| A metric comes from one run, one dialogue, or one table | A single run or a single example, in the output language |
+| A printed example contradicts its own definition | Both, unfinished |
 
 When more than one row matches, or one correction note covers several units, **read [references/conflicts.md](references/conflicts.md) entire**. Do not read it when every fact has a single account.
 
