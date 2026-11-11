@@ -109,6 +109,15 @@ Skills puras de **conocimiento** para construir un codebase TypeScript + DDD —
 > [!NOTE]
 > `ts-query-cqrs` es la compañera del lado de lectura — cubre `*Query` ports y read use cases `find-*` que se mantienen separados del par de escritura `ts-ddd-repository`/`ts-ddd-use-case`. Instala `@llodev/ts-ddd` para traer las 8 skills de una vez.
 
+### `@llodev/tests` — skills de suites de prueba HTTP
+
+Skills puras de **conocimiento** para suites manuales de API HTTP en archivos `.http` — sin MCP, sin config, sin init. El primer miembro descubre el proyecto y luego genera o sincroniza la cobertura completa de rutas para NestJS y DRF. Otros miembros `tests-*` pueden unirse al mismo meta-paquete.
+
+| Paquete                  | Estado    | Fuente                                         | npm                        | Vercel CLI                                       |
+| ------------------------ | --------- | ---------------------------------------------- | -------------------------- | ------------------------------------------------ |
+| `@llodev/tests` _(meta)_ | ✅ v0.1.0 | [packages/tests/](../../packages/tests/)       | `npm i @llodev/tests`      | —                                                |
+| `@llodev/tests-http`     | ✅ v0.1.0 | [skills/tests-http/](../../skills/tests-http/) | `npm i @llodev/tests-http` | `npx skills add llodev/skills/skills/tests-http` |
+
 ## Compatibilidad de agentes
 
 Cada skill publicada declara qué agentes soporta en el campo `compatibility.agents` de su frontmatter. La matriz actual:
@@ -119,9 +128,9 @@ Cada skill publicada declara qué agentes soporta en el campo `compatibility.age
 
 Las skills viven planas bajo `skills/` (un directorio por skill, la convención
 que esperan los indexadores de skills); la pertenencia a la familia se indica con
-el prefijo `pm-tasks-` en el nombre y el campo `metadata.family` de cada skill, no
-con el anidamiento de directorios. Los paquetes que no son skills (meta-paquete,
-testkit) viven bajo `packages/`.
+los prefijos `pm-tasks-` y `tests-` en el nombre y el campo `metadata.family` de
+cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
+(meta-paquete, testkit) viven bajo `packages/`.
 
 ```
 .
@@ -140,11 +149,13 @@ testkit) viven bajo `packages/`.
 │   ├── ts-ddd-repository/     Repository ports + adaptadores: par Firestore/InMemory, DI token
 │   ├── ts-ddd-controller/     Controllers HTTP: rutas, guards, validación Zod, Result→HTTP
 │   ├── ts-ddd-domain-service/ Domain services: policies/calculadoras stateless que retornan Result
-│   └── ts-query-cqrs/         CQRS de lectura: *Query ports, read use cases find-*, proyecciones
+│   ├── ts-query-cqrs/         CQRS de lectura: *Query ports, read use cases find-*, proyecciones
+│   └── tests-http/            Suites de prueba HTTP: descubrimiento, adaptadores NestJS y DRF
 ├── packages/                  Paquetes de workspace que no son skills (sin SKILL.md)
 │   ├── pm-tasks/              Meta-paquete — instala toda la familia pm-tasks
 │   ├── pm-tasks-testkit/      Fakes en memoria para los verbos CRUD canónicos
-│   └── ts-ddd/                Meta-paquete — instala toda la familia ts-ddd
+│   ├── ts-ddd/                Meta-paquete — instala toda la familia ts-ddd
+│   └── tests/                 Meta-paquete — instala toda la familia tests
 ├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intención de release (workflow Changesets)

@@ -1,0 +1,53 @@
+### =============================================================
+### <Resource> — full coverage HTTP test suite
+### Covers every action, filter, validation rule and error path
+### exposed by <discovered-view-path>.
+### =============================================================
+
+### Variables
+@base_url = http://localhost:<port>/<api-prefix>
+@access_token = {{ login.response.body.access }}
+@first_id = {{ list.response.body.results.0.id }}
+@nonexistent_id = 00000000-0000-0000-0000-000000000000
+
+### =============================================================
+### 1. AUTHENTICATION
+### =============================================================
+
+### 1.1 Signin (success)
+# @name login
+POST <signin-url-from-project>
+Content-Type: application/json
+
+{
+    "username": "<from-config-or-env-example>",
+    "password": "<from-config-or-env-example>"
+}
+
+### =============================================================
+### 2. <RESOURCE> LIST
+### =============================================================
+
+### 2.1 Default list
+# @name list
+GET {{ base_url }}/<resource>/
+Authorization: Bearer {{ access_token }}
+
+### =============================================================
+### 7. <RESOURCE> DETAIL
+### =============================================================
+
+### 7.1 GET by ID
+GET {{ base_url }}/<resource>/{{ first_id }}/
+Authorization: Bearer {{ access_token }}
+
+### 7.2 GET non-existent (expect 404)
+GET {{ base_url }}/<resource>/{{ nonexistent_id }}/
+Authorization: Bearer {{ access_token }}
+
+### =============================================================
+### N. AUTH / METHOD ERRORS
+### =============================================================
+
+### N.1 No auth header (expect 401)
+GET {{ base_url }}/<resource>/

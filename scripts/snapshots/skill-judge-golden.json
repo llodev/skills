@@ -106,5 +106,11 @@
     "rubricChecksum": "manual",
     "rubricVersion": "v1",
     "totalRaw": 76
+  },
+  "skills/tests-http/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 82
   }
 }

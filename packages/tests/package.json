@@ -1,0 +1,28 @@
+{
+  "name": "@llodev/tests",
+  "version": "0.0.0",
+  "description": "Meta-package: installs the @llodev/tests-* family (HTTP .http suites).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "packages/tests"
+  },
+  "peerDependencies": {
+    "@llodev/tests-http": "^0.1.0"
+  },
+  "devDependencies": {
+    "@llodev/tests-http": "workspace:*"
+  },
+  "files": [
+    "README.md"
+  ],
+  "keywords": [
+    "agent-skill",
+    "tests",
+    "meta-package"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

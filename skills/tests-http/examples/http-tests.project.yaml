@@ -1,0 +1,26 @@
+# Optional project overlay — copy to repo root as `.http-tests.yaml` and edit.
+# The agent reads this before guessing paths.
+
+framework: nestjs # nestjs | drf
+
+http:
+  base_url: http://localhost:3000
+  health_path: /health
+  api_prefix: ""
+
+paths:
+  http_glob: "**/*.http"
+  handler:
+    nestjs: "**/*.controller.ts"
+    drf: "**/views/*.py"
+
+auth:
+  type: api_key # bearer | api_key | session | none
+  header: x-api-key
+  env_var: API_WRITE_KEY
+
+canonical_http: []
+sources:
+  error_codes: ""
+  contracts: ""
+  seeds: ""

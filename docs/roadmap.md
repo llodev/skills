@@ -191,3 +191,13 @@ Project-agnostic Domain-Driven Design guides for TypeScript codebases — one sk
 All 9 packages shipped together at `v0.1.0` (PR #64) and have not moved since: `ts-ddd-entity`, `ts-ddd-value-object`, `ts-ddd-dto`, `ts-ddd-use-case`, `ts-ddd-repository`, `ts-ddd-controller`, `ts-ddd-domain-service`, `ts-query-cqrs`, plus the `@llodev/ts-ddd` meta-package that installs them all.
 
 The family has no committed next step. It was generalized out of a private monorepo to the `@acme/` placeholder convention, so the open question is whether real-world use outside that origin justifies a `v0.2.0` — same demand-driven test applied to the adapter pool in §4.
+
+### `tests-*` — HTTP test-suite knowledge skills
+
+Project-agnostic guides that turn a project's own handlers into full-coverage `.http` files. No MCP, no init. The agent discovers layout (or reads `.http-tests.yaml`) and refuses routes, filters, and error codes that are not in the source.
+
+| Skill        | Concern                                                                               | Status              |
+| ------------ | ------------------------------------------------------------------------------------- | ------------------- |
+| `tests-http` | Manual HTTP suites for REST Client / httpYac / IntelliJ, with NestJS and DRF adapters | ✅ shipped `v0.1.0` |
+
+`@llodev/tests` is the npm meta-package. It is not a marketplace plugin. Consumer overlay filenames (`.http-tests.yaml`, `docs/http-tests.md`) stay as they are; only the skill id is `tests-http`.

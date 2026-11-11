@@ -120,6 +120,15 @@ Pure **knowledge** skills for building a TypeScript + DDD codebase — no MCP, n
 > [!NOTE]
 > `ts-query-cqrs` is the read-side companion — it covers `*Query` ports and `find-*` read use cases that stay separate from the write-side `ts-ddd-repository`/`ts-ddd-use-case` pair. Install `@llodev/ts-ddd` to pull in all 8 skills at once.
 
+### `@llodev/tests` — HTTP test-suite skills
+
+Pure **knowledge** skills for manual HTTP API suites in `.http` files — no MCP, no config, no init. The first member discovers the project, then generates or syncs full route coverage for NestJS and DRF. Further `tests-*` members can join the same meta-package.
+
+| Package                  | Status    | Source                                   | npm                        | Vercel CLI                                       |
+| ------------------------ | --------- | ---------------------------------------- | -------------------------- | ------------------------------------------------ |
+| `@llodev/tests` _(meta)_ | ✅ v0.1.0 | [packages/tests/](packages/tests/)       | `npm i @llodev/tests`      | —                                                |
+| `@llodev/tests-http`     | ✅ v0.1.0 | [skills/tests-http/](skills/tests-http/) | `npm i @llodev/tests-http` | `npx skills add llodev/skills/skills/tests-http` |
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -129,8 +138,8 @@ Every published skill declares which agents it targets via the `compatibility.ag
 ## Repository layout
 
 Skills live flat under `skills/` (one directory per skill, the convention agent
-skill indexers expect); family membership is carried by the `pm-tasks-` name
-prefix and each skill's `metadata.family` field, not by directory nesting.
+skill indexers expect); family membership is carried by the `pm-tasks-` and
+`tests-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
 Non-skill workspace packages (the meta-package, test kit) live under `packages/`.
 
 ```
@@ -150,11 +159,13 @@ Non-skill workspace packages (the meta-package, test kit) live under `packages/`
 │   ├── ts-ddd-repository/     Repository ports + adapters: Firestore/InMemory pair, DI token
 │   ├── ts-ddd-controller/     HTTP controllers: routes, guards, Zod validation, Result→HTTP
 │   ├── ts-ddd-domain-service/ Domain services: stateless policies/calculators returning Result
-│   └── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
+│   ├── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
+│   └── tests-http/            HTTP test suites: discovery, NestJS and DRF adapters
 ├── packages/                  Non-skill workspace packages (no SKILL.md)
 │   ├── pm-tasks/              Meta-package — installs the whole pm-tasks family
 │   ├── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
-│   └── ts-ddd/                Meta-package — installs the whole ts-ddd family
+│   ├── ts-ddd/                Meta-package — installs the whole ts-ddd family
+│   └── tests/                 Meta-package — installs the whole tests family
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
