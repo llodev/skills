@@ -106,5 +106,11 @@
     "version": "0.1.0",
     "capturedAt": "2026-07-17",
     "notes": "ts-ddd first packaging; already decoupled at Task 0 (0 your-best-day/celebrations refs before or after), Codex agents/ manifest dropped; before-score 76 from Task 0; delta 0 (no coupling fix applicable, generalization neutral). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+  },
+  "skills/tests-http/SKILL.md": {
+    "score": 82,
+    "version": "0.0.0",
+    "capturedAt": "2026-11-11",
+    "notes": "First capture at package 0.0.0. D1 13, D2 12, D3 11, D4 15, D5 14, D6 13, D7 8, D8 12 = 98/120."
   }
 }
