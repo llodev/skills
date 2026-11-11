@@ -10,7 +10,7 @@ description: >-
   `Result` pattern, `ValueObjectConfig`, `tryCreate`/`create` dual API, or VO
   test coverage.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD Value Object

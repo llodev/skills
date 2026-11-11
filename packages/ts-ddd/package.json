@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ts-ddd",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Meta-package: installs the entire @llodev/ts-ddd-* family (entity, value-object, dto, use-case, repository, controller, domain-service + ts-query-cqrs).",
   "license": "MIT",
   "repository": {
@@ -9,14 +9,14 @@
     "directory": "packages/ts-ddd"
   },
   "peerDependencies": {
-    "@llodev/ts-ddd-entity": "^0.1.0",
-    "@llodev/ts-ddd-value-object": "^0.1.0",
-    "@llodev/ts-ddd-dto": "^0.1.0",
-    "@llodev/ts-ddd-use-case": "^0.1.0",
-    "@llodev/ts-ddd-repository": "^0.1.0",
-    "@llodev/ts-ddd-controller": "^0.1.0",
-    "@llodev/ts-ddd-domain-service": "^0.1.0",
-    "@llodev/ts-query-cqrs": "^0.1.0"
+    "@llodev/ts-ddd-entity": "^0.2.0",
+    "@llodev/ts-ddd-value-object": "^0.2.0",
+    "@llodev/ts-ddd-dto": "^0.2.0",
+    "@llodev/ts-ddd-use-case": "^0.2.0",
+    "@llodev/ts-ddd-repository": "^0.2.0",
+    "@llodev/ts-ddd-controller": "^0.2.0",
+    "@llodev/ts-ddd-domain-service": "^0.2.0",
+    "@llodev/ts-query-cqrs": "^0.2.0"
   },
   "devDependencies": {
     "@llodev/ts-ddd-entity": "workspace:*",

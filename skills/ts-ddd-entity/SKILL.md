@@ -15,7 +15,7 @@ description: >-
   (aggregate root); exposing typed getters or `toSnapshot()` for persistence
   boundaries.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD Entity
