@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/pm-tasks-jira?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/pm-tasks-jira)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 What you get:
@@ -99,7 +99,7 @@ npx @llodev/pm-tasks-jira init --doctor
 > **Checklist items become Sub-tasks** — one level deep, each created under its parent issue. A parent issue key is required.
 
 > [!WARNING]
-> **`task.sprint.set` is NOT supported** — the Atlassian MCP exposes no agile/sprint API, so the core factory returns `UNSUPPORTED_VERB`. Sprint and capacity planning are roadmapped for v1.12.0.
+> **`task.sprint.set` is NOT supported** — the Atlassian MCP exposes no agile/sprint API, so the core factory returns `UNSUPPORTED_VERB`. Sprint and capacity planning are not available through this adapter.
 
 - **Estimation records effort, never a calendar deadline.** Story Points need a board field — `init` auto-detects it (`customfield_10016` by default); if it's absent, `task.estimate.set` returns `INVALID_REQUEST` with a hint to enable it. The human-readable original is preserved as an idempotent `est:` label.
 - **Due dates on a sub-task** return `NOT_APPLICABLE` — team-managed Jira sub-tasks don't carry their own due date.

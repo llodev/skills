@@ -1,9 +1,14 @@
 # TypeScript DDD Repository — Core Reference
 
-## Real layout
+## Layout
+
+Paths are an example layout relative to the API package root; adapt them to your
+project. In the examples below, `celebrations` is a sample bounded context and
+`Celebration` its aggregate root (with a `sections` subcollection). Aliases such as
+`@<bc>/*`, `@shared/*` and `@acme/*` are examples; use the ones your tsconfig defines.
 
 ```
-apps/api/src/<bc>/
+src/<bc>/
   domain/repositories/
     <name>.repository.ts          ← port (interface) + DI token
     index.ts                      ← barrel
@@ -17,7 +22,7 @@ apps/api/src/<bc>/
       index.ts
   <bc>.module.ts                  ← wires { provide: <NAME>_REPOSITORY, useClass: Firestore<Name>Repository }
 
-apps/api/test/<bc>/infra/
+test/<bc>/infra/
   firestore/firestore-<name>.repository.test.ts   ← fake-DB at the SDK boundary
   memory/in-memory-<name>.repository.test.ts      ← straight unit test
 ```
@@ -38,7 +43,7 @@ See `examples/` for the standalone `Product` port + InMemory pair.
 The port lives in `domain/` — **no `firebase-admin`, no `@nestjs/*`, no Zod, no DTOs**:
 
 ```typescript
-// apps/api/src/celebrations/domain/repositories/celebration.repository.ts
+// src/celebrations/domain/repositories/celebration.repository.ts
 import type { Result } from "@acme/shared";
 import type { CelebrationStatus } from "@acme/celebrations-contracts";
 import type { Celebration, Section } from "../entities";
@@ -57,7 +62,7 @@ export interface CelebrationRepository {
 Rules visible in the snippet:
 
 - The DI token symbol is exported **next to** the port — never invent it in the module file. Use cases inject with `@Inject(CELEBRATION_REPOSITORY) private readonly repo: CelebrationRepository`.
-- The port re-exports types via `<bc>/domain/repositories/index.ts` so callers say `from "@celebrations/domain/repositories"`.
+- The port re-exports types via `<bc>/domain/repositories/index.ts` so callers say `from "@<bc>/domain/repositories"`.
 - Closed-set parameters are typed by **enums from the contracts package** (`CelebrationStatus` is a union backed by `CelebrationStatusEnum`), never raw `string`.
 - `findBy*` may return `Result<Entity | null>` when "absent" is a legitimate, expected outcome (a slug not yet allocated). Use `Result.fail("<AGG>_NOT_FOUND")` only when absence is an error for the caller.
 
@@ -68,7 +73,7 @@ Rules visible in the snippet:
 Bind the port symbol to the production adapter in the BC module:
 
 ```typescript
-// apps/api/src/celebrations/celebrations.module.ts
+// src/celebrations/celebrations.module.ts
 @Module({
   providers: [
     { provide: CELEBRATION_REPOSITORY, useClass: FirestoreCelebrationRepository },
@@ -89,11 +94,11 @@ Always ships side-by-side with the Firestore adapter. Implements the same port s
 tests never have to mock individual methods.
 
 ```typescript
-// apps/api/src/celebrations/infra/memory/in-memory-celebration.repository.ts
+// src/celebrations/infra/memory/in-memory-celebration.repository.ts
 import { Result } from "@acme/shared";
 import type { CelebrationStatus } from "@acme/celebrations-contracts";
-import { Celebration, type CelebrationProps, type Section } from "@celebrations/domain/entities";
-import type { CelebrationRepository } from "@celebrations/domain/repositories";
+import { Celebration, type CelebrationProps, type Section } from "@<bc>/domain/entities";
+import type { CelebrationRepository } from "@<bc>/domain/repositories";
 
 export class InMemoryCelebrationRepository implements CelebrationRepository {
   private readonly store = new Map<string, CelebrationProps>();
@@ -137,7 +142,7 @@ Conventions for InMemory adapters:
 
 ## Dual-Adapter Test Strategy
 
-Each adapter has its own file under `apps/api/test/<bc>/infra/`:
+Each adapter has its own file under `test/<bc>/infra/`:
 
 - **InMemory test** — plain unit test of CRUD + edge cases (`CELEBRATION_NOT_FOUND`, ordering, idempotency).
 - **Firestore test** — same scenarios, but constructed via a fake-DB that mimics the Firestore Admin SDK shape (see `firestore-adapter.md`). No real network calls; no emulator.
@@ -183,7 +188,7 @@ palette, layout, provider, role).
 - [ ] Firestore adapter is `@Injectable()` and bound via the token in `<bc>.module.ts`
 - [ ] InMemory adapter ships in `<bc>/infra/memory/`, implements the same port, matches the Firestore error codes
 - [ ] `<name>.mapper.ts` holds `toFirestore` / `fromFirestore`; no inline mapping in operation methods
-- [ ] Tests exist for both adapters under `apps/api/test/<bc>/infra/{firestore,memory}/`
+- [ ] Tests exist for both adapters under `test/<bc>/infra/{firestore,memory}/`
 - [ ] Test fixtures use enum members for status/kind/type/palette — never raw strings
 
 ---

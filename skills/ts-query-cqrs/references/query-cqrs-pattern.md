@@ -2,13 +2,15 @@
 
 ## Standard Structure
 
+Example monorepo layout (adapt the folders to your project). Package and alias names such as `@acme/shared` and `@<module>/core` are examples; use the ones your tsconfig defines.
+
 ```
 libs/<module>/core/src/<domain>/provider/find-<name>.query.ts   ← query interface + DTOs
 libs/<module>/core/test/<domain>/                               ← in-memory mock + tests
 apps/<app>/src/<domain>/find-<name>.query.ts                    ← adapter implementation
 ```
 
-Shared pagination contracts (from `@ddd/shared`):
+Shared pagination contracts (from your shared kernel package, e.g. `@acme/shared`):
 
 - `PaginatedInputDTO`, `PaginationMetaDTO`, `PaginatedResultDTO<T>`
 
@@ -22,7 +24,7 @@ The interface lives in `core` — no ORM imports, no database driver types:
 
 ```typescript
 // libs/<module>/core/src/<domain>/provider/find-many-items.query.ts
-import { Result, PaginatedResultDTO } from "@ddd/shared";
+import { Result, PaginatedResultDTO } from "@acme/shared";
 
 export interface ItemListItem {
   id: string;
@@ -46,7 +48,7 @@ export interface FindManyItemsQuery {
 For a single-item query:
 
 ```typescript
-import { Result } from "@ddd/shared";
+import { Result } from "@acme/shared";
 
 export interface ItemDetailDTO {
   id: string;
@@ -83,7 +85,7 @@ import {
   FindManyItemsInputDTO,
   ItemListItem,
 } from "../provider/find-many-items.query";
-import { Result, PaginatedResultDTO } from "@ddd/shared";
+import { Result, PaginatedResultDTO } from "@acme/shared";
 
 export class InMemoryFindManyItemsQuery implements FindManyItemsQuery {
   public items: ItemListItem[] = []; // public: tests seed data before act

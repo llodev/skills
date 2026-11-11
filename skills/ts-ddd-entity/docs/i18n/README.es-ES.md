@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-entity?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-entity)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte de la familia `@llodev/ts-ddd`.
@@ -23,7 +23,7 @@ Lo que obtienes:
 - **La Enum Rule (HARD)** — todo campo de conjunto cerrado (status/kind/layout/provider/palette) es un enum de TS basado en string con un type guard; compara contra el miembro del enum, nunca contra un literal de cadena.
 - **Comportamiento de la clase base que debes conocer** — cómo el constructor de `Entity` auto-genera/normaliza `id`, `createdAt`/`updatedAt`/`deletedAt`, y por qué `cloneWith` hace deep-clone de las props con `structuredClone` antes de fusionar.
 - **Orientación de transición de estado** — `cloneWith(overrides)` para intercambio-y-revalidación inmutable vs mutar `_field` + `this.touch()` para entidades que poseen una colección mutable, con los criterios para elegir entre ambos.
-- **Una lista `NEVER`** que cubre las trampas reales: almacenar entrada de VO sin normalizar, setters públicos, saltarse la validación de elementos de array, e importar desde el alias heredado `@ddd/shared`.
+- **Una lista `NEVER`** que cubre las trampas reales: almacenar entrada de VO sin normalizar, setters públicos, saltarse la validación de elementos de array, e importar clases base mediante un alias obsoleto.
 
 ## Instalación
 
@@ -48,12 +48,12 @@ Sin MCP, sin configuración, sin init — es una skill de conocimiento puro. Tra
 
 ## Contenido
 
-| Archivo                           | Contenido                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                        | Condiciones de activación, checklist inicial, Enum Rule (HARD), comportamiento de la clase base, reglas principales y lista NEVER.                                                                |
-| `references/entity-pattern.md`    | Rutas reales, snippet canónico de `tryCreate`, validación basada en enum, patrón de array/entidad anidada, `cloneWith` vs mutación de colección mutable, estructura de pruebas, tabla de trampas. |
-| `examples/product.entity.ts`      | Una entidad de referencia autocontenida con un campo de status basado en enum, demostrando `tryCreate`/`create`.                                                                                  |
-| `examples/product.entity.test.ts` | Cobertura de pruebas para la entidad de referencia, incluyendo casos de enum inválido y validación anidada.                                                                                       |
+| Archivo                           | Contenido                                                                                                                                                                                             |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                        | Condiciones de activación, checklist inicial, Enum Rule (HARD), comportamiento de la clase base, reglas principales y lista NEVER.                                                                    |
+| `references/entity-pattern.md`    | Rutas de ejemplo, snippet canónico de `tryCreate`, validación basada en enum, patrón de array/entidad anidada, `cloneWith` vs mutación de colección mutable, estructura de pruebas, tabla de trampas. |
+| `examples/product.entity.ts`      | Una entidad de referencia autocontenida con un campo de status basado en enum, demostrando `tryCreate`/`create`.                                                                                      |
+| `examples/product.entity.test.ts` | Cobertura de pruebas para la entidad de referencia, incluyendo casos de enum inválido y validación anidada.                                                                                           |
 
 ## Licencia
 

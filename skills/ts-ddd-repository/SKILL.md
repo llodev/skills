@@ -3,12 +3,12 @@ name: ts-ddd-repository
 description: >-
   Create, review, or guide repository contracts and implementations in a
   TypeScript + DDD codebase. Use when the request involves `*.repository.ts`
-  files under `apps/api/src/<bc>/domain/repositories/` or
-  `apps/api/src/<bc>/infra/{firestore,memory}/`, persistence operations (save /
+  files under `src/<bc>/domain/repositories/` or
+  `src/<bc>/infra/{firestore,memory}/`, persistence operations (save /
   findBy* / list*), the `<NAME>_REPOSITORY` DI token, adapting the Firebase
   Admin SDK to a domain port, `toFirestore`/`fromFirestore` mappers, the
   side-by-side Firestore + InMemory adapter pair, contract tests under
-  `apps/api/test/<bc>/infra/{firestore,memory}/`, `Result` error handling, or
+  `test/<bc>/infra/{firestore,memory}/`, `Result` error handling, or
   CQRS Repository vs Query separation.
 metadata:
   version: 0.1.0
@@ -17,10 +17,11 @@ metadata:
 # TypeScript DDD Repository
 
 **MANDATORY — READ ENTIRE FILE**: Before any implementation step, read
-[`references/repository-pattern.md`](references/repository-pattern.md) completely,
-then [`references/firestore-adapter.md`](references/firestore-adapter.md) completely.
-The Firestore Admin SDK is the only production persistence stack in this repo
-(no Prisma, no MongoDB, no Supabase).
+[`references/repository-pattern.md`](references/repository-pattern.md) completely.
+If your project uses Firestore (Firebase Admin SDK), then read
+[`references/firestore-adapter.md`](references/firestore-adapter.md) completely.
+Other persistence stacks (Prisma, MongoDB, Supabase, …) are not yet documented
+here; apply the port, mapper, and dual-adapter rules from `repository-pattern.md`.
 
 **Do NOT load** other DDD skills (`ts-ddd-use-case`, `ts-ddd-entity`,
 `ts-ddd-dto`, `ts-query-cqrs`) unless explicitly requested.
@@ -31,10 +32,12 @@ The Firestore Admin SDK is the only production persistence stack in this repo
 
 ## Where the files live
 
-Each bounded context owns a hexagonal slice:
+Each bounded context owns a hexagonal slice. Paths are an example layout
+relative to the API package root; adapt them to your project. In the examples,
+`celebrations` is a sample bounded context and `Celebration` its aggregate root.
 
 ```
-apps/api/src/<bc>/
+src/<bc>/
   domain/
     repositories/
       <name>.repository.ts          ← port (interface) + DI token symbol
@@ -49,17 +52,17 @@ apps/api/src/<bc>/
       index.ts
   <bc>.module.ts                    ← wires { provide: <NAME>_REPOSITORY, useClass: Firestore<Name>Repository }
 
-apps/api/test/<bc>/infra/
+test/<bc>/infra/
   firestore/firestore-<name>.repository.test.ts   ← fake-DB at the SDK boundary
   memory/in-memory-<name>.repository.test.ts      ← straight unit test
 ```
 
-Path aliases used everywhere:
+Path aliases (examples; use the ones your tsconfig defines):
 
 - `@acme/shared` → `Result`, `Entity`, base building blocks.
 - `@acme/<bc>-contracts` → wire types, status/kind enums (e.g. `CelebrationStatusEnum`).
 - `@<bc>/domain/...`, `@<bc>/infra/...` → cross-layer imports inside the BC.
-- `@shared/firebase` → `FirestoreService`.
+- `@shared/firebase` → `FirestoreService` (API-internal shared folder, Firestore projects only).
 - Relative paths only within the same folder.
 
 ---
@@ -95,7 +98,7 @@ Answer first:
 - The port lives in `<bc>/domain/repositories/` — no `firebase-admin`, no `@nestjs/*`, no Zod, no DTOs.
 - Export a DI token symbol next to the port: `export const CELEBRATION_REPOSITORY = Symbol("CELEBRATION_REPOSITORY");`
 - Every method returns `Promise<Result<T>>`. Adapters never throw in the normal flow — wrap I/O in `try/catch` and return `Result.fail("SHORT_SCREAMING_SNAKE_CODE")`.
-- Lookup methods that legitimately mean "absent" return `Result<T | null>` (Firestore + InMemory both used `findBySlug(...): Promise<Result<Celebration | null>>`). Mutation methods that require an existing aggregate return `Result.fail("<AGG>_NOT_FOUND")`.
+- Lookup methods that legitimately mean "absent" return `Result<T | null>` (e.g. Firestore + InMemory both expose `findBySlug(...): Promise<Result<Celebration | null>>`). Mutation methods that require an existing aggregate return `Result.fail("<AGG>_NOT_FOUND")`.
 - Mapping lives in dedicated `<name>.mapper.ts` files (`toFirestore` / `fromFirestore` returning `Result<Entity>`) — never inline transformation inside an operation method.
 - `save` accepts a fully constructed entity (already validated by `Entity.tryCreate` / `cloneWith` in the use case). The adapter does **not** patch partial fields.
 - Aggregate writes that touch a subcollection (e.g. wholesale-replace sections) document their atomicity guarantees as a code comment — if the write is non-transactional, say so.
@@ -115,4 +118,4 @@ Answer first:
 ## References
 
 - [`references/repository-pattern.md`](references/repository-pattern.md) — port shape, DI token, InMemory adapter, dual-adapter test strategy, enums-in-fixtures rule, checklist.
-- [`references/firestore-adapter.md`](references/firestore-adapter.md) — Firebase Admin SDK basics (`collection().doc().get()`, subcollections, `Timestamp` conversions, fake-DB test harness, mapper helpers, aggregate-write caveats).
+- [`references/firestore-adapter.md`](references/firestore-adapter.md) — for Firestore projects: Firebase Admin SDK basics (`collection().doc().get()`, subcollections, `Timestamp` conversions, fake-DB test harness, mapper helpers, aggregate-write caveats).

@@ -42,6 +42,10 @@ This repo is indexed by CodeGraph (`.codegraph/`, local to each machine). Before
 
 Root files stay at the root only when a tool requires it there: `package.json` (also holds the `size-limit` budgets), `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `tsconfig.json` (the `tsc -b` solution file), `eslint.config.js`, `vitest.config.ts`, `.prettierrc.json`, `.prettierignore`, `lefthook.yml`, `Makefile`. Specs and plans live in `docs/specs/` and `docs/plans/`, never in folders named after a tool or workflow framework. Local workflow scratch (`sandbox/`, `logs/`, `.superpowers/`) is gitignored and never committed.
 
+## Published content
+
+Everything listed in a package's `files` field is installed into other people's projects. It must make sense without this repository: no links to `docs/specs`, `docs/roadmap.md`, repo scripts, `AGENTS.md`/`CLAUDE.md` or local scratch folders, no "this repo" wording, no internal roadmap codes or version promises. `docs/plans/*.md` in the pm-tasks plan-execution docs is fine, because it means the consumer's own plans. `pnpm validate` enforces this with `scripts/checks/published-content-lint.mjs`; repo-internal documentation goes in `docs/`.
+
 ## Language
 
 Code, identifiers, comments, docs and commit messages are in English. Localized content lives only in `i18n/` folders and in `docs/i18n/`.

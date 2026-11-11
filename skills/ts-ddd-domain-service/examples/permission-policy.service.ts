@@ -1,10 +1,13 @@
 /**
- * *Policy pattern — standalone example for a TypeScript + DDD monorepo.
- * Pure domain rule over a Celebration aggregate: decides whether it is
+ * *Policy pattern — standalone example for a TypeScript + DDD codebase.
+ * Pure domain rule over a sample `Celebration` aggregate: decides whether it is
  * eligible to publish. No I/O, no @Injectable, no DI.
  *
- * Real location in the project would be:
- *   apps/api/src/celebrations/domain/services/celebration-publishing.policy.ts
+ * Example location (adapt to your layout):
+ *   src/celebrations/domain/services/celebration-publishing.policy.ts
+ *
+ * `@celebrations/*` (BC path alias) and `@acme/*` (packages) are example
+ * names; use the ones your tsconfig and workspace define.
  */
 import { Result } from "@acme/shared";
 import { CelebrationStatusEnum, SectionKindEnum } from "@acme/celebrations-contracts";

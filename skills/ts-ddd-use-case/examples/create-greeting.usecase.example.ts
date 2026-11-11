@@ -3,7 +3,8 @@
  * Self-contained example for the `ts-ddd-use-case` skill.
  *
  * Demonstrates:
- *   - File location pattern: `apps/api/src/<bc>/application/usecases/<verb>-<noun>.usecase.ts`
+ *   - File location pattern: `src/<bc>/application/usecases/<verb>-<noun>.usecase.ts`
+ *     (relative to the API package root; adapt to your layout)
  *   - Class name without `UseCase` suffix (`CreateGreeting`, not `CreateGreetingUseCase`)
  *   - `@Injectable()` + `@Inject(<TOKEN>)` NestJS wiring against a symbol token
  *   - Repository port interface injected, never the concrete adapter
@@ -13,12 +14,13 @@
  *   - In-memory repository acting as a real-class substitute (NOT a Jest mock)
  *   - Jest test seeded with enum members; rejection path exercises an invalid enum
  *
- * In a real BC every import below would resolve via workspace aliases:
- *   `@acme/shared`            → libs/shared
- *   `@acme/greetings-contracts` → libs/contracts/greetings
- *   `@greetings/domain/entities`       → apps/api/src/greetings/domain/entities
- *   `@greetings/domain/repositories`   → apps/api/src/greetings/domain/repositories
- *   `@greetings/infra/memory`          → apps/api/src/greetings/infra/memory
+ * In a real BC every import below would resolve via workspace aliases. The
+ * package names and aliases are examples; use the ones your project defines:
+ *   `@acme/shared`                   → shared kernel package
+ *   `@acme/greetings-contracts`      → the BC's contracts package
+ *   `@greetings/domain/entities`     → src/greetings/domain/entities
+ *   `@greetings/domain/repositories` → src/greetings/domain/repositories
+ *   `@greetings/infra/memory`        → src/greetings/infra/memory
  *
  * The collaborators are inlined here so the file is readable end-to-end.
  */
@@ -210,8 +212,9 @@ export class CreateGreeting implements UseCase<CreateGreetingInput, Greeting> {
 // ----------------------------------------------------------------------------
 // THE TEST — mirrors the canonical `*.usecase.test.ts` style.
 // ----------------------------------------------------------------------------
-// To make the file self-contained, the test is inlined below. In the real
-// repo it lives at `apps/api/test/greetings/application/usecases/create-greeting.usecase.test.ts`.
+// To make the file self-contained, the test is inlined below. In a real
+// project it would live in its own file, e.g.
+// `test/greetings/application/usecases/create-greeting.usecase.test.ts`.
 // `describe` / `it` / `expect` are provided by Jest at runtime.
 // ----------------------------------------------------------------------------
 

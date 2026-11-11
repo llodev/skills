@@ -1,37 +1,39 @@
 # TypeScript DDD Value Object — Reference
 
-## Standard Structure (this monorepo)
+## Standard Structure
 
-| Scope                      | Source path                                           | Test path                                                   | Import (consumers)     |
-| -------------------------- | ----------------------------------------------------- | ----------------------------------------------------------- | ---------------------- |
-| Shared, cross-BC primitive | `libs/shared/src/vo/<name>.vo.ts`                     | `libs/shared/test/vo/<name>.vo.test.ts`                     | `@acme/shared`         |
-| BC-local (single BC only)  | `apps/api/src/<bc>/domain/value-objects/<name>.vo.ts` | `apps/api/test/<bc>/domain/value-objects/<name>.vo.test.ts` | `@acme/shared` + local |
+Example layout: a shared kernel package at `libs/shared/` (published as `@acme/shared`) and an API package whose BC-local paths are relative to its root. Paths and package names are examples; adapt them to your project. In the examples, `celebrations` is a sample bounded context.
+
+| Scope                      | Source path                                  | Test path                                          | Import (consumers)     |
+| -------------------------- | -------------------------------------------- | -------------------------------------------------- | ---------------------- |
+| Shared, cross-BC primitive | `libs/shared/src/vo/<name>.vo.ts`            | `libs/shared/test/vo/<name>.vo.test.ts`            | `@acme/shared`         |
+| BC-local (single BC only)  | `src/<bc>/domain/value-objects/<name>.vo.ts` | `test/<bc>/domain/value-objects/<name>.vo.test.ts` | `@acme/shared` + local |
 
 Conventions:
 
 - Filenames are `kebab-case.vo.ts`.
 - Inside `libs/shared/src/vo/*` import the base via `../base` (relative). Do **not** self-import `@acme/shared`.
-- Inside `apps/api/src/<bc>/domain/value-objects/*` import the base via `@acme/shared`.
+- Inside `src/<bc>/domain/value-objects/*` import the base via `@acme/shared`.
 - Add new shared VOs to `libs/shared/src/vo/index.ts`.
 - BC-local VOs are exported through the BC's own `domain/value-objects/index.ts` barrel.
 
 ### Shared vs BC-local VOs — when each belongs
 
-Project rule (from `CLAUDE.md`): _"New primitive must be reusable across ≥ 2 BCs; otherwise it belongs in the BC's `domain/` or its contracts package."_
+Rule of thumb: _"A new primitive must be reusable across ≥ 2 BCs; otherwise it belongs in the BC's `domain/` or its contracts package."_
 
-| Signal                                                                     | Decision                                                             |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| The concept appears (or plausibly will appear) in ≥ 2 BCs                  | **Shared** — `libs/shared/src/vo/<name>.vo.ts`                       |
-| The vocabulary is BC-specific (e.g. `CelebrationSlotIndex`, `CampaignTag`) | **BC-local** — `apps/api/src/<bc>/domain/value-objects/<name>.vo.ts` |
-| It mixes a shared shape with a BC-specific catalog                         | Keep the shared base in `libs/shared`; specialize in the BC          |
+| Signal                                                                     | Decision                                                        |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| The concept appears (or plausibly will appear) in ≥ 2 BCs                  | **Shared** — `libs/shared/src/vo/<name>.vo.ts`                  |
+| The vocabulary is BC-specific (e.g. `CelebrationSlotIndex`, `CampaignTag`) | **BC-local** — `src/<bc>/domain/value-objects/<name>.vo.ts`     |
+| It mixes a shared shape with a BC-specific catalog                         | Keep the shared base in the shared kernel; specialize in the BC |
 
 Why the rule matters:
 
-- `libs/shared` must stay **framework-free and BC-vocabulary-free**. A celebrations-only VO sitting there pollutes the cross-BC layer and silently invites other BCs to couple to celebrations terms.
+- The shared kernel must stay **framework-free and BC-vocabulary-free**. A celebrations-only VO sitting there pollutes the cross-BC layer and silently invites other BCs to couple to celebrations terms.
 - BC-local VOs still import `ValueObject` + `Result` from `@acme/shared` — the **base classes** are shared; the **concept** is not.
 - Promote a BC-local VO to shared only when a second BC genuinely needs it; at that point, strip the original BC's vocabulary first.
 
-See [`examples/celebration-slot-index.vo.ts`](../examples/celebration-slot-index.vo.ts) + its [test file](../examples/celebration-slot-index.vo.test.ts) for the BC-local shape (numeric VO with a typed config, base imported from `@acme/shared`, paired test under `apps/api/test/<bc>/domain/value-objects/`).
+See [`examples/celebration-slot-index.vo.ts`](../examples/celebration-slot-index.vo.ts) + its [test file](../examples/celebration-slot-index.vo.test.ts) for the BC-local shape (numeric VO with a typed config, base imported from `@acme/shared`, paired test under `test/<bc>/domain/value-objects/`).
 
 ## Base Classes (`@acme/shared`)
 
@@ -39,7 +41,7 @@ See [`examples/celebration-slot-index.vo.ts`](../examples/celebration-slot-index
 - `ValueObjectConfig` — empty marker interface; extend for domain-specific constraints.
 - `Result<T>` — `Result.ok(value)` / `Result.fail(string | string[])` / `result.isOk` / `result.isFailure` / `result.instance` / `result.errors` / `result.throwIfFailed()` / `result.withFail` / `Result.combine([...])`.
 
-Base signature (`libs/shared/src/base/vo.ts`):
+Base signature (shared kernel, e.g. `libs/shared/src/base/vo.ts`):
 
 ```typescript
 export abstract class ValueObject<T, Config extends ValueObjectConfig> {
@@ -65,7 +67,7 @@ export abstract class ValueObject<T, Config extends ValueObjectConfig> {
 Validates a single constraint with a fixed rule. Constructor `private` — not designed for extension.
 
 ```typescript
-// libs/shared/src/vo/alias.vo.ts
+// <shared kernel>/src/vo/alias.vo.ts
 import { Result, ValueObject, ValueObjectConfig } from "../base";
 
 export class Alias extends ValueObject<string, ValueObjectConfig> {
@@ -99,7 +101,7 @@ export class Alias extends ValueObject<string, ValueObjectConfig> {
 
 ### 2. Parametric string VO (subclassable)
 
-Constraints are caller-configurable via typed `Config`. Constructor `protected` to allow specialization. This is the shape of `Text` (`libs/shared/src/vo/text.vo.ts`).
+Constraints are caller-configurable via typed `Config`. Constructor `protected` to allow specialization. This is the shape of a shared `Text` VO.
 
 ```typescript
 import { Result, ValueObject, ValueObjectConfig } from "../base";
@@ -144,7 +146,7 @@ export class Name extends ValueObject<string, NameConfig> {
 
 ### 3. Numeric VO
 
-Must guard both `typeof` **and** `isNaN` — `typeof NaN === 'number'` is `true`. Mirrors `Number` (`libs/shared/src/vo/number.vo.ts`).
+Must guard both `typeof` **and** `isNaN` — `typeof NaN === 'number'` is `true`. This is the shape of a shared `Number` VO.
 
 ```typescript
 import { Result, ValueObject, ValueObjectConfig } from "../base";
@@ -192,7 +194,7 @@ export class Price extends ValueObject<number, PriceConfig> {
 
 ### 4. Canonical-form VO (normalize then validate)
 
-When the stored value must always be in a canonical form, extract normalization into a public static method. `Slug` (`libs/shared/src/vo/slug.vo.ts`) and `DotSeparatedName` follow this shape; `Slug` also exposes derived factories `fromName` and `withRandomSuffix`.
+When the stored value must always be in a canonical form, extract normalization into a public static method. `Slug` (see [`examples/slug.vo.ts`](../examples/slug.vo.ts)) and `DotSeparatedName` follow this shape; `Slug` also exposes derived factories `fromName` and `withRandomSuffix`.
 
 ```typescript
 import { Result, ValueObject, ValueObjectConfig } from "../base";
@@ -245,7 +247,7 @@ Rule: `normalize()` runs first, then validation runs on the normalized form — 
 Every closed set of allowed values (palette key, kind, status, provider, layout) is a **string-backed TS enum**; the catalog tuple and the VO's stored type are **derived** from the enum. Never declare the set as a raw-string `as const` tuple, and never compare against string literals at call sites.
 
 ```typescript
-// libs/shared/src/vo/palette-key.vo.ts
+// <shared kernel>/src/vo/palette-key.vo.ts
 import { Result, ValueObject, ValueObjectConfig } from "../base";
 
 export enum PaletteKeyEnum {
@@ -288,15 +290,15 @@ Why enum instead of `as const`:
 
 - One source of truth for both the runtime catalog (`Object.values`) and the type (`(typeof Enum)[keyof typeof Enum]`).
 - Refactor-safe: rename the enum member and IDEs propagate to every comparison; renaming a string literal at one site silently leaves stale literals at others.
-- The PT-BR product copy stays decoupled from the English identifier — UI maps the enum key to a label; persistence stores the enum value.
+- Localized product copy (e.g. a pt-BR UI) stays decoupled from the English identifier — UI maps the enum key to a label; persistence stores the enum value.
 
-> The live `libs/shared/src/vo/palette-key.vo.ts` is currently on the older `as const` form (`PALETTE_KEYS = ["bordo"] as const`). It works, but new closed-set VOs **must** follow the enum pattern above; migrate `PaletteKey` the next time it is touched.
+> An existing closed-set VO may still use the older `as const` form (`PALETTE_KEYS = ["bordo"] as const`). It works, but new closed-set VOs **must** follow the enum pattern above; migrate the old one the next time it is touched.
 
 ---
 
 ### 6. Composite-value VO (object value, error collection)
 
-When the VO's value is an object, collect all failures into an array and return `Result.fail(errors)` — no `try/catch`. Mirrors `ImageRef` (`libs/shared/src/vo/image-ref.vo.ts`).
+When the VO's value is an object, collect all failures into an array and return `Result.fail(errors)` — no `try/catch`. This is the shape of an `ImageRef` VO.
 
 ```typescript
 import { Result, ValueObject, ValueObjectConfig } from "../base";
@@ -353,7 +355,7 @@ export class ImageRef extends ValueObject<ImageRefValue, ValueObjectConfig> {
 
 ### 7. ID VO with auto-generation and `required()`
 
-`Id.tryCreate(value?)` generates a UUID v4 when the value is empty. `Id.required(value)` fails explicitly on blank — use it for foreign-key fields. From `libs/shared/src/vo/id.vo.ts`.
+`Id.tryCreate(value?)` generates a UUID v4 when the value is empty. `Id.required(value)` fails explicitly on blank — use it for foreign-key fields.
 
 ```typescript
 // In an entity tryCreate:
@@ -409,7 +411,7 @@ Use this fallback only after ruling out `Text`/`Number` config, the closed-set e
 | Canonical normalization (lowercase, NFD-strip, kebab/dotcase)        | Canonical-form VO with `normalize()` (Section 4)                       |
 | Arbitrary regex / checksum / structural rule (no other section fits) | Custom rule VO (Section 8)                                             |
 | Concept shared by multiple BCs                                       | Put it in `libs/shared/src/vo/`                                        |
-| Concept meaningful only inside one BC                                | Put it in `apps/api/src/<bc>/domain/value-objects/`                    |
+| Concept meaningful only inside one BC                                | Put it in `src/<bc>/domain/value-objects/`                             |
 | Multiple VOs share the same constraint structure                     | Create a base VO with `protected` constructor                          |
 
 ---
@@ -430,7 +432,7 @@ Use this fallback only after ruling out `Text`/`Number` config, the closed-set e
 
 ## Test Coverage Checklist
 
-Tests live in `libs/shared/test/vo/<name>.vo.test.ts` (or the BC-local mirror under `apps/api/test/<bc>/domain/value-objects/`). Run with `pnpm --filter @acme/shared test`. After changing a shared VO, also run `pnpm --filter api typecheck && pnpm --filter api test`.
+Tests live in `libs/shared/test/vo/<name>.vo.test.ts` (or the BC-local mirror under `test/<bc>/domain/value-objects/`). Run them with your test runner (e.g. `pnpm --filter @acme/shared test`). After changing a shared VO, also run the consumers' typecheck and tests (e.g. `pnpm --filter <api-package> typecheck && pnpm --filter <api-package> test`).
 
 ```typescript
 import { MyVo } from "../../src";

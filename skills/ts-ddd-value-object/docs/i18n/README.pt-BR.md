@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-value-object?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-value-object)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte da família `@llodev/ts-ddd`.
@@ -48,15 +48,15 @@ Sem MCP, sem config, sem init — é uma skill de conhecimento puro. Após insta
 
 ## Conteúdo
 
-| Arquivo                                      | Conteúdo                                                                                                                                                                                                                       |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SKILL.md`                                   | Condições de disparo, onde os VOs vivem, checklist inicial, tabela de visibilidade de construtor, padrão de closed set, regras principais e lista NEVER.                                                                       |
-| `references/vo-pattern.md`                   | Caminhos reais de arquivo, código anotado para cada tipo de VO (simples, paramétrico, numérico, forma canônica, closed-set/enum, composto, ID com `required()`), regras de import por escopo, checklist de cobertura de teste. |
-| `examples/palette-key.vo.ts`                 | Um VO de closed set baseado em enum, demonstrando o padrão obrigatório de closed set.                                                                                                                                          |
-| `examples/palette-key.vo.test.ts`            | Cobertura de teste para o VO palette-key, incluindo casos de valor inválido e normalização.                                                                                                                                    |
-| `examples/celebration-slot-index.vo.ts`      | Um VO numérico local a um BC, demonstrando a API dupla `tryCreate`/`create` e overrides de config.                                                                                                                             |
-| `examples/celebration-slot-index.vo.test.ts` | Cobertura de teste para o VO numérico local a um BC, incluindo casos de limite e override de config.                                                                                                                           |
-| `examples/slug.vo.ts`                        | Um VO escalar normalizador (trim/lowercase/strip de acentos antes de validar).                                                                                                                                                 |
+| Arquivo                                      | Conteúdo                                                                                                                                                                                                                            |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                                   | Condições de disparo, onde os VOs vivem, checklist inicial, tabela de visibilidade de construtor, padrão de closed set, regras principais e lista NEVER.                                                                            |
+| `references/vo-pattern.md`                   | Caminhos de arquivo de exemplo, código anotado para cada tipo de VO (simples, paramétrico, numérico, forma canônica, closed-set/enum, composto, ID com `required()`), regras de import por escopo, checklist de cobertura de teste. |
+| `examples/palette-key.vo.ts`                 | Um VO de closed set baseado em enum, demonstrando o padrão obrigatório de closed set.                                                                                                                                               |
+| `examples/palette-key.vo.test.ts`            | Cobertura de teste para o VO palette-key, incluindo casos de valor inválido e normalização.                                                                                                                                         |
+| `examples/celebration-slot-index.vo.ts`      | Um VO numérico local a um BC, demonstrando a API dupla `tryCreate`/`create` e overrides de config.                                                                                                                                  |
+| `examples/celebration-slot-index.vo.test.ts` | Cobertura de teste para o VO numérico local a um BC, incluindo casos de limite e override de config.                                                                                                                                |
+| `examples/slug.vo.ts`                        | Um VO escalar normalizador (trim/lowercase/strip de acentos antes de validar).                                                                                                                                                      |
 
 ## Licença
 

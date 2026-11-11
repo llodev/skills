@@ -1,21 +1,28 @@
 # Firestore Adapter — Repository Reference
 
-Read **after** `repository-pattern.md`. The only production persistence stack in this
-repo is the **Firebase Admin SDK** (`firebase-admin/firestore`). No Prisma, no
-Mongoose, no Supabase clients. Storage (signed URLs) lives next to it but is not
-the repository's concern.
+Read **after** `repository-pattern.md`, if your project persists aggregates with the
+**Firebase Admin SDK** (`firebase-admin/firestore`). The snippets assume Firestore is
+the persistence stack behind the port (no Prisma, Mongoose, or Supabase clients in the
+same adapter). File storage (signed URLs) may live next to it but is not the
+repository's concern.
+
+The examples use NestJS for DI and a sample `celebrations` bounded context
+(`Celebration` aggregate root with a `sections` subcollection). Aliases such as
+`@<bc>/*`, `@shared/*` and `@acme/*` are examples; use the ones your tsconfig defines.
 
 ---
 
 ## Standard Adapter Structure
 
+Example layout relative to the API package root; adapt it to your project:
+
 ```
-apps/api/src/<bc>/infra/firestore/
+src/<bc>/infra/firestore/
   firestore-<name>.repository.ts   ← the @Injectable adapter (implements the port)
   <name>.mapper.ts                 ← toFirestore + fromFirestore (Result<Entity>)
   index.ts                         ← barrel
 
-apps/api/src/shared/firebase/
+src/shared/firebase/
   firestore.service.ts             ← exposes `db` (Firestore singleton)
 ```
 
@@ -54,8 +61,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Result } from "@acme/shared";
 import type { CelebrationStatus } from "@acme/celebrations-contracts";
 import { FirestoreService } from "@shared/firebase";
-import type { CelebrationRepository } from "@celebrations/domain/repositories";
-import { Celebration, type Section } from "@celebrations/domain/entities";
+import type { CelebrationRepository } from "@<bc>/domain/repositories";
+import { Celebration, type Section } from "@<bc>/domain/entities";
 import {
   celebrationFromFirestore,
   celebrationToFirestore,
@@ -148,7 +155,7 @@ the persisted data drifted from the current invariants.
 // celebration.mapper.ts
 import { Timestamp } from "firebase-admin/firestore";
 import { Result } from "@acme/shared";
-import { Celebration, type Section } from "@celebrations/domain/entities";
+import { Celebration, type Section } from "@<bc>/domain/entities";
 
 export interface CelebrationFirestoreDoc {
   kind: string;
@@ -356,8 +363,8 @@ Use Firestore batching only when:
 - The write spans multiple docs **and** the caller cannot tolerate partial application (e.g. moving a section from one celebration to another).
 - The write needs to be conditioned on a current value the adapter just read (use `runTransaction`).
 
-For single-aggregate writes that are eventually consistent (the current wholesale
-section replace), document the trade-off in a comment instead of paying the
+For single-aggregate writes that are eventually consistent (like the wholesale
+section replace above), document the trade-off in a comment instead of paying the
 transaction overhead. Promote to a batch when volume justifies it.
 
 ---

@@ -1,5 +1,6 @@
 /**
- * Canonical entity test template — mirrors apps/api/test/<bc>/domain/entities style.
+ * Reference entity test template — would live at
+ * `test/<bc>/domain/entities/<name>.entity.test.ts` (example layout; adapt it).
  *
  * Covers:
  *  - valid create (auto-generated id + explicit id)

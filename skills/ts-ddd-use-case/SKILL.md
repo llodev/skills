@@ -3,15 +3,15 @@ name: ts-ddd-use-case
 description: >-
   Create, review, or guide use case (application service) implementation in a
   TypeScript + DDD codebase. Use when the request involves `*.usecase.ts` files
-  under `apps/api/src/<bc>/application/usecases/`,
+  under `src/<bc>/application/usecases/`,
   `application/services/<name>.service.ts` orchestrators, `UseCase<IN,OUT>` from
   `@acme/shared`, NestJS `@Injectable()` + `@Inject(<REPO_TOKEN>)` wiring,
   `Result.ok` / `Result.fail` / `withFail` / `Result.combine`, repository-port
   orchestration (`findBySlug`, `save`, `listByStatus`), aggregate
-  state-transitions (`publish`, `addSection`), enum-typed inputs
-  (`CelebrationKind`, `CelebrationStatusEnum.DRAFT`), or use-case tests under
-  `apps/api/test/<bc>/application/usecases/` using
-  `InMemoryCelebrationRepository`.
+  state-transitions (`publish`, `addSection`), enum-typed inputs (e.g.
+  `CelebrationKind`, `CelebrationStatusEnum.DRAFT`), or use-case tests under
+  `test/<bc>/application/usecases/` using an in-memory repository (e.g.
+  `InMemoryCelebrationRepository`).
 metadata:
   version: 0.1.0
 ---
@@ -24,6 +24,8 @@ metadata:
 
 A use case orchestrates one application intent. It is the only layer allowed to talk to repository ports, domain entities, and other application services in the same bounded context. It **never** throws for expected failures, **never** maps to HTTP, **never** validates VO invariants itself.
 
+In the examples below, `celebrations` is a sample bounded context and `Celebration` its aggregate root; package names (`@acme/*`) and path aliases (`@<bc>/*`) are examples to adapt to your project.
+
 ---
 
 ## Before You Start
@@ -31,7 +33,7 @@ A use case orchestrates one application intent. It is the only layer allowed to 
 Answer these before touching code:
 
 - **Is this an IN→OUT verb (`create-*`, `publish-*`, `add-*`, `list-*`)?** → `application/usecases/<verb>-<noun>.usecase.ts` implementing `UseCase<IN, OUT>`.
-- **Is this a reusable orchestrator without a clean IN→OUT shape (allocator, coordinator, resolver)?** → `application/services/<name>.service.ts` exposing one or more domain methods, no `UseCase` interface. See `SlugAllocator` for the canonical pattern.
+- **Is this a reusable orchestrator without a clean IN→OUT shape (allocator, coordinator, resolver)?** → `application/services/<name>.service.ts` exposing one or more domain methods, no `UseCase` interface. See the `SlugAllocator` example in the reference for the pattern.
 - **Command or query?** Write/mutation → repository port + domain entity. Read/projection → query port (or `repo.listByX` when the read still returns entities).
 - **What fails?** Which pre-conditions must hold? What does each `await` return on `isFailure`?
 - **Update or create?** Update requires loading current state first (`findBySlug`/`findById`) and mutating via a named domain method (`publish`, `addSection`, `cloneWith`). Never merge raw input blind.
@@ -63,7 +65,7 @@ Answer these before touching code:
 - Delegate every invariant to the entity: call `Entity.tryCreate(...)`, `entity.publish()`, `entity.addSection(...)`, etc. The use case checks `isFailure` and forwards; it does **not** re-validate VOs.
 - For enum-backed fields (status / kind / palette / layout / provider) pass enum members from contracts. Literal strings are a bug even when they match — they break refactors and silent renames.
 - Imports use workspace aliases: `@acme/shared`, `@acme/<bc>-contracts`, `@<bc>/domain/...`, `@<bc>/application/...`. No relative paths across layers.
-- The barrel `apps/api/src/<bc>/application/usecases/index.ts` re-exports every use case; update it the moment a new file lands.
+- The barrel `src/<bc>/application/usecases/index.ts` re-exports every use case; update it the moment a new file lands.
 - Class name **drops** the `UseCase` suffix (`CreateCelebration`, not `CreateCelebrationUseCase`). The file extension `.usecase.ts` already encodes the role; doubling it in the class name is noise. Constructor injection sites read better as `private readonly create: CreateCelebration`.
 
 ## NEVER
@@ -77,13 +79,13 @@ Answer these before touching code:
 - **NEVER** update without loading the aggregate first (`findBySlug`). Partial merges destroy existing props.
 - **NEVER** put cross-cutting orchestration that doesn't fit IN→OUT into a use case. Promote it to `application/services/<name>.service.ts` (e.g. `SlugAllocator`).
 
-## Result API — project-specific bits
+## Result API — conventions beyond the generic API
 
-- `result.withFail` — getter that re-wraps a failed `Result<A>` as `Result<B>` without recomputing. Use it for every `if (x.isFailure) return x.withFail;` step. Not the generic `Result` API — this is our shortcut.
-- Domain error codes are **SCREAMING_SNAKE_CASE** and catalogued in `apps/api/src/shared/http/error-codes.ts`. Add new codes there before using them in a use case.
+- `result.withFail` — getter that re-wraps a failed `Result<A>` as `Result<B>` without recomputing. Use it for every `if (x.isFailure) return x.withFail;` step. It is not part of a generic `Result` API — add it to your shared `Result` class if it lacks it.
+- Domain error codes are **SCREAMING_SNAKE_CASE** and catalogued in one error-code module (e.g. `src/shared/http/error-codes.ts`). Add new codes there before using them in a use case.
 
 ## References
 
-See [`references/use-case-pattern.md`](references/use-case-pattern.md) for: real file layout, the canonical create / state-transition / nested-mutation / list snippets, the `application/services/` exception, the test strategy with `InMemoryCelebrationRepository`, enum-fixture rules, and the implementation checklist.
+See [`references/use-case-pattern.md`](references/use-case-pattern.md) for: an example file layout, the canonical create / state-transition / nested-mutation / list snippets, the `application/services/` exception, the test strategy with an in-memory repository, enum-fixture rules, and the implementation checklist.
 
 See [`examples/create-greeting.usecase.example.ts`](examples/create-greeting.usecase.example.ts) for a self-contained use case + fake repo + Jest test using enum members.

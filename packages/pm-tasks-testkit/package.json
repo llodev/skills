@@ -31,7 +31,7 @@
     }
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "peerDependencies": {
     "@llodev/pm-tasks-core": "workspace:^"

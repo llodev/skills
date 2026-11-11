@@ -1,7 +1,8 @@
 /**
  * Domain Service test template — standalone, no mocks, no DI.
- * Mirrors the api test style under `apps/api/test/<bc>/domain/services/`.
- * Run via `pnpm --filter api test`.
+ * Example location (adapt to your layout): `test/<bc>/domain/services/`.
+ * Run with your API package's test command (e.g. `pnpm --filter api test`).
+ * `@celebrations/*` and `@acme/*` are example alias/package names.
  */
 import { Celebration } from "@celebrations/domain/entities/celebration.entity";
 import { CelebrationStatusEnum, SectionKindEnum } from "@acme/celebrations-contracts";

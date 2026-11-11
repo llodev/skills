@@ -1,26 +1,27 @@
 /**
- * BC-LOCAL VO example — lives inside a single bounded context (celebrations).
+ * BC-LOCAL VO example — lives inside a single bounded context. `celebrations`
+ * is a sample BC; package names and aliases below are examples to adapt.
  *
  * Why BC-local (not shared)?
  *   The concept "slot index of a section inside a celebration page" is only
- *   meaningful to the celebrations BC. Per project rule (CLAUDE.md):
- *     "New primitive must be reusable across ≥ 2 BCs; otherwise it belongs
+ *   meaningful to the celebrations BC. Rule of thumb:
+ *     "A new primitive must be reusable across ≥ 2 BCs; otherwise it belongs
  *      in the BC's domain/ or its contracts package."
- *   Putting it in libs/shared would pollute the cross-BC primitive layer with
- *   celebrations vocabulary.
+ *   Putting it in the shared kernel would pollute the cross-BC primitive layer
+ *   with celebrations vocabulary.
  *
- * Real location in this monorepo:
- *   src   → apps/api/src/celebrations/domain/value-objects/celebration-slot-index.vo.ts
- *   tests → apps/api/test/celebrations/domain/value-objects/celebration-slot-index.vo.test.ts
- *   barrel → apps/api/src/celebrations/domain/value-objects/index.ts
- *   import (within the BC):
+ * Suggested location (example layout, relative to the API package root):
+ *   src   → src/celebrations/domain/value-objects/celebration-slot-index.vo.ts
+ *   tests → test/celebrations/domain/value-objects/celebration-slot-index.vo.test.ts
+ *   barrel → src/celebrations/domain/value-objects/index.ts
+ *   import (within the BC, via an example path alias):
  *     import { CelebrationSlotIndex } from "@celebrations/domain/value-objects";
  *
  * Key contrasts with a shared VO:
  *   - Base classes still come from "@acme/shared" (Result, ValueObject).
- *   - No entry in libs/shared/src/vo/index.ts — exported via the BC barrel only.
+ *   - No entry in the shared kernel's VO barrel — exported via the BC barrel only.
  *   - Other BCs cannot import this; cross-BC reuse would mean promoting it to
- *     libs/shared (and stripping celebrations vocabulary first).
+ *     the shared kernel (and stripping celebrations vocabulary first).
  */
 import { Result, ValueObject, ValueObjectConfig } from "@acme/shared";
 

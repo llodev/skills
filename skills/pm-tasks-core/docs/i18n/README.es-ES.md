@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/pm-tasks-core?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/pm-tasks-core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Este paquete es la base compartida. **Instálalo junto con al menos un adapter** — por sí solo no tiene formato específico de herramienta y no se activará.

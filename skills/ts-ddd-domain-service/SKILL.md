@@ -2,12 +2,12 @@
 name: ts-ddd-domain-service
 description: >-
   Create, review, or guide pure Domain Service implementation in a TypeScript +
-  DDD monorepo. Use when the request involves `*.service.ts` files inside
-  `apps/api/src/<bc>/domain/services/`, domain policies, pure calculations/rules
+  DDD codebase. Use when the request involves `*.service.ts` files inside
+  `src/<bc>/domain/services/`, domain policies, pure calculations/rules
   across multiple entities/VOs, naming patterns (`*Policy`, `*Calculator`,
   `*Resolver`, `*Specification`), branching on closed-set enums (status / kind /
-  role) from `@acme/celebrations-contracts`, or tests in
-  `apps/api/test/<bc>/domain/services/`. Scope is the *pure* domain layer; for
+  role) from the BC contracts package (e.g. `@acme/<bc>-contracts`), or tests in
+  `test/<bc>/domain/services/`. Scope is the *pure* domain layer; for
   orchestrators that need a repository or other I/O (e.g. `SlugAllocator`), see
   the sibling `application/services/` section at the end.
 metadata:
@@ -21,9 +21,14 @@ metadata:
 **Do NOT load** other DDD skills (entity, use-case, repository) unless explicitly requested.
 
 This skill covers **pure** domain services that live in
-`apps/api/src/<bc>/domain/services/`. They never see a repository, NestJS,
+`src/<bc>/domain/services/`. They never see a repository, NestJS,
 Firestore, HTTP, Zod, or any DTO. They take entities/VOs/primitives as
 arguments and return a `Result` or a plain domain value.
+
+Paths are an example layout relative to the API package root; adapt them to
+your project. In the examples, `celebrations` is a sample bounded context and
+`Celebration` its aggregate root; `@acme/shared` and `@acme/<bc>-contracts` are
+example package names.
 
 > If the rule needs I/O (load by slug, retry against the database,
 > call an external API), it is an **application service**, not a domain
@@ -39,7 +44,7 @@ Before writing a single method, answer:
 - **Cross-aggregate?**: does it combine 2+ entities/VOs without a clear owner? → Domain Service.
 - **I/O needed?**: does the rule require a repository, query, Firestore, or external call? → Application Service in `application/services/` (DI + `@Injectable`), not Domain Service.
 - **Already exists?**: is the rule already captured in a VO (`Slug`, `PaletteKey`) or entity method (`addSection`, `publish`)? → do not duplicate.
-- **Closed-set branch?**: if you compare a status/kind/role against a literal string, stop — use the enum from `@acme/celebrations-contracts` (see "Branching on closed sets" in the reference).
+- **Closed-set branch?**: if you compare a status/kind/role against a literal string, stop — use the enum from the BC contracts package, e.g. `@acme/<bc>-contracts` (see "Branching on closed sets" in the reference).
 
 ---
 
@@ -59,8 +64,8 @@ Before writing a single method, answer:
 
 ## Core Rules
 
-- File lives in `apps/api/src/<bc>/domain/services/<name>.service.ts` — never under `application/`, `infra/`, `presentation/`, or `libs/contracts/**`.
-- Each leaf folder has an `index.ts` barrel — re-export every new service from `apps/api/src/<bc>/domain/services/index.ts`.
+- File lives in `src/<bc>/domain/services/<name>.service.ts` — never under `application/`, `infra/`, `presentation/`, or the contracts package.
+- Each leaf folder has an `index.ts` barrel — re-export every new service from `src/<bc>/domain/services/index.ts`.
 - Pure and deterministic: same input always produces same output, no `Date.now()`/`Math.random()` inside the rule (inject if needed).
 - Imports allowed: `@acme/shared` (`Result`, `Entity`, VOs), `@acme/<bc>-contracts` (enums + interfaces), other entities/VOs in the same BC. Nothing else.
 - **No** `@nestjs/*`, `@Injectable`, constructor injection, `firebase-admin`, Zod, DTOs, or framework decorators in this file.
@@ -78,7 +83,7 @@ Before writing a single method, answer:
 - **NEVER** duplicate logic already in an entity method or VO — if `Celebration` exposes `publish()`, the service calls it instead of re-implementing the transition.
 - **NEVER** put orchestration decisions (which repository to call next, which event to emit, retry loops) in a Domain Service — that is application concern.
 - **NEVER** return `null`/`undefined`/`throw` to signal failure — return `Result.fail("CODE")` so callers handle errors uniformly.
-- **NEVER** branch on a raw string literal for status/kind/role/palette — import the enum from `@acme/celebrations-contracts` (or the relevant BC contracts).
+- **NEVER** branch on a raw string literal for status/kind/role/palette — import the enum from the relevant BC contracts package (e.g. `@acme/<bc>-contracts`).
 - **NEVER** call the function `execute` here — `execute` is reserved for `UseCase<IN, OUT>`. Name the method after the rule (`check`, `calculate`, `resolve`, `isSatisfiedBy`).
 - **NEVER** call `Date.now()`, `Math.random()`, `crypto.randomUUID()`, `performance.now()`, `new Date()` (without an argument), or any other non-deterministic primitive inside a domain service — pure means **deterministic given inputs**. Pass a clock/random/id-generator as a parameter (or generate the value in the use case before calling the service). **Why**: non-determinism makes tests flaky, breaks property-based testing, and hides the real input set the rule depends on — the service silently couples to wall-clock time instead of taking it as data.
 
@@ -86,23 +91,23 @@ Before writing a single method, answer:
 
 If your "service" needs a repository, retries against the database, or
 external calls, it is **not** a Domain Service. Put it in
-`apps/api/src/<bc>/application/services/<name>.service.ts`, mark it
+`src/<bc>/application/services/<name>.service.ts`, mark it
 `@Injectable()`, inject ports via DI tokens, and still return `Result`.
-Canonical reference in this repo:
-`apps/api/src/celebrations/application/services/slug-allocator.service.ts`
-(allocates a unique `Slug` by retrying against `CelebrationRepository`).
+Example: a `SlugAllocator` service that allocates a unique `Slug` by
+retrying against a `CelebrationRepository`.
 See the final section of [`references/domain-service-pattern.md`](references/domain-service-pattern.md)
 for the contrast.
 
 ## Verification
 
-After writing or editing a service, run:
+After writing or editing a service, run your project's typecheck and test
+commands for the API package, for example:
 
 ```bash
 pnpm --filter api typecheck && pnpm --filter api test
 ```
 
-(or `make check-api`). Test files live in `apps/api/test/<bc>/domain/services/<name>.test.ts`.
+Test files live in `test/<bc>/domain/services/<name>.test.ts`.
 
 ## References
 
