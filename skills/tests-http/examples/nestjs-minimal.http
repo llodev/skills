@@ -1,0 +1,41 @@
+### =============================================================
+### <Resource> — full coverage HTTP test suite
+### Covers every route, query param, body validation rule and error
+### path exposed by <discovered-controller-path>.
+### =============================================================
+
+### Variables
+@base_url = http://localhost:<port>
+@write_key = {{$dotenv API_WRITE_KEY}}
+@published_slug = <seeded-slug>
+@missing_slug = does-not-exist
+@malformed_slug = NotAKebabCase
+
+### =============================================================
+### 1. VARIABLES + AUTH SANITY
+### =============================================================
+
+### 1.1 Health (sanity)
+GET {{base_url}}/health
+
+### =============================================================
+### 2. <RESOURCE> READ
+### Endpoints: GET /<resource>, GET /<resource>/:slug
+### =============================================================
+
+### 2.A.1 List (default)
+# @name list
+GET {{base_url}}/<resource>
+
+### 2.B.1 Detail (happy path)
+GET {{base_url}}/<resource>/{{published_slug}}
+
+### 2.B.2 Detail not found (expect 404 <NOT_FOUND_CODE>)
+GET {{base_url}}/<resource>/{{missing_slug}}
+
+### =============================================================
+### N. METHOD / HEADER ERRORS
+### =============================================================
+
+### N.1 OPTIONS on list (sanity)
+OPTIONS {{base_url}}/<resource>
