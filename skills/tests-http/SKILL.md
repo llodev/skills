@@ -9,7 +9,7 @@ description: >-
   references/. Do NOT use for pytest, Jest, Vitest, Playwright, or Supertest.
 license: MIT
 metadata:
-  version: 0.0.0
+  version: 0.1.0
   tags:
     - agent-skill
     - http
