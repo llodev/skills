@@ -13,7 +13,7 @@ description: >-
   Streamable-HTTP transport), autonomous (write-through with allowlist).
   Implements 9 verbs (task.create, task.move, checklist.check, task.close,
   task.due-date.set, task.assignee.add, task.comment.add, task.parent.set,
-  task.estimate.set) from skills/pm-tasks-core/references/contract.md. F2
+  task.estimate.set) from skills/pm-tasks-core/references/contract.md.
   task.sprint.set is NOT supported — Atlassian MCP exposes no sprint API.
   Requires @llodev/pm-tasks-core installed.
 license: MIT
@@ -65,7 +65,7 @@ Jira issues have:
 
 **MCP transport:** Atlassian Remote MCP at Streamable-HTTP endpoint `https://mcp.atlassian.com/v1/mcp`. The SSE endpoint (`/events`) was retired 2026-06-30. All `mcp__atlassian__*` tools are unchanged; only the transport layer differs.
 
-**F2 sprint:** `task.sprint.set` is NOT supported. The Atlassian MCP exposes no agile/sprint API. The core factory returns `UNSUPPORTED_VERB` for this verb. Capacity and sprint planning are roadmapped for v1.12.0.
+**Sprint:** `task.sprint.set` is NOT supported. The Atlassian MCP exposes no agile/sprint API. The core factory returns `UNSUPPORTED_VERB` for this verb. Capacity and sprint planning are not available through this adapter.
 
 ## Phase 4 — Jira formatting
 
@@ -126,17 +126,17 @@ Jira-specific verb mapping:
 
 For verbs other than `task.create`, jump directly to the operation. Verb → MCP tool mapping:
 
-| Core verb                | Jira MCP tool (`mcp__atlassian__*`)                  | Notes                                                                                                                                                           |
-| ------------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `task.create`            | `createJiraIssue`                                    | parent + subtasks per Phase 5; type from `issueTypes`; clientToken embedded in description as `[ct:<token>]`                                                    |
-| `task.move`              | `getTransitionsForJiraIssue` → `transitionJiraIssue` | `req.targetListOrSectionId` = status category key (`"new"` / `"indeterminate"` / `"done"`); locale-safe via category matching; `previousListOrSectionId` = null |
-| `checklist.check`        | `createJiraIssue(Subtask)` + `transitionJiraIssue`   | complete: create Subtask with `parent=taskId`, then transition to `"done"`; incomplete: transition existing subtask key to `"new"`                              |
-| `task.close`             | `getTransitionsForJiraIssue` → `transitionJiraIssue` | transitions to `"done"` category; same engine as `task.move`; `movedToListOrSectionId` = resulting status id                                                    |
-| `task.due-date.set`      | `editJiraIssue`                                      | `fields: { duedate: "YYYY-MM-DD" }` (sliced from `req.dueAt` ISO 8601); Subtask → `NOT_APPLICABLE` error (error-driven detection, no pre-read)                  |
-| `task.assignee.add`      | `lookupJiraAccountId` (if needed) + `editJiraIssue`  | `req.userId`: if matches accountId pattern → fast-path skip lookup; else `lookupJiraAccountId { query: userId }` → `editJiraIssue { assignee: { accountId } }`  |
-| `task.comment.add`       | `addCommentToJiraIssue`                              | `body: req.text, markdown: true` (load-bearing — omitting `markdown: true` causes ADF rendering failure); apply attribution prefix if enabled                   |
-| `task.parent.set` (F3)   | `editJiraIssue`                                      | `fields: { parent: { key: req.parentId } }`; `req.parentId` must be a valid issue key (`KAN-12`); `previousParentId` always `null`                              |
-| `task.estimate.set` (F7) | `getJiraIssue` (read labels) + `editJiraIssue`       | normalize via core `normalizeEstimate`; write native field + idempotent `est:<slug>` label in one call; see § Estimation below                                  |
+| Core verb           | Jira MCP tool (`mcp__atlassian__*`)                  | Notes                                                                                                                                                           |
+| ------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `task.create`       | `createJiraIssue`                                    | parent + subtasks per Phase 5; type from `issueTypes`; clientToken embedded in description as `[ct:<token>]`                                                    |
+| `task.move`         | `getTransitionsForJiraIssue` → `transitionJiraIssue` | `req.targetListOrSectionId` = status category key (`"new"` / `"indeterminate"` / `"done"`); locale-safe via category matching; `previousListOrSectionId` = null |
+| `checklist.check`   | `createJiraIssue(Subtask)` + `transitionJiraIssue`   | complete: create Subtask with `parent=taskId`, then transition to `"done"`; incomplete: transition existing subtask key to `"new"`                              |
+| `task.close`        | `getTransitionsForJiraIssue` → `transitionJiraIssue` | transitions to `"done"` category; same engine as `task.move`; `movedToListOrSectionId` = resulting status id                                                    |
+| `task.due-date.set` | `editJiraIssue`                                      | `fields: { duedate: "YYYY-MM-DD" }` (sliced from `req.dueAt` ISO 8601); Subtask → `NOT_APPLICABLE` error (error-driven detection, no pre-read)                  |
+| `task.assignee.add` | `lookupJiraAccountId` (if needed) + `editJiraIssue`  | `req.userId`: if matches accountId pattern → fast-path skip lookup; else `lookupJiraAccountId { query: userId }` → `editJiraIssue { assignee: { accountId } }`  |
+| `task.comment.add`  | `addCommentToJiraIssue`                              | `body: req.text, markdown: true` (load-bearing — omitting `markdown: true` causes ADF rendering failure); apply attribution prefix if enabled                   |
+| `task.parent.set`   | `editJiraIssue`                                      | `fields: { parent: { key: req.parentId } }`; `req.parentId` must be a valid issue key (`KAN-12`); `previousParentId` always `null`                              |
+| `task.estimate.set` | `getJiraIssue` (read labels) + `editJiraIssue`       | normalize via core `normalizeEstimate`; write native field + idempotent `est:<slug>` label in one call; see § Estimation below                                  |
 
 `<task-ref>` resolution: Jira permalink (`https://<site>/browse/KEY-N`) → bare issue key (`KAN-42`) → alias from `.jira.json` `taskAliases[]`.
 
@@ -183,17 +183,17 @@ Every verb returns the core contract shape (see [`../pm-tasks-core/references/co
 
 Jira-specific `details` per verb:
 
-| Verb                     | `details` fields                                                                        |
-| ------------------------ | --------------------------------------------------------------------------------------- |
-| `task.create`            | `{ id: "KAN-42", url?: string }` (url present when MCP returns it)                      |
-| `task.move`              | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }`                   |
-| `checklist.check`        | `{ previousState, newState }` (`"complete"` / `"incomplete"`)                           |
-| `task.close`             | `{ closed: true, movedToListOrSectionId: "<statusId>" }`                                |
-| `task.due-date.set`      | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }` — or `NOT_APPLICABLE` on Subtask      |
-| `task.assignee.add`      | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                                  |
-| `task.comment.add`       | `{ commentId: "<id>", postedAt: "<ISO8601>" }`                                          |
-| `task.parent.set` (F3)   | `{ previousParentId: null, newParentId: "<issueKey>" }`                                 |
-| `task.estimate.set` (F7) | `{ normalized: NormalizedEstimate, fieldWritten: <fieldId> or "timetracking" or null }` |
+| Verb                | `details` fields                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `task.create`       | `{ id: "KAN-42", url?: string }` (url present when MCP returns it)                      |
+| `task.move`         | `{ previousListOrSectionId: null, newListOrSectionId: "<statusId>" }`                   |
+| `checklist.check`   | `{ previousState, newState }` (`"complete"` / `"incomplete"`)                           |
+| `task.close`        | `{ closed: true, movedToListOrSectionId: "<statusId>" }`                                |
+| `task.due-date.set` | `{ previousDueAt: null, newDueAt: "YYYY-MM-DD" }` — or `NOT_APPLICABLE` on Subtask      |
+| `task.assignee.add` | `{ added: true, currentAssigneeIds: ["<accountId>"] }`                                  |
+| `task.comment.add`  | `{ commentId: "<id>", postedAt: "<ISO8601>" }`                                          |
+| `task.parent.set`   | `{ previousParentId: null, newParentId: "<issueKey>" }`                                 |
+| `task.estimate.set` | `{ normalized: NormalizedEstimate, fieldWritten: <fieldId> or "timetracking" or null }` |
 
 On failure: `{ ok: false, code: "<CODE>", details: { message, ... } }`. Stable error codes: `UNSUPPORTED_VERB`, `INVALID_REQUEST`, `NOT_APPLICABLE`, `NOT_FOUND`, `AUTH_ERROR`, `RATE_LIMITED`, `MCP_ERROR`. `UNSUPPORTED_VERB` is returned by the core factory for verbs not in the adapter's manifest (e.g. `task.sprint.set`).
 

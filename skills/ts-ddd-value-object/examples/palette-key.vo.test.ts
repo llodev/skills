@@ -1,15 +1,16 @@
 /**
- * Canonical VO test template — covers:
+ * Reference VO test template — covers:
  *   - happy path for every enum member (closed-set iteration via Object.values)
  *   - invalid case (returns Result.fail with the named error constant)
  *   - rejection of non-string input
  *   - dual API: tryCreate returns Result, create throws on invalid input
  *   - call-site comparison MUST go through the enum, never a string literal
  *
- * Test location in this monorepo:
+ * Suggested test location (example monorepo layout; adapt it):
  *   libs/shared/test/vo/palette-key.vo.test.ts
  *   run via: pnpm --filter @acme/shared test
- *   cross-BC change → also run: pnpm --filter api typecheck && pnpm --filter api test
+ *   cross-BC change → also run the consumers' typecheck and tests
+ *   (e.g. pnpm --filter <api-package> typecheck && pnpm --filter <api-package> test)
  */
 import { PaletteKeyVO, PaletteKeyEnum, PALETTE_KEYS } from "./palette-key.vo";
 

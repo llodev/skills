@@ -1,6 +1,6 @@
 // @llodev/pm-tasks-core/audit
 // Audit-log helpers: append, rotate, query.
-// All I/O uses Node 20+ built-ins only — no new runtime deps.
+// All I/O uses Node 24+ built-ins only — no new runtime deps.
 import { createReadStream, createWriteStream } from "node:fs";
 import {
   appendFile,

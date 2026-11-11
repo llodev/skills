@@ -1,15 +1,16 @@
 /**
- * Canonical normalizing/scalar VO example — mirrors libs/shared/src/vo/slug.vo.ts.
- * Standalone: import paths point at the package consumers would use.
+ * Reference normalizing/scalar VO example for a shared kernel package.
+ * Standalone: import paths point at the package consumers would use
+ * (`@acme/shared` is an example package name).
  *
  * Shape: kebab-case string, lowercase, ASCII-folded, max 36 chars,
  * with derived factories (`fromName`, `withRandomSuffix`) that build on `tryCreate`.
  *
- * Real location in this monorepo:
+ * Suggested location (example monorepo layout; adapt it):
  *   src   → libs/shared/src/vo/slug.vo.ts
  *   tests → libs/shared/test/vo/slug.vo.test.ts
  *   import (consumers) → import { Slug } from "@acme/shared";
- *   import (inside libs/shared) → import { Result, ValueObject, ValueObjectConfig } from "../base";
+ *   import (inside the shared kernel) → import { Result, ValueObject, ValueObjectConfig } from "../base";
  */
 import { randomBytes } from "node:crypto";
 import { Result, ValueObject, ValueObjectConfig } from "@acme/shared";

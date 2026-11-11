@@ -5,13 +5,13 @@
  *   - config override via maxSlots
  *   - dual API: tryCreate returns Result, create throws on invalid input
  *
- * Test location in this monorepo:
- *   apps/api/test/celebrations/domain/value-objects/celebration-slot-index.vo.test.ts
- *   run via: pnpm --filter api test
+ * Suggested test location (example layout, relative to the API package root):
+ *   test/celebrations/domain/value-objects/celebration-slot-index.vo.test.ts
+ *   run via your test runner (e.g. pnpm --filter <api-package> test)
  *
  * Note: paired with the BC-local source at
- *   apps/api/src/celebrations/domain/value-objects/celebration-slot-index.vo.ts
- * — there is no libs/shared mirror.
+ *   src/celebrations/domain/value-objects/celebration-slot-index.vo.ts
+ * — there is no shared-kernel counterpart.
  */
 import { CelebrationSlotIndex } from "./celebration-slot-index.vo";
 

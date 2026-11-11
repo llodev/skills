@@ -1,7 +1,8 @@
 /**
- * Repository PORT — lives in `apps/api/src/products/domain/repositories/`.
+ * Repository PORT — e.g. `src/products/domain/repositories/` (example layout;
+ * `@acme/*` package names are examples to adapt).
  *
- * Mirrors the real CelebrationRepository style:
+ * Shows the recommended port style:
  *  - methods named after domain intent (`save`, `findById`, `listByStatus`),
  *    not generic `create`/`update`,
  *  - every method returns `Promise<Result<T>>`,

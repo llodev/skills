@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-entity?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-entity)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Part of the `@llodev/ts-ddd` family.
@@ -23,7 +23,7 @@ What you get:
 - **The Enum Rule (HARD)** — every closed-set field (status/kind/layout/provider/palette) is a string-backed TS enum with a type guard; compare against the enum member, never a string literal.
 - **Base-class behavior you must know** — how `Entity`'s constructor auto-generates/normalizes `id`, `createdAt`/`updatedAt`/`deletedAt`, and why `cloneWith` deep-clones props with `structuredClone` before merging.
 - **State-transition guidance** — `cloneWith(overrides)` for immutable swap-and-revalidate vs mutating `_field` + `this.touch()` for entities that own a mutable collection, with the criteria for choosing between them.
-- **A `NEVER` list** covering the real pitfalls: storing un-normalized VO input, public setters, skipping array-element validation, and importing from the legacy `@ddd/shared` alias.
+- **A `NEVER` list** covering the real pitfalls: storing un-normalized VO input, public setters, skipping array-element validation, and importing base classes through a deprecated alias.
 
 ## Install
 
@@ -48,12 +48,12 @@ No MCP, no config, no init — it's a pure knowledge skill. Once installed it ac
 
 ## Contents
 
-| File                              | Content                                                                                                                                                                  |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SKILL.md`                        | Trigger conditions, before-you-start checklist, Enum Rule (HARD), base-class behavior, core rules, and NEVER list.                                                       |
-| `references/entity-pattern.md`    | Real paths, canonical `tryCreate` snippet, enum-driven validation, array/nested-entity pattern, `cloneWith` vs mutable-collection mutation, test layout, pitfalls table. |
-| `examples/product.entity.ts`      | A self-contained reference entity with an enum-driven status field, demonstrating `tryCreate`/`create`.                                                                  |
-| `examples/product.entity.test.ts` | Test coverage for the reference entity, including invalid-enum and nested-validation cases.                                                                              |
+| File                              | Content                                                                                                                                                                     |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                        | Trigger conditions, before-you-start checklist, Enum Rule (HARD), base-class behavior, core rules, and NEVER list.                                                          |
+| `references/entity-pattern.md`    | Example paths, canonical `tryCreate` snippet, enum-driven validation, array/nested-entity pattern, `cloneWith` vs mutable-collection mutation, test layout, pitfalls table. |
+| `examples/product.entity.ts`      | A self-contained reference entity with an enum-driven status field, demonstrating `tryCreate`/`create`.                                                                     |
+| `examples/product.entity.test.ts` | Test coverage for the reference entity, including invalid-enum and nested-validation cases.                                                                                 |
 
 ## License
 

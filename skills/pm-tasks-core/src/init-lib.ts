@@ -1,5 +1,5 @@
 // @llodev/pm-tasks-core/init-lib
-// Shared init primitives. Node 20+ built-ins + Ajv for schema validation.
+// Shared init primitives. Node 24+ built-ins + Ajv for schema validation.
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { mkdir, writeFile, readFile } from "node:fs/promises";

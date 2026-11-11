@@ -1,6 +1,6 @@
 # Examples — ts-ddd-use-case
 
-Self-contained TypeScript files that mirror the conventions enforced by `SKILL.md` and `references/use-case-pattern.md`. They do not depend on the real `apps/api` codebase — the imports are illustrative, all collaborators are inlined so the file type-checks in isolation when copy-pasted into a TS playground with the listed package names stubbed.
+Self-contained TypeScript files that mirror the conventions enforced by `SKILL.md` and `references/use-case-pattern.md`. They do not depend on any real codebase — the imports and package names are illustrative examples to adapt, all collaborators are inlined so the file type-checks in isolation when copy-pasted into a TS playground with the listed package names stubbed.
 
 | File                                 | Purpose                                                                                                  |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |

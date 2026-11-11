@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-controller?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-controller)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Part of the `@llodev/ts-ddd` family.
@@ -21,7 +21,7 @@ What you get:
 
 - **A thin-translator contract** — controllers validate at the boundary, inject use cases, and map `Result` → HTTP with `mapResultToHttp`; no business logic, no domain conditionals, no repository calls in a handler.
 - **Guard placement rules** — per-method `@UseGuards(ApiKeyGuard)` on mutations, never at the class level, so public reads and guarded writes can coexist on the same controller.
-- **A NestJS 11 reference layer** — DI symbol tokens, `@Inject(SYMBOL)`, `@Global()` modules, Zod-validated `ConfigModule.forRoot`, and the `@nestjs/testing` + `supertest` test bed actually used in production code.
+- **A NestJS 11 reference layer** — DI symbol tokens, `@Inject(SYMBOL)`, `@Global()` modules, Zod-validated `ConfigModule.forRoot`, and the `@nestjs/testing` + `supertest` test bed for controller tests.
 - **Response-mapper discipline** — signed-URL enrichment, date serialization, and tagged-union variants funnel through a dedicated mapper instead of leaking entity internals.
 - **A `NEVER` list** grounded in real failure modes: class-level guards that 401 public reads, inline `HttpException` throws that fork the error-code catalog, `new UseCase(...)` that breaks DI and tests.
 
@@ -48,12 +48,12 @@ No MCP, no config, no init — it's a pure knowledge skill. Once installed it ac
 
 ## Contents
 
-| File                                    | Content                                                                                                                        |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `SKILL.md`                              | Trigger conditions, folder layout, before-you-start checklist, core rules, and NEVER list for controllers.                     |
-| `references/controller-pattern.md`      | Repo-grounded: folder layout, `ZodValidationPipe`, `ApiKeyGuard` semantics, `mapResultToHttp`, response mapper, test strategy. |
-| `references/nestjs.md`                  | NestJS 11 patterns: DI symbol tokens, `@Inject(SYMBOL)`, `@Global()` modules, Zod-validated `ConfigModule.forRoot`, test bed.  |
-| `examples/product.controller.nestjs.ts` | Runnable-style mirror of a production controller, showing guard placement and `Result` → HTTP mapping.                         |
+| File                                    | Content                                                                                                                       |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                              | Trigger conditions, folder layout, before-you-start checklist, core rules, and NEVER list for controllers.                    |
+| `references/controller-pattern.md`      | Folder layout, `ZodValidationPipe`, `ApiKeyGuard` semantics, `mapResultToHttp`, response mapper, test strategy.               |
+| `references/nestjs.md`                  | NestJS 11 patterns: DI symbol tokens, `@Inject(SYMBOL)`, `@Global()` modules, Zod-validated `ConfigModule.forRoot`, test bed. |
+| `examples/product.controller.nestjs.ts` | Runnable-style reference controller, showing guard placement and `Result` → HTTP mapping.                                     |
 
 ## License
 

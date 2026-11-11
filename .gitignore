@@ -40,8 +40,6 @@ coverage/
 .cursor/
 .mcp.json
 .vscode/
-docs/plans/
-docs/specs/
 docs/tracking/
 logs/
 sandbox/

@@ -1,6 +1,7 @@
 /**
  * DTO triplet example for a hypothetical `products` bounded context.
- * Mirrors the monorepo's contracts-package layout:
+ * Follows an example contracts-package layout (adapt paths and the
+ * `@acme/*` package names to your project):
  *
  *   libs/contracts/products/src/
  *     interfaces/product-status.ts       ← string-backed enum + helpers
@@ -11,7 +12,7 @@
  *     dtos/product-response.dto.ts       ← z.infer DTO
  *
  * Everything below is collapsed into a single file purely for illustration.
- * In the real codebase, each section lives in its own file under the paths
+ * In a real project, each section lives in its own file under the paths
  * above and is re-exported by the per-folder `index.ts` barrel.
  */
 

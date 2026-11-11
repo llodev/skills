@@ -5,12 +5,12 @@
   "description": "llodev agent skills monorepo — pm-tasks-* family",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@11.28.9",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
-    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node --test scripts/checks/tarball-snapshot.test.mjs && node scripts/checks/marketplace-parity.mjs && node --test scripts/checks/marketplace-parity.test.mjs && node --test scripts/checks/canary-version.test.mjs && node --test scripts/checks/canary-e2e.test.mjs && node --test scripts/checks/pre-release-version.test.mjs && node --test scripts/checks/canary-cleanup-filter.test.mjs && pnpm run lint && pnpm run coverage && pnpm run size",
+    "validate": "node scripts/checks/validate-frontmatter.mjs && node scripts/checks/validate-schemas.mjs && node scripts/checks/validate-links.mjs && node scripts/checks/validate-localized-paths.mjs && node scripts/checks/validate-locale-parity.mjs && node scripts/checks/published-content-lint.mjs && node --test scripts/checks/tarball-snapshot.test.mjs && node scripts/checks/marketplace-parity.mjs && node --test scripts/checks/marketplace-parity.test.mjs && node --test scripts/checks/canary-version.test.mjs && node --test scripts/checks/canary-e2e.test.mjs && node --test scripts/checks/pre-release-version.test.mjs && node --test scripts/checks/canary-cleanup-filter.test.mjs && pnpm run lint && pnpm run coverage && pnpm run size",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "contract:check": "node scripts/checks/contract-check.mjs",
@@ -28,15 +28,6 @@
     "coverage": "pnpm -r build && vitest run --coverage --passWithNoTests",
     "size": "size-limit"
   },
-  "pnpm": {
-    "overrides": {
-      "js-yaml@<3.15.2": "^3.15.2",
-      "fast-uri@<3.1.9": "^3.1.9",
-      "minimatch@>=10.0.0 <11.0.1": "^11.0.1",
-      "source-map-js@<1.2.2": "^1.2.2",
-      "vite@>=7.0.0 <7.3.7": "^7.3.7"
-    }
-  },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
@@ -44,7 +35,7 @@
     "@types/node": "^26.6.6",
     "@typescript-eslint/eslint-plugin": "^8.72.1",
     "@typescript-eslint/parser": "^8.72.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.1.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "eslint": "^10.14.0",
@@ -53,6 +44,38 @@
     "size-limit": "^14.3.0",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.12"
-  }
+    "vitest": "^5.1.0"
+  },
+  "size-limit": [
+    {
+      "name": "@llodev/pm-tasks-core (tarball)",
+      "path": "skills/pm-tasks-core/dist/**/*.js",
+      "limit": "22 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-asana (tarball)",
+      "path": "skills/pm-tasks-asana/dist/**/*.js",
+      "limit": "10 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-trello (tarball)",
+      "path": "skills/pm-tasks-trello/dist/**/*.js",
+      "limit": "10 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-testkit (tarball)",
+      "path": "packages/pm-tasks-testkit/dist/**/*.js",
+      "limit": "6 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-jira (tarball)",
+      "path": "skills/pm-tasks-jira/dist/**/*.js",
+      "limit": "13 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-linear (tarball)",
+      "path": "skills/pm-tasks-linear/dist/**/*.js",
+      "limit": "13 kB"
+    }
+  ]
 }

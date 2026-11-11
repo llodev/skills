@@ -26,39 +26,43 @@ Before opening a file, pick the right slot:
    └────────────────────┘      └────────────────────────────┘
 ```
 
-- **Single-verb IN → OUT** → use case at `apps/api/src/<bc>/application/usecases/<verb>-<noun>.usecase.ts` implementing `UseCase<IN, OUT>`. Read [Standard Structure](#standard-structure) and the canonical snippets below.
-- **Stateful orchestration / retry loop / multi-attempt allocation** (e.g. `SlugAllocator` that retries on collision; future `SagaCoordinator`-style classes) → application service at `apps/api/src/<bc>/application/services/<name>.service.ts`. Skip to [When to use `application/services/` instead](#when-to-use-applicationservices-instead).
+- **Single-verb IN → OUT** → use case at `src/<bc>/application/usecases/<verb>-<noun>.usecase.ts` implementing `UseCase<IN, OUT>`. Read [Standard Structure](#standard-structure) and the canonical snippets below.
+- **Stateful orchestration / retry loop / multi-attempt allocation** (e.g. a `SlugAllocator` that retries on collision; future `SagaCoordinator`-style classes) → application service at `src/<bc>/application/services/<name>.service.ts`. Skip to [When to use `application/services/` instead](#when-to-use-applicationservices-instead).
 
 Pick wrong and you'll either bloat a use case past one verb or scatter retry/allocation logic across N use cases. The choice gates every other decision in this file.
 
 ---
 
-## File Paths in This Codebase
+## Example Layout
 
-Base contract (real, exists today):
+Paths are an example layout relative to the API package root; adapt them to your project. In the examples below, `celebrations` is a sample bounded context and `Celebration` its aggregate root. Aliases such as `@<bc>/*` and `@acme/*` are examples; use the ones your tsconfig defines.
 
-- `libs/shared/src/base/use-case.ts` — `UseCase<IN, OUT>` interface from `@acme/shared`.
+Base contract:
 
-Real use cases (canonical examples):
+- `UseCase<IN, OUT>` interface, exported by the shared kernel package (e.g. `@acme/shared`; see [Base Contract](#base-contract)).
 
-- `apps/api/src/celebrations/application/usecases/create-celebration.usecase.ts` — happy-path create.
-- `apps/api/src/celebrations/application/usecases/publish-celebration.usecase.ts` — state transition on existing aggregate.
-- `apps/api/src/celebrations/application/usecases/add-section.usecase.ts` — mutating a nested entity inside an aggregate.
-- `apps/api/src/celebrations/application/usecases/list-published-celebrations.usecase.ts` — read query shape returning entities.
-- `apps/api/src/celebrations/application/services/slug-allocator.service.ts` — orchestrator that does **not** fit `UseCase<IN, OUT>` (multi-attempt allocation loop).
+Use cases in the sample `celebrations` BC:
+
+- `src/celebrations/application/usecases/create-celebration.usecase.ts` — happy-path create.
+- `src/celebrations/application/usecases/publish-celebration.usecase.ts` — state transition on existing aggregate.
+- `src/celebrations/application/usecases/add-section.usecase.ts` — mutating a nested entity inside an aggregate.
+- `src/celebrations/application/usecases/list-published-celebrations.usecase.ts` — read query shape returning entities.
+- `src/celebrations/application/services/slug-allocator.service.ts` — orchestrator that does **not** fit `UseCase<IN, OUT>` (multi-attempt allocation loop).
 
 Repository port (always imported by use cases):
 
-- `apps/api/src/celebrations/domain/repositories/celebration.repository.ts` — exports `CELEBRATION_REPOSITORY` (symbol) + `CelebrationRepository` (interface).
+- `src/celebrations/domain/repositories/celebration.repository.ts` — exports `CELEBRATION_REPOSITORY` (symbol) + `CelebrationRepository` (interface).
 
-Tests (canonical):
+Tests:
 
-- `apps/api/test/celebrations/application/usecases/create-celebration.usecase.test.ts`
-- `apps/api/test/celebrations/application/usecases/publish-celebration.usecase.test.ts`
+- `test/celebrations/application/usecases/create-celebration.usecase.test.ts`
+- `test/celebrations/application/usecases/publish-celebration.usecase.test.ts`
 
 Module registration:
 
-- `apps/api/src/celebrations/celebrations.module.ts` lists every use case as a provider; the controller imports them via `@<bc>/application/usecases`.
+- `src/celebrations/celebrations.module.ts` lists every use case as a provider; the controller imports them via `@<bc>/application/usecases`.
+
+A self-contained, runnable version of the create flow (use case + fake repository + Jest test) is in [`examples/create-greeting.usecase.example.ts`](../examples/create-greeting.usecase.example.ts).
 
 ---
 
@@ -67,7 +71,7 @@ Module registration:
 Every use case lives at:
 
 ```
-apps/api/src/<bc>/application/usecases/<verb>-<noun>.usecase.ts
+src/<bc>/application/usecases/<verb>-<noun>.usecase.ts
 ```
 
 Conventions:
@@ -80,7 +84,7 @@ Conventions:
 When the orchestration is not a single IN→OUT verb (e.g. retry loops, cross-aggregate coordination, deferred allocators), it goes to:
 
 ```
-apps/api/src/<bc>/application/services/<name>.service.ts
+src/<bc>/application/services/<name>.service.ts
 ```
 
 See the [When to use `application/services/` instead](#when-to-use-applicationservices-instead) section below.
@@ -90,7 +94,7 @@ See the [When to use `application/services/` instead](#when-to-use-applicationse
 ## Base Contract
 
 ```typescript
-// libs/shared/src/base/use-case.ts
+// shared kernel package (e.g. @acme/shared), base/use-case.ts
 export interface UseCase<IN, OUT> {
   execute(input: IN): Promise<Result<OUT>>;
 }
@@ -100,17 +104,14 @@ export interface UseCase<IN, OUT> {
 
 ## Canonical Snippet — Create
 
-Mirrors `apps/api/src/celebrations/application/usecases/create-celebration.usecase.ts`.
+Example: `create-celebration.usecase.ts` in the sample `celebrations` BC.
 
 ```typescript
 import { Inject, Injectable } from "@nestjs/common";
 import { Result, type UseCase } from "@acme/shared";
 import { CelebrationStatusEnum, type CelebrationKind } from "@acme/celebrations-contracts";
-import { Celebration } from "@celebrations/domain/entities";
-import {
-  CELEBRATION_REPOSITORY,
-  type CelebrationRepository,
-} from "@celebrations/domain/repositories";
+import { Celebration } from "@<bc>/domain/entities";
+import { CELEBRATION_REPOSITORY, type CelebrationRepository } from "@<bc>/domain/repositories";
 
 export interface CreateCelebrationInput {
   slug: string;
@@ -166,16 +167,13 @@ Why each piece matters:
 
 ## Canonical Snippet — State Transition
 
-Mirrors `publish-celebration.usecase.ts`.
+Example: `publish-celebration.usecase.ts`.
 
 ```typescript
 import { Inject, Injectable } from "@nestjs/common";
 import { Result, type UseCase } from "@acme/shared";
-import type { Celebration } from "@celebrations/domain/entities";
-import {
-  CELEBRATION_REPOSITORY,
-  type CelebrationRepository,
-} from "@celebrations/domain/repositories";
+import type { Celebration } from "@<bc>/domain/entities";
+import { CELEBRATION_REPOSITORY, type CelebrationRepository } from "@<bc>/domain/repositories";
 
 export interface PublishCelebrationInput {
   slug: string;
@@ -204,23 +202,20 @@ export class PublishCelebration implements UseCase<PublishCelebrationInput, Cele
 }
 ```
 
-Update pattern in this codebase = **load → call a named domain method → persist**. There is no generic `cloneWith` flow in use cases; the entity exposes `publish()`, `addSection()`, etc., which internally use `cloneWith`. Use cases never call `cloneWith` directly.
+Update pattern = **load → call a named domain method → persist**. There is no generic `cloneWith` flow in use cases; the entity exposes `publish()`, `addSection()`, etc., which internally use `cloneWith`. Use cases never call `cloneWith` directly.
 
 ---
 
 ## Canonical Snippet — Nested Entity Mutation
 
-Mirrors `add-section.usecase.ts`.
+Example: `add-section.usecase.ts`.
 
 ```typescript
 import { Inject, Injectable } from "@nestjs/common";
 import { Result, type UseCase } from "@acme/shared";
 import type { SectionContent } from "@acme/celebrations-contracts";
-import type { Section } from "@celebrations/domain/entities";
-import {
-  CELEBRATION_REPOSITORY,
-  type CelebrationRepository,
-} from "@celebrations/domain/repositories";
+import type { Section } from "@<bc>/domain/entities";
+import { CELEBRATION_REPOSITORY, type CelebrationRepository } from "@<bc>/domain/repositories";
 
 export interface AddSectionInput {
   slug: string;
@@ -250,23 +245,20 @@ export class AddSection implements UseCase<AddSectionInput, Section> {
 }
 ```
 
-The aggregate is saved as a whole — even when only a child entity changed. Reach for `repo.saveSection` only when an aggregate-wide save would be wasteful or racy; both methods exist on `CelebrationRepository`.
+The aggregate is saved as a whole — even when only a child entity changed. Reach for `repo.saveSection` only when an aggregate-wide save would be wasteful or racy; in the example, both methods exist on `CelebrationRepository`.
 
 ---
 
 ## Canonical Snippet — Read / List
 
-Mirrors `list-published-celebrations.usecase.ts`.
+Example: `list-published-celebrations.usecase.ts`.
 
 ```typescript
 import { Inject, Injectable } from "@nestjs/common";
 import { Result, type UseCase } from "@acme/shared";
 import { CelebrationStatusEnum } from "@acme/celebrations-contracts";
-import type { Celebration } from "@celebrations/domain/entities";
-import {
-  CELEBRATION_REPOSITORY,
-  type CelebrationRepository,
-} from "@celebrations/domain/repositories";
+import type { Celebration } from "@<bc>/domain/entities";
+import { CELEBRATION_REPOSITORY, type CelebrationRepository } from "@<bc>/domain/repositories";
 
 @Injectable()
 export class ListPublishedCelebrations implements UseCase<void, Celebration[]> {
@@ -291,15 +283,12 @@ Notes:
 
 ## When to use `application/services/` instead
 
-A use case is a single IN→OUT command/query. When the orchestration is reusable across multiple use cases (e.g. an allocator, a coordinator across aggregates, a deferred policy), promote it to an application service. The canonical pattern is `apps/api/src/celebrations/application/services/slug-allocator.service.ts`:
+A use case is a single IN→OUT command/query. When the orchestration is reusable across multiple use cases (e.g. an allocator, a coordinator across aggregates, a deferred policy), promote it to an application service. Example: a `SlugAllocator` at `src/celebrations/application/services/slug-allocator.service.ts`:
 
 ```typescript
 import { Inject, Injectable } from "@nestjs/common";
 import { Result, Slug } from "@acme/shared";
-import {
-  CELEBRATION_REPOSITORY,
-  type CelebrationRepository,
-} from "@celebrations/domain/repositories";
+import { CELEBRATION_REPOSITORY, type CelebrationRepository } from "@<bc>/domain/repositories";
 
 @Injectable()
 export class SlugAllocator {
@@ -376,7 +365,7 @@ return Result.fail("ALREADY_PUBLISHED");
 return Result.fail("the celebration does not exist");
 ```
 
-If the domain code lives in a constants module (`CelebrationErrors.NOT_FOUND`), prefer that over the inline string — but as of today these constants are not yet centralised in this BC; inline string codes are the working norm.
+If the domain code lives in a constants module (`CelebrationErrors.NOT_FOUND`), prefer that over the inline string. Until such a module exists for the BC, inline string codes are acceptable.
 
 ---
 
@@ -426,7 +415,7 @@ Closed-set fields use the enum-typed union from `@acme/<bc>-contracts`, never `s
 
 ## Implementation Checklist
 
-- [ ] File at `apps/api/src/<bc>/application/usecases/<verb>-<noun>.usecase.ts`.
+- [ ] File at `src/<bc>/application/usecases/<verb>-<noun>.usecase.ts`.
 - [ ] Class is `@Injectable()`; class name omits the `UseCase` suffix.
 - [ ] Implements `UseCase<IN, OUT>` from `@acme/shared`.
 - [ ] `Input` interface declared in the same file, exported.
@@ -438,21 +427,21 @@ Closed-set fields use the enum-typed union from `@acme/<bc>-contracts`, never `s
 - [ ] Returns `Result<OUT>` — never throws, never maps to HTTP.
 - [ ] Use case exported from `application/usecases/index.ts`.
 - [ ] Registered as provider in `<bc>.module.ts`.
-- [ ] Test in `apps/api/test/<bc>/application/usecases/<name>.test.ts` covers happy path, dependency failure, domain-rule violation, and at least one VO rejection.
+- [ ] Test in `test/<bc>/application/usecases/<name>.test.ts` covers happy path, dependency failure, domain-rule violation, and at least one VO rejection.
 
 ---
 
 ## Test Strategy
 
-Use the real `InMemoryCelebrationRepository` from `@celebrations/infra/memory` — **not** Jest mocks. Real-class substitution keeps tests truthful: persistence semantics, slug uniqueness, status filters all behave like production. Mocks drift; the in-memory adapter is verified by the repository contract suite.
+Use the real in-memory adapter (`InMemoryCelebrationRepository` from `@<bc>/infra/memory` in the example) — **not** Jest mocks. Real-class substitution keeps tests truthful: persistence semantics, slug uniqueness, status filters all behave like production. Mocks drift; the in-memory adapter is verified by the repository contract suite.
 
-Canonical test (mirrors `create-celebration.usecase.test.ts`):
+Canonical test (example `create-celebration.usecase.test.ts`):
 
 ```typescript
 import { CelebrationKindEnum, CelebrationStatusEnum } from "@acme/celebrations-contracts";
-import { InMemoryCelebrationRepository } from "@celebrations/infra/memory";
-import { Celebration } from "@celebrations/domain/entities";
-import { CreateCelebration } from "@celebrations/application/usecases";
+import { InMemoryCelebrationRepository } from "@<bc>/infra/memory";
+import { Celebration } from "@<bc>/domain/entities";
+import { CreateCelebration } from "@<bc>/application/usecases";
 
 describe("CreateCelebration", () => {
   const validInput = {
@@ -517,15 +506,15 @@ Construction pattern in tests: `new <UseCase>(repo)` directly — no Nest contai
 
 ## Commands
 
-| Goal                               | Command                                                  |
-| ---------------------------------- | -------------------------------------------------------- |
-| Run all api tests                  | `pnpm --filter api test`                                 |
-| Run one use-case test file         | `pnpm --filter api test create-celebration.usecase.test` |
-| Type-check api only                | `pnpm --filter api typecheck`                            |
-| Full gate (typecheck + tests, all) | `make check`                                             |
-| Api-only gate                      | `make check-api`                                         |
+Example commands for a pnpm workspace whose API package is named `api`; adapt them to your package manager and scripts.
 
-Never invoke `tsc` or `jest` directly — always through `pnpm --filter` or the Makefile so paths and configs resolve correctly.
+| Goal                       | Command                                                  |
+| -------------------------- | -------------------------------------------------------- |
+| Run all api tests          | `pnpm --filter api test`                                 |
+| Run one use-case test file | `pnpm --filter api test create-celebration.usecase.test` |
+| Type-check api only        | `pnpm --filter api typecheck`                            |
+
+In a monorepo, prefer the package scripts (`pnpm --filter …`, or your task runner) over invoking `tsc` or `jest` directly, so paths, aliases and configs resolve correctly.
 
 ---
 

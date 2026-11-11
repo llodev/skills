@@ -8,6 +8,8 @@ See `examples/` directory in this skill for a complete standalone example.
 
 ## Standard Adapter Structure
 
+Example layout (adapt to your project):
+
 ```
 apps/<app>/src/<domain>/find-<name>.prisma.ts   ← Prisma query adapter
 apps/<app>/src/prisma/prisma.service.ts          ← shared PrismaService
@@ -23,7 +25,7 @@ The hardest part: paginated, filtered projection. The adapter maps rows **direct
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { FindManyItemsQuery, FindManyItemsInputDTO, ItemListItem } from "@<module>/core";
-import { Result, PaginatedResultDTO } from "@ddd/shared";
+import { Result, PaginatedResultDTO } from "@acme/shared";
 
 @Injectable()
 export class FindManyItemsPrismaQuery implements FindManyItemsQuery {

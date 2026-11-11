@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-dto?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-dto)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte da família `@llodev/ts-ddd`.
@@ -44,7 +44,7 @@ Sem MCP, sem config, sem init — é uma skill de conhecimento puro. Após insta
 | `"add a status field to the product DTO"`              | Verifica se o valor é um closed set → adiciona/reutiliza um `XxxEnum`, conecta `z.nativeEnum`          |
 | `"create a CreateProductDTO and a ProductResponseDTO"` | Gera schemas Zod + tipos `z.infer` separados para os formatos de entrada de escrita e saída de leitura |
 | `"this DTO needs a paginated list"`                    | Adiciona uma projeção no formato `PaginatedResultDTO` com `data`/`meta` mantidos separados             |
-| `"review these contracts for leaked wire types"`       | Verifica redefinições fora de `libs/contracts/<bc>` e literais de string brutos para enums             |
+| `"review these contracts for leaked wire types"`       | Verifica redefinições fora do pacote de contratos e literais de string brutos para enums               |
 
 ## Conteúdo
 
