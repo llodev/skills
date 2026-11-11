@@ -109,6 +109,15 @@ Skills puras de **conocimiento** para construir un codebase TypeScript + DDD —
 > [!NOTE]
 > `ts-query-cqrs` es la compañera del lado de lectura — cubre `*Query` ports y read use cases `find-*` que se mantienen separados del par de escritura `ts-ddd-repository`/`ts-ddd-use-case`. Instala `@llodev/ts-ddd` para traer las 8 skills de una vez.
 
+### `@llodev/tests` — skills de suites de prueba HTTP
+
+Skills puras de **conocimiento** para suites manuales de API HTTP en archivos `.http` — sin MCP, sin config, sin init. El primer miembro descubre el proyecto y luego genera o sincroniza la cobertura completa de rutas para NestJS y DRF. Otros miembros `tests-*` pueden unirse al mismo meta-paquete.
+
+| Paquete                  | Estado    | Fuente                                         | npm                        | Vercel CLI                                       |
+| ------------------------ | --------- | ---------------------------------------------- | -------------------------- | ------------------------------------------------ |
+| `@llodev/tests` _(meta)_ | ✅ v0.1.0 | [packages/tests/](../../packages/tests/)       | `npm i @llodev/tests`      | —                                                |
+| `@llodev/tests-http`     | ✅ v0.1.0 | [skills/tests-http/](../../skills/tests-http/) | `npm i @llodev/tests-http` | `npx skills add llodev/skills/skills/tests-http` |
+
 ## Compatibilidad de agentes
 
 Cada skill publicada declara qué agentes soporta en el campo `compatibility.agents` de su frontmatter. La matriz actual:

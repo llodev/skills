@@ -226,6 +226,21 @@
         "name": "llodev"
       },
       "keywords": ["agent-skill", "typescript", "ddd", "cqrs", "query", "read-model", "prisma"]
+    },
+    {
+      "name": "tests-http",
+      "category": "ai-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/llodev/skills.git",
+        "path": "skills/tests-http"
+      },
+      "description": "Generate and sync full-coverage .http suites for HTTP APIs — project discovery, NestJS and DRF adapters, no invented routes.",
+      "version": "0.0.0",
+      "author": {
+        "name": "llodev"
+      },
+      "keywords": ["agent-skill", "http", "rest-client", "tests", "nestjs", "drf"]
     }
   ]
 }
