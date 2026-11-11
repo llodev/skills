@@ -455,7 +455,7 @@ npm allows up to **10 trusted publisher configurations per package** (GA 2026-09
 > [!IMPORTANT]
 > A new configuration defaults to **stage only**. The canary config must have direct `npm publish` enabled in its allowed actions, or every canary is staged and waits for manual promotion instead of landing under its `pr-<N>` tag. Configurations are also **immutable** — to correct one, delete it and create a new one.
 
-Adding a new publishable package means adding **both** configs for it before its first release; an OIDC token is scoped to the packages that trust it, and a missing config fails with `E404 ... PUT` on that package alone (see § 11).
+A new package cannot receive a trusted publisher until it exists on npm. The first version is published from a maintainer's machine with `npm publish --access public` (npm login and 2FA). `release.yml` cannot do that step: OIDC has nothing to match until the package and its config exist. After that CLI publish, add the `release.yml` trusted publisher (`--allow-publish`) before merge. Add the `canary-publish.yml` config as well only for packages `listCanaryPackages` actually publishes (`@llodev/pm-tasks-*`); an unused config expires after 48 hours. A missing config fails with `E404 ... PUT` on that package alone. Agents must print these commands and must not run `npm publish` themselves — see `AGENTS.md` § First publish of a new package.
 
 #### Unvalidated configs expire after 48 hours
 

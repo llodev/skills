@@ -25,6 +25,32 @@ Rules for anyone editing this repo, human or agent. This file is the single sour
 - **Hotfix branches:** same rule. The branch is `pmt-<skill>-v<X.Y.Z>` at the patch version (`pmt-asana-v1.9.1`), not `hotfix/<thing>`.
 - **PR title:** `feat(release): <skill> vX.Y.Z — <one-line theme>` (skill + version + theme in the title).
 
+## First publish of a new package
+
+`release.yml` publishes with npm Trusted Publishing (OIDC). It has no long-lived registry token. A trusted publisher can be attached only to a package that **already exists** on npm. The first version of a package that has never been published must be published from this machine with the npm CLI, by the maintainer, before merge. The workflow cannot create the package, and it fails with `E404 ... PUT` if the package or its trusted publisher is missing.
+
+When a change adds a publishable package, or bumps one that `npm view <name> version` cannot find (`E404`):
+
+1. Do not merge, and do not say the release workflow will publish that package, until the maintainer has published it once locally and configured the trusted publisher.
+2. Do not run `npm publish` yourself. Print the commands and wait.
+3. Tell them to configure the trusted publisher on npm right after that publish, and that a config which has never published expires 48 hours after it is created (`docs/publishing-guide.md` §12).
+
+```bash
+npm whoami
+npm view @llodev/<name> version          # E404 → this is the first publish
+cd skills/<name>                         # or packages/<name> for a meta-package
+npm publish --access public --dry-run    # confirm the tarball, then:
+npm publish --access public
+cd -
+npm trust github "@llodev/<name>" --repo llodev/skills --file release.yml --allow-publish -y
+```
+
+Run `npm publish` from the package directory. The repo root is a private pnpm workspace, not an npm workspace, so `--workspace` from the root does not select the package.
+
+`canary-publish.yml` only publishes `@llodev/pm-tasks-*` (`listCanaryPackages`). Add the canary trusted publisher (`--file canary-publish.yml --allow-publish`) only when that package is added to that list. An unused canary config expires in 48 hours.
+
+Later versions go through `make release-version` and `release.yml`. Details: `docs/publishing-guide.md` §12.
+
 ## Explore with CodeGraph first
 
 This repo is indexed by CodeGraph (`.codegraph/`, local to each machine). Before grep, find or opening files, use the MCP tool `codegraph_explore` or the CLI `codegraph explore "<symbols, files or a question>"`: it returns the relevant source, the call paths and what depends on a symbol. Run `codegraph sync` if results look stale, `codegraph init` if the index is missing. Fall back to grep for Markdown, JSON and YAML.
