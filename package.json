@@ -54,5 +54,37 @@
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^4.1.12"
-  }
+  },
+  "size-limit": [
+    {
+      "name": "@llodev/pm-tasks-core (tarball)",
+      "path": "skills/pm-tasks-core/dist/**/*.js",
+      "limit": "22 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-asana (tarball)",
+      "path": "skills/pm-tasks-asana/dist/**/*.js",
+      "limit": "10 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-trello (tarball)",
+      "path": "skills/pm-tasks-trello/dist/**/*.js",
+      "limit": "10 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-testkit (tarball)",
+      "path": "packages/pm-tasks-testkit/dist/**/*.js",
+      "limit": "6 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-jira (tarball)",
+      "path": "skills/pm-tasks-jira/dist/**/*.js",
+      "limit": "13 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-linear (tarball)",
+      "path": "skills/pm-tasks-linear/dist/**/*.js",
+      "limit": "13 kB"
+    }
+  ]
 }
