@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-value-object?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-value-object)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Part of the `@llodev/ts-ddd` family.
@@ -48,15 +48,15 @@ No MCP, no config, no init — it's a pure knowledge skill. Once installed it ac
 
 ## Contents
 
-| File                                         | Content                                                                                                                                                                                              |
-| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                                   | Trigger conditions, where VOs live, before-you-start checklist, constructor-visibility table, closed-set pattern, core rules, and NEVER list.                                                        |
-| `references/vo-pattern.md`                   | Real file paths, annotated code for each VO flavor (simple, parametric, numeric, canonical-form, closed-set/enum, composite, ID with `required()`), import rules per scope, test coverage checklist. |
-| `examples/palette-key.vo.ts`                 | A closed-set, enum-backed VO demonstrating the mandatory closed-set pattern.                                                                                                                         |
-| `examples/palette-key.vo.test.ts`            | Test coverage for the palette-key VO, including invalid-value and normalization cases.                                                                                                               |
-| `examples/celebration-slot-index.vo.ts`      | A BC-local numeric VO demonstrating the dual `tryCreate`/`create` API and config overrides.                                                                                                          |
-| `examples/celebration-slot-index.vo.test.ts` | Test coverage for the BC-local numeric VO, including boundary and config-override cases.                                                                                                             |
-| `examples/slug.vo.ts`                        | A normalizing scalar VO (trim/lowercase/accent-strip before validating).                                                                                                                             |
+| File                                         | Content                                                                                                                                                                                                 |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                                   | Trigger conditions, where VOs live, before-you-start checklist, constructor-visibility table, closed-set pattern, core rules, and NEVER list.                                                           |
+| `references/vo-pattern.md`                   | Example file paths, annotated code for each VO flavor (simple, parametric, numeric, canonical-form, closed-set/enum, composite, ID with `required()`), import rules per scope, test coverage checklist. |
+| `examples/palette-key.vo.ts`                 | A closed-set, enum-backed VO demonstrating the mandatory closed-set pattern.                                                                                                                            |
+| `examples/palette-key.vo.test.ts`            | Test coverage for the palette-key VO, including invalid-value and normalization cases.                                                                                                                  |
+| `examples/celebration-slot-index.vo.ts`      | A BC-local numeric VO demonstrating the dual `tryCreate`/`create` API and config overrides.                                                                                                             |
+| `examples/celebration-slot-index.vo.test.ts` | Test coverage for the BC-local numeric VO, including boundary and config-override cases.                                                                                                                |
+| `examples/slug.vo.ts`                        | A normalizing scalar VO (trim/lowercase/accent-strip before validating).                                                                                                                                |
 
 ## License
 

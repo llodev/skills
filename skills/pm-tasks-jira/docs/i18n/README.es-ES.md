@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/pm-tasks-jira?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/pm-tasks-jira)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Lo que obtienes:
@@ -99,7 +99,7 @@ npx @llodev/pm-tasks-jira init --doctor
 > **Los ítems de checklist se vuelven Sub-tasks** — un único nivel, cada uno creado bajo su issue parent. Una issue key parent es obligatoria.
 
 > [!WARNING]
-> **`task.sprint.set` NO está soportado** — el Atlassian MCP no expone ninguna API de agile/sprint, así que el core factory devuelve `UNSUPPORTED_VERB`. La planificación de sprint y capacity está en el roadmap para v1.12.0.
+> **`task.sprint.set` NO está soportado** — el Atlassian MCP no expone ninguna API de agile/sprint, así que el core factory devuelve `UNSUPPORTED_VERB`. La planificación de sprint y capacity no está disponible en este adaptador.
 
 - **La estimación registra esfuerzo, nunca un plazo de calendario.** Los Story Points necesitan un campo en el board — el `init` lo detecta automáticamente (`customfield_10016` por default); si está ausente, `task.estimate.set` devuelve `INVALID_REQUEST` con una pista para habilitarlo. El original legible por humanos se preserva como un label `est:` idempotente.
 - **Las due dates en una sub-task** devuelven `NOT_APPLICABLE` — las sub-tasks de Jira team-managed no llevan due date propio.

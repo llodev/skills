@@ -457,6 +457,40 @@ npm allows up to **10 trusted publisher configurations per package** (GA 2026-09
 
 Adding a new publishable package means adding **both** configs for it before its first release; an OIDC token is scoped to the packages that trust it, and a missing config fails with `E404 ... PUT` on that package alone (see § 11).
 
+#### Unvalidated configs expire after 48 hours
+
+Since 2026-10-02, npm expires a trusted publisher configuration that has **never published** 48 hours after it is created. The first successful publish through a configuration validates it, and from then on it never expires, however long the package goes without a release. An expired configuration still shows up in the settings and in `npm trust list`, but every publish through it fails with `E404 ... PUT`, and it cannot be edited: revoke it and create a new one.
+
+This bit the `core v1.17.0` release: the ts-ddd configs had been created during the OIDC migration and never used, so 9 packages failed with `E404` until they were recreated. In practice:
+
+- Create or recreate a `release` config right before a release that publishes that package, then release within 48 hours.
+- A `canary` config only gets validated when a PR publishes a canary of that package. If no PR touches the package within 48 hours, it expires again. That does not affect releases, but the next canary of that package fails until the config is recreated. Create it when you start working on the package.
+
+#### Managing configs from the CLI
+
+`npm trust`, available in npm CLI 11.5.1 and later, does the same as the npmjs.com settings page. It runs as your npm user, so it needs your login and 2FA. Do not use it from CI.
+
+```bash
+# List a package's configs (ids, workflow file, allowed actions)
+npm trust list @llodev/ts-ddd-entity
+
+# Remove an expired or wrong config (configs are immutable)
+npm trust revoke @llodev/ts-ddd-entity --id=<trust-id>
+
+# Create the release config for a set of packages in one go
+for p in ts-ddd ts-ddd-controller ts-ddd-domain-service ts-ddd-dto ts-ddd-entity \
+         ts-ddd-repository ts-ddd-use-case ts-ddd-value-object ts-query-cqrs; do
+  npm trust github "@llodev/$p" --repo llodev/skills --file release.yml --allow-publish -y
+done
+
+# Same for the canary config
+npm trust github "@llodev/<package>" --repo llodev/skills --file canary-publish.yml --allow-publish -y
+```
+
+`--allow-publish` is the "direct `npm publish`" action. Without it, the config is stage only. Add `--dry-run` to preview a change.
+
+If a release fails with `E404 ... PUT` on some packages, the ones that were already published stay on npm. Fix the configs, then re-run only the failed job: `gh run rerun <run-id> --failed`. `changeset publish` skips the versions that are already on npm and publishes the rest.
+
 Only `canary-cleanup.yml` still needs a token, because Trusted Publishing mints a publish/stage-scoped credential and cannot deprecate versions or move dist-tags. Its `NPM_TOKEN` must be a granular token with **Read and write → stage only** and **Bypass 2FA** enabled; without Bypass 2FA every call fails `EOTP` in CI. Stage-only keeps deprecate and dist-tag moves while staying exempt from the January 2027 removal of direct token publishing. Granular write tokens cap at 90 days, so the secret needs rotating quarterly — cleanup is best-effort and a stale token degrades it without failing any PR.
 
 ### Installing a canary build

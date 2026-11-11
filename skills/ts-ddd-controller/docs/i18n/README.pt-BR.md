@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-controller?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-controller)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte da família `@llodev/ts-ddd`.
@@ -21,7 +21,7 @@ O que você ganha:
 
 - **Um contrato de tradutor fino** — controllers validam na borda, injetam use cases e mapeiam `Result` → HTTP com `mapResultToHttp`; nenhuma lógica de negócio, nenhum condicional de domínio, nenhuma chamada a repositório dentro de um handler.
 - **Regras de posicionamento de guards** — `@UseGuards(ApiKeyGuard)` por método em mutações, nunca no nível da classe, para que leituras públicas e escritas protegidas convivam no mesmo controller.
-- **Uma camada de referência NestJS 11** — tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado por Zod, e o test bed `@nestjs/testing` + `supertest` realmente usado em produção.
+- **Uma camada de referência NestJS 11** — tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado por Zod, e o test bed `@nestjs/testing` + `supertest` para testes de controller.
 - **Disciplina de response mapper** — enriquecimento de URLs assinadas, serialização de datas e variantes de união discriminada passam por um mapper dedicado em vez de vazar detalhes internos da entidade.
 - **Uma lista `NEVER`** fundamentada em falhas reais: guards no nível da classe que retornam 401 em leituras públicas, `HttpException` lançado inline que bifurca o catálogo de códigos de erro, `new UseCase(...)` que quebra DI e testes.
 
@@ -48,12 +48,12 @@ Sem MCP, sem config, sem init — é uma skill de conhecimento puro. Após insta
 
 ## Conteúdo
 
-| Arquivo                                 | Conteúdo                                                                                                                                                 |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                              | Condições de disparo, layout de pastas, checklist inicial, regras principais e lista NEVER para controllers.                                             |
-| `references/controller-pattern.md`      | Fundamentado no repositório: layout de pastas, `ZodValidationPipe`, semântica do `ApiKeyGuard`, `mapResultToHttp`, response mapper, estratégia de teste. |
-| `references/nestjs.md`                  | Padrões do NestJS 11: tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado por Zod, test bed.                  |
-| `examples/product.controller.nestjs.ts` | Espelho no estilo executável de um controller de produção, mostrando posicionamento de guard e mapeamento `Result` → HTTP.                               |
+| Arquivo                                 | Conteúdo                                                                                                                                |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                              | Condições de disparo, layout de pastas, checklist inicial, regras principais e lista NEVER para controllers.                            |
+| `references/controller-pattern.md`      | Layout de pastas, `ZodValidationPipe`, semântica do `ApiKeyGuard`, `mapResultToHttp`, response mapper, estratégia de teste.             |
+| `references/nestjs.md`                  | Padrões do NestJS 11: tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado por Zod, test bed. |
+| `examples/product.controller.nestjs.ts` | Controller de referência no estilo executável, mostrando posicionamento de guard e mapeamento `Result` → HTTP.                          |
 
 ## Licença
 

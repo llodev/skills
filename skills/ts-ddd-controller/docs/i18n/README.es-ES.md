@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-controller?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-controller)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte de la familia `@llodev/ts-ddd`.
@@ -21,7 +21,7 @@ Lo que obtienes:
 
 - **Un contrato de traductor delgado** — los controladores validan en el borde, inyectan casos de uso y mapean `Result` → HTTP con `mapResultToHttp`; sin lógica de negocio, sin condicionales de dominio, sin llamadas a repositorio dentro de un handler.
 - **Reglas de ubicación de guards** — `@UseGuards(ApiKeyGuard)` por método en mutaciones, nunca a nivel de clase, para que lecturas públicas y escrituras protegidas convivan en el mismo controlador.
-- **Una capa de referencia de NestJS 11** — tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado con Zod, y el test bed `@nestjs/testing` + `supertest` realmente usado en producción.
+- **Una capa de referencia de NestJS 11** — tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado con Zod, y el test bed `@nestjs/testing` + `supertest` para pruebas de controladores.
 - **Disciplina de response mapper** — el enriquecimiento de URLs firmadas, la serialización de fechas y las variantes de unión discriminada pasan por un mapper dedicado en lugar de filtrar detalles internos de la entidad.
 - **Una lista `NEVER`** basada en fallos reales: guards a nivel de clase que devuelven 401 en lecturas públicas, `HttpException` lanzado inline que bifurca el catálogo de códigos de error, `new UseCase(...)` que rompe DI y las pruebas.
 
@@ -48,12 +48,12 @@ Sin MCP, sin configuración, sin init — es una skill de conocimiento puro. Tra
 
 ## Contenido
 
-| Archivo                                 | Contenido                                                                                                                                                     |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                              | Condiciones de activación, estructura de carpetas, checklist inicial, reglas principales y lista NEVER para controladores.                                    |
-| `references/controller-pattern.md`      | Basado en el repositorio: estructura de carpetas, `ZodValidationPipe`, semántica de `ApiKeyGuard`, `mapResultToHttp`, response mapper, estrategia de pruebas. |
-| `references/nestjs.md`                  | Patrones de NestJS 11: tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado con Zod, test bed.                      |
-| `examples/product.controller.nestjs.ts` | Espejo en estilo ejecutable de un controlador de producción, mostrando la ubicación de guards y el mapeo `Result` → HTTP.                                     |
+| Archivo                                 | Contenido                                                                                                                                |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                              | Condiciones de activación, estructura de carpetas, checklist inicial, reglas principales y lista NEVER para controladores.               |
+| `references/controller-pattern.md`      | Estructura de carpetas, `ZodValidationPipe`, semántica de `ApiKeyGuard`, `mapResultToHttp`, response mapper, estrategia de pruebas.      |
+| `references/nestjs.md`                  | Patrones de NestJS 11: tokens DI por símbolo, `@Inject(SYMBOL)`, módulos `@Global()`, `ConfigModule.forRoot` validado con Zod, test bed. |
+| `examples/product.controller.nestjs.ts` | Controlador de referencia en estilo ejecutable, mostrando la ubicación de guards y el mapeo `Result` → HTTP.                             |
 
 ## Licencia
 

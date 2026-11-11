@@ -3,14 +3,14 @@ name: ts-ddd-value-object
 description: >-
   Create, review, or guide Value Object implementation in a TypeScript + DDD
   codebase. Use when the request involves 'value object', 'VO', `*.vo.ts` files
-  (either shared at `libs/shared/src/vo/...` or BC-local at
-  `apps/api/src/<bc>/domain/value-objects/...`), domain attribute
+  (either in a shared kernel package such as `libs/shared/src/vo/...` or
+  BC-local at `src/<bc>/domain/value-objects/...`), domain attribute
   validation/normalization, closed-set VOs derived from string enums
   (PaletteKey-style), composite-value VOs (ImageRef-style), `ValueObject` +
   `Result` pattern, `ValueObjectConfig`, `tryCreate`/`create` dual API, or VO
   test coverage.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD Value Object
@@ -21,17 +21,19 @@ metadata:
 
 ---
 
-## Where VOs live in this monorepo
+## Where VOs live
 
-| Scope                               | Path                                                  | Import from                                         | Tests                                                       |
-| ----------------------------------- | ----------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------- |
-| Shared, cross-BC primitive          | `libs/shared/src/vo/<name>.vo.ts`                     | `../base` (inside lib) / `@acme/shared` (consumers) | `libs/shared/test/vo/<name>.vo.test.ts`                     |
-| BC-local (one bounded context only) | `apps/api/src/<bc>/domain/value-objects/<name>.vo.ts` | `@acme/shared`                                      | `apps/api/test/<bc>/domain/value-objects/<name>.vo.test.ts` |
+Example layout for a monorepo with a shared kernel package (`libs/shared`, published as `@acme/shared`) and an API package (paths relative to its root). Package names and paths are examples; adapt them to your project.
 
-- Add a new shared VO to `libs/shared/src/vo/index.ts`.
-- Inside `libs/shared` always import the base via the relative `../base` barrel — not via `@acme/shared` (self-import).
-- BC-local VOs live in `apps/api` because `libs/shared` must stay framework- and BC-vocabulary-free (project rule).
-- After a shared change, run `pnpm --filter @acme/shared build` and the consumers' checks (`pnpm --filter api typecheck && pnpm --filter api test`).
+| Scope                               | Path                                         | Import from                                         | Tests                                              |
+| ----------------------------------- | -------------------------------------------- | --------------------------------------------------- | -------------------------------------------------- |
+| Shared, cross-BC primitive          | `libs/shared/src/vo/<name>.vo.ts`            | `../base` (inside lib) / `@acme/shared` (consumers) | `libs/shared/test/vo/<name>.vo.test.ts`            |
+| BC-local (one bounded context only) | `src/<bc>/domain/value-objects/<name>.vo.ts` | `@acme/shared`                                      | `test/<bc>/domain/value-objects/<name>.vo.test.ts` |
+
+- Add a new shared VO to the shared kernel's VO barrel (e.g. `libs/shared/src/vo/index.ts`).
+- Inside the shared kernel package always import the base via the relative `../base` barrel — not via `@acme/shared` (self-import).
+- BC-local VOs live in the API package because the shared kernel must stay framework- and BC-vocabulary-free.
+- After a shared change, rebuild the shared kernel package and run the consumers' typecheck and tests (e.g. `pnpm --filter @acme/shared build`, then `pnpm --filter <api-package> typecheck && pnpm --filter <api-package> test`).
 
 ---
 
@@ -65,7 +67,7 @@ Answer first:
 Every closed set of allowed values is a **string-backed TS enum**; the catalog tuple and the VO's stored type are **derived** from the enum. Never declare the set as a raw-string `as const` tuple, and never compare against string literals at call sites.
 
 ```typescript
-// libs/shared/src/vo/palette-key.vo.ts
+// <shared kernel>/src/vo/palette-key.vo.ts
 import { Result, ValueObject, ValueObjectConfig } from "../base";
 
 export enum PaletteKeyEnum {
@@ -104,7 +106,7 @@ if (palette.value === PaletteKeyEnum.BORDO) { ... }     // OK
 if (palette.value === "bordo") { ... }                  // FORBIDDEN
 ```
 
-> The live `libs/shared/src/vo/palette-key.vo.ts` still uses the old `PALETTE_KEYS as const` form. New closed-set VOs **must** follow the enum pattern above; an existing one should be migrated when it is next touched.
+> If an existing closed-set VO still uses the older `PALETTE_KEYS as const` form, leave it working but migrate it when it is next touched. New closed-set VOs **must** follow the enum pattern above.
 
 ---
 
@@ -145,10 +147,10 @@ Never pass raw `ValueObjectConfig` when your VO has domain-specific constraints 
 - **NEVER** model a closed value set as `["a", "b"] as const` in a new VO — use a string enum + `Object.values`.
 - **NEVER** compare a VO's value against a string literal at the call site — compare against the enum member.
 - **NEVER** duplicate a VO that `Text` or `Number` already covers via config — prefer `Text.tryCreate(v, { minLength: 2, maxLength: 50 })`.
-- **NEVER** import a shared VO via `@acme/shared` from inside `libs/shared` itself — use the relative `../base` barrel.
+- **NEVER** import a shared VO via `@acme/shared` from inside the shared kernel package itself — use the relative `../base` barrel.
 
 ## References
 
-See [`references/vo-pattern.md`](references/vo-pattern.md) for: real file paths in this codebase, annotated code for each VO flavor (simple, parametric, numeric, canonical-form, closed-set/enum, composite, ID with `required()`), the import rules per scope, and the test coverage checklist.
+See [`references/vo-pattern.md`](references/vo-pattern.md) for: example file paths, annotated code for each VO flavor (simple, parametric, numeric, canonical-form, closed-set/enum, composite, ID with `required()`), the import rules per scope, and the test coverage checklist.
 
-See [`examples/`](examples/) for a normalizing scalar VO (`slug.vo.ts`), a closed-set enum-backed VO (`palette-key.vo.ts`) with its test file (`palette-key.vo.test.ts`), and a **BC-local** numeric VO living inside `apps/api/src/celebrations/domain/value-objects/` (`celebration-slot-index.vo.ts` + `celebration-slot-index.vo.test.ts`) demonstrating the dual API, config overrides, and the BC-local path placement rule.
+See [`examples/`](examples/) for a normalizing scalar VO (`slug.vo.ts`), a closed-set enum-backed VO (`palette-key.vo.ts`) with its test file (`palette-key.vo.test.ts`), and a **BC-local** numeric VO for a sample `celebrations` bounded context, placed under `src/celebrations/domain/value-objects/` (`celebration-slot-index.vo.ts` + `celebration-slot-index.vo.test.ts`) demonstrating the dual API, config overrides, and the BC-local path placement rule.

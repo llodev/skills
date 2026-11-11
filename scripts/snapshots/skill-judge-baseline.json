@@ -25,9 +25,9 @@
   },
   "skills/pm-tasks-jira/SKILL.md": {
     "score": 87,
-    "version": "1.3.0",
-    "capturedAt": "2026-08-01",
-    "notes": "v1.3.0 (U1 language-respect): added § Narration language banner (agent narration follows .jira.json `locale`; issue content follows the plan; C-LANG-1 warns on unset/no-bundle — sole locale guard since jira's locale has no schema enum). Δ+1 vs 86 (completeness gain, within mature-adapter band). Ratcheted so the CI skill-judge baseline gate passes without SKIP_SKILL_JUDGE_GATE."
+    "version": "1.4.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v1.4.0 (Node 24 floor + self-contained published content): wording-only SKILL.md change — internal roadmap codes (F2/F3/F7) dropped from the description, the sprint note and both verb tables, and the 'roadmapped for v1.12.0' promise replaced by a plain statement that sprint/capacity planning is not available through this adapter. No guidance added or removed (D1 17, D2 13, D3 12, D4 15, D5 12, D6 13, D7 9, D8 13 = 104/120). Δ 0 vs 87; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/pm-tasks-linear/SKILL.md": {
     "score": 85,
@@ -61,45 +61,45 @@
   },
   "skills/ts-ddd-controller/SKILL.md": {
     "score": 84,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 83 from Task 0; delta +1 (package-name portability fix). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — `apps/api/` prefixes and 'this repo' wording removed, sample `celebrations` BC / `@acme/*` aliases labelled as examples, error-code catalog path made illustrative; every rule, Before-You-Start question and NEVER (with its why) kept. Portability gain offset by the slightly less concrete anchors; body-level 'When to trigger' section unchanged (D1 16, D2 11, D3 14, D4 14, D5 14, D6 12, D7 8, D8 12 = 101/120). Δ 0 vs 84; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-domain-service/SKILL.md": {
     "score": 88,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder, description's explicit 'your-best-day monorepo' framing removed, Codex agents/ manifest dropped; before-score 85 from Task 0; delta +3 (description fix + portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — description says 'codebase' and names the contracts package generically, `apps/api/` paths dropped, the 'canonical reference in this repo' (slug-allocator path) became a described `SlugAllocator` example, verification commands made conditional ('your project's typecheck and test commands'). Decision table, purity rules and the deterministic-primitives NEVER intact (D1 17, D2 13, D3 14, D4 14, D5 14, D6 12, D7 9, D8 13 = 106/120). Δ 0 vs 88; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-dto/SKILL.md": {
     "score": 80,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (was highest your-best-day mention count in family, now 0), Codex agents/ manifest dropped; before-score 78 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — `apps/api` / `apps/web` became 'the API and the web client', 'this monorepo' framing dropped, layout and `@acme/*` names labelled as examples, verification checklist marked 'e.g.'. Enum → tuple → type → predicate rule, Zod usage split and NEVER list unchanged (D1 14, D2 11, D3 12, D4 14, D5 13, D6 12, D7 8, D8 12 = 96/120). Δ 0 vs 80; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-entity/SKILL.md": {
     "score": 93,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 91 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — `apps/api/` paths dropped, a one-line note labels `Celebration`/`Section`/`Product` and `@acme/*` as examples, 'both patterns exist in this codebase' → 'both patterns are valid', and the `@ddd/shared` legacy-alias NEVER became a generic deprecated/duplicate-alias rule (the specific alias meant nothing outside the origin repo). Enum rule, base-class behaviour and NEVER list otherwise intact (D1 19, D2 14, D3 14, D4 15, D5 14, D6 13, D7 9, D8 14 = 112/120). Δ 0 vs 93; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-repository/SKILL.md": {
-    "score": 88,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 87 from Task 0; delta +1 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "score": 89,
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — the 'Firestore is the only production stack in this repo' claim replaced by a conditional load (read `firestore-adapter.md` only for Firestore projects; other stacks apply the port/mapper/dual-adapter rules from `repository-pattern.md`), `apps/api/` paths dropped, aliases labelled as examples. The conditional reference trigger with an explicit fallback is a progressive-disclosure and usability gain for non-Firestore consumers (D1 17, D2 13, D3 14, D4 14, D5 15, D6 12, D7 9, D8 13 = 107/120). Δ +1 vs 88 (inside the noise band); ratcheted so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-use-case/SKILL.md": {
     "score": 88,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 86 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — description and body drop `apps/api/` paths and mark `Celebration*` names as examples, 'Result API — project-specific bits' became 'conventions beyond the generic API' with an actionable note to add `withFail` to the shared `Result` class if missing, error-code catalog path made illustrative. Small usability gain offset by reference snippets now mixing `@<bc>/*` placeholders with concrete names (less copy-pasteable); decision table and NEVER list intact (D1 17, D2 13, D3 14, D4 14, D5 14, D6 12, D7 9, D8 13 = 106/120). Δ 0 vs 88; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-ddd-value-object/SKILL.md": {
     "score": 92,
-    "version": "0.1.0",
-    "capturedAt": "2026-07-17",
-    "notes": "ts-ddd first packaging; generalized to @acme/ placeholder (0 your-best-day refs remain), Codex agents/ manifest dropped; before-score 90 from Task 0; delta +2 (portability). Re-affirmed at v0.1.0 release (changeset-release/main): version:sync added metadata.version + folded the frontmatter description — content identical in meaning, zero skill-quality drift, score unchanged."
+    "version": "0.2.0",
+    "capturedAt": "2026-11-11",
+    "notes": "v0.2.0 (Node 24 floor + self-contained published content): generalized away from the origin project — 'Where VOs live in this monorepo' became an example layout (shared kernel + API package), the 'live palette-key.vo.ts still uses as const' remark became a conditional migrate-when-touched rule, build/test commands use `<api-package>` placeholders, the BC-local example is labelled as a sample context. Closed-set enum pattern, VO flavours and NEVER list intact (D1 19, D2 13, D3 14, D4 15, D5 14, D6 13, D7 9, D8 13 = 110/120). Δ 0 vs 92; re-affirmed so the CI skill-judge gate passes without SKIP_SKILL_JUDGE_GATE."
   },
   "skills/ts-query-cqrs/SKILL.md": {
     "score": 76,

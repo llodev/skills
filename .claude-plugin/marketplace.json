@@ -18,17 +18,11 @@
         "path": "skills/pm-tasks-core"
       },
       "description": "Shared extraction engine and canonical CRUD verb vocabulary (task.create, task.close, task.due-date.set, …) for the pm-tasks-* adapters. Dependency of every adapter.",
-      "version": "1.16.0",
+      "version": "1.17.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "plan-to-tasks",
-        "pm-tools",
-        "task-extraction",
-        "crud-verbs"
-      ]
+      "keywords": ["agent-skill", "plan-to-tasks", "pm-tools", "task-extraction", "crud-verbs"]
     },
     {
       "name": "pm-tasks-trello",
@@ -39,17 +33,11 @@
         "path": "skills/pm-tasks-trello"
       },
       "description": "Turn implementation plans into Trello cards and checklists — paste-ready output, MCP publish, or autonomous write-through. Requires pm-tasks-core.",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "trello",
-        "plan-to-tasks",
-        "pm-tools",
-        "trello-mcp"
-      ]
+      "keywords": ["agent-skill", "trello", "plan-to-tasks", "pm-tools", "trello-mcp"]
     },
     {
       "name": "pm-tasks-asana",
@@ -60,17 +48,11 @@
         "path": "skills/pm-tasks-asana"
       },
       "description": "Turn plans into Asana tasks and subtasks with custom fields and section placement — paste, MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "asana",
-        "plan-to-tasks",
-        "pm-tools",
-        "asana-mcp"
-      ]
+      "keywords": ["agent-skill", "asana", "plan-to-tasks", "pm-tools", "asana-mcp"]
     },
     {
       "name": "pm-tasks-jira",
@@ -81,18 +63,11 @@
         "path": "skills/pm-tasks-jira"
       },
       "description": "Turn plans into Jira issues with epics, estimates, and workflow transitions — paste, Atlassian MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "jira",
-        "atlassian",
-        "plan-to-tasks",
-        "pm-tools",
-        "atlassian-mcp"
-      ]
+      "keywords": ["agent-skill", "jira", "atlassian", "plan-to-tasks", "pm-tools", "atlassian-mcp"]
     },
     {
       "name": "pm-tasks-linear",
@@ -103,17 +78,11 @@
         "path": "skills/pm-tasks-linear"
       },
       "description": "Turn plans into Linear issues with sub-issues, estimates, and cycles (sprints) — paste-ready, Linear MCP publish, or autonomous mode. First pm-tasks adapter with sprint support. Requires pm-tasks-core.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "linear",
-        "plan-to-tasks",
-        "pm-tools",
-        "linear-mcp"
-      ]
+      "keywords": ["agent-skill", "linear", "plan-to-tasks", "pm-tools", "linear-mcp"]
     },
     {
       "name": "django-schema-design",
@@ -124,7 +93,7 @@
         "path": "skills/django-schema-design"
       },
       "description": "Design Django database schemas with expert trade-offs — PK strategy (incremental/UUIDv4/UUIDv7 insert locality), indexes, constraints, and safe migrations. Knowledge skill, no MCP.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "llodev"
       },
@@ -147,19 +116,11 @@
         "path": "skills/ts-ddd-controller"
       },
       "description": "HTTP controllers in a TypeScript + DDD API — routes, guards, Zod validation, use-case orchestration, Result→HTTP mapping.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "controller",
-        "nestjs",
-        "http",
-        "zod"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "controller", "nestjs", "http", "zod"]
     },
     {
       "name": "ts-ddd-domain-service",
@@ -170,18 +131,11 @@
         "path": "skills/ts-ddd-domain-service"
       },
       "description": "Domain services for logic that spans entities — stateless policies/calculators returning Result.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "domain-service",
-        "policy",
-        "result"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "domain-service", "policy", "result"]
     },
     {
       "name": "ts-ddd-dto",
@@ -192,19 +146,11 @@
         "path": "skills/ts-ddd-dto"
       },
       "description": "DTOs & contracts — Zod 4 schemas paired with z.infer types, enum-backed closed sets, input/output/read projections.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "dto",
-        "zod",
-        "contracts",
-        "cqrs"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "dto", "zod", "contracts", "cqrs"]
     },
     {
       "name": "ts-ddd-entity",
@@ -215,18 +161,11 @@
         "path": "skills/ts-ddd-entity"
       },
       "description": "Domain entities — Entity base, create/tryCreate with Result.combine, VO normalization, state transitions via cloneWith.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "entity",
-        "aggregate",
-        "result"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "entity", "aggregate", "result"]
     },
     {
       "name": "ts-ddd-repository",
@@ -237,18 +176,11 @@
         "path": "skills/ts-ddd-repository"
       },
       "description": "Repository ports + adapters — Firestore/InMemory pair, toFirestore/fromFirestore, DI token, contract tests.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "repository",
-        "firestore",
-        "persistence"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "repository", "firestore", "persistence"]
     },
     {
       "name": "ts-ddd-use-case",
@@ -259,18 +191,11 @@
         "path": "skills/ts-ddd-use-case"
       },
       "description": "Application use cases — UseCase<IN,OUT>, @Injectable() + repo-port orchestration, Result.ok/fail/combine.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "use-case",
-        "application",
-        "result"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "use-case", "application", "result"]
     },
     {
       "name": "ts-ddd-value-object",
@@ -281,18 +206,11 @@
         "path": "skills/ts-ddd-value-object"
       },
       "description": "Value objects — ValueObject + Result, closed-set + composite VOs, tryCreate/create, normalization.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "value-object",
-        "vo",
-        "result"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "value-object", "vo", "result"]
     },
     {
       "name": "ts-query-cqrs",
@@ -303,19 +221,11 @@
         "path": "skills/ts-query-cqrs"
       },
       "description": "Read-side CQRS queries — *Query ports, find-* read use cases, DTO projections, pagination/filters, Prisma/InMemory.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "llodev"
       },
-      "keywords": [
-        "agent-skill",
-        "typescript",
-        "ddd",
-        "cqrs",
-        "query",
-        "read-model",
-        "prisma"
-      ]
+      "keywords": ["agent-skill", "typescript", "ddd", "cqrs", "query", "read-model", "prisma"]
     }
   ]
 }

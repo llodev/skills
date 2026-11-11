@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-use-case?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-use-case)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte de la familia `@llodev/ts-ddd`.
@@ -48,12 +48,12 @@ Sin MCP, sin configuración, sin init — es una skill de conocimiento puro. Tra
 
 ## Contenido
 
-| Archivo                                       | Contenido                                                                                                                                                                                                                    |
-| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                                    | Condiciones de activación, checklist inicial, tabla de decisión de dependencia, reglas principales, notas de la Result API y lista NEVER.                                                                                    |
-| `references/use-case-pattern.md`              | Estructura real de archivos, snippets canónicos de crear/transición de estado/mutación anidada/lista, la excepción `application/services/`, estrategia de pruebas, reglas de fixtures con enum, checklist de implementación. |
-| `examples/create-greeting.usecase.example.ts` | Un caso de uso de creación autocontenido + repositorio fake en memoria + prueba Jest usando miembros de enum de los contracts.                                                                                               |
-| `examples/README.md`                          | Cómo el ejemplo se relaciona con `SKILL.md`/`references/use-case-pattern.md`, y cómo adaptarlo al crear un nuevo bounded context.                                                                                            |
+| Archivo                                       | Contenido                                                                                                                                                                                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                                    | Condiciones de activación, checklist inicial, tabla de decisión de dependencia, reglas principales, notas de la Result API y lista NEVER.                                                                                          |
+| `references/use-case-pattern.md`              | Estructura de archivos de ejemplo, snippets canónicos de crear/transición de estado/mutación anidada/lista, la excepción `application/services/`, estrategia de pruebas, reglas de fixtures con enum, checklist de implementación. |
+| `examples/create-greeting.usecase.example.ts` | Un caso de uso de creación autocontenido + repositorio fake en memoria + prueba Jest usando miembros de enum de los contracts.                                                                                                     |
+| `examples/README.md`                          | Cómo el ejemplo se relaciona con `SKILL.md`/`references/use-case-pattern.md`, y cómo adaptarlo al crear un nuevo bounded context.                                                                                                  |
 
 ## Licencia
 

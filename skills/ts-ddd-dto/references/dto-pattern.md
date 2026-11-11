@@ -5,13 +5,15 @@
 - **New BC concept** (e.g. `subscription`, `invoice`) → create new files under `libs/contracts/<bc>/src/{interfaces,schemas,dtos}/<name>.ts` + update each barrel `index.ts`.
 - **New field on an existing shape** → edit the existing schema/interface file. If the field is a closed set, declare/extend the matching `XxxEnum` in `interfaces/` first, then reference it from the schema.
 - **New variant in a discriminated union** (e.g. a new section type) → (1) add the enum member to the existing `XxxEnum`, (2) add the interface variant in `interfaces/`, (3) add the Zod literal branch in the `discriminatedUnion(...)` schema.
-- **New cross-BC primitive** (used by ≥ 2 BCs) → it does not belong in `libs/contracts/<bc>/`; lift it to `libs/shared` (see "Where does the enum live?" below).
+- **New cross-BC primitive** (used by ≥ 2 BCs) → it does not belong in `libs/contracts/<bc>/`; lift it to the shared kernel package (e.g. `libs/shared`, see "Where does the enum live?" below).
 
 ---
 
 ## Contracts-package Layout
 
-Each bounded context has its own contracts package under `libs/contracts/<bc>`. It is the single source of truth for the wire shape and is consumed by both `apps/api` and `apps/web`.
+Paths below are an example monorepo layout (`libs/contracts/<bc>/` for contracts, `libs/shared/` for the shared kernel, an API package and a web client); adapt them to your project. Package names such as `@acme/<bc>-contracts` and `@acme/shared` are examples too. In the snippets, `celebrations` is a sample bounded context and `Celebration` its aggregate.
+
+Each bounded context has its own contracts package (e.g. `libs/contracts/<bc>`). It is the single source of truth for the wire shape and is consumed by both the API and the web client.
 
 ```
 libs/contracts/<bc>/
@@ -33,7 +35,7 @@ Rules:
 
 - A contracts package may depend on `@acme/shared` (for `Result`, `ValueObject`, `PALETTE_KEYS`, etc.) and `zod`. Nothing else from the project.
 - It MUST NOT import `firebase-admin`, `@nestjs/*`, `next`, or `react`.
-- `apps/api` and `apps/web` both import from `@acme/<bc>-contracts`. Neither redefines wire types locally.
+- The API and the web client both import from `@acme/<bc>-contracts`. Neither redefines wire types locally.
 
 See `examples/product.dto.ts` in this skill for a standalone end-to-end illustration.
 
@@ -44,7 +46,7 @@ See `examples/product.dto.ts` in this skill for a standalone end-to-end illustra
 Every status, kind, layout, provider, palette key, or other closed set is modelled as a **string-backed TS enum** in `interfaces/`. The tuple, type, and predicate derive from the enum — never the other way around.
 
 ```ts
-// libs/contracts/celebrations/src/interfaces/celebration-status.ts
+// libs/contracts/<bc>/src/interfaces/celebration-status.ts
 export enum CelebrationStatusEnum {
   DRAFT = "draft",
   PUBLISHED = "published",
@@ -62,7 +64,7 @@ export function isCelebrationStatus(v: unknown): v is CelebrationStatus {
 ### Discriminated unions reference enum members
 
 ```ts
-// libs/contracts/celebrations/src/interfaces/section-content.ts
+// libs/contracts/<bc>/src/interfaces/section-content.ts
 export enum SectionKindEnum {
   HERO = "hero",
   MESSAGE = "message",
@@ -91,7 +93,7 @@ export type SectionContent = HeroSectionContent | MessageSectionContent;
 | Closed set with no enum (e.g. `PALETTE_KEYS`) | `z.enum(PALETTE_KEYS)`                |
 
 ```ts
-// libs/contracts/celebrations/src/schemas/section-content.schema.ts
+// libs/contracts/<bc>/src/schemas/section-content.schema.ts
 export const sectionContentSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal(SectionKindEnum.HERO),
@@ -108,7 +110,7 @@ export type SectionContentDTO = z.infer<typeof sectionContentSchema>;
 ```
 
 ```ts
-// libs/contracts/celebrations/src/schemas/enum.schemas.ts
+// libs/contracts/<bc>/src/schemas/enum.schemas.ts
 export const celebrationStatusSchema = z.nativeEnum(CelebrationStatusEnum);
 export type CelebrationStatusDTO = z.infer<typeof celebrationStatusSchema>;
 
@@ -140,9 +142,9 @@ export interface CreateCelebrationDTO {
 The closed set might be local to one BC or shared across several. Pick the home by consumer count:
 
 - **Single BC** (e.g. `CelebrationStatusEnum`, `SectionKindEnum`) → enum lives in that BC's `libs/contracts/<bc>/src/interfaces/`. Re-export from the package barrel.
-- **Multiple BCs share the same closed set** (e.g. a generic `Region`, `Currency`, `Locale`, `PaletteKey` style primitive) → it belongs in `libs/shared` (cross-BC primitive). Contracts packages import it from `@acme/shared` and wrap it with `z.enum(SHARED_TUPLE)` or `z.nativeEnum(SharedEnum)`.
-- **In doubt?** Start in the BC. Lift to `libs/shared` on the **second** consumer — never preemptively.
-- **Web/api both need label vs wire value** (e.g. `"draft"` on the wire, `"Rascunho"` in the UI) → the enum value IS the wire string and stays in contracts. The label/translation map lives at the consumer (typically `apps/web`), never in the contracts package.
+- **Multiple BCs share the same closed set** (e.g. a generic `Region`, `Currency`, `Locale`, `PaletteKey` style primitive) → it belongs in the shared kernel package (e.g. `libs/shared`; cross-BC primitive). Contracts packages import it from `@acme/shared` and wrap it with `z.enum(SHARED_TUPLE)` or `z.nativeEnum(SharedEnum)`.
+- **In doubt?** Start in the BC. Lift to the shared kernel on the **second** consumer — never preemptively.
+- **Web/api both need label vs wire value** (e.g. `"draft"` on the wire, `"Rascunho"` in the UI) → the enum value IS the wire string and stays in contracts. The label/translation map lives at the consumer (typically the web client), never in the contracts package.
 
 ---
 
@@ -153,7 +155,7 @@ Always: declare the schema, then derive the DTO type with `z.infer`.
 ### Input DTO — command
 
 ```ts
-// libs/contracts/celebrations/src/dtos/create-celebration.dto.ts
+// libs/contracts/<bc>/src/dtos/create-celebration.dto.ts
 import { z } from "zod";
 import { celebrationKindSchema, paletteKeySchema } from "../schemas/enum.schemas";
 import { slugSchema } from "../schemas/slug.schema";
@@ -172,7 +174,7 @@ export type CreateCelebrationDTO = z.infer<typeof createCelebrationDtoSchema>;
 ### Output DTO — response
 
 ```ts
-// libs/contracts/celebrations/src/dtos/celebration-response.dto.ts
+// libs/contracts/<bc>/src/dtos/celebration-response.dto.ts
 import { z } from "zod";
 import {
   celebrationKindSchema,
@@ -200,7 +202,7 @@ export type CelebrationResponseDTO = z.infer<typeof celebrationResponseDtoSchema
 ### Input DTO referencing a discriminated union
 
 ```ts
-// libs/contracts/celebrations/src/dtos/section-input.dto.ts
+// libs/contracts/<bc>/src/dtos/section-input.dto.ts
 import { z } from "zod";
 import { sectionContentSchema } from "../schemas/section-content.schema";
 
@@ -217,7 +219,7 @@ export type ReorderSectionDTO = z.infer<typeof reorderSectionDtoSchema>;
 
 ### Where enrichment happens
 
-Signed URLs, formatted strings, expanded relations are mapped at the **api boundary** (`apps/api/src/<bc>/presentation/mappers/`), not in the DTO file. The DTO only declares the shape that crosses the wire.
+Signed URLs, formatted strings, expanded relations are mapped at the **api boundary** (e.g. `src/<bc>/presentation/mappers/` in the API package), not in the DTO file. The DTO only declares the shape that crosses the wire.
 
 ---
 
@@ -261,20 +263,20 @@ Keep `data` and `meta` separate. Never embed totals in the array.
 
 ## Boundaries
 
-| Layer                                              | Responsibility                                                    |
-| -------------------------------------------------- | ----------------------------------------------------------------- |
-| `libs/contracts/<bc>/src/interfaces/`              | Pure TS types + `XxxEnum` definitions                             |
-| `libs/contracts/<bc>/src/schemas/`                 | Zod 4 schemas; the validation source of truth                     |
-| `libs/contracts/<bc>/src/dtos/`                    | DTO types paired with their schema (`z.infer`)                    |
-| `apps/api/src/<bc>/presentation/mappers/`          | Map contract DTOs ↔ domain entities; enrich with signed URLs etc. |
-| `apps/api/src/<bc>/presentation/<*>.controller.ts` | Validate via `ZodValidationPipe`, return contract DTOs            |
-| `apps/web/...`                                     | Consume contract DTOs/schemas directly                            |
+| Layer                                          | Responsibility                                                    |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| `libs/contracts/<bc>/src/interfaces/`          | Pure TS types + `XxxEnum` definitions                             |
+| `libs/contracts/<bc>/src/schemas/`             | Zod 4 schemas; the validation source of truth                     |
+| `libs/contracts/<bc>/src/dtos/`                | DTO types paired with their schema (`z.infer`)                    |
+| API: `src/<bc>/presentation/mappers/`          | Map contract DTOs ↔ domain entities; enrich with signed URLs etc. |
+| API: `src/<bc>/presentation/<*>.controller.ts` | Validate via `ZodValidationPipe`, return contract DTOs            |
+| Web client                                     | Consume contract DTOs/schemas directly                            |
 
 ---
 
 ## Verification
 
-A contracts change is a wire change. Run, in order:
+A contracts change is a wire change. Run, in order (example commands for a pnpm workspace with packages `@acme/<bc>-contracts`, `api` and `web`; adapt to your tooling):
 
 ```bash
 pnpm --filter @acme/<bc>-contracts test
@@ -283,13 +285,13 @@ pnpm --filter api typecheck && pnpm --filter api test
 pnpm --filter web typecheck
 ```
 
-Or, for cross-cutting confidence: `make check` from the repo root.
+Or run your workspace-wide typecheck + test gate for cross-cutting confidence.
 
 ---
 
 ## Implementation Checklist
 
-- [ ] DTO lives under `libs/contracts/<bc>/src/dtos/` — not inside `apps/api` or `apps/web`
+- [ ] DTO lives in the contracts package (e.g. `libs/contracts/<bc>/src/dtos/`) — not inside the API or the web client
 - [ ] Schema declared first; DTO type derived via `z.infer`
 - [ ] Every closed-set field references an `XxxEnum` (interfaces + schema)
 - [ ] Discriminator branches use `z.literal(EnumName.MEMBER)`; full-set validators use `z.nativeEnum(EnumName)`

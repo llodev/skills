@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Agent-agnostic lint for the pm-tasks family SKILL.md, references, and anti-patterns
-// (skills/pm-tasks-*). See skills/pm-tasks-core/references/agent-agnostic-lint.md for the contract.
+// (skills/pm-tasks-*). See docs/agent-agnostic-lint.md for the contract.
 
 import { readFile } from "node:fs/promises";
 import { readdirSync, statSync } from "node:fs";

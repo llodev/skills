@@ -2,7 +2,7 @@
  * In-memory query mock — standalone example for use case tests.
  * Implements the same interface as the production adapter.
  */
-import { Result, PaginatedResultDTO } from "@ddd/shared";
+import { Result, PaginatedResultDTO } from "@acme/shared";
 import { FindManyItemsQuery, FindManyItemsInputDTO, ItemListItem } from "./find-many-items.query";
 
 export class InMemoryFindManyItemsQuery implements FindManyItemsQuery {

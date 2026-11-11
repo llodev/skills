@@ -1,3 +1,16 @@
 packages:
   - "skills/*"
   - "packages/*"
+
+# Dependencies allowed to run install scripts (pnpm 11 blocks them by default).
+allowBuilds:
+  esbuild: true
+
+# Security floors for transitive dependencies (Dependabot alerts). pnpm 11 reads
+# overrides only from this file, not from package.json.
+overrides:
+  "js-yaml@<3.15.2": "^3.15.2"
+  "fast-uri@<3.1.9": "^3.1.9"
+  "minimatch@>=10.0.0 <11.0.1": "^11.0.1"
+  "source-map-js@<1.2.2": "^1.2.2"
+  "vite@>=7.0.0 <7.3.7": "^7.3.7"

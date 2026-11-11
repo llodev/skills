@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-dto?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-dto)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte de la familia `@llodev/ts-ddd`.
@@ -44,7 +44,7 @@ Sin MCP, sin configuración, sin init — es una skill de conocimiento puro. Tra
 | `"add a status field to the product DTO"`              | Verifica si el valor es un conjunto cerrado → añade/reutiliza un `XxxEnum`, conecta `z.nativeEnum`          |
 | `"create a CreateProductDTO and a ProductResponseDTO"` | Genera esquemas Zod + tipos `z.infer` separados para las formas de entrada de escritura y salida de lectura |
 | `"this DTO needs a paginated list"`                    | Añade una proyección con forma `PaginatedResultDTO` manteniendo `data`/`meta` separados                     |
-| `"review these contracts for leaked wire types"`       | Verifica redefiniciones fuera de `libs/contracts/<bc>` y literales de cadena crudos para enums              |
+| `"review these contracts for leaked wire types"`       | Verifica redefiniciones fuera del paquete de contratos y literales de cadena crudos para enums              |
 
 ## Contenido
 

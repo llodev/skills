@@ -8,7 +8,7 @@ description: >-
   considerations for IDs.
 license: MIT
 metadata:
-  version: 0.2.0
+  version: 0.3.0
   tags:
     - agent-skill
     - django

@@ -19,6 +19,9 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "vitest"
         update-types: ["version-update:semver-major"]
+      # @vitest/* must move together with vitest; a lone major bump breaks coverage.
+      - dependency-name: "@vitest/*"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "ajv"
         update-types: ["version-update:semver-major"]
 
@@ -41,6 +44,9 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "vitest"
         update-types: ["version-update:semver-major"]
+      # @vitest/* must move together with vitest; a lone major bump breaks coverage.
+      - dependency-name: "@vitest/*"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "ajv"
         update-types: ["version-update:semver-major"]
 
@@ -61,6 +67,9 @@ updates:
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
       - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      # @vitest/* must move together with vitest; a lone major bump breaks coverage.
+      - dependency-name: "@vitest/*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "ajv"
         update-types: ["version-update:semver-major"]
@@ -83,6 +92,9 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "vitest"
         update-types: ["version-update:semver-major"]
+      # @vitest/* must move together with vitest; a lone major bump breaks coverage.
+      - dependency-name: "@vitest/*"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "ajv"
         update-types: ["version-update:semver-major"]
 
@@ -104,6 +116,9 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "vitest"
         update-types: ["version-update:semver-major"]
+      # @vitest/* must move together with vitest; a lone major bump breaks coverage.
+      - dependency-name: "@vitest/*"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "ajv"
         update-types: ["version-update:semver-major"]
 
@@ -124,6 +139,9 @@ updates:
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
       - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      # @vitest/* must move together with vitest; a lone major bump breaks coverage.
+      - dependency-name: "@vitest/*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "ajv"
         update-types: ["version-update:semver-major"]

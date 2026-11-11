@@ -9,9 +9,9 @@ description: >-
   `z.nativeEnum(EnumName)` for full-set validators), input contracts
   (`CreateXxxDTO`, `UpdateXxxDTO`), output contracts (`XxxResponseDTO`), CQRS
   read projections, pagination/filters/metadata, or wire-shape changes consumed
-  by both `apps/api` and `apps/web`.
+  by both the API and the web client.
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # TypeScript DDD DTO
@@ -24,7 +24,9 @@ metadata:
 
 ## Where DTOs live
 
-DTOs are **not** co-located with the api. They live in the per-BC contracts package, which is the single source of truth for the wire shape and is consumed by both `apps/api` and `apps/web`.
+DTOs are **not** co-located with the api. They live in the per-BC contracts package, which is the single source of truth for the wire shape and is consumed by both the API and the web client.
+
+Paths below are an example monorepo layout and package names (`@acme/*`) are examples; adapt them to your project. In the examples, `celebrations` is a sample bounded context.
 
 ```
 libs/contracts/<bc>/src/
@@ -34,17 +36,17 @@ libs/contracts/<bc>/src/
   index.ts      ← re-exports interfaces + schemas + dtos
 ```
 
-Imported as `@acme/<bc>-contracts` (e.g. `@acme/celebrations-contracts`). Neither api nor web redefines wire types locally. The api maps contract DTOs to entities via `apps/api/src/<bc>/presentation/mappers/`.
+Imported as `@acme/<bc>-contracts` (e.g. `@acme/celebrations-contracts`). Neither api nor web redefines wire types locally. The api maps contract DTOs to entities via its presentation mappers (e.g. `src/<bc>/presentation/mappers/`).
 
 ---
 
 ## Before You Start
 
-Non-obvious decisions specific to this monorepo:
+Non-obvious decisions to settle first:
 
-- **Does this wire shape already exist in `libs/contracts/<bc>/`?** If yes, edit it; never duplicate it inside `apps/api` or `apps/web`.
+- **Does this wire shape already exist in `libs/contracts/<bc>/`?** If yes, edit it; never duplicate it inside the API or the web client.
 - **Write-side input (`CreateXxxDTO` / `UpdateXxxDTO` / `XxxFiltersDTO`) or read-side projection (`XxxResponseDTO` / `XxxListItemDTO`)?** They are separate DTOs; do not reuse one as the other.
-- **Does any field belong to a closed set?** It MUST come from an `XxxEnum` in `interfaces/` — see the fallback rule in `references/dto-pattern.md` for where the enum lives (BC vs `libs/shared`).
+- **Does any field belong to a closed set?** It MUST come from an `XxxEnum` in `interfaces/` — see the fallback rule in `references/dto-pattern.md` for where the enum lives (BC vs the shared kernel, e.g. `libs/shared`).
 - **Is the shape new, an added field, or a new variant in a discriminated union?** Use the decision tree at the top of `references/dto-pattern.md` to pick the right file(s).
 
 ---
@@ -98,7 +100,7 @@ Never inline string literals like `z.literal("hero")` or `z.enum(["draft", "publ
 
 ## NEVER
 
-- **NEVER** redefine a wire type inside `apps/api` or `apps/web` — import it from `@acme/<bc>-contracts`.
+- **NEVER** redefine a wire type inside the API or the web client — import it from `@acme/<bc>-contracts`.
 - **NEVER** reuse a `CreateXxxDTO` as a `XxxResponseDTO` — command fields leak into responses.
 - **NEVER** import `firebase-admin`, `@nestjs/*`, `next`, or `react` from a contracts package.
 - **NEVER** hand-write an interface that mirrors a Zod schema — derive with `z.infer`.
@@ -108,4 +110,4 @@ Never inline string literals like `z.literal("hero")` or `z.enum(["draft", "publ
 
 ## References
 
-See [`references/dto-pattern.md`](references/dto-pattern.md) for: contracts-package layout, the enum → tuple → type → predicate pattern, schema/DTO snippets, naming conventions, and the verification checklist (`pnpm --filter @acme/<bc>-contracts test` → `build` → `pnpm --filter api typecheck` → `pnpm --filter web typecheck`).
+See [`references/dto-pattern.md`](references/dto-pattern.md) for: contracts-package layout, the enum → tuple → type → predicate pattern, schema/DTO snippets, naming conventions, and the verification checklist (e.g. `pnpm --filter @acme/<bc>-contracts test` → `build` → `pnpm --filter api typecheck` → `pnpm --filter web typecheck`).

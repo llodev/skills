@@ -1,6 +1,6 @@
 // @llodev/pm-tasks-core/doctor
 // Health-check engine: check catalog + orchestrator.
-// All I/O uses Node 20+ built-ins only — no new runtime deps.
+// All I/O uses Node 24+ built-ins only — no new runtime deps.
 import { access, mkdir, stat } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
 import { validateConfig } from "./init-lib.js";

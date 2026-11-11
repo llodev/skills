@@ -13,10 +13,9 @@ jobs:
       # (the skill-judge ratchet gate). A shallow checkout makes that gate self-skip.
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: pnpm/action-setup@v6.1.0
-      # Node 24 (matching release.yml) — size-limit >=13 dropped Node 20 support
-      # (engines: ^22.18.0 || ^24.0.0 || >=26.0.0). Runtime Node-20 coverage stays
-      # in e2e.yml / contract-check.yml; published packages remain engines.node >=20.
+      - uses: pnpm/action-setup@v6.1.1
+      # Node 24: the floor of every published package (engines.node >=24) and of
+      # pnpm 11; every workflow runs on it.
       - uses: actions/setup-node@v7
         with: { node-version: 24, cache: pnpm }
       - run: pnpm install --frozen-lockfile

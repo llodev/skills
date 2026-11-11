@@ -1,5 +1,19 @@
 # @llodev/ts-ddd
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`84d55a5`](https://github.com/llodev/skills/commit/84d55a51920df1359294676e7d64989717a9cf0f)]:
+  - @llodev/ts-ddd-controller@0.2.0
+  - @llodev/ts-ddd-domain-service@0.2.0
+  - @llodev/ts-ddd-dto@0.2.0
+  - @llodev/ts-ddd-entity@0.2.0
+  - @llodev/ts-ddd-repository@0.2.0
+  - @llodev/ts-ddd-use-case@0.2.0
+  - @llodev/ts-ddd-value-object@0.2.0
+  - @llodev/ts-query-cqrs@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

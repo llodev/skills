@@ -12,7 +12,7 @@
 
 [![npm](https://img.shields.io/npm/v/@llodev/ts-ddd-use-case?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/ts-ddd-use-case)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
-[![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
 
 Parte da família `@llodev/ts-ddd`.
@@ -48,12 +48,12 @@ Sem MCP, sem config, sem init — é uma skill de conhecimento puro. Após insta
 
 ## Conteúdo
 
-| Arquivo                                       | Conteúdo                                                                                                                                                                                                          |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                                    | Condições de disparo, checklist inicial, tabela de decisão de dependência, regras principais, notas da Result API e lista NEVER.                                                                                  |
-| `references/use-case-pattern.md`              | Layout real de arquivos, snippets canônicos de create/transição de estado/mutação aninhada/lista, a exceção `application/services/`, estratégia de teste, regras de fixture com enum, checklist de implementação. |
-| `examples/create-greeting.usecase.example.ts` | Um create-use-case autocontido + repositório fake em memória + teste Jest usando membros de enum dos contracts.                                                                                                   |
-| `examples/README.md`                          | Como o exemplo se relaciona com `SKILL.md`/`references/use-case-pattern.md`, e como adaptá-lo ao criar um novo bounded context.                                                                                   |
+| Arquivo                                       | Conteúdo                                                                                                                                                                                                                |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                                    | Condições de disparo, checklist inicial, tabela de decisão de dependência, regras principais, notas da Result API e lista NEVER.                                                                                        |
+| `references/use-case-pattern.md`              | Layout de arquivos de exemplo, snippets canônicos de create/transição de estado/mutação aninhada/lista, a exceção `application/services/`, estratégia de teste, regras de fixture com enum, checklist de implementação. |
+| `examples/create-greeting.usecase.example.ts` | Um create-use-case autocontido + repositório fake em memória + teste Jest usando membros de enum dos contracts.                                                                                                         |
+| `examples/README.md`                          | Como o exemplo se relaciona com `SKILL.md`/`references/use-case-pattern.md`, e como adaptá-lo ao criar um novo bounded context.                                                                                         |
 
 ## Licença
 

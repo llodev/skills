@@ -2,8 +2,8 @@
  * *Calculator pattern — standalone example.
  * Numeric computation from multiple domain objects; deterministic, no I/O.
  *
- * Real location in the project would be:
- *   apps/api/src/<bc>/domain/services/<name>.calculator.ts
+ * Example location (adapt to your layout):
+ *   src/<bc>/domain/services/<name>.calculator.ts
  *
  * Notice: pure class, no `@Injectable`, no constructor injection, takes
  * domain primitives as arguments and returns `Result`. The enum branch
