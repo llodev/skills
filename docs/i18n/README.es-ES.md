@@ -128,9 +128,9 @@ Cada skill publicada declara qué agentes soporta en el campo `compatibility.age
 
 Las skills viven planas bajo `skills/` (un directorio por skill, la convención
 que esperan los indexadores de skills); la pertenencia a la familia se indica con
-el prefijo `pm-tasks-` en el nombre y el campo `metadata.family` de cada skill, no
-con el anidamiento de directorios. Los paquetes que no son skills (meta-paquete,
-testkit) viven bajo `packages/`.
+los prefijos `pm-tasks-` y `tests-` en el nombre y el campo `metadata.family` de
+cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
+(meta-paquete, testkit) viven bajo `packages/`.
 
 ```
 .
@@ -149,11 +149,13 @@ testkit) viven bajo `packages/`.
 │   ├── ts-ddd-repository/     Repository ports + adaptadores: par Firestore/InMemory, DI token
 │   ├── ts-ddd-controller/     Controllers HTTP: rutas, guards, validación Zod, Result→HTTP
 │   ├── ts-ddd-domain-service/ Domain services: policies/calculadoras stateless que retornan Result
-│   └── ts-query-cqrs/         CQRS de lectura: *Query ports, read use cases find-*, proyecciones
+│   ├── ts-query-cqrs/         CQRS de lectura: *Query ports, read use cases find-*, proyecciones
+│   └── tests-http/            Suites de prueba HTTP: descubrimiento, adaptadores NestJS y DRF
 ├── packages/                  Paquetes de workspace que no son skills (sin SKILL.md)
 │   ├── pm-tasks/              Meta-paquete — instala toda la familia pm-tasks
 │   ├── pm-tasks-testkit/      Fakes en memoria para los verbos CRUD canónicos
-│   └── ts-ddd/                Meta-paquete — instala toda la familia ts-ddd
+│   ├── ts-ddd/                Meta-paquete — instala toda la familia ts-ddd
+│   └── tests/                 Meta-paquete — instala toda la familia tests
 ├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intención de release (workflow Changesets)

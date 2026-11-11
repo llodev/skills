@@ -127,8 +127,8 @@ Toda skill publicada declara quais agentes ela suporta no campo `compatibility.a
 ## Layout do repositório
 
 As skills ficam achatadas em `skills/` (um diretório por skill, a convenção que
-os indexadores de skills esperam); a família é indicada pelo prefixo `pm-tasks-`
-no nome e pelo campo `metadata.family` de cada skill, não pelo aninhamento de
+os indexadores de skills esperam); a família é indicada pelos prefixos `pm-tasks-`
+e `tests-` no nome e pelo campo `metadata.family` de cada skill, não pelo aninhamento de
 diretórios. Pacotes que não são skills (meta-pacote, testkit) ficam em `packages/`.
 
 ```
@@ -148,11 +148,13 @@ diretórios. Pacotes que não são skills (meta-pacote, testkit) ficam em `packa
 │   ├── ts-ddd-repository/     Repository ports + adapters: par Firestore/InMemory, DI token
 │   ├── ts-ddd-controller/     Controllers HTTP: rotas, guards, validação Zod, Result→HTTP
 │   ├── ts-ddd-domain-service/ Domain services: policies/calculadoras stateless retornando Result
-│   └── ts-query-cqrs/         CQRS de leitura: *Query ports, read use cases find-*, projeções
+│   ├── ts-query-cqrs/         CQRS de leitura: *Query ports, read use cases find-*, projeções
+│   └── tests-http/            Suítes de teste HTTP: descoberta, adaptadores NestJS e DRF
 ├── packages/                  Pacotes de workspace que não são skills (sem SKILL.md)
 │   ├── pm-tasks/              Meta-pacote — instala toda a família pm-tasks
 │   ├── pm-tasks-testkit/      Fakes em memória para os verbos CRUD canônicos
-│   └── ts-ddd/                Meta-pacote — instala toda a família ts-ddd
+│   ├── ts-ddd/                Meta-pacote — instala toda a família ts-ddd
+│   └── tests/                 Meta-pacote — instala toda a família tests
 ├── scripts/                   Validadores, checks de contrato, gate de baseline do skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intenção de release (workflow Changesets)
