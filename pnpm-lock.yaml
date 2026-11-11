@@ -92,6 +92,12 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(@types/node@26.6.6)(@vitest/coverage-v8@5.1.0)(vite@7.3.7(@types/node@26.6.6)(lightningcss@1.32.0)(tsx@4.23.15)(yaml@2.9.1))
 
+  packages/tests:
+    devDependencies:
+      '@llodev/tests-http':
+        specifier: workspace:*
+        version: link:../../skills/tests-http
+
   packages/ts-ddd:
     devDependencies:
       '@llodev/ts-ddd-controller':
@@ -181,6 +187,8 @@ importers:
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
+
+  skills/tests-http: {}
 
   skills/ts-ddd-controller: {}
 
