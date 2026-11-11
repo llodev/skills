@@ -78,7 +78,7 @@ jobs:
 
           echo "should_publish=true" >> "$GITHUB_OUTPUT"
 
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@v6.1.1
         if: steps.guard.outputs.should_publish == 'true'
 
       # `registry-url` is what points npm at the public registry. It also writes

@@ -13,7 +13,7 @@ jobs:
       # (the skill-judge ratchet gate). A shallow checkout makes that gate self-skip.
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@v6.1.1
       # Node 24: the floor of every published package (engines.node >=24) and of
       # pnpm 11; every workflow runs on it.
       - uses: actions/setup-node@v7
