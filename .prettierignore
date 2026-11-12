@@ -8,3 +8,10 @@ node_modules/
 
 # lockfile (prettier already skips by default; explicit for clarity)
 pnpm-lock.yaml
+
+# study-abstract guide is a verbatim port; prettier must not reflow it
+skills/study-abstract/SKILL.md
+skills/study-abstract/anti-patterns/prose.md
+skills/study-abstract/examples/index.md
+skills/study-abstract/references/conflicts.md
+skills/study-abstract/references/sources.md

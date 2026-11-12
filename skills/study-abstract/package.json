@@ -1,0 +1,35 @@
+{
+  "name": "@llodev/study-abstract",
+  "version": "0.0.0",
+  "description": "Turn any study material into a didactic abstract the reader can use with the source closed.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/study-abstract",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/study-abstract"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "anti-patterns",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "study",
+    "abstract",
+    "glossary"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

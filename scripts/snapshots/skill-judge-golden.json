@@ -112,5 +112,11 @@
     "rubricChecksum": "manual",
     "rubricVersion": "v1",
     "totalRaw": 82
+  },
+  "skills/study-abstract/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 89
   }
 }

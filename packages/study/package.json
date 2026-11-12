@@ -1,0 +1,28 @@
+{
+  "name": "@llodev/study",
+  "version": "0.0.0",
+  "description": "Meta-package: installs the @llodev/study-* family (study abstracts).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "packages/study"
+  },
+  "peerDependencies": {
+    "@llodev/study-abstract": "^0.1.0"
+  },
+  "devDependencies": {
+    "@llodev/study-abstract": "workspace:*"
+  },
+  "files": [
+    "README.md"
+  ],
+  "keywords": [
+    "agent-skill",
+    "study",
+    "meta-package"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
