@@ -12,7 +12,7 @@ description: >-
   pegadinha, mix-up, errata, Mermaid, and transcript.
 license: MIT
 metadata:
-  version: 0.0.0
+  version: 0.1.0
   tags:
     - agent-skill
     - study
