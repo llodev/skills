@@ -118,5 +118,11 @@
     "version": "0.0.0",
     "capturedAt": "2026-11-11",
     "notes": "First capture at package 0.0.0. D1 17, D2 13, D3 14, D4 15, D5 14, D6 13, D7 8, D8 13 = 107/120."
+  },
+  "skills/bi-dashboard/SKILL.md": {
+    "score": 84,
+    "version": "0.0.0",
+    "capturedAt": "2026-11-12",
+    "notes": "First capture at package 0.0.0, after the split and the first skill-judge pass. D1 11, D2 14, D3 13, D4 14, D5 14, D6 14, D7 8, D8 13 = 101/120."
   }
 }
