@@ -1,12 +1,14 @@
 ## 12. Anti-patterns
 
-- Generic title ("Chart Title", "Daily sales") or one that only repeats the axes.
-- The library's default palette, a rainbow, or one color per series for no reason.
-- Spaghetti chart with no protagonist; a long legend far from the marks.
-- Heavy grid, an axis with dozens of ticks, full dates on every tick.
-- A line for a noisy daily series when the question is "which day was different".
-- A KPI with no comparison baseline; red/green with no sign or text.
-- A border and a shadow on every card and every chart; 3D; decorative gradients.
-- Hardcoded colors that ignore the design system; a broken dark theme.
-- A fixed title that a filter makes false.
-- Business logic (median, peak, titles) hidden inside the visual component, untested.
+NEVER ship these. Each one looks finished and still makes the chart lie or go unread.
+
+- NEVER use a generic title ("Chart Title", "Daily sales") or one that only repeats the axes. The title is also the accessible name. A reader trained by restated axes stops reading titles, so the conclusion on the next chart is skipped, and a screen-reader user never hears the finding.
+- NEVER use the library's default palette, a rainbow, or one color per series for no reason. Default categorical palettes put red beside green, so a region is decoded as good or bad. Neighboring hues also collapse under deuteranopia, and the series you meant as the protagonist is not the one that remains distinct.
+- NEVER draw a spaghetti chart with no protagonist, or a long legend far from the marks. Matching a legend swatch back to a thin line is a second fixation. Once hues sit next to each other, that saccade lands on the wrong series and the argument proceeds about the wrong trend. Labels on all twelve lines collide; one highlighted series is the fix.
+- NEVER keep a heavy grid, an axis with dozens of ticks, or full dates on every tick. A grid at the same stroke width as the series creates crossings that read as data points. A full date on every tick is a unique string, so the eye cannot group month starts, and the date in the annotation stops being the only date on the chart.
+- NEVER use a line for a noisy daily series when the question is "which day was different". A line asserts a slope. Tuesday-to-Wednesday is the difference of two noisy totals, not a rate anyone should act on. The peak is then a vertex with no area, so "how much bigger than normal" is harder to see than a bar against the median bar.
+- NEVER show a KPI with no comparison baseline, or red/green with no sign or text. A bare total invites a baseline from memory, and that memory is the wrong period. Color without a sign dies in a screenshot or a chat paste. Red is also unstable across one KPI row: up is bad for cost and not bad for revenue.
+- NEVER put a border and a shadow on every card and every chart, and never use 3D or decorative gradients. People judge a bar's height by its darker edge, so a shadow adds phantom height. Perspective shrinks the back of a 3D chart, and a smaller category drawn behind a larger one can look bigger. A border on every card is a common-region cue, so twelve cards read as twelve unrelated facts.
+- NEVER hardcode colors that ignore the design system, and never ship a broken dark theme. The failure is not "off brand." A hex that cleared 4.5:1 on white drops under 3:1, or matches the context gray, once the surface flips dark, so the protagonist stops popping for the theme you did not open. A second chart that picks its own orange also splits one entity into two.
+- NEVER leave a fixed title that a filter makes false. The title is believed first and checked never. Bars that move feel like the page updated, which makes the stale sentence more trusted, not less. An empty slice is the sharp case: the marks disappear and the title still reports the peak.
+- NEVER hide business logic (median, peak, titles) inside the visual component, untested. The query title and the component median disagree on zeros, nulls, gap-fill, and filter context, so the annotation names a different day than the title. Logic that lives only in the render path never gets imported by a unit test, and the honest fallback ships unexecuted.

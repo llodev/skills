@@ -139,6 +139,14 @@ export function overtakeTitle(
 
 Rules: the title contains the subject and the number; it is true for the current slice; it rounds honestly (5.09 → "5 times"; 5.6 → "5,6 times"); if there is no strong pattern, it states what is there (stability, a typical range) instead of falling back to a descriptive label. Also check **qualitative** claims ("the largest channel", "tripled", "driven by the app"): each one needs a calculation that supports it, the same as the numbers.
 
+### Values the functions return that you must not print
+
+`median([])` is `NaN`. On no rows, `peakVsBaseline` still returns index `0` and a `factor` of `NaN` (`reduce` keeps the initial `0`, and `vals[0]` is missing). A zero baseline makes `factor` `Infinity` when the peak is not zero, and `NaN` when the peak is also zero. `growth` already returns `null` when the previous value is zero. Do not pass `NaN` or `Infinity` to `times` or `peakTitle` — `Infinity >= 1.5` is true, so the title would say the peak sold infinity times more.
+
+- **Empty slice**: do not call the chart. No highlight and no median line. The title says why this slice is empty, not the previous conclusion.
+- **Zero baseline**: do not write "times" and do not claim the series "stayed flat." State the absolute peak and that the baseline was zero.
+- **Tie**: the `>` reduction keeps the earliest row. Name one day only when its value is strictly greater than every other row. When several rows share the max, the title states the tie count, not a single date.
+
 ### 3.5 SQL for the story (compute in the database when the volume is large)
 
 PostgreSQL — complete daily series (days with no sales become zero), median, factor, and peak flag:

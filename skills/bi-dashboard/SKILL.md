@@ -75,6 +75,8 @@ A dashboard answers **one main question**. Different questions become different 
 
 **MANDATORY — READ ENTIRE FILE**: [`references/story.md`](references/story.md) before writing a title, an annotation, or a SQL query.
 
+**MANDATORY — READ ENTIRE FILE**: [`anti-patterns/charts.md`](anti-patterns/charts.md) before writing a title or an annotation.
+
 **Do NOT load** a stack recipe until the `ChartStory` values exist.
 
 ## The four rules of every chart
@@ -98,7 +100,7 @@ Three text layers, left-aligned on the same margin:
 ### Rule 2 — Color leads the eye
 
 - Everything that is context goes in `context` (gray). The title's protagonist goes in `highlight`.
-- **One** protagonist per chart; two only when the story really has two protagonists.
+- **One** protagonist per chart. A second highlight is allowed only for the case in Decisions; otherwise split the chart.
 - The highlight is consistent: the bar, the category label, the annotated value, and (optionally) the title keyword use the same color.
 - The same entity has the same color across the whole dashboard.
 - Never one color per series "just because". Many series: all of them thin in `context`, the protagonist in `highlight` with a direct label.
@@ -120,6 +122,12 @@ Three text layers, left-aligned on the same margin:
 - A direct label at the end of the lines (`Pro 8.550`), values on the bars when there are ≤ 12 categories.
 - Annotate crossings and events at the exact point (`week 26 · Pro passes Basic`).
 - Annotations of ≤ 2 lines, close to the element, without covering data.
+
+## Decisions
+
+Refuse a second highlight unless the conclusion names two subjects the reader must compare in one glance: a crossing, or a before/after pair. A second "also important" series is another chart. If the title needs a second finding, split it.
+
+When a filter can change a number, entity, rank, or comparison cited in the title, subtitle, highlight, or annotation, recompute all four from the filtered slice before render. An empty slice replaces the title with the empty-state sentence. Never leave the unfiltered conclusion on screen.
 
 ## Phase 3 — Design
 
