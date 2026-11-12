@@ -39,9 +39,22 @@ No MCP, no config, no init — it's a pure knowledge skill. Once installed it ac
 
 ## Contents
 
-| File       | Content                                                                   |
-| ---------- | ------------------------------------------------------------------------- |
-| `SKILL.md` | Phases 0–5, the four chart rules, stack recipes, and the final checklist. |
+| File                           | Content                                                                    |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `SKILL.md`                     | Phase order, the four chart rules, and when to read each file.             |
+| `references/explore.md`        | Stack discovery and the token-role map.                                    |
+| `references/story.md`          | `ChartStory`, story functions, locale formatting, titles, SQL.             |
+| `references/form.md`           | Which mark answers which question.                                         |
+| `references/layout.md`         | Page hierarchy, KPI card, states, accessibility.                           |
+| `references/capability-map.md` | The five capabilities, and which library to add when the project has none. |
+| `references/react-recharts.md` | Recharts / shadcn recipe.                                                  |
+| `references/echarts.md`        | ECharts recipe.                                                            |
+| `references/vega-lite.md`      | Vega-Lite / Altair recipe.                                                 |
+| `references/python.md`         | Plotly and matplotlib recipe.                                              |
+| `references/ggplot2.md`        | ggplot2 recipe.                                                            |
+| `references/bi-tools.md`       | Power BI, Looker Studio, Metabase, Superset, Grafana.                      |
+| `anti-patterns/charts.md`      | Titles, color, grid, and untested story logic.                             |
+| `references/verify.md`         | Render, number check, and the final checklist.                             |
 
 ## License
 

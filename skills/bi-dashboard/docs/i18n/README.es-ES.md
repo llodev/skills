@@ -39,9 +39,22 @@ Sin MCP, sin configuración, sin init — es una skill de conocimiento puro. Tra
 
 ## Contenido
 
-| Archivo    | Contenido                                                                       |
-| ---------- | ------------------------------------------------------------------------------- |
-| `SKILL.md` | Fases 0–5, las cuatro reglas de gráfico, recetas de stack y el checklist final. |
+| Archivo                        | Contenido                                                                          |
+| ------------------------------ | ---------------------------------------------------------------------------------- |
+| `SKILL.md`                     | Orden de las fases, las cuatro reglas de gráfico y cuándo leer cada archivo.       |
+| `references/explore.md`        | Descubrimiento del stack y el mapa de roles de los tokens.                         |
+| `references/story.md`          | `ChartStory`, funciones de la historia, formato de locale, títulos, SQL.           |
+| `references/form.md`           | Qué marca responde a qué pregunta.                                                 |
+| `references/layout.md`         | Jerarquía de la página, tarjeta de KPI, estados, accesibilidad.                    |
+| `references/capability-map.md` | Las cinco capacidades y qué biblioteca añadir cuando el proyecto no tiene ninguna. |
+| `references/react-recharts.md` | Receta de Recharts / shadcn.                                                       |
+| `references/echarts.md`        | Receta de ECharts.                                                                 |
+| `references/vega-lite.md`      | Receta de Vega-Lite / Altair.                                                      |
+| `references/python.md`         | Receta de Plotly y matplotlib.                                                     |
+| `references/ggplot2.md`        | Receta de ggplot2.                                                                 |
+| `references/bi-tools.md`       | Power BI, Looker Studio, Metabase, Superset, Grafana.                              |
+| `anti-patterns/charts.md`      | Títulos, color, cuadrícula y lógica de historia sin pruebas.                       |
+| `references/verify.md`         | Renderizado, comprobación de números y el checklist final.                         |
 
 ## Licencia
 
