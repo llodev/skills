@@ -278,7 +278,7 @@ export function overtakeTitle(
 }
 ```
 
-Rules: the title contains the subject and the number; it is true for the current slice; it rounds honestly (5.09 → "5 times"; 5.6 → "5.6 times"); if there is no strong pattern, it states what is there (stability, a typical range) instead of falling back to a descriptive label. Also check **qualitative** claims ("the largest channel", "tripled", "driven by the app"): each one needs a calculation that supports it, the same as the numbers.
+Rules: the title contains the subject and the number; it is true for the current slice; it rounds honestly (5.09 → "5 times"; 5.6 → "5,6 times"); if there is no strong pattern, it states what is there (stability, a typical range) instead of falling back to a descriptive label. Also check **qualitative** claims ("the largest channel", "tripled", "driven by the app"): each one needs a calculation that supports it, the same as the numbers.
 
 ### 3.5 SQL for the story (compute in the database when the volume is large)
 
