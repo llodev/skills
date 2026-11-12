@@ -348,7 +348,7 @@
         "path": "skills/study-abstract"
       },
       "description": "Turn any study material into a didactic abstract the reader can use with the source closed.",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "llodev"
       },

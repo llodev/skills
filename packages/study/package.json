@@ -1,6 +1,6 @@
 {
   "name": "@llodev/study",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Meta-package: installs the @llodev/study-* family (study abstracts).",
   "license": "MIT",
   "repository": {
