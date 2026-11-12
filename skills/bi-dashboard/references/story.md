@@ -4,7 +4,7 @@ Every title sentence and every annotation comes from a number computed in code o
 
 ### 3.1 The ChartStory contract
 
-Each chart is specified by a library-agnostic contract. Fill the contract with the numbers first; then any adapter ([`references/capability-map.md`](capability-map.md)) draws it.
+Each chart is specified by a library-agnostic contract. Fill the contract with the numbers first; then any adapter ([`SKILL.md`](../SKILL.md)) draws it.
 
 ```ts
 export type ChartStory = {

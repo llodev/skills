@@ -182,6 +182,7 @@ app/(dashboard)/sales/page.tsx
 | `references/story.md`          | Phase 2, before any title or annotation              |
 | `references/form.md`           | Choosing a mark                                      |
 | `references/layout.md`         | A page with more than one chart or a KPI row         |
+| `references/verify.md`         | Phase 5, and any review                              |
 | `references/capability-map.md` | No chart library yet, or a library with no recipe    |
 | `references/react-recharts.md` | React / shadcn / Recharts                            |
 | `references/echarts.md`        | ECharts                                              |
