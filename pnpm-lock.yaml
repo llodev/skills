@@ -131,6 +131,8 @@ importers:
         specifier: workspace:*
         version: link:../../skills/ts-query-cqrs
 
+  skills/bi-dashboard: {}
+
   skills/django-schema-design: {}
 
   skills/pm-tasks-asana:

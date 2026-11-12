@@ -1,0 +1,32 @@
+{
+  "name": "@llodev/bi-dashboard",
+  "version": "0.0.0",
+  "description": "Design dashboards and charts that state one conclusion before the reader checks an axis.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/bi-dashboard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/bi-dashboard"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "bi",
+    "dashboard",
+    "chart"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
