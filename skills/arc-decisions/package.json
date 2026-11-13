@@ -1,0 +1,36 @@
+{
+  "name": "@llodev/arc-decisions",
+  "version": "0.0.0",
+  "description": "Guide architecture and tech-stack decisions for a new project, from idea and MVP scope to ADRs.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/arc-decisions",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/arc-decisions"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "anti-patterns",
+    "references",
+    "examples",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "architecture",
+    "system-design",
+    "adr",
+    "mvp"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

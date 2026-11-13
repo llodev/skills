@@ -147,6 +147,15 @@ Pure **knowledge** skills for dashboards, charts, and KPI cards that state one c
 | `@llodev/bi` _(meta)_  | ✅ v0.1.0 | [packages/bi/](packages/bi/)                 | `npm i @llodev/bi`           | —                                                  |
 | `@llodev/bi-dashboard` | ✅ v0.1.0 | [skills/bi-dashboard/](skills/bi-dashboard/) | `npm i @llodev/bi-dashboard` | `npx skills add llodev/skills/skills/bi-dashboard` |
 
+### `@llodev/arc` — architecture decision skills
+
+Pure **knowledge** skills for architecture and design decisions in software systems — no MCP, no config, no init. The first member runs intake for a new project, cuts the MVP, picks the architecture style, stack, and delivery plan, and records each decision as an ADR. Further `arc-*` members can join the same meta-package.
+
+| Package                 | Status    | Source                                         | npm                           | Vercel CLI                                          |
+| ----------------------- | --------- | ---------------------------------------------- | ----------------------------- | --------------------------------------------------- |
+| `@llodev/arc` _(meta)_  | ✅ v0.1.0 | [packages/arc/](packages/arc/)                 | `npm i @llodev/arc`           | —                                                   |
+| `@llodev/arc-decisions` | ✅ v0.1.0 | [skills/arc-decisions/](skills/arc-decisions/) | `npm i @llodev/arc-decisions` | `npx skills add llodev/skills/skills/arc-decisions` |
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -156,8 +165,8 @@ Every published skill declares which agents it targets via the `compatibility.ag
 ## Repository layout
 
 Skills live flat under `skills/` (one directory per skill, the convention agent
-skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, `study-`, and
-`bi-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
+skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, `study-`, `bi-`, and
+`arc-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
 Non-skill workspace packages (the meta-package, test kit) live under `packages/`.
 
 ```

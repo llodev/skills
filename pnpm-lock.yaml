@@ -64,6 +64,12 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(@types/node@26.6.6)(@vitest/coverage-v8@5.1.0)(vite@7.3.7(@types/node@26.6.6)(lightningcss@1.32.0)(tsx@4.23.15)(yaml@2.9.1))
 
+  packages/arc:
+    devDependencies:
+      '@llodev/arc-decisions':
+        specifier: workspace:*
+        version: link:../../skills/arc-decisions
+
   packages/bi:
     devDependencies:
       '@llodev/bi-dashboard':
@@ -136,6 +142,8 @@ importers:
       '@llodev/ts-query-cqrs':
         specifier: workspace:*
         version: link:../../skills/ts-query-cqrs
+
+  skills/arc-decisions: {}
 
   skills/bi-dashboard: {}
 
