@@ -1,6 +1,6 @@
 {
   "name": "@llodev/bi",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Meta-package: installs the @llodev/bi-* family (dashboards and charts).",
   "license": "MIT",
   "repository": {
