@@ -273,12 +273,12 @@
       "keywords": ["agent-skill", "bi", "dashboard", "chart"]
     },
     {
-      "name": "arch-insights",
+      "name": "arc-decisions",
       "category": "ai-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/llodev/skills.git",
-        "path": "skills/arch-insights"
+        "path": "skills/arc-decisions"
       },
       "description": "Guide architecture and tech-stack decisions for a new project, from idea and MVP scope to ADRs.",
       "version": "0.0.0",

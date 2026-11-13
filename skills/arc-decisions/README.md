@@ -1,16 +1,16 @@
 <!-- readme-selector:start -->
 <p align="center">
-  <a href="https://github.com/llodev/skills/blob/main/skills/arch-insights/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/skills/arch-insights/docs/i18n/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
-  <a href="https://github.com/llodev/skills/blob/main/skills/arch-insights/docs/i18n/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
+  <a href="https://github.com/llodev/skills/blob/main/skills/arc-decisions/README.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/usa.svg" width="30" alt="English"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/skills/arc-decisions/docs/i18n/README.pt-BR.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/brazil.svg" width="30" alt="Português"></a>&nbsp;&nbsp;
+  <a href="https://github.com/llodev/skills/blob/main/skills/arc-decisions/docs/i18n/README.es-ES.md"><img src="https://raw.githubusercontent.com/lloliveiradev/public-assets/main/images/spain.svg" width="30" alt="Español"></a>
 </p>
 <!-- readme-selector:end -->
 
-# @llodev/arch-insights
+# @llodev/arc-decisions
 
 > Turn a project idea into an architecture brief: scope, boundaries, stack, delivery plan, and the ADRs that record the decisions.
 
-[![npm](https://img.shields.io/npm/v/@llodev/arch-insights?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/arch-insights)
+[![npm](https://img.shields.io/npm/v/@llodev/arc-decisions?label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/@llodev/arc-decisions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js >= 24](https://img.shields.io/badge/node-%3E%3D24-43853d?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Agent Skills spec](https://img.shields.io/badge/Agent_Skills-spec-7c5cff)](https://agentskills.io)
@@ -19,10 +19,10 @@
 
 ```bash
 # npm (with skillpm or Claude Code marketplace)
-npm i @llodev/arch-insights
+npm i @llodev/arc-decisions
 
 # Vercel CLI
-npx skills add llodev/skills/skills/arch-insights
+npx skills add llodev/skills/skills/arc-decisions
 ```
 
 No MCP, no config, no init. It is a pure knowledge skill. Once installed, it activates on prompts like the ones below.

@@ -1,0 +1,29 @@
+{
+  "name": "@llodev/arc",
+  "version": "0.0.0",
+  "description": "Meta-package: installs the @llodev/arc-* family (architecture decisions).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "packages/arc"
+  },
+  "peerDependencies": {
+    "@llodev/arc-decisions": "^0.0.0"
+  },
+  "devDependencies": {
+    "@llodev/arc-decisions": "workspace:*"
+  },
+  "files": [
+    "README.md"
+  ],
+  "keywords": [
+    "agent-skill",
+    "arc",
+    "architecture",
+    "meta-package"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

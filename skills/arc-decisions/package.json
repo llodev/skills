@@ -1,13 +1,13 @@
 {
-  "name": "@llodev/arch-insights",
+  "name": "@llodev/arc-decisions",
   "version": "0.0.0",
   "description": "Guide architecture and tech-stack decisions for a new project, from idea and MVP scope to ADRs.",
   "license": "MIT",
-  "homepage": "https://github.com/llodev/skills/tree/main/skills/arch-insights",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/arc-decisions",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/llodev/skills.git",
-    "directory": "skills/arch-insights"
+    "directory": "skills/arc-decisions"
   },
   "files": [
     "SKILL.md",

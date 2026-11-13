@@ -1,5 +1,5 @@
 ---
-name: arch-insights
+name: arc-decisions
 description: >-
   Guides architecture and tech-stack decisions for a new software project:
   turns an idea into scope and an MVP cut, picks the architecture style
