@@ -138,6 +138,15 @@ Pure **knowledge** skills that turn study material into a didactic abstract the 
 | `@llodev/study` _(meta)_ | ✅ v0.1.0 | [packages/study/](packages/study/)               | `npm i @llodev/study`          | —                                                    |
 | `@llodev/study-abstract` | ✅ v0.1.0 | [skills/study-abstract/](skills/study-abstract/) | `npm i @llodev/study-abstract` | `npx skills add llodev/skills/skills/study-abstract` |
 
+### `@llodev/bi` — dashboard and chart skills
+
+Pure **knowledge** skills for dashboards, charts, and KPI cards that state one conclusion before the reader checks an axis — no MCP, no config, no init. The first member discovers the project design system, computes one story per chart, then implements it in the stack the project already uses. Further `bi-*` members can join the same meta-package.
+
+| Package                | Status    | Source                                       | npm                          | Vercel CLI                                         |
+| ---------------------- | --------- | -------------------------------------------- | ---------------------------- | -------------------------------------------------- |
+| `@llodev/bi` _(meta)_  | ✅ v0.1.0 | [packages/bi/](packages/bi/)                 | `npm i @llodev/bi`           | —                                                  |
+| `@llodev/bi-dashboard` | ✅ v0.1.0 | [skills/bi-dashboard/](skills/bi-dashboard/) | `npm i @llodev/bi-dashboard` | `npx skills add llodev/skills/skills/bi-dashboard` |
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -147,8 +156,8 @@ Every published skill declares which agents it targets via the `compatibility.ag
 ## Repository layout
 
 Skills live flat under `skills/` (one directory per skill, the convention agent
-skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, and
-`study-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
+skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, `study-`, and
+`bi-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
 Non-skill workspace packages (the meta-package, test kit) live under `packages/`.
 
 ```
@@ -170,13 +179,15 @@ Non-skill workspace packages (the meta-package, test kit) live under `packages/`
 │   ├── ts-ddd-domain-service/ Domain services: stateless policies/calculators returning Result
 │   ├── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
 │   ├── tests-http/            HTTP test suites: discovery, NestJS and DRF adapters
-│   └── study-abstract/        Study abstracts: spoken overview, glossary, self-check
+│   ├── study-abstract/        Study abstracts: spoken overview, glossary, self-check
+│   └── bi-dashboard/          Dashboards and charts: conclusion title, one highlight
 ├── packages/                  Non-skill workspace packages (no SKILL.md)
 │   ├── pm-tasks/              Meta-package — installs the whole pm-tasks family
 │   ├── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
 │   ├── ts-ddd/                Meta-package — installs the whole ts-ddd family
 │   ├── tests/                 Meta-package — installs the whole tests family
-│   └── study/                 Meta-package — installs the whole study family
+│   ├── study/                 Meta-package — installs the whole study family
+│   └── bi/                    Meta-package — installs the whole bi family
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)

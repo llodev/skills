@@ -1,0 +1,28 @@
+{
+  "name": "@llodev/bi",
+  "version": "0.0.0",
+  "description": "Meta-package: installs the @llodev/bi-* family (dashboards and charts).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "packages/bi"
+  },
+  "peerDependencies": {
+    "@llodev/bi-dashboard": "^0.1.0"
+  },
+  "devDependencies": {
+    "@llodev/bi-dashboard": "workspace:*"
+  },
+  "files": [
+    "README.md"
+  ],
+  "keywords": [
+    "agent-skill",
+    "bi",
+    "meta-package"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

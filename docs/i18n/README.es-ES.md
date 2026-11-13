@@ -127,6 +127,15 @@ Skills puras de **conocimiento** que convierten material de estudio en un resume
 | `@llodev/study` _(meta)_ | ✅ v0.1.0 | [packages/study/](../../packages/study/)               | `npm i @llodev/study`          | —                                                    |
 | `@llodev/study-abstract` | ✅ v0.1.0 | [skills/study-abstract/](../../skills/study-abstract/) | `npm i @llodev/study-abstract` | `npx skills add llodev/skills/skills/study-abstract` |
 
+### `@llodev/bi` — skills de dashboard y gráfico
+
+Skills puras de **conocimiento** para dashboards, gráficos y tarjetas de KPI que dicen una conclusión antes de que el lector mire un eje — sin MCP, sin config, sin init. El primer miembro descubre el design system del proyecto, calcula una historia por gráfico e implementa en la stack que el proyecto ya usa. Otros miembros `bi-*` pueden unirse al mismo meta-paquete.
+
+| Paquete                | Estado    | Fuente                                             | npm                          | Vercel CLI                                         |
+| ---------------------- | --------- | -------------------------------------------------- | ---------------------------- | -------------------------------------------------- |
+| `@llodev/bi` _(meta)_  | ✅ v0.1.0 | [packages/bi/](../../packages/bi/)                 | `npm i @llodev/bi`           | —                                                  |
+| `@llodev/bi-dashboard` | ✅ v0.1.0 | [skills/bi-dashboard/](../../skills/bi-dashboard/) | `npm i @llodev/bi-dashboard` | `npx skills add llodev/skills/skills/bi-dashboard` |
+
 ## Compatibilidad de agentes
 
 Cada skill publicada declara qué agentes soporta en el campo `compatibility.agents` de su frontmatter. La matriz actual:
@@ -137,7 +146,7 @@ Cada skill publicada declara qué agentes soporta en el campo `compatibility.age
 
 Las skills viven planas bajo `skills/` (un directorio por skill, la convención
 que esperan los indexadores de skills); la pertenencia a la familia se indica con
-los prefijos `pm-tasks-`, `tests-` y `study-` en el nombre y el campo `metadata.family` de
+los prefijos `pm-tasks-`, `tests-`, `study-` y `bi-` en el nombre y el campo `metadata.family` de
 cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 (meta-paquete, testkit) viven bajo `packages/`.
 
@@ -160,13 +169,15 @@ cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 │   ├── ts-ddd-domain-service/ Domain services: policies/calculadoras stateless que retornan Result
 │   ├── ts-query-cqrs/         CQRS de lectura: *Query ports, read use cases find-*, proyecciones
 │   ├── tests-http/            Suites de prueba HTTP: descubrimiento, adaptadores NestJS y DRF
-│   └── study-abstract/        Resúmenes de estudio: visión hablada, glosario y autoevaluación
+│   ├── study-abstract/        Resúmenes de estudio: visión hablada, glosario y autoevaluación
+│   └── bi-dashboard/          Dashboards y gráficos: título-conclusión y un destaque
 ├── packages/                  Paquetes de workspace que no son skills (sin SKILL.md)
 │   ├── pm-tasks/              Meta-paquete — instala toda la familia pm-tasks
 │   ├── pm-tasks-testkit/      Fakes en memoria para los verbos CRUD canónicos
 │   ├── ts-ddd/                Meta-paquete — instala toda la familia ts-ddd
 │   ├── tests/                 Meta-paquete — instala toda la familia tests
-│   └── study/                 Meta-paquete — instala toda la familia study
+│   ├── study/                 Meta-paquete — instala toda la familia study
+│   └── bi/                    Meta-paquete — instala toda la familia bi
 ├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intención de release (workflow Changesets)
