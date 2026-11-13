@@ -137,6 +137,8 @@ importers:
         specifier: workspace:*
         version: link:../../skills/ts-query-cqrs
 
+  skills/arch-insights: {}
+
   skills/bi-dashboard: {}
 
   skills/django-schema-design: {}
