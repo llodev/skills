@@ -1,6 +1,6 @@
 {
   "name": "@llodev/bi-dashboard",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Design dashboards and charts that state one conclusion before the reader checks an axis.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/bi-dashboard",
