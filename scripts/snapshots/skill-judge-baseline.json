@@ -124,5 +124,11 @@
     "version": "0.0.0",
     "capturedAt": "2026-11-12",
     "notes": "First capture at package 0.0.0, after the split and the first skill-judge pass. D1 11, D2 14, D3 13, D4 14, D5 14, D6 14, D7 8, D8 13 = 101/120."
+  },
+  "skills/arch-insights/SKILL.md": {
+    "score": 80,
+    "version": "0.0.0",
+    "capturedAt": "2026-11-13",
+    "notes": "First capture at package 0.0.0. Independent skill-judge pass on the reviewed state: D1 12, D2 13, D3 12, D4 12, D5 12, D6 13, D7 9, D8 13 = 96/120 (80). After that pass the description was trimmed to the 1024-character Agent Skills limit and a pointer to examples/ was added to SKILL.md; neither change was re-scored. Top remaining weakness: textbook passages (CAP and PACELC, DDD definitions, circuit-breaker mechanics) dilute the expert content (D1)."
   }
 }

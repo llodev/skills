@@ -2,20 +2,18 @@
 name: arch-insights
 description: >-
   Guides architecture and tech-stack decisions for a new software project:
-  turns a raw idea into scope and an MVP cut, picks the architecture style
+  turns an idea into scope and an MVP cut, picks the architecture style
   (monolith first, modular monolith, or services), data stores and consistency,
-  sync versus async integration, reliability and observability, delivery and
-  proof of concept, and records each decision as an ADR. Use when someone is
-  starting a project, asks whether to use microservices or a monolith
-  (monolito, microsserviços, microservicios), needs a database or stack choice
-  (qual banco usar, escolha de stack), wants a review of an architecture
-  proposal, a context map, or system design (revisar arquitetura, desenho de
-  sistema, arquitectura), or asks for an ADR. Covers multi-tenant design,
-  queues versus streams, and AI-native systems (agents, MCP, RAG) when AI is in
-  scope. Triggers include architecture, arquitetura, system design, ADR, MVP,
-  bounded context, tech stack, structure this backend, projeto novo, and ideia
-  de produto. Do NOT use for line-level code review, writing migrations or
-  schemas, infrastructure as code or provisioning, or incident debugging.
+  sync versus async integration, reliability, delivery and proof of concept,
+  and records each decision as an ADR. Use when someone starts a project, asks
+  monolith or microservices (monolito, microsserviços, microservicios), needs a
+  database or stack choice (qual banco usar, escolha de stack), wants an
+  architecture proposal reviewed or a system designed (revisar arquitetura,
+  desenho de sistema), or asks for an ADR. Covers multi-tenant design, queues
+  versus streams, and AI-native systems when AI is in scope. Triggers also
+  include projeto novo and ideia de produto. Do NOT use for line-level code
+  review, writing migrations or schemas, infrastructure as code, or incident
+  debugging.
 license: MIT
 metadata:
   version: 0.0.0
@@ -109,6 +107,8 @@ For a request to structure a project, produce an **architecture brief** and an A
 7. **First steps:** the walking-skeleton checklist from [`delivery-and-poc.md`](references/delivery-and-poc.md).
 
 For a narrow question, such as "should I put Redis in front of this?", answer with the same five-part structure for that one decision. Do not produce a full brief for a narrow question.
+
+For a worked example, see [`examples/intake-and-brief.md`](examples/intake-and-brief.md) (intake to brief and decision table) and [`examples/adr-0001-modular-monolith.md`](examples/adr-0001-modular-monolith.md) (a finished ADR).
 
 ## Review mode
 
