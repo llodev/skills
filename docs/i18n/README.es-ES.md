@@ -136,6 +136,15 @@ Skills puras de **conocimiento** para dashboards, gráficos y tarjetas de KPI qu
 | `@llodev/bi` _(meta)_  | ✅ v0.1.0 | [packages/bi/](../../packages/bi/)                 | `npm i @llodev/bi`           | —                                                  |
 | `@llodev/bi-dashboard` | ✅ v0.1.0 | [skills/bi-dashboard/](../../skills/bi-dashboard/) | `npm i @llodev/bi-dashboard` | `npx skills add llodev/skills/skills/bi-dashboard` |
 
+### `@llodev/arc` — skills de decisiones de arquitectura
+
+Skills puras de **conocimiento** para decisiones de arquitectura y diseño en sistemas de software — sin MCP, sin configuración, sin init. El primer miembro conduce el intake de un proyecto nuevo, recorta el MVP, elige estilo de arquitectura, stack y plan de entrega, y registra cada decisión como ADR. Otros miembros `arc-*` pueden unirse al mismo meta-paquete.
+
+| Paquete                 | Estado    | Fuente                                               | npm                           | Vercel CLI                                          |
+| ----------------------- | --------- | ---------------------------------------------------- | ----------------------------- | --------------------------------------------------- |
+| `@llodev/arc` _(meta)_  | ✅ v0.1.0 | [packages/arc/](../../packages/arc/)                 | `npm i @llodev/arc`           | —                                                   |
+| `@llodev/arc-decisions` | ✅ v0.1.0 | [skills/arc-decisions/](../../skills/arc-decisions/) | `npm i @llodev/arc-decisions` | `npx skills add llodev/skills/skills/arc-decisions` |
+
 ## Compatibilidad de agentes
 
 Cada skill publicada declara qué agentes soporta en el campo `compatibility.agents` de su frontmatter. La matriz actual:
@@ -146,7 +155,7 @@ Cada skill publicada declara qué agentes soporta en el campo `compatibility.age
 
 Las skills viven planas bajo `skills/` (un directorio por skill, la convención
 que esperan los indexadores de skills); la pertenencia a la familia se indica con
-los prefijos `pm-tasks-`, `tests-`, `study-` y `bi-` en el nombre y el campo `metadata.family` de
+los prefijos `pm-tasks-`, `tests-`, `study-`, `bi-` y `arc-` en el nombre y el campo `metadata.family` de
 cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 (meta-paquete, testkit) viven bajo `packages/`.
 
@@ -170,14 +179,16 @@ cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 │   ├── ts-query-cqrs/         CQRS de lectura: *Query ports, read use cases find-*, proyecciones
 │   ├── tests-http/            Suites de prueba HTTP: descubrimiento, adaptadores NestJS y DRF
 │   ├── study-abstract/        Resúmenes de estudio: visión hablada, glosario y autoevaluación
-│   └── bi-dashboard/          Dashboards y gráficos: título-conclusión y un destaque
+│   ├── bi-dashboard/          Dashboards y gráficos: título-conclusión y un destaque
+│   └── arc-decisions/         Decisiones de arquitectura: de la idea al brief y a los ADR
 ├── packages/                  Paquetes de workspace que no son skills (sin SKILL.md)
 │   ├── pm-tasks/              Meta-paquete — instala toda la familia pm-tasks
 │   ├── pm-tasks-testkit/      Fakes en memoria para los verbos CRUD canónicos
 │   ├── ts-ddd/                Meta-paquete — instala toda la familia ts-ddd
 │   ├── tests/                 Meta-paquete — instala toda la familia tests
 │   ├── study/                 Meta-paquete — instala toda la familia study
-│   └── bi/                    Meta-paquete — instala toda la familia bi
+│   ├── bi/                    Meta-paquete — instala toda la familia bi
+│   └── arc/                   Meta-paquete — instala toda la familia arc
 ├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intención de release (workflow Changesets)
