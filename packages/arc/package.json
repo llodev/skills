@@ -1,6 +1,6 @@
 {
   "name": "@llodev/arc",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Meta-package: installs the @llodev/arc-* family (architecture decisions).",
   "license": "MIT",
   "repository": {
@@ -9,7 +9,7 @@
     "directory": "packages/arc"
   },
   "peerDependencies": {
-    "@llodev/arc-decisions": "^0.0.0"
+    "@llodev/arc-decisions": "^0.1.0"
   },
   "devDependencies": {
     "@llodev/arc-decisions": "workspace:*"

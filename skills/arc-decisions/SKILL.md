@@ -16,7 +16,7 @@ description: >-
   debugging.
 license: MIT
 metadata:
-  version: 0.0.0
+  version: 0.1.0
   tags:
     - agent-skill
     - architecture

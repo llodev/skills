@@ -1,6 +1,6 @@
 {
   "name": "@llodev/arc-decisions",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Guide architecture and tech-stack decisions for a new project, from idea and MVP scope to ADRs.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/arc-decisions",
