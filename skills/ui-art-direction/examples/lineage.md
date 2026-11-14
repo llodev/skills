@@ -25,7 +25,7 @@ Score mock-3 (1-5): identity 4 · layout 3 · legibility 2 · buildability 2 · 
 ## v3 <- from v1 (mockups/v3/mock-2.png)
 
 Change: stars and glow confined to the service map; every panel that holds text gets a matte oiled-steel surface with nothing behind it (three variants, `mock-1` to `mock-3`).
-Why: lifts legibility, still the lowest of v1's `mock-2`, the user's pick; the halo of v2 was the wrong lever, so this round removes the art from behind the text instead (`mockups/v2/critic.md`: "the halos read as smudges over the latency column").
+Why: lifts legibility, still the lowest of v1's `mock-2`, the user's pick; the halo of v2 was the wrong lever, so this round removes the art from behind the text instead (`mockups/v2/critic.md`: "the halos read as smudges over the latency column"). Kept `mock-2` against the control plate: identity, warm black, brass, and matte oiled steel instead of navy and cyan; composition, the star field held inside the service map where the control has a KPI row over equal cards; typography, engraved-scale numerals in sentence case where the control has one neutral sans at every size.
 Critic: mockups/v3/critic.md
 Score mock-1 (1-5): identity 4 · layout 5 · legibility 4 · buildability 4 · originality 4
 Score mock-2 (1-5): identity 4 · layout 5 · legibility 5 · buildability 4 · originality 4

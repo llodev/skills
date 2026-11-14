@@ -34,7 +34,7 @@ If something essential cannot be found (who the user is, which functions must st
 7. **Constraints:** stack, design system to respect or not, mandatory brand palette and type, accessibility level (WCAG 2.2 AA by default), performance limits for video or heavy art.
 8. **Acceptance:** checkable statements a finished build must pass, for example "the incident list shows 20 rows at 1920×1080 without scrolling".
 
-A brief without its regions is a Phase 0 defect. The blind critic in [`converge.md`](converge.md) judges layout fidelity from `brief.md` alone, against the regions and functions it lists. At the end of Phase 1, one line follows Acceptance: `Concept: <the concept line>`, copied from `dna.md`, because the critic judges identity against it and never sees `dna.md`.
+A brief without its regions is a Phase 0 defect. The blind critic in [`converge.md`](converge.md) judges layout fidelity from `brief.md` alone, against the regions and functions it lists. At the end of Phase 1, one line becomes the brief's last, after Acceptance (on a reskin, after the inventory and its `Tests` heading): `Concept: <the concept line>`, copied from `dna.md`, because the critic judges identity against it and never sees `dna.md`.
 
 ## 3. The layout lock
 

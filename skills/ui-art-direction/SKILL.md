@@ -166,7 +166,7 @@ Do not write app code, components, or stylesheets before Phase 3 records `mockup
 
 **MANDATORY — READ ENTIRE FILE**: [`references/converge.md`](references/converge.md).
 
-Each round, step 1 is the blind critic's score (round 1 included: it scores the Phase 2 board); the user's binding pick comes after seeing the scores. One change per round, edited from the best version or the user's pick, logged in `lineage.md`. Approval needs all five rubric scores at 4 or higher from the blind critic (who sees the control plate and the layout lock beside each candidate) and the user's explicit choice. Five rounds, two rounds without gain, or one criterion failing three rounds running stops the loop and asks the user. This phase also makes the state sheet from a passing pick before the lock and the mobile pass after it, each with its image count confirmed; a site locks the hero and every storyboard frame. The comp-in-hand route records the lock and skips the score.
+Each round, step 1 is the blind critic's score (round 1 included: it scores the Phase 2 board); the user's binding pick comes after seeing the scores. One change per round, edited from the best version or the user's pick, logged in `lineage.md`. Approval needs all five rubric scores at 4 or higher from the blind critic (who sees the control plate and the layout lock beside each candidate) and the user's explicit choice. Five rounds, two rounds without gain, or one criterion failing three rounds running stops the loop and asks the user. This phase also makes the state sheet from a passing pick before the lock and the mobile pass after it, each with its image count confirmed; a site locks the hero and every storyboard frame. The comp-in-hand route records the lock and skips the score. Read [`references/mockup-prompting.md`](references/mockup-prompting.md) again for every prompt this phase writes (round edits, the state sheet, the mobile pass): each keeps its prompt contract.
 
 ## Phase 4 — Motion (optional)
 
@@ -196,7 +196,7 @@ Build in layers (art, interface, motion), with the project's components and real
 
 **MANDATORY — READ ENTIRE FILE**: [`anti-patterns/process.md`](anti-patterns/process.md) before the final hand-off.
 
-Capture deterministically at the brief's target viewport, then run `python3 scripts/compare.py mockups/APPROVED.<ext> qa/screenshot-01.png --out qa/compare-01.png --report qa/compare-01.json`; a site runs one compare per section against that section's lock file. Tile scores are advisory: fix by impact (layout, color and light, type, detail) and register intentional differences in `qa/differences.md`. The delivery checklist closes `qa/fidelity.md`.
+Capture deterministically at the brief's target viewport as `qa/screenshot-NN.png`, `NN` being the next free number in `qa/` (Phase 6 already captured), then run `python3 scripts/compare.py mockups/APPROVED.<ext> qa/screenshot-NN.png --out qa/compare-NN.png --report qa/compare-NN.json` with the same `NN`; a site runs one compare per section against that section's lock file. Tile scores are advisory: fix by impact (layout, color and light, type, detail) and register intentional differences in `qa/differences.md`. The delivery checklist closes `qa/fidelity.md`.
 
 ## When the work is going wrong
 

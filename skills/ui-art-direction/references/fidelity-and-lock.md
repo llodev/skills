@@ -4,18 +4,18 @@ Goal: compare the build with the design lock tile by tile, fix by impact, check 
 
 ## 1. Capture
 
-Capture the production build as [`capture-and-checks.md`](capture-and-checks.md) says, at the viewport and scale the brief names (for example 1920 x 1080 at scale 1), never at the mockup's pixel size: an image model's output size is not a viewport. `compare.py` resizes the capture to the mockup, so `resized: true` with matching aspect is expected and reported, not fixed. Save one screenshot per round, `qa/screenshot-NN.png`, numbered after Phase 6's round; a site gets `qa/screenshot-s<N>-NN.png` per section.
+Capture the production build as [`capture-and-checks.md`](capture-and-checks.md) says, at the viewport and scale the brief names (for example 1920 x 1080 at scale 1), never at the mockup's pixel size: an image model's output size is not a viewport. `compare.py` resizes the capture to the mockup, so `resized: true` with matching aspect is expected and reported, not fixed. Save one screenshot per round, `qa/screenshot-NN.png`; the first Phase 7 round takes the next free number in `qa/` (Phase 6 already captured); a site gets `qa/screenshot-s<N>-NN.png` per section.
 
 **Aspect mismatch.** When the mockup's aspect differs from the target (`openai` returns 3:2 for 16:9), `aspect_mismatch` is true. By default, crop a copy of the mockup to the target aspect, centered, as `qa/mockup-crop.<ext>` (the Pillow crop of [`capture-and-checks.md`](capture-and-checks.md) section 5), compare against that copy, and write the crop box in the capture settings of `qa/fidelity.md`. Regenerate the mockup at the target aspect (a Phase 3 round, under the cost gate) only when the crop would cut a region of the brief. Never move the build to the mockup's aspect.
 
 ## 2. The compare loop
 
 ```
-python3 scripts/compare.py design/<slug>/mockups/APPROVED.<ext> design/<slug>/qa/screenshot-01.png \
-  --out design/<slug>/qa/compare-01.png --report design/<slug>/qa/compare-01.json
+python3 scripts/compare.py design/<slug>/mockups/APPROVED.<ext> design/<slug>/qa/screenshot-NN.png \
+  --out design/<slug>/qa/compare-NN.png --report design/<slug>/qa/compare-NN.json
 ```
 
-Use the lock's real extension. Run one compare per lock line in `lineage.md`. For a site, each section against its own lock file: section 1 against `mockups/APPROVED.<ext>`, section N against `mockups/APPROVED-s<N>.<ext>`, named `compare-s<N>-01`. A mobile image the user locked (an `APPROVED: mobile` line, file in `mockups/mobile/`) is compared at the brief's mobile viewport, named `compare-mobile-01`. The state sheet (`mockups/states/`) and an unlocked mobile pass are not locks: hold the build beside them by eye and write one line per image under `By eye` in `qa/fidelity.md` (it matches, or the differences). `--grid` defaults to `4x3` and `--worst` to `3`. The script writes the sheet (reference, implementation, difference heat map), one crop per worst tile as `compare-01-tile-<col>-<row>.png` (reference crop beside implementation crop), and prints the report. An excerpt, values illustrative:
+Use the lock's real extension and the round's `NN`. Run one compare per lock line in `lineage.md`. For a site, each section against its own lock file: section 1 against `mockups/APPROVED.<ext>`, section N against `mockups/APPROVED-s<N>.<ext>`, named `compare-s<N>-NN`. A mobile image the user locked (an `APPROVED: mobile` line, file in `mockups/mobile/`) is compared at the brief's mobile viewport, named `compare-mobile-NN`. The state sheet (`mockups/states/`) and an unlocked mobile pass are not locks: hold the build beside them by eye and write one line per image under `By eye` in `qa/fidelity.md` (it matches, or the differences). `--grid` defaults to `4x3` and `--worst` to `3`. The script writes the sheet (reference, implementation, difference heat map), one crop per worst tile as `compare-NN-tile-<col>-<row>.png` (reference crop beside implementation crop), and prints the report. An excerpt, values illustrative:
 
 ```json
 {
@@ -37,7 +37,7 @@ Read it in this order:
 5. **Vision read.** A vision model reads the worst crops and the sheet with this prompt: "Left: approved mockup crop. Right: implementation crop. List the visible differences in layout, color and light, type, and detail. Do not say which is better." Its critique is advisory, like the score.
 6. **`overall`** last, only as a trend between rounds with the same method and grid.
 
-Number the rounds (`compare-01`, `compare-02`), each with its own `screenshot-NN.png`, continuing after Phase 6's round: crops from an earlier run are not deleted, and a stale crop read as current is a false fix.
+Number the rounds in sequence, each `compare-NN` with its own `screenshot-NN.png`, continuing after Phase 6's round: crops from an earlier run are not deleted, and a stale crop read as current is a false fix.
 
 **Never write "fidelity passed", "score above X", or any number as the verdict.** A high score can hide a wrong font in one tile; a low score in a masked tile is expected.
 
@@ -64,7 +64,7 @@ The register is `qa/differences.md`, one row per difference kept; `qa/fidelity.m
 | header title | invented headline       | product copy from the brief | real text     | user        |
 | col 1, row 2 | gray placeholder labels | labels at 4.5:1             | accessibility | user        |
 
-Valid reasons: real text, real data, accessibility, masked live content, and a buildability call already recorded in `spec/`.
+Valid reasons: real text, real data, accessibility, masked live content, the project's design system (a spec token mapped onto a project variable), and a buildability call already recorded in `spec/`.
 
 ## 5. Accessibility on the real render
 
@@ -93,10 +93,12 @@ After the user approves the side-by-side, lock it:
 
 ## Delivery checklist
 
+On the comp-in-hand route, items 2 to 4 are marked `not applicable on the comp-in-hand route`, never skipped silently; on a reskin, every item applies as written.
+
 - [ ] `brief.md` and the layout lock existed before exploration.
 - [ ] References with recorded sources in `refs/SOURCES.md` and a DNA card in `dna.md`.
 - [ ] Mockups versioned with prompt, model, and references in sidecars; `lineage.md` explains every step.
-- [ ] The version the user approved passed the blind rubric, every criterion at least 4 (skipped on comp-in-hand).
+- [ ] The version the user approved passed the blind rubric, every criterion at least 4.
 - [ ] (If Phase 4 ran) approved video and `spec/motion.md` written.
 - [ ] `spec/` complete: tokens reviewed with contrast checked, components, assets, motion.
 - [ ] Working build with real data, responsive, accessible, reduced motion respected.

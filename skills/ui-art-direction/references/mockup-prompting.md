@@ -48,7 +48,7 @@ no gibberish text, no watermark.
 
 Contract rules:
 
-- **One sentence per reference image, stating its role**, in the order the images are attached: identity, layout, or one named attribute ("Image 3: material only, take the brushed titanium surface"). An image with no role sentence gets copied whole.
+- **One sentence per reference image, stating its role**, in the order the images are attached: identity, layout, or one named attribute ("Image 3: material only, take the brushed titanium surface"). An image with no role sentence gets copied whole. The layout lock's "gray color and labels" sentence is for a wireframe; on a reskin, the running app's screenshot takes the role sentence of [`reskin.md`](reskin.md) section 2.
 - LAYOUT lists every region of the lock in the lock's words. CONTENT comes from the brief's real content, never invented.
 - VISUAL IDENTITY comes from the DNA card. With a mandatory brand palette, the Palette line states the brand values and the axis varies light, material, art, or composition.
 - The declared axis value of each candidate is the only thing that differs between the candidates' prompts (its first line and the line that carries it).
@@ -59,7 +59,7 @@ Contract rules:
 - A **full-screen comp** is the whole screen at the target aspect, with interface, real text, and art together. Phase 2 makes comps: they decide the look.
 - An **art plate** is the art layer alone: background, illustration, texture. **No UI, no text**, no buttons, no letters. Art plates are build assets, made after the lock from the approved comp ([`build-spec.md`](build-spec.md)).
 
-Never ask for art plates in place of comps, and never ship a comp as a background: its baked-in text and controls are not real components. For an art plate, drop the LAYOUT and CONTENT sections and add: "Art only: no interface, no text, no letters, no logos. Leave calm space where <region> sits."
+Never ask for art plates in place of comps, and never ship a comp as a background: its baked-in text and controls are not real components. For an art plate, attach the approved mockup alone, drop the LAYOUT and CONTENT sections, and use this role sentence: "Image 1 is the approved mockup: reproduce only the artwork of region <region>, same composition, light and materials, with no interface, no text, no letters, no logos; paint calm, continuous art where the interface covered it."
 
 ## 4. Round 1 and the control plate
 

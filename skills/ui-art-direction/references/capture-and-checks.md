@@ -34,7 +34,7 @@ const page = await context.newPage();
 await page.goto("http://localhost:4173/overview", { waitUntil: "networkidle" });
 await page.evaluate(() => document.fonts.ready.then(() => true));
 await page.screenshot({
-  path: "design/<slug>/qa/screenshot-01.png", // one number per round: screenshot-02.png next
+  path: "design/<slug>/qa/screenshot-NN.png", // NN: the next free number in qa/
   animations: "disabled",
   caret: "hide",
   mask: [page.locator("[data-live]")],
@@ -50,15 +50,15 @@ Save the command as `design/<slug>/qa/capture.sh` and run it from the project ro
 
 ```sh
 TZ=UTC "$CHROME" --headless --hide-scrollbars --window-size=1920,1080 --force-device-scale-factor=1 \
-  --virtual-time-budget=10000 --lang=en-US --screenshot=design/<slug>/qa/screenshot-01.png \
+  --virtual-time-budget=10000 --lang=en-US --screenshot=design/<slug>/qa/screenshot-NN.png \
   http://localhost:4173/overview
 ```
 
-`--virtual-time-budget` lets scripts settle before the shot (10000 ms is a default). For the color scheme, use the app's own switch (a query string or a stored setting); add `--force-dark-mode` only when the app follows the system scheme. Reduced motion and animations cannot be forced from the command line: capture a temporary copy of the build whose stylesheet adds `*{animation:none!important;transition:none!important}`, served as in section 1. The fallback cannot mask, wait for network idle, or set reduced motion; the report states each fixed-environment setting it could not apply.
+`--virtual-time-budget` lets scripts settle before the shot (10000 ms is a default). For the color scheme, use the app's own switch (a query string or a stored setting); add `--force-dark-mode` only when the app follows the system scheme. The fallback cannot mask, wait for network idle, or set `prefers-reduced-motion`, so the page's own reduced-motion code never runs. Get the capture default (the poster or static state) from a temporary copy of the build whose stylesheet adds `*{animation:none!important;transition:none!important}`, served as in section 1, plus the app's own reduced-motion switch when it has one. When the build's motion is driven by script (parallax, `requestAnimationFrame`), the report lists "reduced-motion state not verified by capture" and asks the user to check it in a browser with the system setting on. The report states each fixed-environment setting the fallback could not apply.
 
 ## 5. Contrast on rendered pixels
 
-Make one crop per distinct text-on-backdrop pair: at least the headline, body text, muted text, each control label, and each status color. Include the backdrop right behind the text (art, glass, the video poster). Crop with `python3 -c "from PIL import Image; Image.open('qa/screenshot-01.png').crop((x0, y0, x1, y1)).save('qa/contrast/body.png')"` (create `qa/contrast/` first). Then run `python3 scripts/palette.py qa/contrast/body.png` and read `contrast`. A pair passes at 4.5:1 for text. Large text (24 px, or 18.66 px bold), icons, control boundaries, data marks, and status colors pass at 3:1. Record each crop with its ratio.
+Make one crop per distinct text-on-backdrop pair: at least the headline, body text, muted text, each control label, and each status color. Include the backdrop right behind the text (art, glass, the video poster). Crop with `python3 -c "from PIL import Image; Image.open('qa/screenshot-NN.png').crop((x0, y0, x1, y1)).save('qa/contrast/body.png')"` (create `qa/contrast/` first). Then run `python3 scripts/palette.py qa/contrast/body.png` and read `contrast`. A pair passes at 4.5:1 for text. Large text (24 px, or 18.66 px bold), icons, control boundaries, data marks, and status colors pass at 3:1. Record each crop with its ratio.
 
 ## 6. Accessibility scan
 
@@ -78,7 +78,7 @@ The keyboard pass: with Playwright, press Tab and capture each stop. Without it,
 ## 7. 200 percent zoom and reduced motion
 
 - **Zoom.** Capture at half the viewport width and height at scale factor 2 as `qa/zoom-200.png`. In Playwright, set `deviceScaleFactor: 2`. In the fallback, use `--window-size=960,540 --force-device-scale-factor=2`. It passes when no text or control is clipped, nothing scrolls sideways, and every function is still reachable.
-- **Reduced motion.** Capture with `reducedMotion` set to `"reduce"` and to `"no-preference"`, as `qa/motion-reduce.png` and `qa/motion-full.png`. It passes when loops, autoplaying video, and parallax stop under `"reduce"` and state changes stay visible. The fallback cannot set it: ask the user to check with the system setting, or name the gap.
+- **Reduced motion.** Capture with `reducedMotion` set to `"reduce"` and to `"no-preference"`, as `qa/motion-reduce.png` and `qa/motion-full.png`. It passes when loops, autoplaying video, and parallax stop under `"reduce"` and state changes stay visible. The fallback cannot set it: it captures only the default of section 4, and the reduced-motion check goes to the user as section 4 says, or is named as a gap.
 
 ## 8. Performance
 

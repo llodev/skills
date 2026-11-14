@@ -10,10 +10,10 @@ Check every candidate mockup in Phases 2 and 3, and the build in Phase 7, agains
    - **identity:** palette, light, material;
    - **composition:** where the mass sits, what the regions are made of, density;
    - **typography:** faces, case, scale contrast, figures.
-4. If you cannot write one of the three sentences, that candidate is the control with a different coat. Do not show it as a direction. Change the declared axis, or go back to the concept line ([`concept-and-dna.md`](../references/concept-and-dna.md)).
+4. If you cannot write one of the three sentences, that candidate is the control with a different coat. Show it labelled as failing the distance check, never offered as a direction. Change the declared axis, or go back to the concept line ([`concept-and-dna.md`](../references/concept-and-dna.md)).
 5. In Phase 7, run it again with the screenshot of the build beside the approved mockup and the control plate. A build drifts toward the control one default at a time (a font fallback, a radius, a card wrapper). If the screenshot is closer to the control than to the mockup in any of the three, that is a fidelity defect ([`fidelity-and-lock.md`](../references/fidelity-and-lock.md)).
 
-Write the three sentences under each candidate when you present the board. For the candidate the round keeps, they go into the `Why:` line of its `lineage.md` entry; a worked example is in [`lineage.md`](../examples/lineage.md).
+Write the three sentences under each candidate when you present the board. For the candidate the round keeps, they go into the `Why:` line of the round's `lineage.md` entry, round 1 included; a worked example is in [`lineage.md`](../examples/lineage.md).
 
 ## 1. A default chosen without examination
 
