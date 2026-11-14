@@ -486,9 +486,16 @@ The cost gate changed behavior in one of five repetitions: on this model and tas
 - `build-spec.md`: the Phase 5 output says `tokens.css (or the project's theme)` while Phase 5 writes no app code.
 - The Playwright capture fixes color scheme, locale, time zone and reduced motion; the no-Playwright fallback (`headless --screenshot`) cannot, and the reference does not say what to do.
 
+**Rounds after the second read-through (requested by the user: "as round as possible before publishing").**
+
+- **Round 2 (gaps and contradictions).** One opus implementer applied seven rulings on contradictions (round-1 axis in `dna.md` plus a `Concept:` line in `brief.md`; user leaning at the Phase 2 hand-off versus a binding pick after the critic's scores; the difference register is `qa/differences.md`; build passes by target; `spec/tokens.css` lives in the pack only; the no-Playwright fallback; production build over dev server) and decided defaults for the gaps. New `references/capture-and-checks.md` (85 lines) took the capture and measurement material out of `SKILL.md` and `fidelity-and-lock.md`. 89 of 91 gaps closed, the rest skipped because the reader declined to open a delegated file.
+- **Third read-through** (same six scenarios, readers allowed to open the files a phase delegates to): all six "could execute with gaps", none blocked; 110 gaps (converge 12, motion 13, reskin 17, build-spec 21, implementation 22, fidelity-and-lock 25), about 18 of them genuine cross-file contradictions. The count rose because readers who follow delegated files find more to ask; it is not a convergence metric, so the count was not chased.
+- **Round 3 (contradictions only).** 25 rulings: the edit prompt keeps the prompt contract; STATUS at the lock names the next phase; sidecar naming; screenshot numbering; reduced motion in the fallback is reported as unverified when the build's motion is JS-driven; comp-in-hand checklist exceptions; logo rule (never generated), art-plate role sentence, `effects-scrim-opacity`, spacing base rule, scratch renders in `spec/scratch/`; passes per section on multi-section sites; scroll-linked layers carry `depth`; `breakpoints-md`; focus-ring and scrim recipes; design-system precedence; entry check; loop-seam test; video mode independent of image mode; at most three layers per clip; reskin brief order and screenshot role sentence; skeleton switch judged on candidates. Lint 0 findings, 60 tests, `make validate` exit 0. The contradiction fixes were not re-verified by a fourth read-through.
+- **Re-score after the rounds: 101/120 (84), down from 109/120 (91).** D1 16, D2 13, D3 14, D4 14, D5 13, D6 11, D7 8, D8 12. The judge's weaknesses: exact file names, tie-break rules and fixed formats read as rigid bookkeeping for a creative task (D6, D8); repeated content between `SKILL.md`, references and anti-patterns, and generic knowledge (WCAG thresholds, capture boilerplate, Tailwind mapping) (D1); one contradiction (candidates per later round, fixed: at most three variants of one change). The baseline records 84. The trade is the one the rounds made: closing readers' gaps adds detail, and detail costs judgment room. A trim pass would recover points but may reopen gaps.
+
 **Known gaps.**
 
-- Phases 3-7 were not run end to end; they are covered by script tests and by two read-throughs (the second one found 91 mostly second-order gaps, listed above in groups). The accuracy of the blind critic's scores and the final fidelity report are unverified.
+- Phases 3-7 were not run end to end; they are covered by script tests and by three read-throughs (the last found about 110 mostly second-order gaps; the contradictions among them were fixed and not re-read). The accuracy of the blind critic's scores and the final fidelity report are unverified.
 - The critic contract gained a third input (the layout lock image) after its micro-test, which ran on the earlier contract.
 - After the behavioral runs, seven fix-round edits and then a final-review wave changed behavior-shaping text. Only the control-prompt fix (P2) was re-exercised; the concept-agreement rule, the sourcing fallback, the STATUS path base, the reskin test record, the skeleton capture path, the state sheet and mobile pass ownership, the site locks, and the narrower triggers were not.
 - The cost gate's necessity is weakly evidenced (one repetition in five exceeded four images without it); video and retry loops were not exercised.
@@ -528,9 +535,12 @@ Tokens and durations are as reported in the task notifications (micro-test, P2 r
 | Test subject x6 | Read-through of references 3-7 and reskin              | sonnet | 406,026       | 600 s    |
 | Fix round 4     | Gap closing, Phases 3-7 (user-requested)               | opus   | 217,180       | 907 s    |
 | Test subject x6 | Second read-through, scenarios per reference           | sonnet | 394,060       | 87 s     |
-| **Total**       |                                                        |        | **5,786,199** |          |
+| Fix round 5     | Gaps and contradictions, round 2 (user-requested)      | opus   | 291,486       | 1226 s   |
+| Test subject x6 | Third read-through, readers may open delegated files   | sonnet | 529,581       | 167 s    |
+| Fix round 6     | Contradictions, round 3 (resumed after a rate limit)   | opus   | 184,077       | 256 s    |
+| **Total**       |                                                        |        | **6,791,343** |          |
 
-Fix rounds: 4 (T9 example domain; behavioral runs; final review wave; gap closing after the read-through, requested by the user), plus the implementer-reported bad-input guards that were accepted without a round.
+Fix rounds: 6 (T9 example domain; behavioral runs; final review wave; and three user-requested rounds after the read-throughs), plus the implementer-reported bad-input guards that were accepted without a round.
 
 Root causes of the fix rounds, for the next plan:
 

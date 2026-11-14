@@ -64,7 +64,7 @@ Check the run against this list at every phase gate. Each entry gives the sympto
 
 **Cause:** the round is optimized for variety or for a consistent set, not for a comparison.
 
-**Fix:** round 1 is the control plate plus two or three candidates on one declared axis (mood, material, light, or density), four images at most, control included. For a site, round 1 explores the first viewport only. Later rounds change one thing, edit from the best version, and generate two to four candidates ([`converge.md`](../references/converge.md)).
+**Fix:** round 1 is the control plate plus two or three candidates on one declared axis (mood, material, light, or density), four images at most, control included. For a site, round 1 explores the first viewport only. Later rounds change one thing, edit from the version the user picked, and generate at most three variants of that change ([`converge.md`](../references/converge.md)).
 
 ## 9. Baking text into art
 
