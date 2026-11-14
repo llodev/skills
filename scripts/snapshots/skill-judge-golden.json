@@ -124,5 +124,11 @@
     "rubricChecksum": "manual",
     "rubricVersion": "v1",
     "totalRaw": 84
+  },
+  "skills/ui-art-direction/SKILL.md": {
+    "dimensionScores": {},
+    "rubricChecksum": "manual",
+    "rubricVersion": "v1",
+    "totalRaw": 91
   }
 }

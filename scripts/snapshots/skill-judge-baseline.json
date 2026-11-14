@@ -130,5 +130,11 @@
     "version": "0.0.0",
     "capturedAt": "2026-11-13",
     "notes": "First capture at package 0.0.0. Independent skill-judge pass on the reviewed state: D1 12, D2 13, D3 12, D4 12, D5 12, D6 13, D7 9, D8 13 = 96/120 (80). After that pass the description was trimmed to the 1024-character Agent Skills limit and a pointer to examples/ was added to SKILL.md; neither change was re-scored. Top remaining weakness: textbook passages (CAP and PACELC, DDD definitions, circuit-breaker mechanics) dilute the expert content (D1)."
+  },
+  "skills/ui-art-direction/SKILL.md": {
+    "score": 91,
+    "version": "0.0.0",
+    "capturedAt": "2026-11-14",
+    "notes": "First capture at package 0.0.0, re-scored after the final fix wave. D1 17, D2 14, D3 14, D4 14, D5 14, D6 13, D7 9, D8 14 = 109/120. Earlier pass on the first text: 107/120. The description was edited once after this score (a do-not-use clause about wireframes), staying at 999 characters. Known and kept: compatibility and metadata.tags are lists, as in the sibling skills."
   }
 }
