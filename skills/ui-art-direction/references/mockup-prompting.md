@@ -1,6 +1,6 @@
 # Phase 2 — Explore
 
-Generate full screens that keep **the layout of the lock** and take **the identity of the concept**, show them beside a control plate, and hand the choice to the user. This phase writes one prompt file per image (`prompts/v1-control.md`, `prompts/v1-<value>.md`), `mockups/v1/` with sidecars, a board, and, for a site, a scroll storyboard once a direction is chosen. It needs `brief.md`, the layout lock, `dna.md`, and the mode from [`modes-and-models.md`](modes-and-models.md).
+Generate full screens that keep **the layout of the lock** and take **the identity of the concept**, show them beside a control plate, and hand the choice to the user. This phase writes one prompt file per image (`prompts/control.md`, `prompts/v1-<value>.md`), `mockups/v1/` (`control.<ext>`, `mock-1.png`, `mock-2.png`, …) with sidecars, a board, and, for a site, a scroll storyboard once a direction is chosen. It needs `brief.md`, the layout lock, `dna.md`, and the mode from [`modes-and-models.md`](modes-and-models.md).
 
 ## 1. Images decide what code cannot
 
@@ -18,7 +18,7 @@ Do not skip this phase because "everything can be drawn in CSS". Do not build th
 
 ## 2. The prompt contract
 
-Write prompts in English; write the interface text in the product's language. Save each prompt as its own file: `prompts/v1-control.md`, then `prompts/v1-<value>.md` per candidate, named by its axis value, with the axis and that value on its first line. Never edit a prompt that already produced images; write a new version.
+Write prompts in English; write the interface text in the product's language. Save each prompt as its own file: `prompts/control.md`, then `prompts/v1-<value>.md` per candidate, named by its axis value, with the axis and that value on its first line. The candidate it makes is `mockups/v1/mock-<n>.png`, `<n>` being the value's place on the `Round-1 axis:` line of `dna.md`. Never edit a prompt that already produced images; write a new version.
 
 ```
 You are designing a high-fidelity UI screenshot for a real, usable product.
@@ -63,9 +63,9 @@ Never ask for art plates in place of comps, and never ship a comp as a backgroun
 
 ## 4. Round 1 and the control plate
 
-Round 1 is **four images at most**: one control plate plus two or three candidates that differ on the axis declared in `dna.md`. A round of this size never trips the cost gate.
+Round 1 is **four images at most**: one control plate plus two or three candidates that differ on the axis Phase 1 recorded on the `Round-1 axis:` line of `dna.md`. A round of this size never trips the cost gate.
 
-The **control plate** is the same screen generated with a bare prompt: the layout lock as the only reference, the same LAYOUT and CONTENT as the candidates, and never a concept, DNA, or identity image. If the brief has brand adjectives, put them in verbatim as the control's only direction: the control then shows what the adjectives alone produce. If it has none, the control has no direction. Save it as `prompts/v1-control.md`:
+The **control plate** is the same screen generated with a bare prompt: the layout lock as the only reference, the same LAYOUT and CONTENT as the candidates, and never a concept, DNA, or identity image. If the brief has brand adjectives, put them in verbatim as the control's only direction: the control then shows what the adjectives alone produce. If it has none, the control has no direction. Save it as `prompts/control.md`; the image is `mockups/v1/control.<ext>`:
 
 ```
 Image 1 is the layout lock: follow its regions and proportions exactly; its gray color and labels are not part of the design.
@@ -78,7 +78,7 @@ QUALITY BAR: <the same quality bar as the candidates>
 
 Show it on the board beside the candidates, labeled `control`. Under each candidate, write one line naming what is different from the control (light, material, composition, type voice). A candidate you cannot tell apart from the control has failed; the distance check is in [`../anti-patterns/generic-ai-look.md`](../anti-patterns/generic-ai-look.md).
 
-Later rounds ([`converge.md`](converge.md)) are two to four candidates and do not repeat the control.
+Later rounds ([`converge.md`](converge.md)) are two or three variants of one change and reuse this control plate; it is never regenerated.
 
 ## 5. Run the round
 
@@ -86,14 +86,14 @@ Automatic mode:
 
 ```bash
 python3 scripts/wireframe.py design/<slug>/layout/wire.json --out design/<slug>/layout/wire.png
-python3 scripts/generate.py --provider gemini --prompt design/<slug>/prompts/v1-control.md \
+python3 scripts/generate.py --provider gemini --prompt design/<slug>/prompts/control.md \
   --ref design/<slug>/layout/wire.png --aspect 16:9 --out design/<slug>/mockups/v1/control.png
 python3 scripts/generate.py --provider gemini --prompt design/<slug>/prompts/v1-dusk.md \
   --ref design/<slug>/refs/observatory-dome.jpg --ref design/<slug>/layout/wire.png \
-  --aspect 16:9 --out design/<slug>/mockups/v1/dusk.png
+  --aspect 16:9 --out design/<slug>/mockups/v1/mock-1.png
 ```
 
-Repeat the second call once per axis value (`v1-night.md`, `v1-darkroom.md`). Native mode: the same prompt files and references, in the same order, through the host's image tool; write each sidecar by hand. Assisted mode: one step line per call, in the form from [`modes-and-models.md`](modes-and-models.md).
+Repeat the second call once per axis value (`v1-night.md` makes `mock-2.png`, `v1-darkroom.md` makes `mock-3.png`). Native mode: the same prompt files and references, in the same order, through the host's image tool; write each sidecar by hand. Assisted mode: one step line per call, in the form from [`modes-and-models.md`](modes-and-models.md).
 
 ## 6. Verify each image before showing it
 
@@ -111,18 +111,18 @@ Show every image, including the failed ones, with their defects named. Hiding a 
 ## 7. The board
 
 ```bash
-python3 scripts/board.py design/<slug>/mockups/v1/control.png design/<slug>/mockups/v1/dusk.png \
-  design/<slug>/mockups/v1/night.png design/<slug>/mockups/v1/darkroom.png \
-  --out design/<slug>/mockups/v1/board.png --labels control,dusk,night,darkroom --cols 4
+python3 scripts/board.py design/<slug>/mockups/v1/control.png design/<slug>/mockups/v1/mock-1.png \
+  design/<slug>/mockups/v1/mock-2.png design/<slug>/mockups/v1/mock-3.png \
+  --out design/<slug>/mockups/v1/board.png --labels control,mock-1,mock-2,mock-3 --cols 4
 ```
 
-Present the board with the axis, one line per candidate (difference from the control, defects), and one question: which direction leads, or which two to recombine.
+Present the board with the axis, one line per candidate (its axis value, difference from the control, defects), and one question: which direction leads, or which two to recombine.
 
 ## 8. The hand-off
 
-After the board, **stop**. Update `STATUS.md` (`Phase: 2 - Explore`, `Next step:` the choice you are waiting for, every file as a path from the project root) and wait for the user.
+After the board, **stop**. The board goes to the user unscored: the blind critic scores it at the start of Phase 3, and the user's binding pick comes after the scores. A pick or leaning the user gives now goes on the `Open decisions` line of `STATUS.md` as a leaning, not as approval. Update `STATUS.md` (`Phase: 2 - Explore`, `Next step:` the choice you are waiting for, every file as a path from the project root) and wait for the user.
 
-- In assisted mode, the hand-off names the file to attach and the file to save back, for example: "Tell me which label leads. I will then write `design/<slug>/prompts/v2.md`; attach `design/<slug>/mockups/v1/<label>.png` to your image app, run that prompt, and save the result as `design/<slug>/mockups/v2/<label>-a.png`."
+- In assisted mode, the hand-off names the file to attach and the file to save back, for example: "Tell me which candidate leads. After the critic's scores and your pick, I will write `design/<slug>/prompts/v2.md`; attach `design/<slug>/mockups/v1/mock-<n>.png` (first) and `design/<slug>/layout/wire.png` (second) to your image app, run that prompt, and save the results as `design/<slug>/mockups/v2/mock-1.png`, `mock-2.png`, `mock-3.png`."
 - Phases 0 to 3 write no application code. No components, no styles, no "first working version" while waiting.
 
 ## 9. Scroll storyboard for a site
@@ -143,11 +143,11 @@ The transition note says what carries across the boundary (a color shift, a shap
 
 ## 10. The state sheet
 
-Phase 3 runs this as step 0 of the design lock ([`converge.md`](converge.md)): one **state sheet** from the leading direction, an edit of the lead image that shows its key components in empty, loading, error, hover, and focus states, laid out as a grid on one plate, with real messages from the brief. One image, so one call; state the count and confirm first. Save the prompt as `prompts/states.md` and the image as `mockups/states/sheet.<ext>` with its sidecar. Verify it like any other image; `lineage.md` logs it unscored. It feeds the component inventory in [`build-spec.md`](build-spec.md).
+Phase 3 runs this as step 0 of the design lock ([`converge.md`](converge.md)), after the user's pick passes: one **state sheet** from that pick, an edit of the picked image that shows its key components in empty, loading, error, hover, and focus states, laid out as a grid on one plate, with real messages from the brief. One image, so one call; state the count and confirm first. Save the prompt as `prompts/states.md` and the image as `mockups/states/sheet.<ext>` with its sidecar. Verify it like any other image; `lineage.md` logs it unscored. It feeds the component inventory in [`build-spec.md`](build-spec.md).
 
 ## 11. The mobile pass
 
-Mobile is **derived from the approved desktop**, never explored separately. Phase 3 runs it right after the lock ([`converge.md`](converge.md)), one round, image count stated and confirmed. Write a mobile wireframe (`layout/wire-mobile.json`, size `[1080, 1920]`, so it has the 9:16 aspect sent as `--aspect`: the nearest ratio to a 390×844 phone that most models accept) and run the round: the approved desktop as identity reference, the mobile wireframe as the layout lock, the same content, aspect 9:16. Crop to the phone's aspect when reading it, and register the crop as [`fidelity-and-lock.md`](fidelity-and-lock.md) section 1 says. The prompt adds: "Same identity as image 1, reflowed for a phone; no new colors, materials, or motifs." Verify that every function from the brief is still reachable. Save the prompt as `prompts/mobile.md` and the results under `mockups/mobile/`, named like a round's images, with their sidecar; `lineage.md` logs them unscored unless the user makes one a lock candidate ([`converge.md`](converge.md)).
+Mobile is **derived from the approved desktop**, never explored separately. Phase 3 runs it right after the lock ([`converge.md`](converge.md)), one round, image count stated and confirmed. Its layout lock is the mobile wireframe Phase 0 rendered, `layout/wire-mobile.png` (from `layout/wire-mobile.json`, size `[1080, 1920]`, so it has the 9:16 aspect sent as `--aspect`: the nearest ratio to a 390×844 phone that most models accept); on a reskin, `layout/current-<screen>-mobile.png`. Run the round: the approved desktop as identity reference, the mobile wireframe as the layout lock, the same content, aspect 9:16. Crop to the phone's aspect when reading it, and register the crop as [`fidelity-and-lock.md`](fidelity-and-lock.md) section 1 says. The prompt adds: "Same identity as image 1, reflowed for a phone; no new colors, materials, or motifs." Verify that every function from the brief is still reachable. Save the prompt as `prompts/mobile.md` and the results under `mockups/mobile/`, named like a round's images (`mock-1.png`), with their sidecar; `lineage.md` logs them unscored unless the user makes one a lock candidate ([`converge.md`](converge.md)).
 
 ## Exit check
 

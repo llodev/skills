@@ -4,8 +4,8 @@ Check every candidate mockup in Phases 2 and 3, and the build in Phase 7, agains
 
 ## The distance check (run it before reading any tell)
 
-1. Generate the control plate: the layout lock as the only reference, the brief's content, and a bare prompt with no concept and no DNA card (`prompts/v1-control.md`, "a high-fidelity UI screenshot of an observability dashboard"). One per exploration, in round 1 with the candidates ([`mockup-prompting.md`](../references/mockup-prompting.md)).
-2. Put it beside the candidates on one board: `python3 scripts/board.py mockups/v1/control.png mockups/v1/dusk.png mockups/v1/night.png mockups/v1/darkroom.png --labels control,dusk,night,darkroom --cols 4 --out mockups/v1/board.png`.
+1. Generate the control plate: the layout lock as the only reference, the brief's content, and a bare prompt with no concept and no DNA card (`prompts/control.md` makes `mockups/v1/control.png`, "a high-fidelity UI screenshot of an observability dashboard"). One per exploration, in round 1 with the candidates ([`mockup-prompting.md`](../references/mockup-prompting.md)).
+2. Put it beside the candidates on one board: `python3 scripts/board.py mockups/v1/control.png mockups/v1/mock-1.png mockups/v1/mock-2.png mockups/v1/mock-3.png --labels control,mock-1,mock-2,mock-3 --cols 4 --out mockups/v1/board.png`.
 3. For each candidate, write one sentence each on what is different from the control in:
    - **identity:** palette, light, material;
    - **composition:** where the mass sits, what the regions are made of, density;

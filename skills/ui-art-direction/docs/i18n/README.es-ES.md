@@ -49,34 +49,35 @@ No se requiere ningún modelo de imagen. Sin uno, la skill funciona en modo asis
 
 ## Contenido
 
-| Archivo                            | Contenido                                                                                                               |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                         | Fases 0–7, las cuatro reglas, rutas, modos y el control de costo, y cuándo leer cada archivo.                           |
-| `references/brief-and-layout.md`   | Fase 0: descubrimiento, el contrato del brief, `wire.json`, el render de esqueleto y el bloqueo de layout.              |
-| `references/modes-and-models.md`   | Modos automático, nativo y asistido, qué buscar en un modelo, control de costo, sidecar de procedencia.                 |
-| `references/concept-and-dna.md`    | Fase 1: la frase concepto, referencias fuera de UI, ejes de divergencia, la tarjeta de ADN, reglas de PI.               |
-| `references/mockup-prompting.md`   | Fase 2: el contrato del prompt, arte frente a UI, lámina de control, storyboard, hoja de estados, mobile.               |
-| `references/converge.md`           | Fase 3: un cambio por ronda, la rúbrica de cinco criterios, el crítico ciego, `lineage.md`, el bloqueo.                 |
-| `references/motion.md`             | Fase 4: prompts de imagen a video, cuadros inicial y final, keyframes, la spec de movimiento, movimiento reducido.      |
-| `references/build-spec.md`         | Fase 5: tokens, componentes y estados, triaje de construibilidad y el pipeline de assets.                               |
-| `references/implementation.md`     | Fase 6: capas, el brief de delegación, recetas, mobile y estados, accesibilidad.                                        |
-| `references/fidelity-and-lock.md`  | Fase 7: captura determinista, el bucle de comparación por bloques, orden de corrección, baseline, checklist de entrega. |
-| `references/reskin.md`             | Ruta de reskin: inventario, la app en ejecución como referencia de layout, reestilizado a nivel de tema.                |
-| `anti-patterns/generic-ai-look.md` | El aspecto genérico de IA en imágenes y en código, y la comprobación de distancia.                                      |
-| `anti-patterns/process.md`         | Errores de proceso, desde diseñar en código primero hasta reintentos de pago sin confirmar.                             |
-| `examples/brief.md`                | Un brief de Fase 0 para un dashboard de observabilidad ficticio.                                                        |
-| `examples/dna-card.md`             | Una tarjeta de ADN destilada de referencias fuera de UI.                                                                |
-| `examples/lineage.md`              | Tres rondas con puntuaciones, incluida una versión rechazada.                                                           |
-| `examples/motion-spec.md`          | Un clip leído como spec de movimiento.                                                                                  |
-| `examples/storyboard.md`           | Un storyboard de scroll de landing page, un cuadro por sección.                                                         |
-| `examples/wire.json`               | Un bloqueo de layout que es una entrada válida para el script de wireframe.                                             |
-| `scripts/wireframe.py`             | `wire.json` a un PNG de wireframe gris con etiquetas.                                                                   |
-| `scripts/board.py`                 | Hoja de contactos etiquetada con las versiones del mockup.                                                              |
-| `scripts/palette.py`               | Colores dominantes, roles sugeridos, ratios de contraste, una muestra y variables CSS.                                  |
-| `scripts/compare.py`               | Mockup frente a captura: puntuación por bloque, mapa de calor, peores bloques y un informe JSON.                        |
-| `scripts/frames.py`                | Keyframes espaciados uniformemente y una hoja de contactos de un clip de video.                                         |
-| `scripts/generate.py`              | Generación de imágenes mediante un adaptador de proveedor, con sidecar de procedencia y sin modelo por defecto.         |
-| `scripts/_common.py`               | Utilidades compartidas por los scripts. Todos los scripts necesitan Python 3.10+ y Pillow.                              |
+| Archivo                            | Contenido                                                                                                                  |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `SKILL.md`                         | Fases 0–7, las cuatro reglas, rutas, modos y el control de costo, y cuándo leer cada archivo.                              |
+| `references/brief-and-layout.md`   | Fase 0: descubrimiento, el contrato del brief, `wire.json`, el render de esqueleto y el bloqueo de layout.                 |
+| `references/modes-and-models.md`   | Modos automático, nativo y asistido, qué buscar en un modelo, control de costo, sidecar de procedencia.                    |
+| `references/concept-and-dna.md`    | Fase 1: la frase concepto, referencias fuera de UI, ejes de divergencia, la tarjeta de ADN, reglas de PI.                  |
+| `references/mockup-prompting.md`   | Fase 2: el contrato del prompt, arte frente a UI, lámina de control, storyboard, hoja de estados, mobile.                  |
+| `references/converge.md`           | Fase 3: un cambio por ronda, la rúbrica de cinco criterios, el crítico ciego, `lineage.md`, el bloqueo.                    |
+| `references/motion.md`             | Fase 4: prompts de imagen a video, cuadros inicial y final, keyframes, la spec de movimiento, movimiento reducido.         |
+| `references/build-spec.md`         | Fase 5: tokens, componentes y estados, triaje de construibilidad y el pipeline de assets.                                  |
+| `references/implementation.md`     | Fase 6: capas, el brief de delegación, recetas, mobile y estados, accesibilidad.                                           |
+| `references/capture-and-checks.md` | Capturar y medir un render: captura determinista, alternativa sin Playwright, contraste, accesibilidad, zoom, rendimiento. |
+| `references/fidelity-and-lock.md`  | Fase 7: captura determinista, el bucle de comparación por bloques, orden de corrección, baseline, checklist de entrega.    |
+| `references/reskin.md`             | Ruta de reskin: inventario, la app en ejecución como referencia de layout, reestilizado a nivel de tema.                   |
+| `anti-patterns/generic-ai-look.md` | El aspecto genérico de IA en imágenes y en código, y la comprobación de distancia.                                         |
+| `anti-patterns/process.md`         | Errores de proceso, desde diseñar en código primero hasta reintentos de pago sin confirmar.                                |
+| `examples/brief.md`                | Un brief de Fase 0 para un dashboard de observabilidad ficticio.                                                           |
+| `examples/dna-card.md`             | Una tarjeta de ADN destilada de referencias fuera de UI.                                                                   |
+| `examples/lineage.md`              | Tres rondas con puntuaciones, incluida una versión rechazada.                                                              |
+| `examples/motion-spec.md`          | Un clip leído como spec de movimiento.                                                                                     |
+| `examples/storyboard.md`           | Un storyboard de scroll de landing page, un cuadro por sección.                                                            |
+| `examples/wire.json`               | Un bloqueo de layout que es una entrada válida para el script de wireframe.                                                |
+| `scripts/wireframe.py`             | `wire.json` a un PNG de wireframe gris con etiquetas.                                                                      |
+| `scripts/board.py`                 | Hoja de contactos etiquetada con las versiones del mockup.                                                                 |
+| `scripts/palette.py`               | Colores dominantes, roles sugeridos, ratios de contraste, una muestra y variables CSS.                                     |
+| `scripts/compare.py`               | Mockup frente a captura: puntuación por bloque, mapa de calor, peores bloques y un informe JSON.                           |
+| `scripts/frames.py`                | Keyframes espaciados uniformemente y una hoja de contactos de un clip de video.                                            |
+| `scripts/generate.py`              | Generación de imágenes mediante un adaptador de proveedor, con sidecar de procedencia y sin modelo por defecto.            |
+| `scripts/_common.py`               | Utilidades compartidas por los scripts. Todos los scripts necesitan Python 3.10+ y Pillow.                                 |
 
 ## Límites conocidos
 

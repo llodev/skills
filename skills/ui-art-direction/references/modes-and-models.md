@@ -24,7 +24,7 @@ The user is the generator, so every step names the files. One step, one line, in
 
 > Attach `<file>` to `<your image app>`, run `<prompt file>`, save the results as `<path>`.
 
-For example: "Attach `design/obs/refs/observatory.jpg` (first) and `design/obs/layout/wire.png` (second) to your image app, run `design/obs/prompts/v1-dusk.md`, save the result as `design/obs/mockups/v1/dusk.png`."
+For example: "Attach `design/obs/refs/observatory.jpg` (first) and `design/obs/layout/wire.png` (second) to your image app, run `design/obs/prompts/v1-dusk.md`, save the result as `design/obs/mockups/v1/mock-1.png`."
 
 - Give paths relative to the project root, and give the attach order: the prompt refers to "image 1" and "image 2".
 - One step per prompt file. List a round's steps numbered in one message, put the first pending step on `Next step:` in `STATUS.md` with every file as a path from the project root, then stop and wait for the files.
@@ -88,12 +88,12 @@ export IMAGE_MODEL=<current ID from the provider docs>
 python3 scripts/generate.py --provider gemini \
   --prompt design/<slug>/prompts/v1-dusk.md \
   --ref design/<slug>/refs/observatory.jpg --ref design/<slug>/layout/wire.png \
-  --aspect 16:9 --out design/<slug>/mockups/v1/dusk.png
+  --aspect 16:9 --out design/<slug>/mockups/v1/mock-1.png
 ```
 
 - `--provider` is `gemini` or `openai`. Keys come from `GEMINI_API_KEY` or `OPENAI_API_KEY` and are never printed or written.
 - No model given: exit 2 with a pointer to the provider docs. Missing SDK: exit 2 with the install command (`pip install google-genai` or `pip install openai`).
-- One image writes `dusk.png` and the sidecar `dusk.json`. `--n 2` writes `dusk-1.png`, `dusk-2.png`, and one sidecar `dusk.json`; every extra image counts toward the round. Stdout is the output paths.
+- One image writes `mock-1.png` and the sidecar `mock-1.json`. `--out .../mock.png --n 2` writes `mock-1.png`, `mock-2.png`, and one sidecar `mock.json`; every extra image counts toward the round. Stdout is the output paths.
 - A provider that returns no image (safety block, text-only reply) exits 1 and writes nothing.
 - `--prompt` is a file path or literal text. An argument that looks like a path to a missing file exits 2 before any call, so a typo is never billed.
 - `--ref` order is the order the prompt's "image 1", "image 2" refer to.

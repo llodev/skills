@@ -34,13 +34,13 @@ If something essential cannot be found (who the user is, which functions must st
 7. **Constraints:** stack, design system to respect or not, mandatory brand palette and type, accessibility level (WCAG 2.2 AA by default), performance limits for video or heavy art.
 8. **Acceptance:** checkable statements a finished build must pass, for example "the incident list shows 20 rows at 1920×1080 without scrolling".
 
-A brief without its regions is a Phase 0 defect. The blind critic in [`converge.md`](converge.md) judges layout fidelity from `brief.md` alone, against the regions and functions it lists.
+A brief without its regions is a Phase 0 defect. The blind critic in [`converge.md`](converge.md) judges layout fidelity from `brief.md` alone, against the regions and functions it lists. At the end of Phase 1, one line follows Acceptance: `Concept: <the concept line>`, copied from `dna.md`, because the critic judges identity against it and never sees `dna.md`.
 
 ## 3. The layout lock
 
 A layout lock is an image the image model copies the **arrangement** from, never the appearance. It is drawn from the brief's region list, never the other way around, and it adds positions and proportions at the target viewport. What it fixes: regions, order, proportions, content. What stays free: palette, light, material, texture, shape, atmosphere. Two kinds:
 
-- **Wireframe** (`layout/wire.json` and `layout/wire.png`) for a new screen; for a site, one per section or one tall frame.
+- **Wireframe** (`layout/wire.json` and `layout/wire.png`) for a new screen; for a site, one per section or one tall frame. When the brief names a mobile viewport, also write `layout/wire-mobile.json` (size `[1080, 1920]`, the brief's regions in mobile reading order) and render `layout/wire-mobile.png` with the same command: it is the layout lock of the Phase 3 mobile pass.
 - **Skeleton render** (`layout/skeleton.png`) when the app already exists. It is the running app with its styles neutralized, so the real positions, sizes, and text lengths become the lock. Reconcile it with the brief's regions: a region the brief lists and the skeleton lacks is a new region and goes into `wire.json`. **On the reskin route the wireframe step is skipped:** the running app's screenshot, or its skeleton render, is the layout lock ([`reskin.md`](reskin.md) section 2), and the information architecture is frozen, so no region is added.
 
 ### 3.1 `wire.json`
@@ -109,7 +109,7 @@ Use it for a reskin and for any screen that already exists. Steps:
 
 The last rule turns every image, video, canvas, and icon into a flat gray silhouette of the same size. Do not change `font-family`, `font-size`, or spacing: they move the layout, and the lock must be the layout the build will keep.
 
-Capture with the browser automation the project already uses. With Playwright (the capture options are in [`fidelity-and-lock.md`](fidelity-and-lock.md)): open a page in a context with `viewport` set to the target size and `deviceScaleFactor: 1`, `goto` the screen, `page.addStyleTag({ path: "layout/skeleton.css" })`, then `page.screenshot`. Without automation: paste the CSS into the browser's developer tools, set the device toolbar to the target size, and capture the viewport. With neither: save a temporary copy of the page with `<link rel="stylesheet" href="skeleton.css">` appended, and capture it with the browser's own headless screenshot mode at the target size. The skeleton replaces `wire.png` as the layout reference in every Phase 2 prompt. For the reskin route, continue with [`reskin.md`](reskin.md).
+Capture with the browser automation the project already uses. With Playwright (the capture options are in [`capture-and-checks.md`](capture-and-checks.md)): open a page in a context with `viewport` set to the target size and `deviceScaleFactor: 1`, `goto` the screen, `page.addStyleTag({ path: "layout/skeleton.css" })`, then `page.screenshot`. Without automation: paste the CSS into the browser's developer tools, set the device toolbar to the target size, and capture the viewport. With neither: save a temporary copy of the page with `<link rel="stylesheet" href="skeleton.css">` appended, and capture it with the browser's own headless screenshot mode at the target size. The skeleton replaces `wire.png` as the layout reference in every Phase 2 prompt. For the reskin route, continue with [`reskin.md`](reskin.md).
 
 ## 4. The pack folder
 
@@ -140,16 +140,16 @@ design/<slug>/
 ```
 Phase: <n - name>
 Mode: automatic | native | assisted
-Approved: <path or none>
+Approved: <paths separated by "; ", or none>
 Next step: <one line that names the file to attach or to save back, as a path from the project root>
 Open decisions: <list or none>
 ```
 
-A filled `Next step:` line: `Next step: Attach design/obs/refs/observatory.jpg (first) and design/obs/layout/wire.png (second) to your image app, run design/obs/prompts/v1-dusk.md, save the result as design/obs/mockups/v1/dusk.png`.
+A filled `Next step:` line: `Next step: Attach design/obs/refs/observatory.jpg (first) and design/obs/layout/wire.png (second) to your image app, run design/obs/prompts/v1-dusk.md, save the result as design/obs/mockups/v1/mock-1.png`.
 
 ## Exit check
 
 - [ ] `brief.md` has all eight sections: real content in the product language, every region with its contents, and the functions that cannot disappear.
-- [ ] A layout lock exists, drawn from the brief's regions: `layout/wire.png` rendered from `layout/wire.json` with a `size` at the aspect Phase 2 will send, or `layout/skeleton.png` captured at the target size, or on a reskin `layout/current-<screen>.png`.
+- [ ] A layout lock exists, drawn from the brief's regions: `layout/wire.png` rendered from `layout/wire.json` with a `size` at the aspect Phase 2 will send, or `layout/skeleton.png` captured at the target size, or on a reskin `layout/current-<screen>.png`; when the brief names a mobile viewport, also `layout/wire-mobile.png` (on a reskin, `layout/current-<screen>-mobile.png`).
 - [ ] A mandatory brand palette or type system, if any, is recorded in the brief.
 - [ ] `STATUS.md` exists with its five lines and the mode chosen.

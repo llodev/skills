@@ -49,34 +49,35 @@ No image model is required. Without one, the skill works in assisted mode: it wr
 
 ## Contents
 
-| File                               | Content                                                                                             |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `SKILL.md`                         | Phases 0–7, the four rules, routes, modes and the cost gate, and when to read each file.            |
-| `references/brief-and-layout.md`   | Phase 0: discovery, the brief contract, `wire.json`, the skeleton render, and the layout lock.      |
-| `references/modes-and-models.md`   | Automatic, native, and assisted modes, what to look for in a model, cost gate, provenance sidecar.  |
-| `references/concept-and-dna.md`    | Phase 1: the concept line, references outside UI, divergence axes, the DNA card, IP rules.          |
-| `references/mockup-prompting.md`   | Phase 2: the prompt contract, art plate versus UI, control plate, storyboard, state sheet, mobile.  |
-| `references/converge.md`           | Phase 3: one change per round, the five-criterion rubric, the blind critic, `lineage.md`, the lock. |
-| `references/motion.md`             | Phase 4: image-to-video prompts, start and end frames, keyframes, the motion spec, reduced motion.  |
-| `references/build-spec.md`         | Phase 5: tokens, components and states, buildability triage, and the asset pipeline.                |
-| `references/implementation.md`     | Phase 6: layers, the delegation brief, recipes, mobile and states, accessibility.                   |
-| `references/fidelity-and-lock.md`  | Phase 7: deterministic capture, the tile compare loop, fix order, baseline, delivery checklist.     |
-| `references/reskin.md`             | Reskin route: inventory, the running app as layout reference, theme-level restyle.                  |
-| `anti-patterns/generic-ai-look.md` | The generic AI look in images and in code, and the distance check.                                  |
-| `anti-patterns/process.md`         | Process mistakes, from designing in code first to unconfirmed paid retries.                         |
-| `examples/brief.md`                | A Phase 0 brief for a fictional observability dashboard.                                            |
-| `examples/dna-card.md`             | A DNA card distilled from references outside UI.                                                    |
-| `examples/lineage.md`              | Three rounds with scores, including a rejected version.                                             |
-| `examples/motion-spec.md`          | A clip read into a motion spec.                                                                     |
-| `examples/storyboard.md`           | A landing-page scroll storyboard, one frame per section.                                            |
-| `examples/wire.json`               | A layout lock that is valid input for the wireframe script.                                         |
-| `scripts/wireframe.py`             | `wire.json` to a gray labeled wireframe PNG.                                                        |
-| `scripts/board.py`                 | Labeled contact sheet of mockup versions.                                                           |
-| `scripts/palette.py`               | Dominant colors, suggested roles, contrast ratios, a swatch, and CSS variables.                     |
-| `scripts/compare.py`               | Mockup versus screenshot: per-tile scores, heat map, worst tiles, and a JSON report.                |
-| `scripts/frames.py`                | Evenly spaced keyframes and a contact sheet from a video clip.                                      |
-| `scripts/generate.py`              | Image generation through a provider adapter, with a provenance sidecar and no default model.        |
-| `scripts/_common.py`               | Shared helpers for the scripts. All scripts need Python 3.10+ and Pillow.                           |
+| File                               | Content                                                                                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `SKILL.md`                         | Phases 0–7, the four rules, routes, modes and the cost gate, and when to read each file.                                       |
+| `references/brief-and-layout.md`   | Phase 0: discovery, the brief contract, `wire.json`, the skeleton render, and the layout lock.                                 |
+| `references/modes-and-models.md`   | Automatic, native, and assisted modes, what to look for in a model, cost gate, provenance sidecar.                             |
+| `references/concept-and-dna.md`    | Phase 1: the concept line, references outside UI, divergence axes, the DNA card, IP rules.                                     |
+| `references/mockup-prompting.md`   | Phase 2: the prompt contract, art plate versus UI, control plate, storyboard, state sheet, mobile.                             |
+| `references/converge.md`           | Phase 3: one change per round, the five-criterion rubric, the blind critic, `lineage.md`, the lock.                            |
+| `references/motion.md`             | Phase 4: image-to-video prompts, start and end frames, keyframes, the motion spec, reduced motion.                             |
+| `references/build-spec.md`         | Phase 5: tokens, components and states, buildability triage, and the asset pipeline.                                           |
+| `references/implementation.md`     | Phase 6: layers, the delegation brief, recipes, mobile and states, accessibility.                                              |
+| `references/capture-and-checks.md` | Capturing and measuring a render: deterministic capture, a no-Playwright fallback, contrast, accessibility, zoom, performance. |
+| `references/fidelity-and-lock.md`  | Phase 7: deterministic capture, the tile compare loop, fix order, baseline, delivery checklist.                                |
+| `references/reskin.md`             | Reskin route: inventory, the running app as layout reference, theme-level restyle.                                             |
+| `anti-patterns/generic-ai-look.md` | The generic AI look in images and in code, and the distance check.                                                             |
+| `anti-patterns/process.md`         | Process mistakes, from designing in code first to unconfirmed paid retries.                                                    |
+| `examples/brief.md`                | A Phase 0 brief for a fictional observability dashboard.                                                                       |
+| `examples/dna-card.md`             | A DNA card distilled from references outside UI.                                                                               |
+| `examples/lineage.md`              | Three rounds with scores, including a rejected version.                                                                        |
+| `examples/motion-spec.md`          | A clip read into a motion spec.                                                                                                |
+| `examples/storyboard.md`           | A landing-page scroll storyboard, one frame per section.                                                                       |
+| `examples/wire.json`               | A layout lock that is valid input for the wireframe script.                                                                    |
+| `scripts/wireframe.py`             | `wire.json` to a gray labeled wireframe PNG.                                                                                   |
+| `scripts/board.py`                 | Labeled contact sheet of mockup versions.                                                                                      |
+| `scripts/palette.py`               | Dominant colors, suggested roles, contrast ratios, a swatch, and CSS variables.                                                |
+| `scripts/compare.py`               | Mockup versus screenshot: per-tile scores, heat map, worst tiles, and a JSON report.                                           |
+| `scripts/frames.py`                | Evenly spaced keyframes and a contact sheet from a video clip.                                                                 |
+| `scripts/generate.py`              | Image generation through a provider adapter, with a provenance sidecar and no default model.                                   |
+| `scripts/_common.py`               | Shared helpers for the scripts. All scripts need Python 3.10+ and Pillow.                                                      |
 
 ## Known limits
 

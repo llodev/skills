@@ -88,7 +88,7 @@ Check the run against this list at every phase gate. Each entry gives the sympto
 
 **Cause:** a number is easy to optimize and to report.
 
-**Fix:** tile scores are advisory. Read the worst tiles' crops, fix in order of impact (layout, color and light, type, detail), and record intentional differences (real data, real text, accessibility) in the report. A fidelity claim cites the crops, not only a number ([`fidelity-and-lock.md`](../references/fidelity-and-lock.md)).
+**Fix:** tile scores are advisory. Read the worst tiles' crops, fix in order of impact (layout, color and light, type, detail), and record intentional differences (real data, real text, accessibility) in the register, `qa/differences.md`, which the report links. A fidelity claim cites the crops, not only a number ([`fidelity-and-lock.md`](../references/fidelity-and-lock.md)).
 
 ## 12. Designing desktop only
 

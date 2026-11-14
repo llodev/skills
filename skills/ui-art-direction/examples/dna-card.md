@@ -16,7 +16,9 @@ Not:
 - Near-black with a monospace face for every label and number.
 - Stock "space" imagery: nebulae, planets, glowing galaxies behind the interface.
 
-Declared axis for round 1: light. Values: dusk, night, darkroom (red work lamps only). Prompts `prompts/v1-dusk.md`, `prompts/v1-night.md`, `prompts/v1-darkroom.md`, each opening with this axis and its own value, plus `prompts/v1-control.md`.
+Round-1 axis: light: dusk, night, darkroom (red work lamps only)
+
+Prompts `prompts/v1-dusk.md`, `prompts/v1-night.md`, `prompts/v1-darkroom.md` make `mockups/v1/mock-1.png` to `mock-3.png` in that order, each opening with this axis and its own value, plus `prompts/control.md` for the control plate. At the end of this phase the concept line was copied into `brief.md` as its last line, `Concept: A dashboard that feels like an observatory at night.`
 
 References in `refs/`, each recorded in `refs/SOURCES.md` with link and license: `observatory-dome.jpg` (identity, the one used in every call), `setting-circle.jpg` (brass scale, kept for the material line of the card, not sent), `star-chart-plate.jpg` and `control-desk.jpg` (shown to the user, not chosen). Each call gets one identity reference plus `layout/wire.png`.
 

@@ -2,7 +2,7 @@
 
 > Example of Phase 0 in [`SKILL.md`](../SKILL.md), following [`brief-and-layout.md`](../references/brief-and-layout.md). The platform, company, people, and data are fictional. The same product runs through every dashboard example in `examples/`.
 
-This is `design/service-overview/brief.md`. It is written before the concept, the references, or any prompt. Nothing in it says what the screen looks like.
+This is `design/service-overview/brief.md`. It is written before the concept, the references, or any prompt; Phase 1 only appends the `Concept:` line at the end. Nothing else in it says what the screen looks like.
 
 ## Purpose
 
@@ -85,12 +85,15 @@ The service map is the primary region: the eye lands there first.
 - An on-call engineer would call it calm while things are healthy and impossible to misread when they are not. (The user's adjectives were "calm, alert"; they judge the result, they do not choose the look.)
 - The approved mockup scores at least 4 on all five rubric criteria from a blind critic, and the user chose it.
 
+Concept: A dashboard that feels like an observatory at night.
+
 ---
 
-The brief ends at Acceptance. Beside it, Phase 0 renders the lock and starts `STATUS.md`:
+The brief ends at Acceptance, plus the `Concept:` line Phase 1 appended for the blind critic. Beside it, Phase 0 renders the lock (and, since the brief names a mobile viewport, the mobile wireframe) and starts `STATUS.md`:
 
 ```bash
 python3 scripts/wireframe.py design/service-overview/layout/wire.json --out design/service-overview/layout/wire.png
+python3 scripts/wireframe.py design/service-overview/layout/wire-mobile.json --out design/service-overview/layout/wire-mobile.png
 ```
 
 Regions, their order, and their proportions do not change during exploration. A mockup that moves the assistant to the left, or merges error budgets into the services list, fails layout fidelity, however good it looks.

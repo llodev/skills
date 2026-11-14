@@ -15,7 +15,7 @@ Rules:
 - The second half names a place, an object, a practice, or a scene. Something you could photograph or find in a museum, not an adjective.
 - It must suggest concrete material, light, and shape. If you cannot list three references for it in a minute, it is too abstract.
 - Write two or three candidate lines and let the user pick one, or run two as rival directions in Phase 2.
-- The concept line goes at the top of `dna.md` and into every prompt's VISUAL IDENTITY section.
+- The concept line goes at the top of `dna.md` and into every candidate prompt's VISUAL IDENTITY section. At the end of Phase 1, copy it into `brief.md` as a last line, `Concept: <the concept line>`: the blind critic gets `brief.md` and never `dna.md`, and judges identity against that line.
 
 ## 2. Brand adjectives are not a direction
 
@@ -72,11 +72,11 @@ Rules:
 
 - Round 1 holds the concept line, the layout lock, and the content fixed, and varies **one declared axis** across its two or three candidates. Example: concept "observatory", axis light: dusk, deep night, red-lamp darkroom.
 - To compare two concept lines, the concept is the axis, and everything else is held.
-- Write the axis and its values in `dna.md`, and the axis with its one value at the top of each `prompts/v1-<value>.md`, so the board and [`converge.md`](converge.md) can name what changed.
+- Phase 1 picks the axis. Record it in `dna.md` on one line, `Round-1 axis: <axis>: <value 1>, <value 2>, <value 3>`, and write the axis with its one value at the top of each `prompts/v1-<value>.md`; the Phase 2 prompts apply it, and the board and [`converge.md`](converge.md) name what changed from it. The value order is the candidates' order (`mock-1`, `mock-2`, …).
 
 ## 7. The DNA card
 
-Fill one card per chosen reference in `dna.md`, under the concept line, the brand constraints from the brief, the `Not:` list, and the declared axis. See [`examples/dna-card.md`](../examples/dna-card.md).
+Fill one card per chosen reference in `dna.md`, under the concept line, the brand constraints from the brief, the `Not:` list, and the `Round-1 axis:` line. See [`examples/dna-card.md`](../examples/dna-card.md).
 
 ```
 ## <short concept name>  (refs/<file>.jpg)
@@ -98,7 +98,7 @@ python3 scripts/palette.py design/<slug>/refs/observatory-dome.jpg --colors 6 --
 
 It prints suggested roles (`background`, `surface`, `foreground`, `muted-foreground`, `accent`), their contrast ratios, and notes. A near-monochrome reference gets a note: pick the accent by hand. These hex values describe the reference, not the product; tokens are set in Phase 5 from the approved mockup.
 
-Agree on the concept with the user. When the concept is the declared round-1 axis (concepts run as rivals), the round-1 board is the agreement and Phase 2 may start. Otherwise stop here and agree on the concept (or the pair) first.
+Agree on the concept with the user. When the concept is the declared round-1 axis (concepts run as rivals), the round-1 board is the agreement and Phase 2 may start; `brief.md` then gets one `Concept:` line per rival in axis order (`Concept (mock-1): …`), and only the picked concept's line stays once the user picks in Phase 3. Otherwise stop here and agree on the concept (or the pair) first.
 
 ## 8. IP rules
 
@@ -112,5 +112,5 @@ Agree on the concept with the user. When the concept is the declared round-1 axi
 - [ ] `dna.md` opens with one concept line that names something outside UI, not an adjective.
 - [ ] `refs/` holds three to eight references (fewer only when sourcing failed, noted in `refs/SOURCES.md`), each recorded with origin and license.
 - [ ] `dna.md` has a `Not:` list, including the adjective default when the brief has adjectives.
-- [ ] The divergence axis for round 1 and its values are declared.
+- [ ] `dna.md` has the `Round-1 axis:` line with the axis and its values, and `brief.md` ends with the `Concept:` line.
 - [ ] Each chosen reference has a DNA card with all eight fields, and the user agreed on the concept, or the concept is the round-1 axis and the board will be the agreement.

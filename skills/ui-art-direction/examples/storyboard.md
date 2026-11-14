@@ -14,13 +14,13 @@ Concept line, from Phase 1: a page that reads like a weather fax pulled from a b
 
 The agent told the user, and waited for a yes:
 
-> Four frames, S2 to S5, one per remaining section, at 16:9, 1440 px wide. Each frame gets the hero you picked, `mockups/v1/thermal-paper.png`, as the identity reference and that section's wireframe (`layout/wire-s2.png` to `layout/wire-s5.png`) as the layout lock. Four images in one round. Say yes, or pick which sections to do first.
+> Four frames, S2 to S5, one per remaining section, at 16:9, 1440 px wide. Each frame gets the hero you picked, `mockups/v1/mock-2.png` (thermal paper), as the identity reference and that section's wireframe (`layout/wire-s2.png` to `layout/wire-s5.png`) as the layout lock. Four images in one round. Say yes, or pick which sections to do first.
 
 The user said yes. Frames are saved as `mockups/v2/story-02.png` to `story-05.png`, each with its sidecar, and shown on one board in scroll order with the hero first.
 
 ## Frames
 
-### S1 hero — mockups/v1/thermal-paper.png
+### S1 hero — mockups/v1/mock-2.png
 
 - **Contains:** headline "Know the wind before it reaches your sails."; subline "Halyard sits at the masthead and sends true wind to your phone, every second."; buttons "Buy Halyard, 340 USD" and "How it works".
 - **Composition:** isobar field across the full width; the instrument small at upper right, at the top of a mast line; headline lower left, set on the paper, not on the art.

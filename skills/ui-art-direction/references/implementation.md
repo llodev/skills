@@ -1,22 +1,22 @@
 # Phase 6 — Build
 
-Goal: a **working** screen in the project's stack that looks like `mockups/APPROVED.*`. Input is the pack: `brief.md`, `layout/`, `spec/`, `assets/`, `mockups/states/` and `mockups/mobile/` when Phase 3 made them (`lineage.md` has their `States:` and `Mobile:` lines), and `video/` when Phase 4 ran. The project's design system and components win over this file. For build craft beyond these recipes, any design-in-code skill the project already uses is fine; this phase only fixes what the pack decided.
+Goal: a **working** screen in the project's stack that looks like `mockups/APPROVED.*`. Input is the pack: `brief.md`, `layout/`, `spec/`, `assets/`, `mockups/states/` and `mockups/mobile/` when Phase 3 made them (`lineage.md` has their `States:` and `Mobile:` lines), and `video/` when Phase 4 ran. The project's design system and components win over this file. Use a design-in-code skill only when the user asked for it or the project already uses it; never choose one on your own. This phase only fixes what the pack decided. Captures follow [`capture-and-checks.md`](capture-and-checks.md).
 
 ## 1. Three layers, back to front
 
 | Layer     | What it holds                                  | Built with                                                                                                                           | Rule                                                                                                                                   |
 | --------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Art       | Background, central illustration, textures     | The files in `spec/assets.md`: WebP or AVIF, a short MP4 or WebM loop, canvas or WebGL only when the art must react to data or input | **Never rebuild complex art in CSS.** The triage in [`references/build-spec.md`](build-spec.md) decides: an "image" ships as an image. |
-| Interface | Text, controls, data, navigation               | The project's real components, styled through `spec/tokens.css` or the theme                                                         | Text is text, buttons are buttons, data comes from the real source. No loose hex in a component.                                       |
+| Interface | Text, controls, data, navigation               | The project's real components, styled through the tokens ported into the project's theme                                             | Text is text, buttons are buttons, data comes from the real source. No loose hex in a component.                                       |
 | Motion    | Transitions, micro-interactions, ambient loops | CSS `@keyframes` and transitions for the simple; the motion library the project already has for choreography                         | Durations and easing come from `spec/motion.md`; everything has a `prefers-reduced-motion` branch.                                     |
 
-A gradient, a hairline, a glow, or grain is CSS. A painted landscape, a figure, or a lit object is an asset. Asset files come from `design/<slug>/assets/`: copy them into the app's static asset folder (`public/` or wherever the project keeps images) and reference them the way the project does.
+A gradient, a hairline, or a glow is CSS; grain follows the triage. A painted landscape, a figure, or a lit object is an asset. Asset files come from `design/<slug>/assets/`: copy them into the app's static asset folder (`public/` or wherever the project keeps images) and reference them the way the project does.
 
-Tokens reach the project as CSS variables named exactly as the token names in `spec/tokens.json` (`--surface`, `--accent`, `--focus-ring`, `--scrim`), so put the properties of `spec/tokens.css` in the project's global stylesheet and map them through the theme config. In Tailwind v4, for example: `@theme inline { --color-surface: var(--surface); }`. When a name already exists in the project (shadcn's `--accent`), the project's variable stays, takes the spec's value, and the build brief lists the mapping.
+Tokens reach the project as CSS variables named exactly as the token names in `spec/tokens.json`, so port the properties of `spec/tokens.css` (it lives in the pack) into the project's global stylesheet and map them through the theme config. The recipes below use `--surface`, `--foreground`, `--accent`, `--focus-ring`, and `--scrim`. Tailwind v4: `@theme inline { --color-surface: var(--surface); --radius-md: var(--shape-radius-md); }`. Tailwind v3: `theme.extend` in `tailwind.config.*`, for example `colors: { surface: "var(--surface)" }, borderRadius: { md: "var(--shape-radius-md)" }`. Other groups map the same way to their namespace (spacing, font family, box shadow, z-index). When a name already exists in the project (shadcn's `--accent`), the project's variable stays, takes the spec's value, and the build brief lists the mapping. In a framework, put the recipes' CSS in the project's stylesheet layer (`@layer components` with Tailwind). In React, the video sync is a `useEffect` on a ref that adds the two listeners and removes them in its cleanup.
 
 ## 2. Delegation brief
 
-When a coding agent builds the screen (or you do), save this brief as `prompts/build-<screen>.md` and hand it over with the pack. The mobile-and-states pass gets a copy, `prompts/build-<screen>-pass2.md`, whose "Build desktop" rule becomes: "Desktop matches the lock. Now build mobile from the mobile pass image (or the lock) and every state in spec/components.md and the state sheet."
+Delegate to a fresh coding subagent when the work exceeds about three components or a second target (section 4); otherwise build inline. Either way, save this brief as `prompts/build-<screen>.md` and hand it over with the pack folder's path. A site gets one brief per section, `prompts/build-<section>.md`, built in page order, where `<screen>` is the section id `s<N>`. Each later pass gets a copy (`prompts/build-<screen>-pass2.md` for states, `-pass3.md` for mobile) whose "Build desktop" rule becomes: "Desktop matches the lock. Now build <every state in spec/components.md and the state sheet | mobile from the mobile pass image, or the lock>."
 
 ```
 Implement the screen <name> in <project>, <stack>.
@@ -29,17 +29,17 @@ Rules:
 - The functions in brief.md come first. No data invented for production.
 - Use the project's components and design system. Tokens through variables named as in tokens.json, no loose hex.
 - Art = the files in design/<slug>/assets/ listed in spec/assets.md, copied into the app. Interface = real components. No text inside art, no art rebuilt in CSS.
-- Build desktop to match the mockup first. Mobile and states come in a separate pass.
+- Build desktop to match the mockup first, default state, with each motion layer's reduced-motion CSS. States and mobile come in later passes.
 - Accessible: contrast as in tokens.json, visible focus, full keyboard use, prefers-reduced-motion.
-- When done, capture design/<slug>/qa/screenshot-01.png at the brief's primary desktop viewport, on the project's fixtures, and stop.
-- List every place you could not match the mockup, and why. Do not grade your own result.
+- When done, capture design/<slug>/qa/screenshot-01.png (a section: qa/screenshot-s<N>-01.png) at the brief's primary desktop viewport, on the project's fixtures, and stop.
+- List every place you could not match the mockup, and why, as rows of design/<slug>/qa/differences.md with Accepted by: pending. Do not grade your own result.
 ```
 
 ## 3. Recipes
 
 Use a recipe only where the approved mockup shows the effect. Glass on every card is a generic tell ([`anti-patterns/generic-ai-look.md`](../anti-patterns/generic-ai-look.md)).
 
-**Frosted glass.** Measure text contrast against the busiest spot of the art behind the panel. Where `backdrop-filter` is unsupported, fall back to an opaque `var(--surface)`.
+**Frosted glass.** Measure text contrast against the busiest spot of the art behind the panel. Where `backdrop-filter` is unsupported, fall back to an opaque surface: `@supports not (backdrop-filter: blur(1px)) { .glass { background: var(--surface); } }`.
 
 ```css
 .glass {
@@ -105,7 +105,9 @@ reduce.addEventListener("change", sync);
 sync();
 ```
 
-**Grain.** An SVG `feTurbulence` overlay at 3 to 6 percent opacity, tiled from a small data URI. Above 6 percent it reads as dirt and costs text contrast.
+**Parallax.** No library is needed: a scroll-driven CSS animation on the art layer (`animation: drift linear both; animation-timeline: scroll();` with `@keyframes drift { to { translate: 0 -15%; } }`, the distance illustrative, taken from `spec/motion.md`). Where `@supports not (animation-timeline: scroll())`, set the same `translate` from `scrollY` in a `requestAnimationFrame` callback. Under reduced motion, neither runs.
+
+**Grain.** The triage in `spec/assets.md` decides: an image tile repeats as the overlay's `background`; an SVG filter is the `feTurbulence` overlay below, at 3 to 6 percent opacity, tiled from a small data URI. Above 6 percent it reads as dirt and costs text contrast.
 
 ```css
 body::after {
@@ -119,41 +121,44 @@ body::after {
 }
 ```
 
-## 4. Mobile and states: a separate pass from the lock
+## 4. Passes: one target each
 
-Match desktop to the lock first and run one compare round on it yourself, even when a coding agent built it: capture `qa/screenshot-01.png` at the brief's primary desktop viewport (the method is "Checks on a render" in `SKILL.md`; data from the project's fixtures, live regions masked as in Phase 7), run the compare command of Phase 7 in `SKILL.md`, and fix what its worst tiles show, layout first. Move on when no worst tile shows a layout difference; the full loop, the register, and the verdict belong to Phase 7 ([`references/fidelity-and-lock.md`](fidelity-and-lock.md)). Only then derive the rest, so one pass never moves two targets.
+A target is one mockup image. **Pass 1** is the default state at desktop: tokens, the three layers, content, and each motion layer's reduced-motion CSS, written with that layer because it is a media query on the same elements. **Pass 2** is the states, against the state sheet. **Pass 3** is mobile, against the mobile pass image. One pass never moves two targets. Reduced motion is verified in Phase 7, never left to a late pass.
 
-- **Mobile.** Start from the mobile pass image in `mockups/mobile/` when Phase 3 made one ([`references/mockup-prompting.md`](mockup-prompting.md)), otherwise from the approved desktop. Keep the reading order of the layout lock and stack in hierarchy order. The art uses the focal-point crop from `spec/assets.md`, never a squeezed desktop crop. Touch targets at least 44 by 44 CSS pixels. The video background may fall back to its poster on small screens.
-- **States.** Build every state listed in `spec/components.md` and drawn in the state sheet (`mockups/states/`) when Phase 3 made one: empty (a sentence saying why, plus an action), loading (a skeleton in the component's shape), error (message plus action), hover, focus, active, disabled. Same tokens as the default state; no state left to the browser default.
+Close pass 1 with one compare round you run yourself, even when a coding agent built it: capture `qa/screenshot-01.png` at the brief's primary desktop viewport ([`capture-and-checks.md`](capture-and-checks.md), data from the project's fixtures, live regions masked), run the compare command of Phase 7 in `SKILL.md`, and fix what its 3 worst tiles show, layout first. A site captures each section as `qa/screenshot-s<N>-01.png`, scrolled to its top, and compares it with `mockups/APPROVED-s<N>.<ext>`. Move on when no worst tile shows a layout difference; the full loop and the verdict belong to Phase 7 ([`fidelity-and-lock.md`](fidelity-and-lock.md)).
+
+- **States (pass 2).** Build every state listed in `spec/components.md` and drawn in the state sheet (`mockups/states/`) when Phase 3 made one: empty (a sentence saying why, plus an action), loading (a skeleton in the component's shape), error (message plus action), hover, focus, active, disabled. Same tokens as the default state; no state left to the browser default.
+- **Mobile (pass 3).** Start from the mobile pass image in `mockups/mobile/` when Phase 3 made one, otherwise from the approved desktop and the `Mobile` section of `spec/components.md`. The breakpoint is the brief's mobile viewport, else 390 px wide. Keep the reading order of the layout lock and stack in hierarchy order. The art uses the mobile crop from `spec/assets.md` in a `<picture>` `<source media>`, positioned with `object-position` at its focal point; never a squeezed desktop crop. Touch targets at least 44 by 44 CSS pixels. Below the mobile breakpoint the video background falls back to its poster (default).
+- **Verify each pass.** Capture each state and the mobile view as `qa/<screen>-<state>-<viewport>.png` and hold it beside its image (the state sheet, the mobile pass image, or the lock); fix what differs before the next pass.
 
 ## 5. Real components, real data
 
 - Every element maps to the component named in `spec/components.md`. A new component exists only where the inventory says "new".
 - Data comes from the real source, or from the project's existing fixtures in development. Never data invented for production. The numbers in the mockup are not data: do not hard-code what you read off the image.
-- Real copy replaces mockup copy. Each resulting visual difference goes in the intentional-differences register of Phase 7, `qa/differences.md` (reason: real text), for the user to accept.
+- Real copy replaces mockup copy. Each resulting visual difference is a row of the Phase 7 register, `qa/differences.md` (columns Region, Mockup, Build, Reason, Accepted by; reason: real text, accepted by: pending), for the user to accept.
 
 ## 6. Accessibility and reduced motion (the bold look waives none)
 
-Check each point below on the real render with the methods in "Checks on a render" in `SKILL.md`; Phase 7 records the results.
+Check each point below on the real render with the methods in [`capture-and-checks.md`](capture-and-checks.md); Phase 7 records the results in `qa/fidelity.md`.
 
-- Contrast at least 4.5:1 for body text, 3:1 for large text, icons, and control borders, measured on the real pixels behind the text (art, glass, video poster). If the art fails, add a scrim token; do not wash out the art.
+- Contrast at least 4.5:1 for body text, 3:1 for large text, icons, and control borders, measured on the real pixels behind the text (art, glass, video poster). If the art fails, add a `scrim` token to `spec/tokens.json` and `spec/tokens.css`, port it, and log the change in `qa/differences.md`; do not wash out the art.
 - A visible focus ring on every interactive element, from a token, at least 3:1 against its surroundings. Every function in `brief.md` works from the keyboard, in layout order.
 - Art is decorative: `aria-hidden="true"` or `alt=""`. Art that carries meaning gets a text alternative. Meaning never by color alone.
 - Under `prefers-reduced-motion: reduce`: no autoplaying video (poster instead), no parallax, no ambient loops; transitions become opacity changes or none; state changes stay visible. Text still works at 200 percent zoom.
 
 ## Red flags
 
-| Thought                                             | Reality                                                           |
-| --------------------------------------------------- | ----------------------------------------------------------------- |
-| "The illustration is a few gradients, CSS will do." | It drifts from the mockup in every tile. Ship the asset.          |
-| "Placeholder numbers until the API is ready."       | Placeholders ship. Use the real source or the project's fixtures. |
-| "Mobile, states, reduced motion at the end."        | Derive them in their own pass now, or they are left to defaults.  |
+| Thought                                             | Reality                                                                                                                              |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| "The illustration is a few gradients, CSS will do." | It drifts from the mockup in every tile. Ship the asset.                                                                             |
+| "Placeholder numbers until the API is ready."       | Placeholders ship. Use the real source or the project's fixtures.                                                                    |
+| "States, mobile, reduced motion at the end."        | Reduced-motion CSS goes in with each motion layer in pass 1; states and mobile get passes 2 and 3 now, or they are left to defaults. |
 
 ## Exit check
 
 - [ ] Every function in `brief.md` works in the build, on real data or the project's fixtures.
 - [ ] The art layer uses the files in `spec/assets.md`; no text in art; no complex art rebuilt in CSS.
 - [ ] Components take tokens; no loose hex in a component.
-- [ ] Mobile and every state in `spec/components.md` were built in a separate pass after desktop matched.
+- [ ] Pass 1 wrote each motion layer's reduced-motion CSS; every state in `spec/components.md` (pass 2) and mobile (pass 3) were built after desktop matched, each captured and held beside its image.
 - [ ] Contrast, focus, keyboard, and reduced motion hold on the real render.
-- [ ] A screenshot at the brief's target viewport is in `qa/` (`qa/screenshot-01.png` and its compare round), ready for Phase 7.
+- [ ] A screenshot at the brief's target viewport is in `qa/` (`qa/screenshot-01.png`, or one `qa/screenshot-s<N>-01.png` per section, with its compare round), ready for Phase 7.
