@@ -143,6 +143,12 @@ importers:
         specifier: workspace:*
         version: link:../../skills/ts-query-cqrs
 
+  packages/ui:
+    devDependencies:
+      '@llodev/ui-art-direction':
+        specifier: workspace:*
+        version: link:../../skills/ui-art-direction
+
   skills/arc-decisions: {}
 
   skills/bi-dashboard: {}
@@ -229,6 +235,8 @@ importers:
   skills/ts-ddd-value-object: {}
 
   skills/ts-query-cqrs: {}
+
+  skills/ui-art-direction: {}
 
 packages:
 

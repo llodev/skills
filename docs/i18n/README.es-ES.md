@@ -145,6 +145,15 @@ Skills puras de **conocimiento** para decisiones de arquitectura y diseño en si
 | `@llodev/arc` _(meta)_  | ✅ v0.1.0 | [packages/arc/](../../packages/arc/)                 | `npm i @llodev/arc`           | —                                                   |
 | `@llodev/arc-decisions` | ✅ v0.1.0 | [skills/arc-decisions/](../../skills/arc-decisions/) | `npm i @llodev/arc-decisions` | `npx skills add llodev/skills/skills/arc-decisions` |
 
+### `@llodev/ui` — skills de diseño de UI image-first
+
+Skills de **guía** con scripts auxiliares para UIs distintivas diseñadas image-first — sin MCP, sin configuración, sin init. El primer miembro hace la dirección de arte de una UI en modelos de imagen hasta fijar un mockup, luego la construye en código y verifica el build contra el mockup. Los scripts auxiliares necesitan Python 3.10+ y Pillow. Otros miembros `ui-*` pueden unirse al mismo meta-paquete.
+
+| Paquete                    | Estado    | Fuente                                                     | npm                              | Vercel CLI                                             |
+| -------------------------- | --------- | ---------------------------------------------------------- | -------------------------------- | ------------------------------------------------------ |
+| `@llodev/ui` _(meta)_      | ✅ v0.1.0 | [packages/ui/](../../packages/ui/)                         | `npm i @llodev/ui`               | —                                                      |
+| `@llodev/ui-art-direction` | ✅ v0.1.0 | [skills/ui-art-direction/](../../skills/ui-art-direction/) | `npm i @llodev/ui-art-direction` | `npx skills add llodev/skills/skills/ui-art-direction` |
+
 ## Compatibilidad de agentes
 
 Cada skill publicada declara qué agentes soporta en el campo `compatibility.agents` de su frontmatter. La matriz actual:
@@ -155,7 +164,7 @@ Cada skill publicada declara qué agentes soporta en el campo `compatibility.age
 
 Las skills viven planas bajo `skills/` (un directorio por skill, la convención
 que esperan los indexadores de skills); la pertenencia a la familia se indica con
-los prefijos `pm-tasks-`, `tests-`, `study-`, `bi-` y `arc-` en el nombre y el campo `metadata.family` de
+los prefijos `pm-tasks-`, `tests-`, `study-`, `bi-`, `arc-` y `ui-` en el nombre y el campo `metadata.family` de
 cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 (meta-paquete, testkit) viven bajo `packages/`.
 
@@ -180,7 +189,8 @@ cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 │   ├── tests-http/            Suites de prueba HTTP: descubrimiento, adaptadores NestJS y DRF
 │   ├── study-abstract/        Resúmenes de estudio: visión hablada, glosario y autoevaluación
 │   ├── bi-dashboard/          Dashboards y gráficos: título-conclusión y un destaque
-│   └── arc-decisions/         Decisiones de arquitectura: de la idea al brief y a los ADR
+│   ├── arc-decisions/         Decisiones de arquitectura: de la idea al brief y a los ADR
+│   └── ui-art-direction/      UI image-first: mockup en modelos de imagen, luego código y verificación
 ├── packages/                  Paquetes de workspace que no son skills (sin SKILL.md)
 │   ├── pm-tasks/              Meta-paquete — instala toda la familia pm-tasks
 │   ├── pm-tasks-testkit/      Fakes en memoria para los verbos CRUD canónicos
@@ -188,7 +198,8 @@ cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 │   ├── tests/                 Meta-paquete — instala toda la familia tests
 │   ├── study/                 Meta-paquete — instala toda la familia study
 │   ├── bi/                    Meta-paquete — instala toda la familia bi
-│   └── arc/                   Meta-paquete — instala toda la familia arc
+│   ├── arc/                   Meta-paquete — instala toda la familia arc
+│   └── ui/                    Meta-paquete — instala toda la familia ui
 ├── scripts/                   Validadores, checks de contrato, gate de baseline de skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intención de release (workflow Changesets)

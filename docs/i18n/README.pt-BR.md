@@ -145,6 +145,15 @@ Skills puras de **conhecimento** para decisões de arquitetura e design em siste
 | `@llodev/arc` _(meta)_  | ✅ v0.1.0 | [packages/arc/](../../packages/arc/)                 | `npm i @llodev/arc`           | —                                                   |
 | `@llodev/arc-decisions` | ✅ v0.1.0 | [skills/arc-decisions/](../../skills/arc-decisions/) | `npm i @llodev/arc-decisions` | `npx skills add llodev/skills/skills/arc-decisions` |
 
+### `@llodev/ui` — skills de design de UI image-first
+
+Skills de **guia** com scripts auxiliares para UIs marcantes desenhadas image-first — sem MCP, sem config, sem init. O primeiro membro faz a direção de arte de uma UI em modelos de imagem até travar um mockup, depois a constrói em código e verifica o build contra o mockup. Os scripts auxiliares precisam de Python 3.10+ e Pillow. Outros membros `ui-*` podem entrar no mesmo meta-pacote.
+
+| Pacote                     | Status    | Fonte                                                      | npm                              | Vercel CLI                                             |
+| -------------------------- | --------- | ---------------------------------------------------------- | -------------------------------- | ------------------------------------------------------ |
+| `@llodev/ui` _(meta)_      | ✅ v0.1.0 | [packages/ui/](../../packages/ui/)                         | `npm i @llodev/ui`               | —                                                      |
+| `@llodev/ui-art-direction` | ✅ v0.1.0 | [skills/ui-art-direction/](../../skills/ui-art-direction/) | `npm i @llodev/ui-art-direction` | `npx skills add llodev/skills/skills/ui-art-direction` |
+
 ## Compatibilidade de agentes
 
 Toda skill publicada declara quais agentes ela suporta no campo `compatibility.agents` do frontmatter. A matriz atual:
@@ -155,7 +164,7 @@ Toda skill publicada declara quais agentes ela suporta no campo `compatibility.a
 
 As skills ficam achatadas em `skills/` (um diretório por skill, a convenção que
 os indexadores de skills esperam); a família é indicada pelos prefixos `pm-tasks-`,
-`tests-`, `study-`, `bi-` e `arc-` no nome e pelo campo `metadata.family` de cada skill, não pelo aninhamento de
+`tests-`, `study-`, `bi-`, `arc-` e `ui-` no nome e pelo campo `metadata.family` de cada skill, não pelo aninhamento de
 diretórios. Pacotes que não são skills (meta-pacote, testkit) ficam em `packages/`.
 
 ```
@@ -179,7 +188,8 @@ diretórios. Pacotes que não são skills (meta-pacote, testkit) ficam em `packa
 │   ├── tests-http/            Suítes de teste HTTP: descoberta, adaptadores NestJS e DRF
 │   ├── study-abstract/        Resumos de estudo: visão falada, glossário e autoavaliação
 │   ├── bi-dashboard/          Dashboards e gráficos: título-conclusão e um destaque
-│   └── arc-decisions/         Decisões de arquitetura: da ideia ao brief e aos ADRs
+│   ├── arc-decisions/         Decisões de arquitetura: da ideia ao brief e aos ADRs
+│   └── ui-art-direction/      UI image-first: mockup em modelos de imagem, depois código e verificação
 ├── packages/                  Pacotes de workspace que não são skills (sem SKILL.md)
 │   ├── pm-tasks/              Meta-pacote — instala toda a família pm-tasks
 │   ├── pm-tasks-testkit/      Fakes em memória para os verbos CRUD canônicos
@@ -187,7 +197,8 @@ diretórios. Pacotes que não são skills (meta-pacote, testkit) ficam em `packa
 │   ├── tests/                 Meta-pacote — instala toda a família tests
 │   ├── study/                 Meta-pacote — instala toda a família study
 │   ├── bi/                    Meta-pacote — instala toda a família bi
-│   └── arc/                   Meta-pacote — instala toda a família arc
+│   ├── arc/                   Meta-pacote — instala toda a família arc
+│   └── ui/                    Meta-pacote — instala toda a família ui
 ├── scripts/                   Validadores, checks de contrato, gate de baseline do skill-judge
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Registros de intenção de release (workflow Changesets)

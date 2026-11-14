@@ -156,6 +156,15 @@ Pure **knowledge** skills for architecture and design decisions in software syst
 | `@llodev/arc` _(meta)_  | ✅ v0.1.0 | [packages/arc/](packages/arc/)                 | `npm i @llodev/arc`           | —                                                   |
 | `@llodev/arc-decisions` | ✅ v0.1.0 | [skills/arc-decisions/](skills/arc-decisions/) | `npm i @llodev/arc-decisions` | `npx skills add llodev/skills/skills/arc-decisions` |
 
+### `@llodev/ui` — image-first UI design skills
+
+Guide skills with helper scripts for distinctive UIs designed image-first — no MCP, no config, no init. The first member art-directs a UI in image models until one mockup is locked, then builds it in code and verifies the build against the mockup. The helper scripts need Python 3.10+ and Pillow. Further `ui-*` members can join the same meta-package.
+
+| Package                    | Status    | Source                                               | npm                              | Vercel CLI                                             |
+| -------------------------- | --------- | ---------------------------------------------------- | -------------------------------- | ------------------------------------------------------ |
+| `@llodev/ui` _(meta)_      | ✅ v0.1.0 | [packages/ui/](packages/ui/)                         | `npm i @llodev/ui`               | —                                                      |
+| `@llodev/ui-art-direction` | ✅ v0.1.0 | [skills/ui-art-direction/](skills/ui-art-direction/) | `npm i @llodev/ui-art-direction` | `npx skills add llodev/skills/skills/ui-art-direction` |
+
 ## Agent compatibility
 
 Every published skill declares which agents it targets via the `compatibility.agents` field in its frontmatter. The current matrix:
@@ -165,8 +174,8 @@ Every published skill declares which agents it targets via the `compatibility.ag
 ## Repository layout
 
 Skills live flat under `skills/` (one directory per skill, the convention agent
-skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, `study-`, `bi-`, and
-`arc-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
+skill indexers expect); family membership is carried by the `pm-tasks-`, `tests-`, `study-`, `bi-`, `arc-`, and
+`ui-` name prefixes and each skill's `metadata.family` field, not by directory nesting.
 Non-skill workspace packages (the meta-package, test kit) live under `packages/`.
 
 ```
@@ -189,14 +198,16 @@ Non-skill workspace packages (the meta-package, test kit) live under `packages/`
 │   ├── ts-query-cqrs/         Read-side CQRS: *Query ports, find-* read use cases, projections
 │   ├── tests-http/            HTTP test suites: discovery, NestJS and DRF adapters
 │   ├── study-abstract/        Study abstracts: spoken overview, glossary, self-check
-│   └── bi-dashboard/          Dashboards and charts: conclusion title, one highlight
+│   ├── bi-dashboard/          Dashboards and charts: conclusion title, one highlight
+│   └── ui-art-direction/      Image-first UI: mockup in image models, then code and verify
 ├── packages/                  Non-skill workspace packages (no SKILL.md)
 │   ├── pm-tasks/              Meta-package — installs the whole pm-tasks family
 │   ├── pm-tasks-testkit/      In-memory fakes for the canonical CRUD verbs
 │   ├── ts-ddd/                Meta-package — installs the whole ts-ddd family
 │   ├── tests/                 Meta-package — installs the whole tests family
 │   ├── study/                 Meta-package — installs the whole study family
-│   └── bi/                    Meta-package — installs the whole bi family
+│   ├── bi/                    Meta-package — installs the whole bi family
+│   └── ui/                    Meta-package — installs the whole ui family
 ├── scripts/                   Validators, contract checks, skill-judge baseline gate
 ├── docs/                      publishing-guide.md + roadmap.md (gitignored: plans/)
 └── .changeset/                Release intent records (Changesets workflow)
