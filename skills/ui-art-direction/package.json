@@ -1,0 +1,37 @@
+{
+  "name": "@llodev/ui-art-direction",
+  "version": "0.0.0",
+  "description": "Art-direct a UI in image models first, then build it in code and verify it against the mockup.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/ui-art-direction",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "skills/ui-art-direction"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "anti-patterns",
+    "references",
+    "examples",
+    "scripts",
+    "docs"
+  ],
+  "keywords": [
+    "agent-skill",
+    "ui",
+    "design",
+    "image-first",
+    "mockup"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

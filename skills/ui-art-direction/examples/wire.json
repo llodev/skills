@@ -1,0 +1,42 @@
+{
+  "size": [1920, 1080],
+  "boxes": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 100,
+      "h": 7,
+      "label": "top bar: Parallax logo, environment, time range, search, UTC clock"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "w": 24,
+      "h": 93,
+      "label": "services: 12 rows, health, p95 latency, error rate, budget left"
+    },
+    {
+      "x": 24,
+      "y": 7,
+      "w": 50,
+      "h": 56,
+      "label": "service map (primary): services, dependencies, failing edge"
+    },
+    {
+      "x": 24,
+      "y": 63,
+      "w": 25,
+      "h": 37,
+      "label": "incidents: ID, severity, title, age, owner, acknowledge"
+    },
+    { "x": 49, "y": 63, "w": 25, "h": 37, "label": "error budgets: SLO, budget left, burn rate" },
+    {
+      "x": 74,
+      "y": 7,
+      "w": 26,
+      "h": 78,
+      "label": "on-call assistant: conversation, proposed actions"
+    },
+    { "x": 74, "y": 85, "w": 26, "h": 15, "label": "prompt input: question field + send" }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@llodev/ui",
+  "version": "0.0.0",
+  "description": "Meta-package: installs the @llodev/ui-* family (image-first UI design).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llodev/skills.git",
+    "directory": "packages/ui"
+  },
+  "peerDependencies": {
+    "@llodev/ui-art-direction": "^0.1.0"
+  },
+  "devDependencies": {
+    "@llodev/ui-art-direction": "workspace:*"
+  },
+  "files": [
+    "README.md"
+  ],
+  "keywords": [
+    "agent-skill",
+    "ui",
+    "meta-package"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
