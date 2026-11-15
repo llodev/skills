@@ -1,6 +1,6 @@
 {
   "name": "@llodev/ui-art-direction",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Art-direct a UI in image models first, then build it in code and verify it against the mockup.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/ui-art-direction",
