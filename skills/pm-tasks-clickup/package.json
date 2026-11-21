@@ -1,7 +1,65 @@
 {
   "name": "@llodev/pm-tasks-clickup",
-  "version": "0.0.0",
-  "private": true,
-  "description": "[SCAFFOLD — NOT IMPLEMENTED] Future ClickUp adapter for @llodev/pm-tasks-*.",
-  "license": "MIT"
+  "version": "1.0.0",
+  "description": "ClickUp adapter for the @llodev/pm-tasks-* family. Use when the user mentions ClickUp, asks to create a ClickUp task, publish to ClickUp, post to ClickUp, change a task's status, add a comment in ClickUp, or uses --publish-clickup; OR for CRUD on existing tasks (move status, check subtask, close task, change due-date, assign person, comment, set parent, set estimate); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Implements 9 CRUD verbs (task.create, task.move, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add, task.parent.set, task.estimate.set) via the ClickUp MCP server. Requires @llodev/pm-tasks-core installed.",
+  "license": "MIT",
+  "homepage": "https://github.com/llodev/skills/tree/main/skills/pm-tasks-clickup",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llodev/skills.git",
+    "directory": "skills/pm-tasks-clickup"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "docs",
+    "anti-patterns",
+    "references",
+    "i18n",
+    "schemas",
+    "manifest.json",
+    "dist"
+  ],
+  "keywords": [
+    "agent-skill",
+    "clickup",
+    "plan-to-tasks",
+    "pm-tools",
+    "clickup-mcp"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/bin/init.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && vitest run --passWithNoTests",
+    "prepublishOnly": "pnpm build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapter": {
+      "types": "./dist/adapter.d.ts",
+      "import": "./dist/adapter.js"
+    },
+    "./schemas/*.json": "./schemas/*.json",
+    "./manifest.json": "./manifest.json"
+  },
+  "bin": {
+    "pm-tasks-clickup": "./dist/bin/init.js"
+  },
+  "dependencies": {
+    "@llodev/pm-tasks-core": "workspace:^"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  }
 }

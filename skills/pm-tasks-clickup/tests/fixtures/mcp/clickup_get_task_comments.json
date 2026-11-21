@@ -1,0 +1,17 @@
+{
+  "comments": [
+    {
+      "id": "1000400000000901",
+      "comment_text": "[ct:spike0002] spike comment\n",
+      "user": {
+        "id": 100000001,
+        "username": "Person 1"
+      },
+      "date": "1795196140180",
+      "assignee": null,
+      "assigned_by": null,
+      "reply_count": 0
+    }
+  ],
+  "count": 1
+}

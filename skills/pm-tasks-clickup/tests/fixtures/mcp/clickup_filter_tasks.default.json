@@ -1,0 +1,68 @@
+{
+  "tasks": [
+    {
+      "id": "t000000006",
+      "custom_id": null,
+      "name": "spike bulk one",
+      "status": "to do",
+      "url": "https://app.clickup.com/t/t000000006",
+      "priority": null,
+      "assignees": [],
+      "tags": [],
+      "due_date": null,
+      "date_updated": "1795196194982",
+      "date_closed": null,
+      "list": {
+        "id": "1000400000000002",
+        "name": "sandbox-a"
+      }
+    },
+    {
+      "id": "t000000002",
+      "custom_id": null,
+      "name": "spike child one",
+      "status": "complete",
+      "url": "https://app.clickup.com/t/t000000002",
+      "priority": null,
+      "assignees": [],
+      "tags": [],
+      "due_date": null,
+      "date_updated": "1795196118142",
+      "date_closed": null,
+      "list": {
+        "id": "1000400000000002",
+        "name": "sandbox-a"
+      }
+    },
+    {
+      "id": "t000000001",
+      "custom_id": null,
+      "name": "spike parent",
+      "status": "complete",
+      "url": "https://app.clickup.com/t/t000000001",
+      "priority": "normal",
+      "assignees": [
+        {
+          "id": 100000002,
+          "username": "Person 2"
+        }
+      ],
+      "tags": [
+        {
+          "name": "est:2h"
+        }
+      ],
+      "due_date": "1795762800000",
+      "date_updated": "1795196181655",
+      "date_closed": null,
+      "list": {
+        "id": "1000400000000002",
+        "name": "sandbox-a"
+      }
+    }
+  ],
+  "count": 3,
+  "page": 0,
+  "has_more": false,
+  "next_page": null
+}

@@ -1,0 +1,76 @@
+{
+  "id": "1000400000000002",
+  "name": "sandbox-a",
+  "content": "",
+  "space": {
+    "id": "901310000001",
+    "name": "Space 1"
+  },
+  "url": "https://app.clickup.com/90130000001/v/l/li/1000400000000002",
+  "statuses": [
+    {
+      "id": "p901310000001_st000001",
+      "status": "to do",
+      "color": "#87909e",
+      "orderindex": 0,
+      "type": "open",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000002",
+      "status": "planning",
+      "color": "#87909e",
+      "orderindex": 1,
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000003",
+      "status": "in progress",
+      "color": "#5f55ee",
+      "orderindex": 2,
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000004",
+      "status": "at risk",
+      "color": "#e16b16",
+      "orderindex": 3,
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000005",
+      "status": "update required",
+      "color": "#f8ae00",
+      "orderindex": 4,
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000006",
+      "status": "on hold",
+      "color": "#aa8d80",
+      "orderindex": 5,
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000007",
+      "status": "complete",
+      "color": "#0f9d9f",
+      "orderindex": 6,
+      "type": "done",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000008",
+      "status": "cancelled",
+      "color": "#008844",
+      "orderindex": 7,
+      "type": "closed",
+      "status_group": "proj_901310000001"
+    }
+  ]
+}

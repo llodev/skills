@@ -1,0 +1,44 @@
+{
+  "overview": "Found 1 result. Types include: task.",
+  "results": [
+    {
+      "id": "t000000001",
+      "type": "task",
+      "name": "spike parent",
+      "nameHighlight": ["spike parent"],
+      "url": "https://app.clickup.com/t/t000000001",
+      "hierarchy": {
+        "project": {
+          "id": "901310000001",
+          "name": "Space 1"
+        },
+        "category": {
+          "id": "1000400000000001",
+          "name": "pm-tasks-sandbox"
+        },
+        "subcategory": {
+          "id": "1000400000000002",
+          "name": "sandbox-a"
+        }
+      },
+      "dateUpdated": "1795196140180",
+      "searchContext": {
+        "keywords": "ct:spike0001",
+        "hasNameMatch": false,
+        "hasContentMatch": true
+      },
+      "status": "to do",
+      "assignees": [
+        {
+          "id": 100000002,
+          "email": "user@example.com",
+          "username": "Person 2"
+        }
+      ],
+      "custom_id": null,
+      "taskType": null,
+      "archived": false
+    }
+  ],
+  "next_cursor": null
+}
