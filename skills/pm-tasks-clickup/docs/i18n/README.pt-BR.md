@@ -16,9 +16,14 @@ Adaptador do ClickUp para a família `@llodev/pm-tasks-*`. Publica planos como t
 ## Instalação
 
 ```bash
+# npm (com skillpm ou marketplace do Claude Code)
 npm install @llodev/pm-tasks-clickup @llodev/pm-tasks-core
 # or
 pnpm add @llodev/pm-tasks-clickup @llodev/pm-tasks-core
+
+# Vercel CLI (instale o core manualmente também)
+npx skills add llodev/skills/skills/pm-tasks-core
+npx skills add llodev/skills/skills/pm-tasks-clickup
 ```
 
 ## Configurar o MCP
