@@ -1,0 +1,45 @@
+{
+  "hierarchy": {
+    "root": {
+      "id": "90130000001",
+      "name": "Workspace",
+      "children": [
+        {
+          "id": "901310000001",
+          "name": "Space 1",
+          "type": "space",
+          "children": [
+            {
+              "id": "1000400000000001",
+              "name": "pm-tasks-sandbox",
+              "type": "folder",
+              "children": [
+                {
+                  "id": "1000400000000002",
+                  "name": "sandbox-a",
+                  "type": "list",
+                  "children": []
+                },
+                {
+                  "id": "1000400000000003",
+                  "name": "sandbox-b",
+                  "type": "list",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "901330000001",
+              "name": "List",
+              "type": "list",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "next_cursor": null,
+  "has_more": false,
+  "total_spaces": 1
+}

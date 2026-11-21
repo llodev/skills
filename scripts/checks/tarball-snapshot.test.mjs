@@ -11,6 +11,7 @@ const PACKAGES = [
   "pm-tasks-testkit",
   "pm-tasks-jira",
   "pm-tasks-linear",
+  "pm-tasks-clickup",
 ];
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");

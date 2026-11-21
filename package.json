@@ -76,6 +76,11 @@
       "name": "@llodev/pm-tasks-linear (tarball)",
       "path": "skills/pm-tasks-linear/dist/**/*.js",
       "limit": "13 kB"
+    },
+    {
+      "name": "@llodev/pm-tasks-clickup (tarball)",
+      "path": "skills/pm-tasks-clickup/dist/**/*.js",
+      "limit": "26 kB"
     }
   ]
 }

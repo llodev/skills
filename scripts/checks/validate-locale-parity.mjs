@@ -12,6 +12,7 @@ const ADAPTERS = [
   "pm-tasks-trello",
   "pm-tasks-jira",
   "pm-tasks-linear",
+  "pm-tasks-clickup",
 ];
 
 async function checkAdapter(adapter) {

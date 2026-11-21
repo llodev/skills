@@ -1,0 +1,56 @@
+{
+  "teams": [
+    {
+      "id": "90130000001",
+      "name": "Workspace",
+      "color": "#7b68ee",
+      "avatar": null,
+      "members": [
+        {
+          "user": {
+            "id": 100000001,
+            "username": "Person 1",
+            "email": "user@example.com",
+            "color": "",
+            "profilePicture": null,
+            "initials": "P1",
+            "role": 3,
+            "role_subtype": 0,
+            "role_key": "member",
+            "custom_role": null,
+            "last_active": "1767398400000",
+            "date_joined": "1767312000000",
+            "date_invited": "1767225600000"
+          },
+          "invited_by": {
+            "id": 100000002,
+            "username": "Person 2",
+            "color": "",
+            "email": "user@example.com",
+            "initials": "P2",
+            "profilePicture": null,
+            "banned_date": null,
+            "status": "active"
+          }
+        },
+        {
+          "user": {
+            "id": 100000002,
+            "username": "Person 2",
+            "email": "user@example.com",
+            "color": "",
+            "profilePicture": null,
+            "initials": "P2",
+            "role": 1,
+            "role_subtype": 0,
+            "role_key": "owner",
+            "custom_role": null,
+            "last_active": "1767398400000",
+            "date_joined": "1767312000000",
+            "date_invited": "1767225600000"
+          }
+        }
+      ]
+    }
+  ]
+}

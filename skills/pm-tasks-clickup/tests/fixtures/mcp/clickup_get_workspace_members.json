@@ -1,0 +1,20 @@
+{
+  "members": [
+    {
+      "id": 100000001,
+      "name": "Person 1",
+      "username": "Person 1",
+      "email": "user@example.com",
+      "role": 3,
+      "profilePicture": ""
+    },
+    {
+      "id": 100000002,
+      "name": "Person 2",
+      "username": "Person 2",
+      "email": "user@example.com",
+      "role": 1,
+      "profilePicture": ""
+    }
+  ]
+}

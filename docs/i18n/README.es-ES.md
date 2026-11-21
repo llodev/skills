@@ -46,7 +46,7 @@ Consulta la [guía de publicación](../../docs/publishing-guide.md) para ver có
 
 ### `pm-tasks-*` — adaptadores de Project Management
 
-Convierten planes de implementación en tareas de PM y las operan vía paste, MCP publish o write-through autónomo. Hay cinco paquetes publicados — el `pm-tasks-core` compartido más los adaptadores de Trello, Asana, Jira y Linear. Además `@llodev/pm-tasks-testkit` — fakes en memoria para los 7 verbos base, para probar skills personalizadas.
+Convierten planes de implementación en tareas de PM y las operan vía paste, MCP publish o write-through autónomo. Hay seis paquetes publicados — el `pm-tasks-core` compartido más los adaptadores de Trello, Asana, Jira, Linear y ClickUp. Además `@llodev/pm-tasks-testkit` — fakes en memoria para los 7 verbos base, para probar skills personalizadas.
 
 **Runtime headless (subpath `/adapter`):** importa `createAdapter` desde cualquier adaptador publicado para ejecutar los verbos canónicos desde tus propios scripts/agents, sin invocar la skill:
 
@@ -60,35 +60,36 @@ if (!r.ok) throw new Error(`task.move falló: ${r.code}`);
 
 `mcp: (toolName, args) => Promise<unknown>` es un callback proporcionado por el llamador que hace proxy a las tools `mcp__*` del runtime del agent. Misma forma para `@llodev/pm-tasks-asana/adapter`. Contrato completo en [publishing-guide § 11 — Headless runtime](../../docs/publishing-guide.md#11-headless-runtime-pm-tasks-v19) y en los SKILL.md por adapter.
 
-| Paquete                     | Estado      | Fuente                                                         | npm                                 | Vercel CLI                                            |
-| --------------------------- | ----------- | -------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------- |
-| `@llodev/pm-tasks` _(meta)_ | ✅ v3.1.1   | [packages/pm-tasks/](../../packages/pm-tasks/)                 | `npm i @llodev/pm-tasks`            | —                                                     |
-| `@llodev/pm-tasks-core`     | ✅ v1.16.0  | [skills/pm-tasks-core/](../../skills/pm-tasks-core/)           | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/skills/pm-tasks-core`   |
-| `@llodev/pm-tasks-asana`    | ✅ v1.11.0  | [skills/pm-tasks-asana/](../../skills/pm-tasks-asana/)         | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/skills/pm-tasks-asana`  |
-| `@llodev/pm-tasks-trello`   | ✅ v1.11.0  | [skills/pm-tasks-trello/](../../skills/pm-tasks-trello/)       | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/skills/pm-tasks-trello` |
-| `@llodev/pm-tasks-testkit`  | ✅ v0.2.0   | [packages/pm-tasks-testkit/](../../packages/pm-tasks-testkit/) | `npm i -D @llodev/pm-tasks-testkit` | —                                                     |
-| `@llodev/pm-tasks-jira`     | ✅ v1.3.0   | [skills/pm-tasks-jira/](../../skills/pm-tasks-jira/)           | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/skills/pm-tasks-jira`   |
-| `@llodev/pm-tasks-linear`   | ✅ v1.2.0   | [skills/pm-tasks-linear/](../../skills/pm-tasks-linear/)       | `npm i @llodev/pm-tasks-linear`     | `npx skills add llodev/skills/skills/pm-tasks-linear` |
-| `pm-tasks-notion`           | 🔒 scaffold | [skills/pm-tasks-notion/](../../skills/pm-tasks-notion/)       | —                                   | —                                                     |
-| `pm-tasks-clickup`          | 🔒 scaffold | [skills/pm-tasks-clickup/](../../skills/pm-tasks-clickup/)     | —                                   | —                                                     |
-| `pm-tasks-monday`           | 🔒 scaffold | [skills/pm-tasks-monday/](../../skills/pm-tasks-monday/)       | —                                   | —                                                     |
-| `pm-tasks-bitrix24`         | 🔒 scaffold | [skills/pm-tasks-bitrix24/](../../skills/pm-tasks-bitrix24/)   | —                                   | —                                                     |
-| `pm-tasks-todoist`          | 🔒 scaffold | [skills/pm-tasks-todoist/](../../skills/pm-tasks-todoist/)     | —                                   | —                                                     |
+| Paquete                     | Estado      | Fuente                                                         | npm                                 | Vercel CLI                                             |
+| --------------------------- | ----------- | -------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------ |
+| `@llodev/pm-tasks` _(meta)_ | ✅ v3.1.1   | [packages/pm-tasks/](../../packages/pm-tasks/)                 | `npm i @llodev/pm-tasks`            | —                                                      |
+| `@llodev/pm-tasks-core`     | ✅ v1.16.0  | [skills/pm-tasks-core/](../../skills/pm-tasks-core/)           | `npm i @llodev/pm-tasks-core`       | `npx skills add llodev/skills/skills/pm-tasks-core`    |
+| `@llodev/pm-tasks-asana`    | ✅ v1.11.0  | [skills/pm-tasks-asana/](../../skills/pm-tasks-asana/)         | `npm i @llodev/pm-tasks-asana`      | `npx skills add llodev/skills/skills/pm-tasks-asana`   |
+| `@llodev/pm-tasks-trello`   | ✅ v1.11.0  | [skills/pm-tasks-trello/](../../skills/pm-tasks-trello/)       | `npm i @llodev/pm-tasks-trello`     | `npx skills add llodev/skills/skills/pm-tasks-trello`  |
+| `@llodev/pm-tasks-testkit`  | ✅ v0.2.0   | [packages/pm-tasks-testkit/](../../packages/pm-tasks-testkit/) | `npm i -D @llodev/pm-tasks-testkit` | —                                                      |
+| `@llodev/pm-tasks-jira`     | ✅ v1.3.0   | [skills/pm-tasks-jira/](../../skills/pm-tasks-jira/)           | `npm i @llodev/pm-tasks-jira`       | `npx skills add llodev/skills/skills/pm-tasks-jira`    |
+| `@llodev/pm-tasks-linear`   | ✅ v1.2.0   | [skills/pm-tasks-linear/](../../skills/pm-tasks-linear/)       | `npm i @llodev/pm-tasks-linear`     | `npx skills add llodev/skills/skills/pm-tasks-linear`  |
+| `@llodev/pm-tasks-clickup`  | ✅ v1.0.0   | [skills/pm-tasks-clickup/](../../skills/pm-tasks-clickup/)     | `npm i @llodev/pm-tasks-clickup`    | `npx skills add llodev/skills/skills/pm-tasks-clickup` |
+| `pm-tasks-notion`           | 🔒 scaffold | [skills/pm-tasks-notion/](../../skills/pm-tasks-notion/)       | —                                   | —                                                      |
+| `pm-tasks-monday`           | 🔒 scaffold | [skills/pm-tasks-monday/](../../skills/pm-tasks-monday/)       | —                                   | —                                                      |
+| `pm-tasks-bitrix24`         | 🔒 scaffold | [skills/pm-tasks-bitrix24/](../../skills/pm-tasks-bitrix24/)   | —                                   | —                                                      |
+| `pm-tasks-todoist`          | 🔒 scaffold | [skills/pm-tasks-todoist/](../../skills/pm-tasks-todoist/)     | —                                   | —                                                      |
 
 > [!NOTE]
-> Las skills marcadas como `scaffold` son namespaces reservados con un `SKILL.md` placeholder. Su descripción instruye a los agentes a NO activarse hasta que llegue un adaptador real. Quedan 5 scaffolds: notion, clickup, monday, bitrix24, todoist.
+> Las skills marcadas como `scaffold` son namespaces reservados con un `SKILL.md` placeholder. Su descripción instruye a los agentes a NO activarse hasta que llegue un adaptador real. Quedan 4 scaffolds: notion, monday, bitrix24, todoist.
 
 > [!NOTE]
 > `@llodev/pm-tasks` (meta) se versiona de forma independiente de la familia mediante `onlyUpdatePeerDependentsWhenOutOfRange`. La familia está en `v1.x`; el meta saltó a `v3.0.0` antes del desacoplamiento (actualmente `v3.1.1`) y permanecerá en `v3.x` hasta que la familia alcance `v2.0.0`.
 
 **Cobertura de verbos.** El vocabulario canónico son 7 verbos base más 3 opcionales; cada adaptador declara lo que soporta en `manifest.json`, y el runtime devuelve `UNSUPPORTED_VERB` para lo que quede fuera. Los adaptadores también pueden declarar verbos personalizados con namespace.
 
-| Adaptador  | 7 base | `task.parent.set` | `task.estimate.set` | `task.sprint.set` | Personalizado                              |
-| ---------- | ------ | ----------------- | ------------------- | ----------------- | ------------------------------------------ |
-| **linear** | ✅     | ✅                | ✅                  | ✅                | —                                          |
-| **jira**   | ✅     | ✅                | ✅                  | —                 | —                                          |
-| **trello** | ✅     | —                 | —                   | —                 | `trello.task.batch-create-with-checklists` |
-| **asana**  | ✅     | —                 | —                   | —                 | —                                          |
+| Adaptador   | 7 base | `task.parent.set` | `task.estimate.set` | `task.sprint.set` | Personalizado                              |
+| ----------- | ------ | ----------------- | ------------------- | ----------------- | ------------------------------------------ |
+| **linear**  | ✅     | ✅                | ✅                  | ✅                | —                                          |
+| **jira**    | ✅     | ✅                | ✅                  | —                 | —                                          |
+| **clickup** | ✅     | ✅                | ✅                  | —                 | —                                          |
+| **trello**  | ✅     | —                 | —                   | —                 | `trello.task.batch-create-with-checklists` |
+| **asana**   | ✅     | —                 | —                   | —                 | —                                          |
 
 ### `@llodev/ts-ddd` — skills de diseño DDD para TypeScript
 
@@ -176,7 +177,8 @@ cada skill, no con el anidamiento de directorios. Los paquetes que no son skills
 │   ├── pm-tasks-trello/       Adaptador Trello (boards, lists, labels, members)
 │   ├── pm-tasks-jira/         Adaptador Jira (epics, estimaciones, transiciones)
 │   ├── pm-tasks-linear/       Adaptador Linear (cycles, labels, campos temporales nativos)
-│   ├── pm-tasks-<member>/     Scaffolds reservados (Notion, ClickUp, Monday, Bitrix24, Todoist)
+│   ├── pm-tasks-clickup/      Adaptador ClickUp (estados por lista, subtareas, estimaciones de tiempo)
+│   ├── pm-tasks-<member>/     Scaffolds reservados (Notion, Monday, Bitrix24, Todoist)
 │   ├── django-schema-design/  Diseño de esquema: estrategia de PK, índices, constraints, migraciones
 │   ├── ts-ddd-entity/         Entidades de dominio: Entity base, Result.combine, transiciones cloneWith
 │   ├── ts-ddd-value-object/   Value objects: VOs closed-set + compuestos, tryCreate/create
@@ -220,10 +222,11 @@ Las releases siguen el workflow [Changesets](https://github.com/changesets/chang
 
 ## Roadmap
 
-Los 5 paquetes `pm-tasks` lanzados comparten el conjunto canónico de verbos y la semántica de Lifecycle Fidelity; un 6.º adaptador es impulsado por demanda, no está agendado. La prioridad actual es la **conformidad de transporte**: el primer dogfood en vivo de Trello encontró un bug de forma de respuesta que 569 tests unitarios en verde no detectaron, y ese mismo patrón de mock escrito a mano todavía cubre Asana, Jira y Linear. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](../../docs/roadmap.md).
+Los 6 paquetes `pm-tasks` lanzados comparten el conjunto canónico de verbos y la semántica de Lifecycle Fidelity; el próximo adaptador es impulsado por demanda, no está agendado. La prioridad actual es la **conformidad de transporte**: el primer dogfood en vivo de Trello encontró un bug de forma de respuesta que 569 tests unitarios en verde no detectaron, y ese mismo patrón de mock escrito a mano todavía cubre Asana, Jira y Linear. Detalle completo con prioridades y justificación en [`docs/roadmap.md`](../../docs/roadmap.md).
 
 **Lanzamientos recientes:**
 
+- **clickup `v1.0.0`** — **nuevo adaptador de ClickUp**: nueve verbos (sin `task.sprint.set`), estados fijados por lista y por rol, elementos de checklist como subtareas, estimaciones de tiempo nativas solo en tareas hoja y una vía de solo lectura con `CLICKUP_API_TOKEN` para `init` y `doctor`. Es el primer adaptador construido desde el inicio sobre fixtures del MCP capturadas en vivo y con guarda de claves de petición. `@llodev/pm-tasks` pasa a instalarlo.
 - **core `v1.16.0` · trello `v1.11.0`** — **recalibración de esfuerzo**: todos los tiers recortados ~35%, los empates se resuelven hacia el tier **menor** y la conversión esfuerzo→calendario queda fijada (día enfocado de 6 h; vencimiento en `ceil(horas_realistas / 6)` días hábiles). Elimina un segundo buffer no documentado que se sumaba al 20% ya incluido en la fórmula.
 - **asana `v1.11.0`** — **duración roll-up solo en tareas hoja**: el nuevo flag `customFields[].rollsUpFromSubtasks` evita que un padre duplique la suma de subtareas que Asana ya calcula.
 - **trello `v1.10.1`** — **unwrap del envelope MCP** (hotfix): el MCP real de Trello envuelve todo resultado de escritura (`{ summary, card: { … } }`), pero el transporte leía un `resp.id` plano — así que las escrituras reportaban fallo _después_ de haberse aplicado, dejando cards huérfanos. Stubs reemplazados por formas capturadas de una ejecución real.
@@ -238,7 +241,7 @@ Los 5 paquetes `pm-tasks` lanzados comparten el conjunto canónico de verbos y l
 
 **Sin agenda — impulsado por demanda:**
 
-- Pool de adaptadores: `pm-tasks-github-projects` (S8 — alto valor, bajo coste) · `clickup` · `notion` · `monday` · `todoist` · `bitrix24`.
+- Pool de adaptadores: `pm-tasks-github-projects` (S8 — alto valor, bajo coste) · `notion` · `monday` · `todoist` · `bitrix24`.
 - Verbos aditivos, cada uno junto al adaptador que primero lo necesite: `task.time.log` (11.º) · `task.blocks.add` (12.º) · `task.wip-limit.check` (13.º). El conjunto base + opcionales está completo en 10.
 - Biblioteca/SDK: `@llodev/pm-tasks-cli` sobre el subpath headless `/adapter` · plugin SDK (`npx pm-tasks-contract-tests`) · sincronización bidireccional, tras ≥4 adaptadores probados en uso real.
 

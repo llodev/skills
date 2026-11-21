@@ -64,6 +64,9 @@ init-jira: ## run pm-tasks-jira init
 init-linear: ## run pm-tasks-linear init
 	node skills/pm-tasks-linear/dist/bin/init.js
 
+init-clickup: ## run pm-tasks-clickup init (needs CLICKUP_API_TOKEN)
+	node skills/pm-tasks-clickup/dist/bin/init.js
+
 doctor: ## run pm-tasks-core-doctor against workspace .tool.json files
 	node skills/pm-tasks-core/dist/bin/doctor.js $(ARGS)
 

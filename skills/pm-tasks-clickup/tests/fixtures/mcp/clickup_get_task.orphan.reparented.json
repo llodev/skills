@@ -1,0 +1,45 @@
+{
+  "id": "t000000005",
+  "custom_id": null,
+  "custom_item_id": 0,
+  "name": "spike orphan",
+  "description": "",
+  "text_content": "",
+  "url": "https://app.clickup.com/t/t000000005",
+  "status": "to do",
+  "status_color": "#87909e",
+  "date_created": "1795196159220",
+  "date_updated": "1795196167292",
+  "date_closed": null,
+  "creator": {
+    "id": 100000001,
+    "username": "Person 1"
+  },
+  "assignees": [],
+  "tags": [],
+  "parent": "t000000001",
+  "priority": null,
+  "due_date": null,
+  "start_date": null,
+  "time_estimate": null,
+  "time_spent": 0,
+  "list": {
+    "id": "1000400000000002",
+    "name": "sandbox-a"
+  },
+  "folder": {
+    "id": "1000400000000001",
+    "name": "pm-tasks-sandbox"
+  },
+  "space": {
+    "id": "901310000001"
+  },
+  "custom_fields_count": 0,
+  "checklists_count": 0,
+  "dependencies_count": 0,
+  "linked_tasks_count": 0,
+  "watchers_count": 1,
+  "subtasks_count": 0,
+  "attachments_count": 0,
+  "task_type": null
+}

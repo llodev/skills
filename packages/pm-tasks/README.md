@@ -1,6 +1,6 @@
 # @llodev/pm-tasks
 
-Meta-package for the `@llodev/pm-tasks-*` family. Installs the core skill plus every published adapter (Trello, Asana, Jira, Linear) in one command.
+Meta-package for the `@llodev/pm-tasks-*` family. Installs the core skill plus every published adapter (Trello, Asana, Jira, Linear, ClickUp) in one command.
 
 ## Install
 
@@ -15,6 +15,7 @@ This pulls in:
 - [`@llodev/pm-tasks-asana`](https://www.npmjs.com/package/@llodev/pm-tasks-asana) — Asana adapter.
 - [`@llodev/pm-tasks-jira`](https://www.npmjs.com/package/@llodev/pm-tasks-jira) — Jira adapter.
 - [`@llodev/pm-tasks-linear`](https://www.npmjs.com/package/@llodev/pm-tasks-linear) — Linear adapter.
+- [`@llodev/pm-tasks-clickup`](https://www.npmjs.com/package/@llodev/pm-tasks-clickup) — ClickUp adapter.
 
 After install, follow each adapter's README for MCP setup and `init`.
 

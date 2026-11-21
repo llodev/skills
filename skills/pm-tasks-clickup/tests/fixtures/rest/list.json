@@ -1,0 +1,94 @@
+{
+  "id": "901330000001",
+  "name": "List 1",
+  "deleted": false,
+  "orderindex": 0,
+  "content": "",
+  "priority": null,
+  "assignee": null,
+  "task_count": 0,
+  "due_date": null,
+  "start_date": null,
+  "folder": {
+    "id": "901320000001",
+    "name": "hidden",
+    "hidden": true,
+    "archived": false,
+    "access": true
+  },
+  "space": {
+    "id": "901310000001",
+    "name": "Space 1",
+    "archived": false,
+    "access": true
+  },
+  "archived": false,
+  "override_statuses": false,
+  "statuses": [
+    {
+      "id": "p901310000001_st000001",
+      "status": "to do",
+      "orderindex": 0,
+      "color": "#87909e",
+      "type": "open",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000002",
+      "status": "planning",
+      "orderindex": 1,
+      "color": "#87909e",
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000003",
+      "status": "in progress",
+      "orderindex": 2,
+      "color": "#5f55ee",
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000004",
+      "status": "at risk",
+      "orderindex": 3,
+      "color": "#e16b16",
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000005",
+      "status": "update required",
+      "orderindex": 4,
+      "color": "#f8ae00",
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000006",
+      "status": "on hold",
+      "orderindex": 5,
+      "color": "#aa8d80",
+      "type": "custom",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000007",
+      "status": "complete",
+      "orderindex": 6,
+      "color": "#0f9d9f",
+      "type": "done",
+      "status_group": "proj_901310000001"
+    },
+    {
+      "id": "p901310000001_st000008",
+      "status": "cancelled",
+      "orderindex": 7,
+      "color": "#008844",
+      "type": "closed",
+      "status_group": "proj_901310000001"
+    }
+  ],
+  "permission_level": "create"
+}
