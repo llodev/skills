@@ -12,10 +12,10 @@
     "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
   },
   "skills/pm-tasks-clickup/SKILL.md": {
-    "score": 29,
-    "version": "0.0.0",
-    "capturedAt": "2026-06-14",
-    "notes": "baseline pre v1.1 (scaffold, intentionally inert)"
+    "score": 84,
+    "version": "1.0.0",
+    "capturedAt": "2026-11-20",
+    "notes": "v1.0.0 (first release, the scaffold is replaced). Independent skill-judge pass: D1 16, D2 12, D3 13, D4 13, D5 13, D6 13, D7 8, D8 13 = 101/120 (84); the docs author's self-score was 106/120 (88). Δ +55 vs the scaffold's 29, ratcheted. Top remaining weaknesses: family boilerplate (attribution, narration banner, result envelope) and a verb table that repeats references/operations.md dilute D1/D5; generic trigger phrases in the description ('move the task to in progress', 'check the subtask') can compete with the sibling adapters (D4). The description is 1188 characters."
   },
   "skills/pm-tasks-core/SKILL.md": {
     "score": 86,

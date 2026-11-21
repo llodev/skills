@@ -81,6 +81,9 @@ importers:
       '@llodev/pm-tasks-asana':
         specifier: workspace:*
         version: link:../../skills/pm-tasks-asana
+      '@llodev/pm-tasks-clickup':
+        specifier: workspace:*
+        version: link:../../skills/pm-tasks-clickup
       '@llodev/pm-tasks-core':
         specifier: workspace:*
         version: link:../../skills/pm-tasks-core
@@ -169,7 +172,11 @@ importers:
 
   skills/pm-tasks-bitrix24: {}
 
-  skills/pm-tasks-clickup: {}
+  skills/pm-tasks-clickup:
+    dependencies:
+      '@llodev/pm-tasks-core':
+        specifier: workspace:^
+        version: link:../pm-tasks-core
 
   skills/pm-tasks-core:
     dependencies:

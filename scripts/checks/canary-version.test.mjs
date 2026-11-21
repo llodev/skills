@@ -71,6 +71,11 @@ test("listCanaryPackages includes all four known package names", () => {
   assert.ok(names.includes("@llodev/pm-tasks-testkit"), "missing @llodev/pm-tasks-testkit");
 });
 
+test("listCanaryPackages includes @llodev/pm-tasks-clickup (a non-private pm-tasks-* package)", () => {
+  const names = listCanaryPackages().map((p) => p.name);
+  assert.ok(names.includes("@llodev/pm-tasks-clickup"), "missing @llodev/pm-tasks-clickup");
+});
+
 test("listCanaryPackages every entry has valid shape and passes private filter", () => {
   const packages = listCanaryPackages();
   for (const pkg of packages) {
