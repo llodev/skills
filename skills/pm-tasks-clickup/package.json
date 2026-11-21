@@ -1,6 +1,6 @@
 {
   "name": "@llodev/pm-tasks-clickup",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ClickUp adapter for the @llodev/pm-tasks-* family. Use when the user mentions ClickUp, asks to create a ClickUp task, publish to ClickUp, post to ClickUp, change a task's status, add a comment in ClickUp, or uses --publish-clickup; OR for CRUD on existing tasks (move status, check subtask, close task, change due-date, assign person, comment, set parent, set estimate); OR when invoked autonomously by another agent with [autonomous] / --auto sentinel. Implements 9 CRUD verbs (task.create, task.move, checklist.check, task.close, task.due-date.set, task.assignee.add, task.comment.add, task.parent.set, task.estimate.set) via the ClickUp MCP server. Requires @llodev/pm-tasks-core installed.",
   "license": "MIT",
   "homepage": "https://github.com/llodev/skills/tree/main/skills/pm-tasks-clickup",

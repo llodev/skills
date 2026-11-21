@@ -22,7 +22,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "plan-to-tasks", "pm-tools", "task-extraction", "crud-verbs"]
+      "keywords": [
+        "agent-skill",
+        "plan-to-tasks",
+        "pm-tools",
+        "task-extraction",
+        "crud-verbs"
+      ]
     },
     {
       "name": "pm-tasks-trello",
@@ -37,7 +43,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "trello", "plan-to-tasks", "pm-tools", "trello-mcp"]
+      "keywords": [
+        "agent-skill",
+        "trello",
+        "plan-to-tasks",
+        "pm-tools",
+        "trello-mcp"
+      ]
     },
     {
       "name": "pm-tasks-asana",
@@ -52,7 +64,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "asana", "plan-to-tasks", "pm-tools", "asana-mcp"]
+      "keywords": [
+        "agent-skill",
+        "asana",
+        "plan-to-tasks",
+        "pm-tools",
+        "asana-mcp"
+      ]
     },
     {
       "name": "pm-tasks-jira",
@@ -67,7 +85,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "jira", "atlassian", "plan-to-tasks", "pm-tools", "atlassian-mcp"]
+      "keywords": [
+        "agent-skill",
+        "jira",
+        "atlassian",
+        "plan-to-tasks",
+        "pm-tools",
+        "atlassian-mcp"
+      ]
     },
     {
       "name": "pm-tasks-linear",
@@ -82,7 +107,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "linear", "plan-to-tasks", "pm-tools", "linear-mcp"]
+      "keywords": [
+        "agent-skill",
+        "linear",
+        "plan-to-tasks",
+        "pm-tools",
+        "linear-mcp"
+      ]
     },
     {
       "name": "pm-tasks-clickup",
@@ -93,11 +124,17 @@
         "path": "skills/pm-tasks-clickup"
       },
       "description": "Turn plans into ClickUp tasks with subtasks, per-list statuses pinned by role, and native time estimates — paste-ready, ClickUp MCP publish, or autonomous mode. Requires pm-tasks-core.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "clickup", "plan-to-tasks", "pm-tools", "clickup-mcp"]
+      "keywords": [
+        "agent-skill",
+        "clickup",
+        "plan-to-tasks",
+        "pm-tools",
+        "clickup-mcp"
+      ]
     },
     {
       "name": "django-schema-design",
@@ -135,7 +172,15 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "controller", "nestjs", "http", "zod"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "controller",
+        "nestjs",
+        "http",
+        "zod"
+      ]
     },
     {
       "name": "ts-ddd-domain-service",
@@ -150,7 +195,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "domain-service", "policy", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "domain-service",
+        "policy",
+        "result"
+      ]
     },
     {
       "name": "ts-ddd-dto",
@@ -165,7 +217,15 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "dto", "zod", "contracts", "cqrs"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "dto",
+        "zod",
+        "contracts",
+        "cqrs"
+      ]
     },
     {
       "name": "ts-ddd-entity",
@@ -180,7 +240,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "entity", "aggregate", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "entity",
+        "aggregate",
+        "result"
+      ]
     },
     {
       "name": "ts-ddd-repository",
@@ -195,7 +262,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "repository", "firestore", "persistence"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "repository",
+        "firestore",
+        "persistence"
+      ]
     },
     {
       "name": "ts-ddd-use-case",
@@ -210,7 +284,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "use-case", "application", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "use-case",
+        "application",
+        "result"
+      ]
     },
     {
       "name": "ts-ddd-value-object",
@@ -225,7 +306,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "value-object", "vo", "result"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "value-object",
+        "vo",
+        "result"
+      ]
     },
     {
       "name": "ts-query-cqrs",
@@ -240,7 +328,15 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "typescript", "ddd", "cqrs", "query", "read-model", "prisma"]
+      "keywords": [
+        "agent-skill",
+        "typescript",
+        "ddd",
+        "cqrs",
+        "query",
+        "read-model",
+        "prisma"
+      ]
     },
     {
       "name": "tests-http",
@@ -255,7 +351,14 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "http", "rest-client", "tests", "nestjs", "drf"]
+      "keywords": [
+        "agent-skill",
+        "http",
+        "rest-client",
+        "tests",
+        "nestjs",
+        "drf"
+      ]
     },
     {
       "name": "study-abstract",
@@ -270,7 +373,12 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "study", "abstract", "glossary"]
+      "keywords": [
+        "agent-skill",
+        "study",
+        "abstract",
+        "glossary"
+      ]
     },
     {
       "name": "bi-dashboard",
@@ -285,7 +393,12 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "bi", "dashboard", "chart"]
+      "keywords": [
+        "agent-skill",
+        "bi",
+        "dashboard",
+        "chart"
+      ]
     },
     {
       "name": "arc-decisions",
@@ -300,7 +413,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "architecture", "system-design", "adr", "mvp"]
+      "keywords": [
+        "agent-skill",
+        "architecture",
+        "system-design",
+        "adr",
+        "mvp"
+      ]
     },
     {
       "name": "ui-art-direction",
@@ -315,7 +434,13 @@
       "author": {
         "name": "llodev"
       },
-      "keywords": ["agent-skill", "ui", "design", "image-first", "mockup"]
+      "keywords": [
+        "agent-skill",
+        "ui",
+        "design",
+        "image-first",
+        "mockup"
+      ]
     }
   ]
 }

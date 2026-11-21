@@ -316,6 +316,7 @@
     "package/schemas/config.json"
   ],
   "pm-tasks-clickup": [
+    "package/CHANGELOG.md",
     "package/LICENSE",
     "package/README.md",
     "package/SKILL.md",
