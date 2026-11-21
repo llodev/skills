@@ -9,7 +9,8 @@ const FIXTURES_DIR = path.join(HERE, "fixtures");
 const EMAIL = /[\w.+-]+@[\w-]+\.[\w.]+/g;
 const ALLOWED_EMAIL = "user@example.com";
 const PERSONAL_TOKEN = /pk_\d+_/i;
-const ATTACHMENTS_HOST = /attachments\.clickup\.com/;
+// A substring scan over raw JSON text, not a URL check, so a plain string is used.
+const ATTACHMENTS_HOST = "attachments.clickup.com";
 
 // Read at call time so a token exported in the shell is checked too. The value
 // is never put in a finding, so a leak never echoes the token into test output.
@@ -26,7 +27,7 @@ function findLeaks(text: string): string[] {
     if (match[0] !== ALLOWED_EMAIL) leaks.push(`email ${match[0]}`);
   }
   if (PERSONAL_TOKEN.test(text)) leaks.push("personal API token prefix (pk_<id>_)");
-  if (ATTACHMENTS_HOST.test(text)) leaks.push("attachments.clickup.com URL");
+  if (text.includes(ATTACHMENTS_HOST)) leaks.push("attachments.clickup.com URL");
   const token = tokenFromEnv();
   if (token && text.includes(token)) leaks.push("value of CLICKUP_API_TOKEN");
   return leaks;
