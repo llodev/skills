@@ -9,8 +9,22 @@ const FIXTURES_DIR = path.join(HERE, "fixtures");
 const EMAIL = /[\w.+-]+@[\w-]+\.[\w.]+/g;
 const ALLOWED_EMAIL = "user@example.com";
 const PERSONAL_TOKEN = /pk_\d+_/i;
-// A substring scan over raw JSON text, not a URL check, so a plain string is used.
-const ATTACHMENTS_HOST = "attachments.clickup.com";
+const URL_IN_TEXT = /https?:\/\/[^\s"'\\]+/g;
+const ATTACHMENTS_HOSTNAME = "attachments.clickup.com";
+
+// True when the raw JSON text holds a URL whose host is the attachments host.
+// Each URL is parsed and its hostname compared exactly, so a host that only
+// appears inside another URL's path or query does not count.
+function hasAttachmentsUrl(text: string): boolean {
+  for (const [raw] of text.replaceAll("\\/", "/").matchAll(URL_IN_TEXT)) {
+    try {
+      if (new URL(raw).hostname === ATTACHMENTS_HOSTNAME) return true;
+    } catch {
+      // Not a parseable URL: ignore it.
+    }
+  }
+  return false;
+}
 
 // Read at call time so a token exported in the shell is checked too. The value
 // is never put in a finding, so a leak never echoes the token into test output.
@@ -27,7 +41,7 @@ function findLeaks(text: string): string[] {
     if (match[0] !== ALLOWED_EMAIL) leaks.push(`email ${match[0]}`);
   }
   if (PERSONAL_TOKEN.test(text)) leaks.push("personal API token prefix (pk_<id>_)");
-  if (text.includes(ATTACHMENTS_HOST)) leaks.push("attachments.clickup.com URL");
+  if (hasAttachmentsUrl(text)) leaks.push("attachments.clickup.com URL");
   const token = tokenFromEnv();
   if (token && text.includes(token)) leaks.push("value of CLICKUP_API_TOKEN");
   return leaks;
@@ -52,6 +66,9 @@ describe("fixture sanitizer", () => {
     expect(findLeaks('{"email":"someone@company.io"}')).toEqual(["email someone@company.io"]);
     expect(findLeaks('{"note":"pk_123456_abc"}')).toHaveLength(1);
     expect(findLeaks('{"profilePicture":"https://attachments.clickup.com/x.png"}')).toHaveLength(1);
+    expect(
+      findLeaks('{"profilePicture":"https:\\/\\/attachments.clickup.com\\/x.png"}'),
+    ).toHaveLength(1);
 
     vi.stubEnv("CLICKUP_API_TOKEN", "fake-detector-token-0001");
     expect(findLeaks('{"note":"fake-detector-token-0001"}')).toEqual([
@@ -67,6 +84,7 @@ describe("fixture sanitizer", () => {
   it("detector allows the synthetic email and clean text", () => {
     vi.stubEnv("CLICKUP_API_TOKEN", "fake-detector-token-0003");
     expect(findLeaks('{"email":"user@example.com","id":"9013000001"}')).toEqual([]);
+    expect(findLeaks('{"url":"https://app.clickup.com/t/abc"}')).toEqual([]);
     expect(findLeaks('{"a":"user@example.com","b":"other@example.org"}')).toEqual([
       "email other@example.org",
     ]);
