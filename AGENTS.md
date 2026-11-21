@@ -39,13 +39,17 @@ When a change adds a publishable package, or bumps one that `npm view <name> ver
 npm whoami
 npm view @llodev/<name> version          # E404 → this is the first publish
 cd skills/<name>                         # or packages/<name> for a meta-package
-npm publish --access public --dry-run    # confirm the tarball, then:
-npm publish --access public
+pnpm build
+pnpm pack                                # writes llodev-<name>-<version>.tgz with real versions in place of workspace:^
+tar -xOf llodev-<name>-<version>.tgz package/package.json | grep workspace:    # must print nothing
+npm publish ./llodev-<name>-<version>.tgz --access public --dry-run    # confirm the tarball, then:
+npm publish ./llodev-<name>-<version>.tgz --access public
+npm view @llodev/<name>@<version> dependencies    # no workspace: specifier may appear (the registry can lag a few minutes)
 cd -
 npm trust github "@llodev/<name>" --repo llodev/skills --file release.yml --allow-publish -y
 ```
 
-Run `npm publish` from the package directory. The repo root is a private pnpm workspace, not an npm workspace, so `--workspace` from the root does not select the package.
+Publish the tarball from `pnpm pack`, never the bare directory. `npm publish` ships `package.json` exactly as written, so a `workspace:^` dependency reaches the registry unchanged and the package fails to install with `EUNSUPPORTEDPROTOCOL`; npm never lets a version be reused, so the fix is a new version (this is what happened to `@llodev/pm-tasks-clickup@1.0.0`). A tarball publish runs no lifecycle scripts, so `pnpm build` comes first. The repo root is a private pnpm workspace, not an npm workspace, so `--workspace` from the root does not select the package.
 
 `canary-publish.yml` only publishes `@llodev/pm-tasks-*` (`listCanaryPackages`). Add the canary trusted publisher (`--file canary-publish.yml --allow-publish`) only when that package is added to that list. An unused canary config expires in 48 hours.
 
