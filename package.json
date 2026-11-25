@@ -33,18 +33,18 @@
     "@changesets/cli": "^3.0.3",
     "@size-limit/file": "^14.3.0",
     "@types/node": "^26.6.6",
-    "@typescript-eslint/eslint-plugin": "^8.72.2",
-    "@typescript-eslint/parser": "^8.72.2",
-    "@vitest/coverage-v8": "^5.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.73.0",
+    "@typescript-eslint/parser": "^8.73.0",
+    "@vitest/coverage-v8": "^5.1.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "gray-matter": "^4.0.3",
     "prettier": "^3.10.1",
     "size-limit": "^14.3.0",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   },
   "size-limit": [
     {
